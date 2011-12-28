@@ -11,5 +11,5 @@
 @interface EventCell : UITableViewCell
 
 @property (retain,nonatomic) NSDictionary *eventDict;
-- (void) setup;
+- (void) redraw;
 @end

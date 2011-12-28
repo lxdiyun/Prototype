@@ -30,8 +30,13 @@
 @synthesize desc = _desc;
 @synthesize picImageV = _picImageV;
 
-- (void) setupTitleLabel
+- (void) redrawTitleLabel
 {
+	if (nil != self.title)
+	{
+		[self.title removeFromSuperview];
+	}
+	
 	CGFloat picSize = self.contentView.frame.size.height - 10.0;
 	CGFloat frameHeightHalf = self.contentView.frame.size.height/2;
 	
@@ -44,19 +49,21 @@
 	
 	
 
-	self.title.tag = 1;
 	self.title.font = [UIFont boldSystemFontOfSize:18.0];
 	self.title.adjustsFontSizeToFitWidth = YES;
 	self.title.highlightedTextColor = [UIColor whiteColor];
 	[self.contentView addSubview:self.title];
 }
 
-- (void) setupDescLabel
+- (void) redrawDescLabel
 {
+	if (nil != self.desc)
+	{
+		[self.desc removeFromSuperview];
+	}
+	
 	CGFloat picSize = self.contentView.frame.size.height - 10.0;
 	CGFloat frameHeightHalf = self.contentView.frame.size.height/2;
-	
-	NSLog(@"picSize = %f", picSize);
 	
 	self.desc = [[[UILabel alloc] 
 		      initWithFrame:CGRectMake(picSize + 10.0, 
@@ -65,15 +72,18 @@
 					       frameHeightHalf - 10.0)] 
 		     autorelease];
 	
-	self.desc.tag = 2;
 	self.desc.font = [UIFont boldSystemFontOfSize:15.0];
 	self.desc.adjustsFontSizeToFitWidth = NO;
 	self.desc.highlightedTextColor = [UIColor whiteColor];
 	[self.contentView addSubview:self.desc];
 }
 
-- (void) setupImageV
+- (void) redrawImageV
 {
+	if (nil != self.picImageV)
+	{
+		[self.picImageV removeFromSuperview];
+	}
 	
 	CGFloat picSize = self.contentView.frame.size.height - 10.0;
 
@@ -83,17 +93,16 @@
 								   picSize)] 
 			  autorelease];
 	
-	self.picImageV.tag = 3;
 	[self.contentView addSubview:self.picImageV];
 }
 
-- (void) setup
+- (void) redraw
 {
 	@autoreleasepool 
 	{
-		[self setupTitleLabel];
-		[self setupDescLabel];
-		[self setupImageV];
+		[self redrawTitleLabel];
+		[self redrawDescLabel];
+		[self redrawImageV];
 	}
 }
 

@@ -49,6 +49,16 @@
 	}
 }
 
+-(void) showLoadingWheel 
+{
+	[loadingWheel removeFromSuperview];
+	self.loadingWheel = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+	loadingWheel.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
+	loadingWheel.hidesWhenStopped=YES;
+	[self addSubview:loadingWheel];
+	[loadingWheel startAnimating];
+}
+
 - (void) dealloc
 {
 	self.picDict = nil;

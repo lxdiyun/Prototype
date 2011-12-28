@@ -10,35 +10,88 @@
 
 @interface AvatorCell () 
 {
-@private
 	ImageV *_avatorImageV;
+	UILabel *_avatorLabel;
+	
+	CGFloat _imageSize;
+	CGFloat _labelWidth;
+	CGFloat _labelHeight;
 }
+
+@property (retain)  UILabel *avatorLabel;
 
 @end
 
 @implementation AvatorCell
-@synthesize avatorImageV = _avatorImageV;
 
-- (void)setupAvatorImageV
+@synthesize avatorImageV = _avatorImageV;
+@synthesize avatorLabel = _avatorLabel;
+
+
+
+- (void) calculateSize
 {
-	if (self)
+	_imageSize = self.contentView.frame.size.height - 10;
+	_labelWidth = 50.0;
+	_labelHeight = 22.0;
+}
+
+- (void) redrawAvatorImageV
+{
+	if (nil != self.avatorImageV)
 	{
-		@autoreleasepool 
-		{
-			if (nil == self.avatorImageV)
-			{
-				self.avatorImageV = [[ImageV alloc] 
-						     initWithFrame:CGRectMake(70.0, 5.0, 50, 50)];
-			}
-			
-			[self addSubview:self.avatorImageV];
-		}
+		[self.avatorImageV removeFromSuperview];
+	}
+	
+	self.avatorImageV = [[[ImageV alloc] 
+		initWithFrame:CGRectMake(0.0, 0.0, _imageSize, _imageSize)] autorelease];
+	
+	
+	self.avatorImageV.loadingWheel.frame = self.avatorImageV.frame;
+	
+	self.avatorImageV.center = CGPointMake(_labelWidth + 15.0 + _imageSize/2,
+					       self.contentView.frame.size.height/2);
+	
+	[self.contentView addSubview:self.avatorImageV];
+}
+
+- (void) redrawAvatorLabel
+{
+	if(nil != self.avatorLabel)
+	{
+		[self.avatorLabel removeFromSuperview];
+	}
+	CGFloat frmaeHeight  = self.contentView.frame.size.height;
+
+	self.avatorLabel = [[[UILabel alloc] initWithFrame:CGRectMake(5.0, 
+								     (frmaeHeight - _labelHeight)/2, 
+								     _labelWidth, 
+								     _labelHeight)] 
+			    autorelease];
+
+	self.avatorLabel.font = [UIFont boldSystemFontOfSize:18.0];
+	self.avatorLabel.adjustsFontSizeToFitWidth = YES;
+	self.avatorLabel.backgroundColor = [UIColor clearColor];
+	self.avatorLabel.textAlignment = UITextAlignmentRight;
+	self.avatorLabel.text = @"头像";
+	[self.contentView addSubview:self.avatorLabel];
+}
+
+- (void) redraw
+{
+	@autoreleasepool
+	{
+		[self calculateSize];
+		[self redrawAvatorLabel];
+		[self redrawAvatorImageV];
 	}
 }
 
 - (void)dealloc 
 {
-    [self setAvatorImageV:nil];
-    [super dealloc];
+	[self setAvatorImageV:nil];
+	[self setAvatorLabel:nil];
+	[super dealloc];
 }
+
 @end

@@ -11,7 +11,7 @@
 
 #import "Util.h"
 
-@interface NetworkService () <NSStreamDelegate>
+@interface NetworkService: NSObject <NSStreamDelegate>
 {
 	NSInputStream *_inputStream;
 	NSOutputStream *_outputStream;
@@ -19,6 +19,8 @@
 	NSMutableDictionary *_handlerDict;
 
 	BOOL _isWriting;
+	BOOL _connectionRest;
+	SEL _reservedMsgHanlder[MAX_RESERVED_MSG];
 }
 
 @property (retain) NSInputStream *inputStream;
@@ -26,23 +28,34 @@
 @property (retain) NSMutableArray *writeArray;
 @property (retain) NSMutableDictionary *handlerDict;
 @property (assign) BOOL isWriting;
+@property (assign) BOOL connectionRest;
 
 // initialization
-- (void)setup;
-- (void)connect;
-- (void)closeStream;
+- (void) setup;
+- (void) connect;
+- (void) closeStream;
 
 // write
-- (void)writeMessage;
-- (void)requestSendMessage:(NSData *)message;
+- (void) writeMessage;
+- (void) requestSendMessage:(NSData *)message;
 
 // read
-- (void)readMessage;
-- (void)handleMessage:(NSData *)bufferData;
-- (void)addMessageHanlder:(SEL)handler withTarget:(id)targer withMessageID:(uint32_t)ID;
 
-// login message
-- (void)requestLogin;
+- (void) readMessage;
+- (void) handleMessage:(NSData *)bufferData;
+- (void) addMessageHanlder:(SEL)handler withTarget:(id)targer withMessageID:(uint32_t)ID;
+
+// reserved messages
+- (void) setupReservedMessageHandler;
+- (void) requestLogin;
+- (void) loginMessageHandler:(id)dict;
+- (void) requestPing;
+- (void) jsonMessageHandler:(NSData *)bufferData;
+- (void) pongMessageHandler:(NSData *)bufferData;
+
+// singleton and interface
++ (NetworkService*) getInstance;
+- (void) requestSendAndHandleMessage:(NSData *)message withTarget:(id)target withHandler:(SEL)hanlder withMessageID:(uint32_t)ID;
 
 @end
 
@@ -53,13 +66,15 @@
 @synthesize writeArray = _wrtieArray;
 @synthesize handlerDict = _handlerDict;
 @synthesize isWriting = _isWriting;
+@synthesize connectionRest = _connectionRest;
 
 #pragma mark -
 #pragma mark Singleton Methods
 
 static NetworkService *_sharedInstance = nil;
 
-+ (void)initialize {
++ (void) initialize 
+{
 	if (self == [NetworkService class]) 
 	{
 		_sharedInstance = [[super allocWithZone:nil] init];
@@ -67,39 +82,39 @@ static NetworkService *_sharedInstance = nil;
 	}
 }
 
-+ (NetworkService*)getInstance 
++ (NetworkService*) getInstance 
 {
 	return _sharedInstance;
 }
 
-+ (id)allocWithZone:(NSZone *)zone 
++ (id) allocWithZone:(NSZone *)zone 
 {
 	return [[self getInstance] retain];
 }
 
-- (id)copyWithZone:(NSZone *)zone 
+- (id) copyWithZone:(NSZone *)zone 
 {
 	return self;
 }
 
 #if (!__has_feature(objc_arc))
 
-- (id)retain 
+- (id) retain 
 {
 	return self;
 }
 
-- (unsigned)retainCount
+- (unsigned) retainCount
 {
 	return UINT_MAX;  //denotes an object that cannot be released
 }
 
-- (oneway void)release 
+- (oneway void) release 
 {
 	//do nothing
 }
 
-- (id)autorelease 
+- (id) autorelease 
 {
 	return self;
 }
@@ -110,10 +125,11 @@ static NetworkService *_sharedInstance = nil;
 
 // Add your custom methods here
 
-- (void)setup
+- (void) setup
 {
 	// init data
 	{
+		[self setupReservedMessageHandler];
 		NSMutableArray *tempArray = [[NSMutableArray alloc] init];
 		self.writeArray = tempArray;
 		[tempArray release];
@@ -128,7 +144,7 @@ static NetworkService *_sharedInstance = nil;
 	[self connect];
 }
 
-- (void)dealloc 
+- (void) dealloc 
 {
 
 	[self closeStream];
@@ -144,7 +160,7 @@ static NetworkService *_sharedInstance = nil;
 
 #pragma mark - private connection method
 
-- (void)connect 
+- (void) connect 
 {
 	[self closeStream];
 
@@ -169,10 +185,12 @@ static NetworkService *_sharedInstance = nil;
 	[self.inputStream open];
 	[self.outputStream open];
 	
+	self.connectionRest = YES;
+	
 	[self requestLogin];
 }
 
-- (void)closeStream
+- (void) closeStream
 {
 	if (nil != self.inputStream)
 	{
@@ -192,7 +210,7 @@ static NetworkService *_sharedInstance = nil;
 
 #pragma mark - NSstream delegate
 
-- (void)stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent {
+- (void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent {
 	NSLog(@"stream event %i", streamEvent);
 
 	switch (streamEvent) 
@@ -227,7 +245,7 @@ static NetworkService *_sharedInstance = nil;
 }
 
 #pragma mark - write methods
-- (void)requestSendMessage:(NSData *)message
+- (void) requestSendMessage:(NSData *)message
 {
 	if (nil != message)
 	{
@@ -240,7 +258,7 @@ static NetworkService *_sharedInstance = nil;
 	}
 }
 
-- (void)writeMessage
+- (void) writeMessage
 {
 	@synchronized(self)
 	{
@@ -292,104 +310,97 @@ static NetworkService *_sharedInstance = nil;
 
 #pragma mark - read methods
 
-- (void)readMessage
+- (void) readMessage
 {
-	static uint8_t buffer[1024*8];
-	static uint32_t currentMessageLefted  = 0;
-	static uint32_t offset = 0;
-
-	static NSMutableData *bufferData = nil;
-
-	uint32_t actuallyReaded = [self.inputStream read:buffer + offset
-					       maxLength:sizeof(buffer) - offset];
+	static uint8_t s_buffer[1024*8];
+	static uint32_t s_currentMessageLefted  = 0;
+	static uint32_t s_offset = 0;
+	static NSMutableData *s_bufferData = nil;
+	
+	if (self.connectionRest)
+	{
+		s_currentMessageLefted = 0;
+		[s_bufferData release];
+		s_bufferData = nil;
+		self.connectionRest = NO;
+	}
+	
+	int actuallyReaded = [self.inputStream read:s_buffer + s_offset
+					       maxLength:sizeof(s_buffer) - s_offset];
+	
+	if ( 0 > actuallyReaded)
+	{
+		NSLog(@"Error read input stream error with %d", actuallyReaded);
+	}
 
 	while (0 < actuallyReaded)
 	{
-		if (0 == currentMessageLefted)
+		if (0 == s_currentMessageLefted)
 		{
-			assert(nil == bufferData);
+			assert(nil == s_bufferData);
 
-			if (HEADER_SIZE <= (actuallyReaded + offset))
+			if (HEADER_SIZE <= (actuallyReaded + s_offset))
 			{
 				// readed buffer is longer than header
-				uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)buffer);
-				currentMessageLefted  = (header & HEADER_LENGTH_MASK) + HEADER_SIZE;
-				bufferData = [[NSMutableData alloc] init];
-				offset = 0;
+				uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)s_buffer);
+				s_currentMessageLefted  = (header & HEADER_LENGTH_MASK) + HEADER_SIZE;
+				s_bufferData = [[NSMutableData alloc] init];
+				s_offset = 0;
 			}
 			else
 			{
 				// readed buffer is shorter than header
-				offset += actuallyReaded;
+				s_offset += actuallyReaded;
 
 				return;
 			}
 		}
 
-		if (currentMessageLefted > actuallyReaded)
+		if (s_currentMessageLefted > actuallyReaded)
 		{
 			// message still not read complete
-			[bufferData appendBytes:buffer length:actuallyReaded];
-			currentMessageLefted -= actuallyReaded;
+			[s_bufferData appendBytes:s_buffer length:actuallyReaded];
+			s_currentMessageLefted -= actuallyReaded;
 			actuallyReaded = 0;
 		}
 		else
 		{
 			// one message read complete, handle it
-			[bufferData appendBytes:buffer length:currentMessageLefted];
-			[self handleMessage:bufferData];
-			[bufferData release];
-			bufferData = nil;
+			[s_bufferData appendBytes:s_buffer length:s_currentMessageLefted];
+			[self handleMessage:s_bufferData];
+			[s_bufferData release];
+			s_bufferData = nil;
 
 			// move the buffer left from tail to head if needed
-			uint32_t bufferLeft  = actuallyReaded - currentMessageLefted;
+			uint32_t bufferLeft  = actuallyReaded - s_currentMessageLefted;
 			if (0 < bufferLeft)
 			{
-				memmove(buffer, (buffer + currentMessageLefted), bufferLeft);
+				memmove(s_buffer, (s_buffer + s_currentMessageLefted), bufferLeft);
 			}
 
 			actuallyReaded = bufferLeft;
-			currentMessageLefted = 0;
+			s_currentMessageLefted = 0;
 		}
 	}
 }
 
-- (void)handleMessage:(NSData *)bufferData
+- (void) handleMessage:(NSData *)bufferData
 {
-	uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)bufferData.bytes);
-	uint32_t messageLength  = header & HEADER_LENGTH_MASK;
-	NSString *jsonString = [[NSString alloc] initWithBytes:(bufferData.bytes + HEADER_SIZE) 
-							length:messageLength 
-						      encoding:NSASCIIStringEncoding];	
+	uint32_t header = CFSwapInt32HostToBig(*(uint32_t *)bufferData.bytes);
 	
-	NSDictionary *messageDict = [jsonString JSONValue];
-
-	[jsonString release];
-
-	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
-	NSArray *targetAndHandler = [self.handlerDict valueForKey:ID];
+	uint32_t messageType = (header >> HEADER_LENGTH_BITS);
 	
-	// TODO: Remove
-	// NSLog(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, self.handlerDict);
-
-	if (targetAndHandler)
+	if (MAX_RESERVED_MSG > messageType)
 	{
-		[targetAndHandler retain];
-		[self.handlerDict setValue:nil forKey:ID];
-		
-		id target = [targetAndHandler objectAtIndex:0];
-		NSString *handlerString = [targetAndHandler objectAtIndex:1];
-		SEL handler = NSSelectorFromString(handlerString);
-		if ([target respondsToSelector:handler])
-		{
-			[target performSelector:handler withObject:messageDict];
-		}
-
-		[targetAndHandler release];
+		[self performSelector:_reservedMsgHanlder[messageType] withObject:bufferData];
+	}
+	else
+	{
+		NSLog(@"%@:%s:%d Error - recevied unknow message", [self class], (char *)_cmd, __LINE__);
 	}
 }
 
-- (void)addMessageHanlder:(SEL)handler withTarget:(id)target withMessageID:(uint32_t)ID
+- (void) addMessageHanlder:(SEL)handler withTarget:(id)target withMessageID:(uint32_t)ID
 {
 	if (nil != handler)
 	{
@@ -406,7 +417,7 @@ static NetworkService *_sharedInstance = nil;
 	}
 }
 
-- (void)requestsendAndHandleMessage:(NSData*)message 
+- (void) requestSendAndHandleMessage:(NSData*)message 
 			 withTarget:(id)target
 			withHandler:(SEL)hanlder 
 		      withMessageID:(uint32_t)ID
@@ -418,15 +429,80 @@ static NetworkService *_sharedInstance = nil;
 	[self requestSendMessage:message];
 }
 
-#pragma mark - login message
+#pragma mark - reserved messages
 
--(void)requestLogin
+- (void) setupReservedMessageHandler
 {
-	@autoreleasepool {
+	_reservedMsgHanlder[JSON_MSG] = @selector(jsonMessageHandler:);
+	_reservedMsgHanlder[PING_PONG_MSG] = @selector(pongMessageHandler:);
+	_reservedMsgHanlder[BINARY_MSG] = nil;
+	_reservedMsgHanlder[GOOGLE_BUF_MSG] = nil;
+}
+
+- (void) jsonMessageHandler:(NSData *)bufferData
+{
+	uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)bufferData.bytes);
+	uint32_t messageLength  = header & HEADER_LENGTH_MASK;
+	NSString *jsonString = [[NSString alloc] initWithBytes:(bufferData.bytes + HEADER_SIZE) 
+							length:messageLength 
+						      encoding:NSASCIIStringEncoding];	
+	
+	NSDictionary *messageDict = [jsonString JSONValue];
+	
+	[jsonString release];
+	
+	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
+	NSArray *targetAndHandler = [self.handlerDict valueForKey:ID];
+	
+	// TODO: Remove
+	// NSLog(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, self.handlerDict);
+	
+	if (targetAndHandler)
+	{
+		[targetAndHandler retain];
+		[self.handlerDict setValue:nil forKey:ID];
+		
+		id target = [targetAndHandler objectAtIndex:0];
+		NSString *handlerString = [targetAndHandler objectAtIndex:1];
+		SEL handler = NSSelectorFromString(handlerString);
+		if ([target respondsToSelector:handler])
+		{
+			[target performSelector:handler withObject:messageDict];
+		}
+		
+		[targetAndHandler release];
+	}
+}
+
+
+- (void) requestPing
+{
+	uint32_t pingMessage = CFSwapInt32HostToBig(PING_PONG_MSG << HEADER_LENGTH_BITS);
+	
+	NSData *data = [[NSData alloc] initWithBytes:(void *)&pingMessage length:HEADER_SIZE];
+	
+	[self requestSendMessage:data];
+	
+	[data release];
+}
+
+- (void) pongMessageHandler:(NSData *)bufferData
+{
+	NSLog(@"Receive pong message!");
+	[NSTimer scheduledTimerWithTimeInterval:50.0
+					 target:self
+				       selector:@selector(requestPing)
+				       userInfo:nil
+					repeats:NO];
+}
+
+- (void) requestLogin
+{
+	@autoreleasepool 
+	{
 		uint32_t messageID = GET_MSG_ID();
 		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
 		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
-		NSMutableData *messageData = [[[NSMutableData alloc] init] autorelease];
 		
 		// TODO update to real login user information
 		[params setValue:@"wuvist" forKey:@"username"];
@@ -436,10 +512,24 @@ static NetworkService *_sharedInstance = nil;
 		[request setValue:params forKey:@"params"];
 		[request setValue:[NSNumber numberWithUnsignedLong:messageID] forKey:@"id"];
 		
-		CONVERT_MSG_DICTONARY_TO_DATA(request, messageData);
 		
-		[self requestSendMessage:messageData];
+		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(loginMessageHandler:), messageID);
 	}
 }
 
+- (void) loginMessageHandler:(id)dict
+{
+	NSLog(@"start ping");
+	[self requestPing];
+}
+
+
 @end
+
+void SEND_AND_BIND_HANDLER(NSData *message, id target, SEL handler, uint32_t ID)
+{
+	[[NetworkService getInstance] requestSendAndHandleMessage:message
+						       withTarget:target
+						      withHandler:handler
+						    withMessageID:ID];
+}

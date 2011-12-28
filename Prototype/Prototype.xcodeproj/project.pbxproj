@@ -9,9 +9,7 @@
 /* Begin PBXBuildFile section */
 		4820460714A41D7C001120C1 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820460614A41D7C001120C1 /* Util.m */; };
 		4820461C14A45E69001120C1 /* EventPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820461914A45E69001120C1 /* EventPage.m */; };
-		4820461D14A45E69001120C1 /* EventPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4820461A14A45E69001120C1 /* EventPage.xib */; };
 		4832407C14A9A4150084584F /* AvatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatorCell.m */; };
-		4832407D14A9A4150084584F /* AvatorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4832407B14A9A4150084584F /* AvatorCell.xib */; };
 		4832408914A9B9BC0084584F /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832408814A9B9BC0084584F /* EventCell.m */; };
 		48917C1B14A850D100C72AE9 /* HJCircularBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C0814A850D100C72AE9 /* HJCircularBuffer.m */; };
 		48917C1C14A850D100C72AE9 /* HJManagedImageV.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C0A14A850D100C72AE9 /* HJManagedImageV.m */; };
@@ -28,7 +26,6 @@
 		48917C3314A86E0800C72AE9 /* FoodImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C3114A86E0800C72AE9 /* FoodImageCell.m */; };
 		48917C3414A86E0800C72AE9 /* FoodImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48917C3214A86E0800C72AE9 /* FoodImageCell.xib */; };
 		489313571499D124004A4250 /* UserInfoPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 489313551499D124004A4250 /* UserInfoPage.m */; };
-		489313581499D124004A4250 /* UserInfoPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 489313561499D124004A4250 /* UserInfoPage.xib */; };
 		48931384149B3276004A4250 /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 4893136C149B3276004A4250 /* NSObject+SBJson.m */; };
 		48931385149B3276004A4250 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4893136F149B3276004A4250 /* SBJsonParser.m */; };
 		48931386149B3276004A4250 /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 48931371149B3276004A4250 /* SBJsonStreamParser.m */; };
@@ -60,10 +57,8 @@
 		4820460614A41D7C001120C1 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = Util/Util.m; sourceTree = "<group>"; };
 		4820461814A45E69001120C1 /* EventPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventPage.h; path = View/Event/EventPage.h; sourceTree = "<group>"; };
 		4820461914A45E69001120C1 /* EventPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventPage.m; path = View/Event/EventPage.m; sourceTree = "<group>"; };
-		4820461A14A45E69001120C1 /* EventPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EventPage.xib; path = View/Event/EventPage.xib; sourceTree = "<group>"; };
 		4832407914A9A4150084584F /* AvatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AvatorCell.h; path = View/UserInformation/AvatorCell.h; sourceTree = "<group>"; };
 		4832407A14A9A4150084584F /* AvatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AvatorCell.m; path = View/UserInformation/AvatorCell.m; sourceTree = "<group>"; };
-		4832407B14A9A4150084584F /* AvatorCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AvatorCell.xib; path = View/UserInformation/AvatorCell.xib; sourceTree = "<group>"; };
 		4832408714A9B9BC0084584F /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventCell.h; path = View/Event/EventCell.h; sourceTree = "<group>"; };
 		4832408814A9B9BC0084584F /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventCell.m; path = View/Event/EventCell.m; sourceTree = "<group>"; };
 		48917C0714A850D100C72AE9 /* HJCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJCircularBuffer.h; sourceTree = "<group>"; };
@@ -96,7 +91,6 @@
 		48917C3214A86E0800C72AE9 /* FoodImageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FoodImageCell.xib; path = View/Food/FoodImageCell.xib; sourceTree = "<group>"; };
 		489313541499D124004A4250 /* UserInfoPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserInfoPage.h; path = View/UserInformation/UserInfoPage.h; sourceTree = "<group>"; };
 		489313551499D124004A4250 /* UserInfoPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserInfoPage.m; path = View/UserInformation/UserInfoPage.m; sourceTree = "<group>"; };
-		489313561499D124004A4250 /* UserInfoPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = UserInfoPage.xib; path = View/UserInformation/UserInfoPage.xib; sourceTree = "<group>"; };
 		4893136A149B3276004A4250 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		4893136B149B3276004A4250 /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		4893136C149B3276004A4250 /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
@@ -173,7 +167,6 @@
 			children = (
 				4820461814A45E69001120C1 /* EventPage.h */,
 				4820461914A45E69001120C1 /* EventPage.m */,
-				4820461A14A45E69001120C1 /* EventPage.xib */,
 				4832408714A9B9BC0084584F /* EventCell.h */,
 				4832408814A9B9BC0084584F /* EventCell.m */,
 			);
@@ -339,10 +332,8 @@
 			children = (
 				489313541499D124004A4250 /* UserInfoPage.h */,
 				489313551499D124004A4250 /* UserInfoPage.m */,
-				489313561499D124004A4250 /* UserInfoPage.xib */,
 				4832407914A9A4150084584F /* AvatorCell.h */,
 				4832407A14A9A4150084584F /* AvatorCell.m */,
-				4832407B14A9A4150084584F /* AvatorCell.xib */,
 			);
 			name = UserInformation;
 			sourceTree = "<group>";
@@ -408,11 +399,8 @@
 			files = (
 				48EA6D6614998A84008AE765 /* InfoPlist.strings in Resources */,
 				48EA6D7B14998B10008AE765 /* StartPage.xib in Resources */,
-				489313581499D124004A4250 /* UserInfoPage.xib in Resources */,
-				4820461D14A45E69001120C1 /* EventPage.xib in Resources */,
 				48917C2C14A8682300C72AE9 /* FoodPage.xib in Resources */,
 				48917C3414A86E0800C72AE9 /* FoodImageCell.xib in Resources */,
-				4832407D14A9A4150084584F /* AvatorCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

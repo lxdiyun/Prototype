@@ -9,13 +9,13 @@
 #import "EventPage.h"
 
 #import "Util.h"
-#import "NetworkService.h"
 #import "FoodPage.h"
 #import "EventCell.h"
 
 @interface EventPage ()
 {
 	NSMutableDictionary *_eventDict;
+	NSArray *_eventArray;
 	NSMutableDictionary *_imageDict;
 	
 	FoodPage *_foodPage;
@@ -23,6 +23,7 @@
 
 @property (retain) NSMutableDictionary *eventDict;
 @property (retain) NSMutableDictionary *imageDict;
+@property (retain) NSArray *eventArray;
 @property (retain) FoodPage *foodPage;
 
 // event message
@@ -30,16 +31,28 @@
 - (void)messageHandler:(id)dict;
 
 // util
-- (void)performOperation:(SEL)action withObject:(id)object;
-- (void)loadImage:(id)dict;
 - (void)refreshTableView;
 @end
+
+static NSInteger eventSort(id event1, id event2, void *context)
+{
+	NSNumber *v1 = [event1 valueForKey:@"id"];
+	NSNumber *v2 = [event2 valueForKey:@"id"];
+	if (v1 < v2)
+		return NSOrderedAscending;
+	else if (v1 > v2)
+		return NSOrderedDescending;
+	else
+		return NSOrderedSame;
+}
+
 
 @implementation EventPage
 
 @synthesize eventDict = _eventDict;
 @synthesize imageDict = _imageDict;
 @synthesize foodPage = _foodPage;
+@synthesize eventArray = _eventArray;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -76,12 +89,9 @@
 	tempDict = [[NSMutableDictionary alloc] init];
 	self.imageDict = tempDict;
 	[tempDict release];
-
-	// Uncomment the following line to preserve selection between presentations.
-	// self.clearsSelectionOnViewWillAppear = NO;
-
-	// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	// triger message
+	[self updateEvent];
 }
 
 - (void)viewDidUnload
@@ -93,13 +103,12 @@
 	self.eventDict = nil;
 	self.imageDict = nil;
 	self.foodPage = nil;
-	
+	self.eventArray = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {	
-	// triger message
-	[self updateEvent];
+
 	
 	[super viewWillAppear:animated];
 }
@@ -136,7 +145,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	// Return the number of rows in the section.
-	return self.eventDict.count;
+	return self.eventArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -147,15 +156,12 @@
 	if (cell == nil) 
 	{
 		cell = [[[EventCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 180);
-		[cell setup];
+		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 160);
+		[cell redraw];
 	}
 	
 	// Configure the cell...
-	
-	// configue text
-	NSArray *allEvent = [self.eventDict allValues];
-	NSDictionary *event = [allEvent objectAtIndex:indexPath.row];
+	NSDictionary *event = [self.eventArray objectAtIndex:indexPath.row];
 	cell.eventDict = event;
 	
 	return cell;
@@ -163,54 +169,14 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-	return 180;
+	return 160;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-// Return NO if you do not want the specified item to be editable.
-return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-if (editingStyle == UITableViewCellEditingStyleDelete) {
-// Delete the row from the data source
-[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-}   
-else if (editingStyle == UITableViewCellEditingStyleInsert) {
-// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-}   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-// Return NO if you do not want the item to be re-orderable.
-return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSArray *allEvent = [self.eventDict allValues];
-	NSDictionary *event = [allEvent objectAtIndex:indexPath.row];
+	NSDictionary *event = [self.eventArray objectAtIndex:indexPath.row];
 	
 	if (nil == self.foodPage)
 	{
@@ -232,7 +198,6 @@ return YES;
 		uint32_t messageID = GET_MSG_ID();
 		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
 		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
-		NSMutableData *messageData = [[[NSMutableData alloc] init] autorelease];
 		
 		// TODO update to real username
 		[params setValue:[NSNumber numberWithInteger:-1] forKey:@"cursor"];
@@ -242,12 +207,7 @@ return YES;
 		[request setValue:params forKey:@"params"];
 		[request setValue:[NSNumber numberWithUnsignedLong:messageID] forKey:@"id"];
 		
-		CONVERT_MSG_DICTONARY_TO_DATA(request, messageData);
-		
-		[[NetworkService getInstance] requestsendAndHandleMessage:messageData 
-							       withTarget:self 
-							      withHandler:@selector(messageHandler:) 
-							    withMessageID:messageID];
+		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageHandler:), messageID);
 	}
 }
 
@@ -266,15 +226,12 @@ return YES;
 	
 	for (NSDictionary *event in [messageDict objectForKey:@"result"]) 
 	{
-		// TODO: remove log
-		// NSLog(@"Event name = %@", [event objectForKey:@"name"]);
-		// NSLog(@"Event desc = %@", [event objectForKey:@"desc"]);
-		
-		NSDictionary *picDict = [event objectForKey:@"pic"];
-		
-		[self performOperation:@selector(loadImage:) withObject:picDict];
 		[self.eventDict setValue:event forKey:[event objectForKey:@"id"]];
 	}
+	
+	NSArray *unsortedArray = [self.eventDict allValues];
+	
+	self.eventArray = [unsortedArray sortedArrayUsingFunction:eventSort context:NULL];
 	
 	[messageDict release];
 	
@@ -282,45 +239,6 @@ return YES;
 }
 
 #pragma mark - util
-- (void)performOperation:(SEL)action withObject:(id)object
-{
-	NSInvocationOperation *operation = [[NSInvocationOperation alloc] initWithTarget:self 
-										selector:action
-										  object:object];
-	PERFORM_OPERATION(operation);
-	[operation release];
-}
-
-- (void)loadImage:(id)dict
-{
-	if (![dict isKindOfClass:[NSDictionary class]])
-	{
-		return;
-	}
-	
-	@autoreleasepool 
-	{
-		NSDictionary *picDict = [dict retain];
-		NSString *picID = [[dict objectForKey:@"id"] stringValue];
-		if (nil == [self.imageDict valueForKey:picID])
-		{
-			NSString *imageURLString = [picDict objectForKey:@"size200"];
-			NSURL *imageUrl = [[NSURL alloc] initWithString:imageURLString];
-			NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
-			UIImage *image = [UIImage imageWithData:imageData];
-			[self.imageDict setValue:image forKey:picID];
-			
-			[imageUrl release];
-		}
-		
-		[dict release];
-		
-		[self performSelectorOnMainThread:@selector(refreshTableView)
-				       withObject:self
-				    waitUntilDone:NO];
-	}
-
-}
 
 - (void)refreshTableView
 {
