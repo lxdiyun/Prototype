@@ -46,9 +46,6 @@
 	self.avatorImageV = [[[ImageV alloc] 
 		initWithFrame:CGRectMake(0.0, 0.0, _imageSize, _imageSize)] autorelease];
 	
-	
-	self.avatorImageV.loadingWheel.frame = self.avatorImageV.frame;
-	
 	self.avatorImageV.center = CGPointMake(_labelWidth + 15.0 + _imageSize/2,
 					       self.contentView.frame.size.height/2);
 	

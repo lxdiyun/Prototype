@@ -33,31 +33,18 @@
 
 	_picDict = [picDict retain];
 
-	[self clear];
-
 	NSString *imageUrlString = [self.picDict valueForKey:@"size200"];
 
 	if (nil != imageUrlString) 
 	{
 		NSURL *imageUrl = [[NSURL alloc] initWithString:imageUrlString];
 		
-		self.url = imageUrl;
-		[self showLoadingWheel];
-		MANAGE_OBJ(self);
+		[self setImageWithURL:imageUrl];
 		
 		[imageUrl release];
 	}
 }
 
--(void) showLoadingWheel 
-{
-	[loadingWheel removeFromSuperview];
-	self.loadingWheel = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
-	loadingWheel.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
-	loadingWheel.hidesWhenStopped=YES;
-	[self addSubview:loadingWheel];
-	[loadingWheel startAnimating];
-}
 
 - (void) dealloc
 {

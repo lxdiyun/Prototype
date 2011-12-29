@@ -6,9 +6,10 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "HJManagedImageV.h"
 
-@interface ImageV : HJManagedImageV
+#import "UIImageView+WebCache.h"
+
+@interface ImageV : UIImageView
 
 @property (retain, nonatomic) NSDictionary *picDict;
 

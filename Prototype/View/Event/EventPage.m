@@ -194,8 +194,9 @@ static NSInteger eventSort(id event1, id event2, void *context)
 #pragma mark - message
 - (void)updateEvent
 {
-	@autoreleasepool {
-		uint32_t messageID = GET_MSG_ID();
+	@autoreleasepool 
+	{
+
 		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
 		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
 		
@@ -205,9 +206,8 @@ static NSInteger eventSort(id event1, id event2, void *context)
 		
 		[request setValue:@"event.get" forKey:@"method"];
 		[request setValue:params forKey:@"params"];
-		[request setValue:[NSNumber numberWithUnsignedLong:messageID] forKey:@"id"];
 		
-		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageHandler:), messageID);
+		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageHandler:));
 	}
 }
 
@@ -215,14 +215,14 @@ static NSInteger eventSort(id event1, id event2, void *context)
 {
 	if (![dict isKindOfClass: [NSDictionary class]])
 	{
-		NSLog(@"Error handle non dict object");
+		LOG(@"Error handle non dict object");
 		return;
 	}
 
 	NSDictionary *messageDict = [(NSDictionary*)dict retain];
 	
 	// TODO: remove log
-	// NSLog(@"Get Message = %@", messageDict);
+	// LOG(@"Get Message = %@", messageDict);
 	
 	for (NSDictionary *event in [messageDict objectForKey:@"result"]) 
 	{
@@ -245,7 +245,7 @@ static NSInteger eventSort(id event1, id event2, void *context)
 	if ([self.view respondsToSelector:@selector(reloadData)])
 	{
 		// TODO remove log
-		// NSLog(@"request update view");
+		// LOG(@"request update view");
 		[self.view performSelector:@selector(reloadData)];
 	}
 }

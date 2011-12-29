@@ -7,4 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-void SEND_AND_BIND_HANDLER(NSData *message, id target, SEL handler, uint32_t ID);
+@interface NetworkService: NSObject
++ (NetworkService*) getInstance;
+- (void) requestSendMessage:(NSData *)message;
+@end

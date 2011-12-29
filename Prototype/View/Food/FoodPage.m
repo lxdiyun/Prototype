@@ -73,8 +73,6 @@
 {	
 	if ([self.view respondsToSelector:@selector(reloadData)])
 	{
-		// TODO remove log
-		// NSLog(@"request update view");
 		[self.view performSelector:@selector(reloadData)];
 	}
 	[super viewWillAppear:animated];

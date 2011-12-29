@@ -7,7 +7,9 @@
 //
 
 #import "AppDelegate.h"
+
 #import "StartPage.h"
+#import "Util.h"
 
 @interface AppDelegate ()
 {
@@ -113,7 +115,7 @@
 			 
 			 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
 			 */
-			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+			LOG(@"Unresolved error %@, %@", error, [error userInfo]);
 			abort();
 		} 
 	}
@@ -196,7 +198,7 @@
 		 Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
 		 
 		 */
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		LOG(@"Unresolved error %@, %@", error, [error userInfo]);
 		abort();
 	}    
 	

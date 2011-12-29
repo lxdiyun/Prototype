@@ -117,8 +117,6 @@
 	
 	_eventDict = [eventDict retain];
 	
-	[self.picImageV clear];
-	
 	self.picImageV.picDict = [self.eventDict valueForKey:@"pic"];
 	
 	self.title.text = [self.eventDict valueForKey:@"name"];

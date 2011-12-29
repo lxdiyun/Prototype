@@ -68,7 +68,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 - (void)dealloc
 {
-	NSLog(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
+	LOG(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
 	
 	[_userInfoArray release];
 	[_introduceView release];
@@ -119,7 +119,6 @@ UIImage *scaleAndRotateImage(UIImage *image);
 {	
 	@autoreleasepool 
 	{
-		uint32_t messageID = GET_MSG_ID();
 		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
 		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
 		
@@ -129,15 +128,14 @@ UIImage *scaleAndRotateImage(UIImage *image);
 		
 		[request setValue:@"sys.login" forKey:@"method"];
 		[request setValue:params forKey:@"params"];
-		[request setValue:[NSNumber numberWithUnsignedLong:messageID] forKey:@"id"];
 		
-		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(handleMessage:), messageID);
+		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(handleMessage:));
 	}
 }
 
 - (void)viewDidUnload
 {
-	NSLog(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
+	LOG(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
 	
 	[super viewDidUnload];
 	// Release any retained subviews of the main view.
@@ -374,7 +372,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 	if (![dict isKindOfClass: [NSDictionary class]])
 	{
-		NSLog(@"Error handle non dict object");
+		LOG(@"Error handle non dict object");
 		return;
 	}
 	
@@ -400,7 +398,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 - (void)refreshTableView
 {
-	NSLog(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
+	LOG(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
 
 	if (YES == [self.view isKindOfClass:[UITableView class]])
 	{
