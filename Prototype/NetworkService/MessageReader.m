@@ -15,7 +15,6 @@ static void json_message_handler(NSData *buffer_data);
 static void pong_message_handler(NSData *buffer_data);
 
 static NSMutableDictionary *gs_handler_dict = nil;
-static CFRunLoopTimerRef gs_ping_timer = NULL;
 static void (* const gs_reserve_messgae_hanlder[MAX_RESERVED_MSG]) (NSData *buffer_data) = 
 {
 	json_message_handler,		// JSON_MSG
@@ -37,7 +36,7 @@ void json_message_handler(NSData *buffer_data)
 	NSString *ID = [messageDict objectForKey:@"id"] ;
 	NSArray *targetAndHandler = [gs_handler_dict valueForKey:ID];
 	
-	// TODO: Remove
+	// TODO: Remove log
 	// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 	
 	if (targetAndHandler)
@@ -57,43 +56,12 @@ void json_message_handler(NSData *buffer_data)
 	}
 }
 
-static void ping_timer_callback(CFRunLoopTimerRef timer, void *info)
-{
-	REQUEST_PING();
-}
-
 void pong_message_handler(NSData *bufferData)
 {
+	// TODO remove log
 	CLOG(@"Receive pong message!");
-	if (NULL == gs_ping_timer)
-	{
-		CFRunLoopRef runLoop = CFRunLoopGetCurrent();
-		// the timer will fire 50 seconds later 
-		// set interval to a long time(double type max value) that the 
-		// timer only fire once, and can be reactive later
-		gs_ping_timer = CFRunLoopTimerCreate(kCFAllocatorDefault, 
-						     CFAbsoluteTimeGetCurrent() + 50.0,
-						     DBL_MAX,
-						     0, 
-						     0,
-						     &ping_timer_callback, 
-						     NULL);
-		CFRunLoopAddTimer(runLoop, gs_ping_timer, kCFRunLoopCommonModes);
-	}
-	else
-	{
-		// reactive the timer
-		CFRunLoopTimerSetNextFireDate(gs_ping_timer, 
-					      CFAbsoluteTimeGetCurrent() + 50.0);
-	}
-}
-
-void STOP_PING(void)
-{
-	if (NULL != gs_ping_timer)
-	{
-		CFRunLoopTimerSetNextFireDate(gs_ping_timer, DBL_MAX);
-	}
+	
+	START_PING();
 }
 
 void ADD_MESSAGE_HANLDER(SEL handler, id target, NSString *ID)
@@ -110,9 +78,6 @@ void ADD_MESSAGE_HANLDER(SEL handler, id target, NSString *ID)
 		[targetAndHandler addObject:NSStringFromSelector(handler)];
 
 		[gs_handler_dict setValue:targetAndHandler forKey:ID];
-		
-		// TODO remove
-		// CLOG(@"ID = %@ dict = \n%@", ID, gs_handler_dict);
 
 		[targetAndHandler release];
 	}
@@ -126,7 +91,10 @@ void HANDLE_MESSAGE(NSData * buffer_data)
 	
 	if (MAX_RESERVED_MSG > messageType)
 	{
-		gs_reserve_messgae_hanlder[messageType](buffer_data);
+		@autoreleasepool 
+		{
+			gs_reserve_messgae_hanlder[messageType](buffer_data);
+		}
 	}
 	else
 	{

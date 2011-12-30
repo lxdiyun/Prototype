@@ -23,9 +23,9 @@ enum RESERVED_MESSAGE_TYPE
 
 // Message Writer
 void SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler);
-void REQUEST_PING(void);
+void START_PING(void);
+void STOP_PING(void);
 
 // Message Reader
 void HANDLE_MESSAGE(NSData * bufferData);
 void ADD_MESSAGE_HANLDER(SEL handler, id target, NSString *ID);
-void STOP_PING(void);

@@ -42,7 +42,6 @@
 // read
 - (void) readMessage;
 
-
 @end
 
 @implementation NetworkService
@@ -57,25 +56,20 @@
 #pragma mark -
 #pragma mark Singleton Methods
 
-static NetworkService *_sharedInstance = nil;
+static NetworkService *gs_shared_instance = nil;
 
 + (void) initialize 
 {
 	if (self == [NetworkService class]) 
 	{
-		_sharedInstance = [[super allocWithZone:nil] init];
-		[_sharedInstance setup];
+		gs_shared_instance = [[super allocWithZone:nil] init];
+		[gs_shared_instance setup];
 	}
-}
-
-+ (NetworkService*) getInstance 
-{
-	return _sharedInstance;
 }
 
 + (id) allocWithZone:(NSZone *)zone 
 {
-	return [[self getInstance] retain];
+	return [gs_shared_instance retain];
 }
 
 - (id) copyWithZone:(NSZone *)zone 
@@ -163,10 +157,12 @@ static NetworkService *_sharedInstance = nil;
 	[self.inputStream setDelegate:self];
 	[self.outputStream setDelegate:self];
 
+	// change runloop mode to default if gui interaction is more importang
+	// don't forget the close method
 	[self.inputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] 
-				    forMode:NSDefaultRunLoopMode];
+				    forMode:NSRunLoopCommonModes];
 	[self.outputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] 
-				     forMode:NSDefaultRunLoopMode];
+				     forMode:NSRunLoopCommonModes];
 	[self.inputStream open];
 	[self.outputStream open];
 
@@ -181,14 +177,14 @@ static NetworkService *_sharedInstance = nil;
 	{
 		[self.inputStream close];
 		[self.inputStream removeFromRunLoop:[NSRunLoop mainRunLoop] 
-					    forMode:NSDefaultRunLoopMode];
+					    forMode:NSRunLoopCommonModes];
 		self.inputStream = nil;
 	}
 	if (nil != self.outputStream)
 	{
 		[self.outputStream close];
 		[self.outputStream removeFromRunLoop:[NSRunLoop mainRunLoop] 
-					     forMode:NSDefaultRunLoopMode];
+					     forMode:NSRunLoopCommonModes];
 		self.outputStream = nil;
 	}
 	
@@ -197,37 +193,37 @@ static NetworkService *_sharedInstance = nil;
 
 #pragma mark - NSstream delegate
 
-- (void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent {
-	LOG(@"stream event %i", streamEvent);
-
+- (void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent 
+{
+	// TODO remove log
 	switch (streamEvent) 
 	{
 	case NSStreamEventOpenCompleted:
-		LOG(@"Stream opened");
+		// LOG(@"Stream opened");
 		break;
 
 	case NSStreamEventHasBytesAvailable:
-		LOG(@"Input Stream ready");
+		// LOG(@"Input Stream ready");
 		[self readMessage];
 		break;
 
 	case NSStreamEventHasSpaceAvailable:
-		LOG(@"Ouput stream is ready");
+		// LOG(@"Ouput stream is ready");
 		[self writeMessage];
 		break;
 
 	case NSStreamEventErrorOccurred:
-		LOG(@"Can not connect to the host!");
+		LOG(@"Error Can not connect to the host!");
 		[self connect];
 		break;
 
 	case NSStreamEventEndEncountered:
-		LOG(@"No buffer left to read!");
+		LOG(@"Error No buffer left to read!");
 		[self connect];
 		break;
 
 	default:
-		LOG(@"Unknown event");
+		LOG(@"Error Unknown event %i", streamEvent);
 	}
 }
 
@@ -370,6 +366,13 @@ static NetworkService *_sharedInstance = nil;
 			s_currentMessageLefted = 0;
 		}
 	}
+}
+
+#pragma mark class interface
+
++ (void) requestSendMessage:(NSData *)message
+{
+	[gs_shared_instance requestSendMessage:message];
 }
 
 @end

@@ -8,53 +8,38 @@
 
 #import "EventPage.h"
 
+#import "EGORefreshTableHeaderView.h"
+
 #import "Util.h"
 #import "FoodPage.h"
 #import "EventCell.h"
+#import "EventMessage.h"
 
-@interface EventPage ()
-{
-	NSMutableDictionary *_eventDict;
-	NSArray *_eventArray;
-	NSMutableDictionary *_imageDict;
-	
+const static uint32_t EVENT_REFRESH_WINDOW = 5;
+
+@interface EventPage () <EGORefreshTableHeaderDelegate, UIScrollViewDelegate>
+{	
 	FoodPage *_foodPage;
+	EGORefreshTableHeaderView *_refreshHeaderView;
 }
 
-@property (retain) NSMutableDictionary *eventDict;
-@property (retain) NSMutableDictionary *imageDict;
-@property (retain) NSArray *eventArray;
 @property (retain) FoodPage *foodPage;
+@property (retain) EGORefreshTableHeaderView *refreshHeaderView;
 
 // event message
-- (void)updateEvent;
-- (void)messageHandler:(id)dict;
+- (void) requestMoreEvent;
+- (void) requestNewerEvent;
 
 // util
-- (void)refreshTableView;
+- (void) refreshTableView;
 @end
-
-static NSInteger eventSort(id event1, id event2, void *context)
-{
-	NSNumber *v1 = [event1 valueForKey:@"id"];
-	NSNumber *v2 = [event2 valueForKey:@"id"];
-	if (v1 < v2)
-		return NSOrderedAscending;
-	else if (v1 > v2)
-		return NSOrderedDescending;
-	else
-		return NSOrderedSame;
-}
-
 
 @implementation EventPage
 
-@synthesize eventDict = _eventDict;
-@synthesize imageDict = _imageDict;
 @synthesize foodPage = _foodPage;
-@synthesize eventArray = _eventArray;
+@synthesize refreshHeaderView = _refreshHeaderView;
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id) initWithStyle:(UITableViewStyle)style
 {
 	self = [super initWithStyle:style];
 	if (self) 
@@ -64,7 +49,7 @@ static NSInteger eventSort(id event1, id event2, void *context)
 	return self;
 }
 
-- (void)didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
 	// Releases the view if it doesn't have a superview.
 	[super didReceiveMemoryWarning];
@@ -74,61 +59,67 @@ static NSInteger eventSort(id event1, id event2, void *context)
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
 	[super viewDidLoad];
 	
 	[self setTitle:@"新鲜事"];
 	
 	// init data
-	NSMutableDictionary *tempDict = nil;
-	tempDict = [[NSMutableDictionary alloc] init];
-	self.eventDict = tempDict;
-	[tempDict release];
+	if (nil == self.refreshHeaderView) 
+	{
+		
+		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] 
+						   initWithFrame:CGRectMake(0.0f, 
+									    0.0f - self.tableView.bounds.size.height, 
+									    self.view.frame.size.width,
+									    self.tableView.bounds.size.height)];
+		
+		view.delegate = self;
+		[self.tableView addSubview:view];
+		self.refreshHeaderView = view;
+		[view release];
+	}
 	
-	tempDict = [[NSMutableDictionary alloc] init];
-	self.imageDict = tempDict;
-	[tempDict release];
-	
+	//  update the last update date
+	[self.refreshHeaderView refreshLastUpdatedDate];
+
 	// triger message
-	[self updateEvent];
+	[self requestNewerEvent];
 }
 
-- (void)viewDidUnload
+- (void) viewDidUnload
 {
 	[super viewDidUnload];
 	// Release any retained subviews of the main view.
 	
 	// release data 
-	self.eventDict = nil;
-	self.imageDict = nil;
 	self.foodPage = nil;
-	self.eventArray = nil;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void) viewWillAppear:(BOOL)animated
 {	
 
 	
 	[super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void) viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	// Return YES for supported orientations
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -136,19 +127,19 @@ static NSInteger eventSort(id event1, id event2, void *context)
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
 	// Return the number of sections.
 	return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	// Return the number of rows in the section.
-	return self.eventArray.count;
+	return [EventMessage eventArray].count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString *CellIdentifier = @"Cell";
 	
@@ -156,27 +147,27 @@ static NSInteger eventSort(id event1, id event2, void *context)
 	if (cell == nil) 
 	{
 		cell = [[[EventCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 160);
+		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.width/2);
 		[cell redraw];
 	}
 	
 	// Configure the cell...
-	NSDictionary *event = [self.eventArray objectAtIndex:indexPath.row];
+	NSDictionary *event = [[EventMessage eventArray] objectAtIndex:indexPath.row];
 	cell.eventDict = event;
 	
 	return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath 
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-	return 160;
+	return self.view.frame.size.width/2;
 }
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSDictionary *event = [self.eventArray objectAtIndex:indexPath.row];
+	NSDictionary *event = [[EventMessage eventArray] objectAtIndex:indexPath.row];
 	
 	if (nil == self.foodPage)
 	{
@@ -191,63 +182,88 @@ static NSInteger eventSort(id event1, id event2, void *context)
 	[self.navigationController pushViewController:self.foodPage animated:YES];
 }
 
-#pragma mark - message
-- (void)updateEvent
+- (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	@autoreleasepool 
+	if (([EventMessage eventArray].count - 1) <= indexPath.row)
 	{
-
-		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
-		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
-		
-		// TODO update to real username
-		[params setValue:[NSNumber numberWithInteger:-1] forKey:@"cursor"];
-		[params setValue:[NSNumber numberWithInteger:10] forKey:@"count"];
-		
-		[request setValue:@"event.get" forKey:@"method"];
-		[request setValue:params forKey:@"params"];
-		
-		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageHandler:));
+		[self requestMoreEvent];
 	}
 }
 
-- (void)messageHandler:(id)dict
-{
-	if (![dict isKindOfClass: [NSDictionary class]])
-	{
-		LOG(@"Error handle non dict object");
-		return;
-	}
+#pragma mark - message
 
-	NSDictionary *messageDict = [(NSDictionary*)dict retain];
-	
-	// TODO: remove log
-	// LOG(@"Get Message = %@", messageDict);
-	
-	for (NSDictionary *event in [messageDict objectForKey:@"result"]) 
-	{
-		[self.eventDict setValue:event forKey:[event objectForKey:@"id"]];
-	}
-	
-	NSArray *unsortedArray = [self.eventDict allValues];
-	
-	self.eventArray = [unsortedArray sortedArrayUsingFunction:eventSort context:NULL];
-	
-	[messageDict release];
-	
+- (void) requestNewerEventHandler
+{	
 	[self refreshTableView];
+	
+	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+}
+
+- (void) requestNewerEvent
+{	
+	[EventMessage requestNewerCount:EVENT_REFRESH_WINDOW WithHandler:@selector(requestNewerEventHandler) andTarget:self];
+}
+
+- (void) requestMoreEvent
+{
+	[EventMessage requestMoreCount:EVENT_REFRESH_WINDOW WithHandler:@selector(refreshTableView) andTarget:self];
 }
 
 #pragma mark - util
-
-- (void)refreshTableView
+- (void) refreshTableView
 {
-	if ([self.view respondsToSelector:@selector(reloadData)])
+	static uint32_t s_lassEventArrayCount = 0;
+	uint32_t eventArrayCount = [[EventMessage eventArray] count];
+	
+	if (s_lassEventArrayCount < eventArrayCount) 
 	{
-		// TODO remove log
-		// LOG(@"request update view");
-		[self.view performSelector:@selector(reloadData)];
+		if ([self.view respondsToSelector:@selector(reloadData)])
+		{
+			// TODO remove log
+			// LOG(@"request update view");
+			[self.view performSelector:@selector(reloadData)];
+		}
+		s_lassEventArrayCount = eventArrayCount;
 	}
 }
+
+#pragma mark - UIScrollViewDelegate Methods
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+	[self.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+}
+
+- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+	[self.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+}
+
+#pragma mark - EGORefreshTableHeaderDelegate Methods
+
+- (void) egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+{
+	[self requestNewerEvent];
+}
+
+- (BOOL) egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
+{
+	return [EventMessage isUpdating]; 
+}
+
+- (NSDate*) egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
+{
+	NSDate *updatedDate = [EventMessage lastUpdatedDate];
+	
+	if (nil != updatedDate)
+	{
+		return updatedDate;
+	}
+	else
+	{
+		return [NSDate date];
+	}
+}
+
 
 @end

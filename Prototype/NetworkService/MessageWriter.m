@@ -12,6 +12,10 @@
 
 #import "NetworkService.h"
 
+#import "Util.h"
+
+static CFRunLoopTimerRef gs_ping_timer = NULL;
+
 static uint32_t get_msg_id(void)
 {
 	const static uint32_t INIT_ID = 0x10;
@@ -44,6 +48,9 @@ static void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableDa
 			header = CFSwapInt32HostToBig(data.length) | (JSON_MSG << HEADER_LENGTH_BITS);
 		}
 		
+		// TODO remove log
+		// CLOG(@"message %s", data.bytes);
+		
 		if (nil !=output_data)
 		{
 			[output_data appendBytes:(void*)&header length:HEADER_SIZE];
@@ -63,7 +70,7 @@ static void send_data_and_bind_handler(NSData *message, id target, SEL handler, 
 	ADD_MESSAGE_HANLDER(handler, target, ID);
 
 	// then send message
-	[[NetworkService getInstance] requestSendMessage:message];
+	[NetworkService requestSendMessage:message];
 }
 
 void SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler)
@@ -82,14 +89,46 @@ void SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler
 	}
 }
 
-void REQUEST_PING(void)
+static void request_ping(CFRunLoopTimerRef timer, void *info)
 {
 	uint32_t pingMessage = CFSwapInt32HostToBig(PING_PONG_MSG << HEADER_LENGTH_BITS);
 	
 	NSData *data = [[NSData alloc] initWithBytes:(void *)&pingMessage length:HEADER_SIZE];
 	
-	[[NetworkService getInstance] requestSendMessage:data];
+	[NetworkService requestSendMessage:data];
 	
 	[data release];
 }
 
+void START_PING(void)
+{
+	if (NULL == gs_ping_timer)
+	{
+		CFRunLoopRef runLoop = CFRunLoopGetCurrent();
+		// the ping timer will be fire 50 seconds later 
+		// set interval to a long time(double type max value) that the 
+		// timer only fire once, and can be reactive later
+		gs_ping_timer = CFRunLoopTimerCreate(kCFAllocatorDefault, 
+						     CFAbsoluteTimeGetCurrent() + 50.0,
+						     DBL_MAX,
+						     0, 
+						     0,
+						     &request_ping, 
+						     NULL);
+		CFRunLoopAddTimer(runLoop, gs_ping_timer, kCFRunLoopCommonModes);
+	}
+	else
+	{
+		// reactive the timer
+		CFRunLoopTimerSetNextFireDate(gs_ping_timer, 
+					      CFAbsoluteTimeGetCurrent() + 50.0);
+	}
+}
+
+void STOP_PING(void)
+{
+	if (NULL != gs_ping_timer)
+	{
+		CFRunLoopTimerSetNextFireDate(gs_ping_timer, DBL_MAX);
+	}
+}

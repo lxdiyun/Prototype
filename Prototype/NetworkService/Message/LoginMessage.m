@@ -34,7 +34,7 @@
 - (void) handler:(id)dict
 {
 	LOG(@"start ping");
-	REQUEST_PING();
+	START_PING();
 }
 
 @end

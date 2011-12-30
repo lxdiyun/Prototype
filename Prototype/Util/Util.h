@@ -9,14 +9,16 @@
 #ifndef  _UTIL_H_
 #define  _UTIL_H_
 
+#include <libgen.h>
+
 #ifdef DEBUG
-#define LOG(format, ...) { NSLog(@"%s %s %d:", __FILE__, (char *)_cmd, __LINE__); NSLog(format, ## __VA_ARGS__); }
+#define LOG(format, ...) { NSLog(@"%s %s %d:", basename(__FILE__), (char *)_cmd, __LINE__); NSLog(format, ## __VA_ARGS__); }
 #else
 #define LOG(format, ...)
 #endif
 
 #ifdef DEBUG
-#define CLOG(format, ...) { NSLog(@"%s %s %d:", __FILE__, __func__, __LINE__); NSLog(format, ## __VA_ARGS__); }
+#define CLOG(format, ...) { NSLog(@"%s %s %d:", basename(__FILE__), __func__, __LINE__); NSLog(format, ## __VA_ARGS__); }
 #else
 #define CLOG(format, ...)
 #endif
