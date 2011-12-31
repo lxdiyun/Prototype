@@ -117,15 +117,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *cellType = @"FoodImageCell";
+	static NSString *CellIdentifier = @"FoodImageCell";
 	
-	FoodImageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellType];
+	FoodImageCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) 
 	{
-		NSArray *nib = [[NSBundle mainBundle] loadNibNamed:cellType 
-							     owner:nil 
-							   options:nil];
-		cell = (FoodImageCell*)[nib objectAtIndex:0];
+		cell = [[[FoodImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.width);
 	}
 	
 	NSDictionary *picDict = [self.foodDict valueForKey:@"pic"];

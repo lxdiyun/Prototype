@@ -14,12 +14,12 @@
 @private
 	NSDictionary *_eventDict;
 	UILabel *_title;
-	UILabel *_desc;
+	UITextView *_desc;
 	ImageV *_picImageV;
 }
 
 @property (retain, nonatomic) UILabel *title;
-@property (retain, nonatomic) UILabel *desc;
+@property (retain, nonatomic) UITextView *desc;
 @property (retain, nonatomic) ImageV *picImageV;
 @end
 
@@ -30,6 +30,9 @@
 @synthesize desc = _desc;
 @synthesize picImageV = _picImageV;
 
+static CGFloat gs_title_heigth = 0;
+static CGFloat gs_pic_size = 0;
+
 - (void) redrawTitleLabel
 {
 	if (nil != self.title)
@@ -37,21 +40,22 @@
 		[self.title removeFromSuperview];
 	}
 	
-	CGFloat picSize = self.contentView.frame.size.height - 10.0;
+	UIFont *font = [UIFont boldSystemFontOfSize:18.0];
 	CGFloat frameHeightHalf = self.contentView.frame.size.height/2;
+	NSString *text = @"temp_text";
+	CGSize bestSize = [text sizeWithFont:font constrainedToSize:CGSizeMake(9999, frameHeightHalf) lineBreakMode: UILineBreakModeWordWrap];
 	
-	self.title = [[[UILabel alloc] 
-		       initWithFrame:CGRectMake(picSize + 10.0, 
-						5.0, 
-						self.contentView.frame.size.width - picSize - 10.0,
-						frameHeightHalf - 10.0)] 
-		      autorelease];
+	gs_title_heigth = bestSize.height;
 	
-	
+	self.title = [[[UILabel alloc] init] autorelease];
+	self.title.frame = CGRectMake(gs_pic_size + 10.0, 
+				      5.0, 
+				      self.contentView.frame.size.width - gs_pic_size - 10.0,
+				      gs_title_heigth);
 
-	self.title.font = [UIFont boldSystemFontOfSize:18.0];
+	self.title.font = font;
 	self.title.adjustsFontSizeToFitWidth = YES;
-	self.title.highlightedTextColor = [UIColor whiteColor];
+	
 	[self.contentView addSubview:self.title];
 }
 
@@ -62,19 +66,22 @@
 		[self.desc removeFromSuperview];
 	}
 	
-	CGFloat picSize = self.contentView.frame.size.height - 10.0;
-	CGFloat frameHeightHalf = self.contentView.frame.size.height/2;
+	UIFont *font = [UIFont boldSystemFontOfSize:15.0];
+	CGFloat descLabelWidth = self.contentView.frame.size.width - gs_pic_size - 10.0;
+	CGFloat descLabelHeight= self.contentView.frame.size.height - gs_title_heigth - 10.0;
 	
-	self.desc = [[[UILabel alloc] 
-		      initWithFrame:CGRectMake(picSize + 10.0, 
-					       frameHeightHalf + 5.0, 
-					       self.contentView.frame.size.width - picSize - 10.0, 
-					       frameHeightHalf - 10.0)] 
+	self.desc = [[[UITextView alloc] 
+		      initWithFrame:CGRectMake(gs_pic_size + 10.0, 
+					       gs_title_heigth + 10.0, 
+					       descLabelWidth, 
+					       descLabelHeight )] 
 		     autorelease];
 	
-	self.desc.font = [UIFont boldSystemFontOfSize:15.0];
-	self.desc.adjustsFontSizeToFitWidth = NO;
-	self.desc.highlightedTextColor = [UIColor whiteColor];
+	self.desc.font = font;
+	self.desc.editable = NO;
+	self.desc.contentOffset = CGPointZero;
+	self.desc.scrollEnabled = YES;
+
 	[self.contentView addSubview:self.desc];
 }
 
@@ -85,12 +92,12 @@
 		[self.picImageV removeFromSuperview];
 	}
 	
-	CGFloat picSize = self.contentView.frame.size.height - 10.0;
+	gs_pic_size = self.contentView.frame.size.height - 10.0;
 
 	self.picImageV = [[[ImageV alloc] initWithFrame:CGRectMake(5.0, 
 								   5.0, 
-								   picSize, 
-								   picSize)] 
+								   gs_pic_size, 
+								   gs_pic_size)] 
 			  autorelease];
 	
 	[self.contentView addSubview:self.picImageV];
@@ -100,9 +107,9 @@
 {
 	@autoreleasepool 
 	{
+		[self redrawImageV];
 		[self redrawTitleLabel];
 		[self redrawDescLabel];
-		[self redrawImageV];
 	}
 }
 
@@ -121,6 +128,10 @@
 	
 	self.title.text = [self.eventDict valueForKey:@"name"];
 	self.desc.text = [self.eventDict valueForKey:@"desc"];
+	
+
+	
+	// [self redraw];
 }
 
 - (void) dealloc

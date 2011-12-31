@@ -8,7 +8,7 @@
 
 #import "Message.h"
 
-#import "SBJson.h"
+#import "JSONKit.h"
 
 #import "NetworkService.h"
 
@@ -40,7 +40,7 @@ static void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableDa
 {
 	@autoreleasepool 
 	{
-		NSData *data = [input_dict JSONDataRepresentation];
+		NSData *data = [input_dict JSONData];
 		uint32_t header;
 		
 		if (nil != data)
@@ -64,7 +64,7 @@ static void convert_msg_dictonary_to_data(NSDictionary *input_dict, NSMutableDat
 	convert_dictonary_to_json_data(input_dict, output_data);
 }
 
-static void send_data_and_bind_handler(NSData *message, id target, SEL handler, NSString *ID)
+static void send_data_and_bind_handler(NSData *message, id target, SEL handler, uint32_t ID)
 {
 	// add handler first
 	ADD_MESSAGE_HANLDER(handler, target, ID);
@@ -77,11 +77,12 @@ void SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler
 {
 	@autoreleasepool 
 	{
-		NSString *ID = [[NSNumber numberWithUnsignedLong:get_msg_id()] stringValue];
+		uint32_t ID = get_msg_id();
+		NSNumber *IDNumber = [NSNumber numberWithUnsignedLong:ID];
 		NSMutableData *data = [[[NSMutableData alloc] init] autorelease];
 		NSMutableDictionary *completeDict = [[messageDict mutableCopy] autorelease];
 		
-		[completeDict setValue:ID forKey:@"id"];
+		[completeDict setValue:IDNumber forKey:@"id"];
 		
 		convert_msg_dictonary_to_data(completeDict, data);
 		

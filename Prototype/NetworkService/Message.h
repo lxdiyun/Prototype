@@ -28,4 +28,4 @@ void STOP_PING(void);
 
 // Message Reader
 void HANDLE_MESSAGE(NSData * bufferData);
-void ADD_MESSAGE_HANLDER(SEL handler, id target, NSString *ID);
+void ADD_MESSAGE_HANLDER(SEL handler, id target, uint32_t ID);

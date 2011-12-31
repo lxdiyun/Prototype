@@ -163,17 +163,7 @@ static EventMessage *gs_shared_instance;
 
 
 - (void) requestWithCursor:(int32_t)cursor count:(uint32_t)count forward:(BOOL)forward
-{
-	@synchronized (self)
-	{
-		if (YES == self.updating)
-		{
-			return;
-		}
-		
-		self.updating = YES;
-	}
-	
+{	
 	@autoreleasepool 
 	{
 		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
@@ -190,7 +180,7 @@ static EventMessage *gs_shared_instance;
 }
 
 - (void) bindHandler:(SEL)handler withTarget:(id)target
-{
+{	
 	self.target = target;
 	self.handler = handler;
 }
@@ -232,12 +222,30 @@ static EventMessage *gs_shared_instance;
 	}
 }
 
+- (BOOL) requstUpdate
+{
+	@synchronized (self)
+	{
+		if (YES == self.updating)
+		{
+			return NO;
+		}
+		
+		self.updating = YES;
+		
+		return YES;
+	}
+}
 
 #pragma mark - interface
-// TODO below are not thread safe methods
 
-+ (void) requestNewerCount:(uint32_t)count WithHandler:(SEL)handler andTarget:(id)target
++ (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
+	if (NO == [gs_shared_instance requstUpdate])
+	{
+		return;
+	}
+	
 	// bind target
 	[gs_shared_instance bindHandler:handler withTarget:target];
 	
@@ -245,8 +253,13 @@ static EventMessage *gs_shared_instance;
 	[gs_shared_instance requestNewerWithCount:count];
 }
 
-+ (void) requestMoreCount:(uint32_t)count WithHandler:(SEL)handler andTarget:(id)target
++ (void) requestMoreCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
+	if (NO == [gs_shared_instance requstUpdate])
+	{
+		return;
+	}
+	
 	// bind target
 	[gs_shared_instance bindHandler:handler withTarget:target];
 	

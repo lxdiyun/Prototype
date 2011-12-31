@@ -8,17 +8,17 @@
 
 #import "AppDelegate.h"
 
-#import "StartPage.h"
+#import "HomePage.h"
 #import "Util.h"
 
 @interface AppDelegate ()
 {
 @private
-	StartPage *_startPage;
+	HomePage *_homePage;
 	UINavigationController *_navco;
 }
 
-@property (strong) StartPage *startPage;
+@property (strong) HomePage *homePage;
 @property (strong) UINavigationController *navco;
 @end
 
@@ -28,13 +28,14 @@
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
-@synthesize startPage = _startPage;
+@synthesize homePage = _homePage;
 @synthesize navco = _navco;
 
 - (void)dealloc
 {
-	[_navco release];
-	[_startPage release];
+	self.navco = nil;
+	self.homePage = nil;
+
 	[_window release];
 	[__managedObjectContext release];
 	[__managedObjectModel release];
@@ -49,19 +50,19 @@
 	self.window.backgroundColor = [UIColor whiteColor];
 	
 	// init and show start page and navigater
-	StartPage *startPage = [[StartPage alloc] init];
-	UINavigationController *navco = [[UINavigationController alloc] initWithRootViewController:startPage];
+	HomePage *homePage = [[HomePage alloc] init];
+	UINavigationController *navco = [[UINavigationController alloc] initWithRootViewController:homePage];
 	
 	navco.navigationBar.barStyle = UIBarStyleBlack;
 	
-	[self setStartPage:startPage];
-	[self setNavco:navco];
+	self.homePage = homePage;
+	self.navco = navco;
 
 	[self.window addSubview:navco.view];
 	
 	[self.window makeKeyAndVisible];
 	
-	[startPage release];
+	[homePage release];
 	[navco release];
 	return YES;
 }

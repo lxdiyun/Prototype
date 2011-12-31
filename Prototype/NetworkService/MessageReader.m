@@ -8,7 +8,8 @@
 
 #import "Message.h"
 
-#import "SBJson.h"
+#import "JSONKit.h"
+
 #import "Util.h"
 
 static void json_message_handler(NSData *buffer_data);
@@ -29,11 +30,11 @@ void json_message_handler(NSData *buffer_data)
 							length:messageLength 
 						      encoding:NSASCIIStringEncoding];	
 	
-	NSDictionary *messageDict = [jsonString JSONValue];
+	NSDictionary *messageDict = [jsonString objectFromJSONString];
 	
 	[jsonString release];
 	
-	NSString *ID = [messageDict objectForKey:@"id"] ;
+	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
 	NSArray *targetAndHandler = [gs_handler_dict valueForKey:ID];
 	
 	// TODO: Remove log
@@ -64,22 +65,24 @@ void pong_message_handler(NSData *bufferData)
 	START_PING();
 }
 
-void ADD_MESSAGE_HANLDER(SEL handler, id target, NSString *ID)
+void ADD_MESSAGE_HANLDER(SEL handler, id target, uint32_t ID)
 {
-	if (nil != handler)
+	if ((nil != handler) && (nil != target))
 	{
 		if (nil == gs_handler_dict)
 		{
 			gs_handler_dict = [[NSMutableDictionary alloc] init];
 		}
 
+		NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
 		NSMutableArray *targetAndHandler = [[NSMutableArray alloc] init];
 		[targetAndHandler addObject:target];
 		[targetAndHandler addObject:NSStringFromSelector(handler)];
 
-		[gs_handler_dict setValue:targetAndHandler forKey:ID];
+		[gs_handler_dict setValue:targetAndHandler forKey:IDString];
 
 		[targetAndHandler release];
+		[IDString release];
 	}
 }
 

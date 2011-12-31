@@ -16,6 +16,7 @@
 #import "EventMessage.h"
 
 const static uint32_t EVENT_REFRESH_WINDOW = 5;
+const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 
 @interface EventPage () <EGORefreshTableHeaderDelegate, UIScrollViewDelegate>
 {	
@@ -182,9 +183,11 @@ const static uint32_t EVENT_REFRESH_WINDOW = 5;
 	[self.navigationController pushViewController:self.foodPage animated:YES];
 }
 
-- (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView 
+   willDisplayCell:(UITableViewCell *)cell 
+ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (([EventMessage eventArray].count - 1) <= indexPath.row)
+	if (([EventMessage eventArray].count - ROW_TO_MORE_EVENT_FROM_BOTTOM) <= indexPath.row)
 	{
 		[self requestMoreEvent];
 	}
@@ -201,12 +204,12 @@ const static uint32_t EVENT_REFRESH_WINDOW = 5;
 
 - (void) requestNewerEvent
 {	
-	[EventMessage requestNewerCount:EVENT_REFRESH_WINDOW WithHandler:@selector(requestNewerEventHandler) andTarget:self];
+	[EventMessage requestNewerCount:EVENT_REFRESH_WINDOW withHandler:@selector(requestNewerEventHandler) andTarget:self];
 }
 
 - (void) requestMoreEvent
 {
-	[EventMessage requestMoreCount:EVENT_REFRESH_WINDOW WithHandler:@selector(refreshTableView) andTarget:self];
+	[EventMessage requestMoreCount:EVENT_REFRESH_WINDOW withHandler:@selector(refreshTableView) andTarget:self];
 }
 
 #pragma mark - util
@@ -219,8 +222,6 @@ const static uint32_t EVENT_REFRESH_WINDOW = 5;
 	{
 		if ([self.view respondsToSelector:@selector(reloadData)])
 		{
-			// TODO remove log
-			// LOG(@"request update view");
 			[self.view performSelector:@selector(reloadData)];
 		}
 		s_lassEventArrayCount = eventArrayCount;

@@ -12,7 +12,7 @@
 
 @interface FoodImageCell : UITableViewCell
 
-@property (retain, nonatomic) IBOutlet ImageV *foodImage;
+@property (retain) ImageV *foodImage;
 
 
 @end

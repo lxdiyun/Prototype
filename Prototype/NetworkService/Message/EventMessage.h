@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface EventMessage : NSObject
-+ (void) requestNewerCount:(uint32_t)count WithHandler:(SEL)handler andTarget:(id)target;
-+ (void) requestMoreCount:(uint32_t)count WithHandler:(SEL)handler andTarget:(id)target;
++ (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
++ (void) requestMoreCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
 + (NSArray*) eventArray;
 + (BOOL) isUpdating;
 + (NSDate *) lastUpdatedDate;
