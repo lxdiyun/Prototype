@@ -25,6 +25,12 @@
 
 #import <Foundation/Foundation.h>
 
+
+// Network Message
 void SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler);
+
+// Network Indicator
+void START_NETWORK_INDICATOR(void);
+void STOP_NETWORK_INDICATOR(void);
 
 #endif

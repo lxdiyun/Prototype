@@ -53,6 +53,8 @@ void json_message_handler(NSData *buffer_data)
 			[target performSelector:handler withObject:messageDict];
 		}
 		
+		STOP_NETWORK_INDICATOR();
+		
 		[targetAndHandler release];
 	}
 }
@@ -63,6 +65,26 @@ void pong_message_handler(NSData *bufferData)
 	CLOG(@"Receive pong message!");
 	
 	START_PING();
+}
+
+void CLEAR_MESSAGE_HANDLER(void)
+{
+	for (NSString *ID in [gs_handler_dict allKeys])
+	{
+		NSArray *targetAndHandler = [gs_handler_dict valueForKey:ID];
+		
+		id target = [targetAndHandler objectAtIndex:0];
+		NSString *handlerString = [targetAndHandler objectAtIndex:1];
+		SEL handler = NSSelectorFromString(handlerString);
+		if ([target respondsToSelector:handler])
+		{
+			[target performSelector:handler withObject:nil];
+		}
+		
+		STOP_NETWORK_INDICATOR();
+		
+		[gs_handler_dict setValue:nil forKey:ID];
+	}
 }
 
 void ADD_MESSAGE_HANLDER(SEL handler, id target, uint32_t ID)

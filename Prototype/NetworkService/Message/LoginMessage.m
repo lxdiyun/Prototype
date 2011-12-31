@@ -33,6 +33,12 @@
 
 - (void) handler:(id)dict
 {
+	if (![dict isKindOfClass: [NSDictionary class]])
+	{
+		LOG(@"Error handle non dict object");
+		return;
+	}
+
 	LOG(@"start ping");
 	START_PING();
 }

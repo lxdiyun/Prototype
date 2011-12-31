@@ -7,6 +7,7 @@
 
 #import "NetworkService.h"
 
+
 #import "Util.h"
 #import "LoginMessage.h"
 #import "Message.h"
@@ -178,6 +179,7 @@ static NetworkService *gs_shared_instance = nil;
 					    forMode:NSRunLoopCommonModes];
 		self.inputStream = nil;
 	}
+	
 	if (nil != self.outputStream)
 	{
 		[self.outputStream close];
@@ -185,8 +187,6 @@ static NetworkService *gs_shared_instance = nil;
 					     forMode:NSRunLoopCommonModes];
 		self.outputStream = nil;
 	}
-	
-	STOP_PING();
 }
 
 #pragma mark - NSstream delegate
@@ -212,12 +212,13 @@ static NetworkService *gs_shared_instance = nil;
 
 	case NSStreamEventErrorOccurred:
 		LOG(@"Error Can not connect to the host!");
+		STOP_PING();
+		CLEAR_MESSAGE_HANDLER();
 		[self connect];
 		break;
 
 	case NSStreamEventEndEncountered:
 		LOG(@"Error No buffer left to read!");
-		[self connect];
 		break;
 
 	default:
@@ -306,9 +307,12 @@ static NetworkService *gs_shared_instance = nil;
 		s_bufferData = nil;
 		self.connectionRest = NO;
 	}
+	
+	START_NETWORK_INDICATOR();
 
 	int actuallyReaded = [self.inputStream read:s_buffer + s_offset
 					  maxLength:sizeof(s_buffer) - s_offset];
+	STOP_NETWORK_INDICATOR();
 
 	if ( 0 > actuallyReaded)
 	{

@@ -32,6 +32,7 @@
 
 static CGFloat gs_title_heigth = 0;
 static CGFloat gs_pic_size = 0;
+static CGFloat gs_proportion = 1;
 
 - (void) redrawTitleLabel
 {
@@ -40,8 +41,8 @@ static CGFloat gs_pic_size = 0;
 		[self.title removeFromSuperview];
 	}
 	
-	UIFont *font = [UIFont boldSystemFontOfSize:18.0];
-	CGFloat frameHeightHalf = self.contentView.frame.size.height/2;
+	UIFont *font = [UIFont boldSystemFontOfSize:18.0 * gs_proportion];
+	CGFloat frameHeightHalf = self.contentView.frame.size.height / 2;
 	NSString *text = @"temp_text";
 	CGSize bestSize = [text sizeWithFont:font constrainedToSize:CGSizeMake(9999, frameHeightHalf) lineBreakMode: UILineBreakModeWordWrap];
 	
@@ -66,7 +67,7 @@ static CGFloat gs_pic_size = 0;
 		[self.desc removeFromSuperview];
 	}
 	
-	UIFont *font = [UIFont boldSystemFontOfSize:15.0];
+	UIFont *font = [UIFont boldSystemFontOfSize:15.0 * gs_proportion];
 	CGFloat descLabelWidth = self.contentView.frame.size.width - gs_pic_size - 10.0;
 	CGFloat descLabelHeight= self.contentView.frame.size.height - gs_title_heigth - 10.0;
 	
@@ -107,6 +108,7 @@ static CGFloat gs_pic_size = 0;
 {
 	@autoreleasepool 
 	{
+		gs_proportion = self.frame.size.width / 320.0;
 		[self redrawImageV];
 		[self redrawTitleLabel];
 		[self redrawDescLabel];
@@ -128,10 +130,6 @@ static CGFloat gs_pic_size = 0;
 	
 	self.title.text = [self.eventDict valueForKey:@"name"];
 	self.desc.text = [self.eventDict valueForKey:@"desc"];
-	
-
-	
-	// [self redraw];
 }
 
 - (void) dealloc

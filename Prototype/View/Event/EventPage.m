@@ -28,7 +28,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 @property (retain) EGORefreshTableHeaderView *refreshHeaderView;
 
 // event message
-- (void) requestMoreEvent;
+- (void) requestOlderEvent;
 - (void) requestNewerEvent;
 
 // util
@@ -189,7 +189,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 {
 	if (([EventMessage eventArray].count - ROW_TO_MORE_EVENT_FROM_BOTTOM) <= indexPath.row)
 	{
-		[self requestMoreEvent];
+		[self requestOlderEvent];
 	}
 }
 
@@ -207,9 +207,9 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 	[EventMessage requestNewerCount:EVENT_REFRESH_WINDOW withHandler:@selector(requestNewerEventHandler) andTarget:self];
 }
 
-- (void) requestMoreEvent
+- (void) requestOlderEvent
 {
-	[EventMessage requestMoreCount:EVENT_REFRESH_WINDOW withHandler:@selector(refreshTableView) andTarget:self];
+	[EventMessage requestOlderCount:EVENT_REFRESH_WINDOW withHandler:@selector(refreshTableView) andTarget:self];
 }
 
 #pragma mark - util
@@ -249,7 +249,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 
 - (BOOL) egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
-	return [EventMessage isUpdating]; 
+	return [EventMessage isNewerUpdating]; 
 }
 
 - (NSDate*) egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view

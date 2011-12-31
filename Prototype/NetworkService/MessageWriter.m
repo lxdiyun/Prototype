@@ -66,6 +66,8 @@ static void convert_msg_dictonary_to_data(NSDictionary *input_dict, NSMutableDat
 
 static void send_data_and_bind_handler(NSData *message, id target, SEL handler, uint32_t ID)
 {
+	START_NETWORK_INDICATOR();
+
 	// add handler first
 	ADD_MESSAGE_HANLDER(handler, target, ID);
 

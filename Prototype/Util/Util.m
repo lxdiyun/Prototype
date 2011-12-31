@@ -8,3 +8,14 @@
 
 #import "Util.h"
 
+#import "SDNetworkActivityIndicator.h"
+
+void START_NETWORK_INDICATOR(void)
+{
+	[[SDNetworkActivityIndicator sharedActivityIndicator] startActivity];
+}
+
+void STOP_NETWORK_INDICATOR(void)
+{
+	[[SDNetworkActivityIndicator sharedActivityIndicator] stopActivity];
+}
