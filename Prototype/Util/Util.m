@@ -9,6 +9,12 @@
 #import "Util.h"
 
 #import "SDNetworkActivityIndicator.h"
+#import "Message.h"
+
+void SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler)
+{
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(messageDict, target, handler, NORMAL_PRIORITY);
+}
 
 void START_NETWORK_INDICATOR(void)
 {

@@ -27,7 +27,10 @@
 		[request setValue:@"sys.login" forKey:@"method"];
 		[request setValue:params forKey:@"params"];
 
-		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(handler:));
+		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
+						       self, 
+						       @selector(handler:), 
+						       HIGHEST_PRIORITY);
 	}
 }
 

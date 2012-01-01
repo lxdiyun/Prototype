@@ -8,5 +8,5 @@
 #import <Foundation/Foundation.h>
 
 @interface NetworkService: NSObject
-+ (void) requestSendMessage:(NSData *)message;
++ (void) requestSendMessage;
 @end

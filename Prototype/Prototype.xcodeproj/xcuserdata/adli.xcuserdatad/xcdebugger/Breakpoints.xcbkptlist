@@ -23,11 +23,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "NetworkService/MessageReader.m"
-         timestampString = "347036961.601055"
+         timestampString = "347080858.194366"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "95"
-         endingLineNumber = "95"
+         startingLineNumber = "99"
+         endingLineNumber = "99"
          landmarkName = "ADD_MESSAGE_HANLDER()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -43,6 +43,20 @@
          startingLineNumber = "33"
          endingLineNumber = "33"
          landmarkName = "json_message_handler()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "NetworkService/MessageWriter.m"
+         timestampString = "347085562.734393"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "169"
+         endingLineNumber = "169"
+         landmarkName = "CONFIRM_MESSAGE()"
          landmarkType = "7">
       </FileBreakpoint>
    </FileBreakpoints>

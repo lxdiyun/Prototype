@@ -16,24 +16,27 @@
 {
 	NSInputStream *_inputStream;
 	NSOutputStream *_outputStream;
-	NSMutableArray *_wrtieArray;
 	LoginMessage *_loginMessage;
 
 	BOOL _isWriting;
-	BOOL _connectionRest;
+	BOOL _outputStreamRest;
+	BOOL _inputStreamRest;
 }
 
 @property (retain) NSInputStream *inputStream;
 @property (retain) NSOutputStream *outputStream;
-@property (retain) NSMutableArray *writeArray;
 @property (retain) LoginMessage *loginMessage;
 @property (assign) BOOL isWriting;
-@property (assign) BOOL connectionRest;
+@property (assign) BOOL outputStreamRest;
+@property (assign) BOOL inputStreamRest;
 
 // initialization
 - (void) setup;
+
+// connection
 - (void) connect;
 - (void) closeStream;
+- (void) connectionRest;
 
 // write
 - (void) writeMessage;
@@ -47,10 +50,10 @@
 
 @synthesize inputStream = _inputStream;
 @synthesize outputStream = _outputStream;
-@synthesize writeArray = _wrtieArray;
 @synthesize isWriting = _isWriting;
 @synthesize loginMessage = _loginMessage;
-@synthesize connectionRest = _connectionRest;
+@synthesize outputStreamRest = _outputStreamRest;
+@synthesize inputStreamRest = _inputStreamRest;
 
 #pragma mark -
 #pragma mark Singleton Methods
@@ -99,19 +102,12 @@ static NetworkService *gs_shared_instance = nil;
 }
 #endif
 
-#pragma mark -
-#pragma mark Custom Methods
-
-// Add your custom methods here
+#pragma mark - initialization
 
 - (void) setup
 {
 	// init data
 	{
-		NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-		self.writeArray = tempArray;
-		[tempArray release];
-
 		LoginMessage *loginMessage = [[LoginMessage alloc] init];
 		self.loginMessage = loginMessage;
 		[loginMessage release];
@@ -130,7 +126,6 @@ static NetworkService *gs_shared_instance = nil;
 	// release object
 	self.inputStream = nil;
 	self.outputStream = nil;
-	self.writeArray = nil;
 	self.loginMessage = nil;
 
 	[super dealloc];
@@ -164,10 +159,6 @@ static NetworkService *gs_shared_instance = nil;
 				     forMode:NSRunLoopCommonModes];
 	[self.inputStream open];
 	[self.outputStream open];
-
-	self.connectionRest = YES;
-
-	[self.loginMessage request];
 }
 
 - (void) closeStream
@@ -189,6 +180,17 @@ static NetworkService *gs_shared_instance = nil;
 	}
 }
 
+- (void) connectionRest
+{	
+	self.inputStreamRest = YES;
+	self.outputStreamRest = YES;
+	
+	STOP_PING();
+	REQUEUE_PENDING_MESSAGE();
+	
+	[self connect];
+}
+
 #pragma mark - NSstream delegate
 
 - (void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent 
@@ -198,6 +200,10 @@ static NetworkService *gs_shared_instance = nil;
 	{
 	case NSStreamEventOpenCompleted:
 		// LOG(@"Stream opened");
+		if (theStream == self.outputStream)
+		{
+			[self.loginMessage request];
+		}
 		break;
 
 	case NSStreamEventHasBytesAvailable:
@@ -212,9 +218,8 @@ static NetworkService *gs_shared_instance = nil;
 
 	case NSStreamEventErrorOccurred:
 		LOG(@"Error Can not connect to the host!");
-		STOP_PING();
-		CLEAR_MESSAGE_HANDLER();
-		[self connect];
+
+		[self connectionRest];
 		break;
 
 	case NSStreamEventEndEncountered:
@@ -228,19 +233,6 @@ static NetworkService *gs_shared_instance = nil;
 
 #pragma mark - write methods
 
-- (void) requestSendMessage:(NSData *)message
-{
-	if (nil != message)
-	{
-		[self.writeArray addObject:message];
-
-		if ([self.outputStream hasSpaceAvailable])
-		{
-			[self writeMessage];
-		}
-	}
-}
-
 - (void) writeMessage
 {
 	@synchronized(self)
@@ -253,38 +245,45 @@ static NetworkService *gs_shared_instance = nil;
 		self.isWriting = YES;
 	}
 
-	static uint32_t offset;
-	static uint32_t bufferLength = 0;
-	static NSData *buffer;
-
-	if (0 == bufferLength)
+	static uint32_t s_offset;
+	static uint32_t s_bufferLength = 0;
+	static NSData *s_buffer;
+	
+	if (self.outputStreamRest)
 	{
+		s_offset = 0;
+		s_bufferLength = 0;
+		
+		self.outputStreamRest = NO;
+	}
 
-		if (0 == [self.writeArray count])
+	if (0 == s_bufferLength)
+	{
+		s_buffer = POP_BUFFER();
+
+		if (nil == s_buffer)
 		{
 			// have no buffer to write, just reutun
 			self.isWriting = NO;
-
+			
 			return;
 		}
 
-		buffer = [self.writeArray objectAtIndex:0];
-		bufferLength = buffer.length;
-		offset = 0;
+		s_bufferLength = s_buffer.length;
+		s_offset = 0;
 	}
 
-	if (0 < bufferLength)
+	if (0 < s_bufferLength)
 	{
 		uint32_t actuallyWritten = 0;
-		actuallyWritten = [self.outputStream write:buffer.bytes + offset
-						 maxLength:bufferLength];
-		offset += actuallyWritten;
+		actuallyWritten = [self.outputStream write:s_buffer.bytes + s_offset
+						 maxLength:s_bufferLength];
+		s_offset += actuallyWritten;
 
-		if ((offset >= bufferLength))
+		if ((s_offset >= s_bufferLength))
 		{
-			[self.writeArray removeObjectAtIndex:0];
-			bufferLength = 0;
-			offset = 0;
+			s_bufferLength = 0;
+			s_offset = 0;
 		}
 	}
 
@@ -300,12 +299,12 @@ static NetworkService *gs_shared_instance = nil;
 	static uint32_t s_offset = 0;
 	static NSMutableData *s_bufferData = nil;
 
-	if (self.connectionRest)
+	if (self.inputStreamRest)
 	{
 		s_currentMessageLefted = 0;
 		[s_bufferData release];
 		s_bufferData = nil;
-		self.connectionRest = NO;
+		self.inputStreamRest = NO;
 	}
 	
 	START_NETWORK_INDICATOR();
@@ -372,9 +371,17 @@ static NetworkService *gs_shared_instance = nil;
 
 #pragma mark class interface
 
-+ (void) requestSendMessage:(NSData *)message
+- (void) requestSendMessage
 {
-	[gs_shared_instance requestSendMessage:message];
+	if ([self.outputStream hasSpaceAvailable])
+	{
+		[self writeMessage];
+	}
+}
+
++ (void) requestSendMessage
+{
+	[gs_shared_instance requestSendMessage];
 }
 
 @end

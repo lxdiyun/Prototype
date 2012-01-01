@@ -21,8 +21,20 @@ enum RESERVED_MESSAGE_TYPE
 	MAX_RESERVED_MSG
 };
 
+typedef enum MESSAGE_PRIORITY_ENUM
+{
+	HIGHEST_PRIORITY = 0x1,
+	NORMAL_PRIORITY = 0x2
+}MESSAGE_PRIORITY;
+
 // Message Writer
-void SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler);
+void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
+					    id target, 
+					    SEL handler, 
+					    MESSAGE_PRIORITY priority);
+void CONFIRM_MESSAGE(NSString *ID);
+NSData * POP_BUFFER(void);
+void REQUEUE_PENDING_MESSAGE(void);
 void START_PING(void);
 void STOP_PING(void);
 

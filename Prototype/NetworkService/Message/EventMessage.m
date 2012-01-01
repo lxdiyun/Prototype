@@ -10,6 +10,13 @@
 
 #import "Util.h"
 
+typedef enum EVENT_MESSAGE_TYPE_ENUM
+{
+	REQUEST_NEWER = 0x0,
+	REQUEST_OLDER = 0x1,
+	MAX_EVENT_MESSAGE = 0x2
+} EVENT_MESSAGE_TYPE;
+
 #pragma mark - Auxiliary C function
 static NSInteger event_sorter(id event1, id event2, void *context)
 {
@@ -28,22 +35,13 @@ static NSInteger event_sorter(id event1, id event2, void *context)
 	NSMutableDictionary *_eventDict;
 	NSArray *_eventArray;
 	NSDate *_lastUpdatedDate;
-	BOOL _newerUpdating;
-	SEL _requestNewerHandler;
-	id _requestNewerTarget;
-	BOOL _olderUpdating;
-	SEL _requestOlderHandler;
-	id _requestOlderTarget;
+	BOOL _updating[MAX_EVENT_MESSAGE];
+	id _target[MAX_EVENT_MESSAGE];
+	SEL _handler[MAX_EVENT_MESSAGE];
 }
 @property (retain) NSDictionary *eventDict;
 @property (retain) NSArray *eventArray;
 @property (retain) NSDate *lastUpdatedDate;
-@property (assign) BOOL newerUpdating;
-@property (retain) id requestNewerTarget;
-@property (assign) SEL requestNewerHandler;
-@property (assign) BOOL olderUpdating;
-@property (retain) id requestOlderTarget;
-@property (assign) SEL requestOlderHandler;
 
 @end
 
@@ -52,12 +50,6 @@ static NSInteger event_sorter(id event1, id event2, void *context)
 @synthesize eventDict = _eventDict;
 @synthesize eventArray = _eventArray;
 @synthesize lastUpdatedDate = _lastUpdatedDate;
-@synthesize newerUpdating = _newerUpdating;
-@synthesize requestNewerHandler = _requestNewerHandler;
-@synthesize requestNewerTarget = _requestNewerTarget;
-@synthesize olderUpdating = _olderUpdating;
-@synthesize requestOlderHandler = _requestOlderHandler;
-@synthesize requestOlderTarget = _requestOlderTarget;
 
 static EventMessage *gs_shared_instance;
 
@@ -69,8 +61,10 @@ static EventMessage *gs_shared_instance;
 	@autoreleasepool 
 	{
 		self.eventDict = [[[NSMutableDictionary alloc] init] autorelease];
-		self.newerUpdating = NO;
-		self.olderUpdating = NO;
+		for (int i = 0; i < MAX_EVENT_MESSAGE; ++i)
+		{
+			_updating[i] = NO; 
+		}
 	}
 }
 
@@ -79,8 +73,6 @@ static EventMessage *gs_shared_instance;
 	self.eventDict = nil;
 	self.eventArray = nil;
 	self.lastUpdatedDate = nil;
-	self.requestNewerTarget = nil;
-	self.requestOlderTarget = nil;
 }
 
 + (id) allocWithZone:(NSZone *)zone 
@@ -157,34 +149,29 @@ static EventMessage *gs_shared_instance;
 	[messageDict release];
 }
 
-- (void)requestNewerHandler:(id)dict
+- (void) requestHandlerWithType:(EVENT_MESSAGE_TYPE)type withDict:(id)dict
 {
 	[self messageHandler:dict];
-
-	if ((nil != self.requestNewerTarget) && (nil != self.requestNewerHandler))
+	
+	if ((nil != _target[type]) && (nil != _handler[type]))
 	{
-		if ([self.requestNewerTarget respondsToSelector:self.requestNewerHandler])
+		if ([_target[type] respondsToSelector:_handler[type]])
 		{
-			[self.requestNewerTarget performSelector:self.requestNewerHandler];
+			[_target[type] performSelector:_handler[type]];
 		}
 	}
-
-	self.newerUpdating = NO;
+	
+	_updating[type] = NO;
 }
 
-- (void)requestOlderHandler:(id)dict
+- (void) requestNewerHandler:(id)dict
 {
-	[self messageHandler:dict];
+	[self requestHandlerWithType:REQUEST_NEWER withDict:dict];
+}
 
-	if ((nil != self.requestOlderTarget) && (nil != self.requestOlderHandler))
-	{
-		if ([self.requestOlderTarget respondsToSelector:self.requestOlderHandler])
-		{
-			[self.requestOlderTarget performSelector:self.requestOlderHandler];
-		}
-	}
-
-	self.olderUpdating = NO;
+- (void) requestOlderHandler:(id)dict
+{
+	[self requestHandlerWithType:REQUEST_OLDER withDict:dict];
 }
 
 - (NSDictionary *) requestWithCursor:(int32_t)cursor count:(uint32_t)count forward:(BOOL)forward
@@ -201,16 +188,10 @@ static EventMessage *gs_shared_instance;
 	return request;
 }
 
-- (void) bindNewerHandler:(SEL)handler withTarget:(id)target
-{	
-	self.requestNewerTarget = target;
-	self.requestNewerHandler = handler;
-}
-
-- (void) bindOlderHandler:(SEL)handler withTarget:(id)target
-{	
-	self.requestOlderTarget = target;
-	self.requestOlderHandler = handler;
+- (void) bindMessageType:(EVENT_MESSAGE_TYPE)type withHandler:(SEL)handler andTarget:(id)target
+{
+	_target[type] = target;
+	_handler[type] = handler; 
 }
 
 - (void) requestNewerWithCount:(uint32_t)count
@@ -267,47 +248,37 @@ static EventMessage *gs_shared_instance;
 	}
 }
 
-- (BOOL) requstNewerUpdate
+- (BOOL) requestUpdateWith:(EVENT_MESSAGE_TYPE)type
 {
 	@synchronized (self)
 	{
-		if (YES == self.newerUpdating)
+		if (YES == _updating[type])
 		{
 			return NO;
 		}
-
-		self.newerUpdating = YES;
-
+		
+		_updating[type] = YES;
+		
 		return YES;
 	}
 }
 
-- (BOOL) requstOlderUpdate
+- (BOOL) isUpdatingMessage:(EVENT_MESSAGE_TYPE)type
 {
-	@synchronized (self)
-	{
-		if (YES == self.olderUpdating)
-		{
-			return NO;
-		}
-
-		self.olderUpdating = YES;
-
-		return YES;
-	}
+	return _updating[type];
 }
 
 #pragma mark - interface
 
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	if (NO == [gs_shared_instance requstNewerUpdate])
+	if (NO == [gs_shared_instance requestUpdateWith:REQUEST_NEWER])
 	{
 		return;
 	}
 
 	// bind target
-	[gs_shared_instance bindNewerHandler:handler withTarget:target];
+	[gs_shared_instance bindMessageType:REQUEST_NEWER withHandler:handler andTarget:target];
 
 	// then send request
 	[gs_shared_instance requestNewerWithCount:count];
@@ -315,13 +286,13 @@ static EventMessage *gs_shared_instance;
 
 + (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	if (NO == [gs_shared_instance requstOlderUpdate])
+	if (NO == [gs_shared_instance requestUpdateWith:REQUEST_OLDER])
 	{
 		return;
 	}
 
 	// bind target
-	[gs_shared_instance bindOlderHandler:handler withTarget:target];
+	[gs_shared_instance bindMessageType:REQUEST_OLDER withHandler:handler andTarget:target];
 
 	// then send request
 	[gs_shared_instance requestOlderWithCount:count];
@@ -334,12 +305,12 @@ static EventMessage *gs_shared_instance;
 
 + (BOOL) isNewerUpdating
 {
-	return gs_shared_instance.newerUpdating;
+	return [gs_shared_instance isUpdatingMessage:REQUEST_NEWER];
 }
 
 + (BOOL) isOlderUpdating
 {
-	return gs_shared_instance.olderUpdating;
+	return [gs_shared_instance isUpdatingMessage:REQUEST_OLDER];
 }
 
 + (NSDate *)lastUpdatedDate

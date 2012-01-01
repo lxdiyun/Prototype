@@ -37,6 +37,8 @@ void json_message_handler(NSData *buffer_data)
 	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
 	NSArray *targetAndHandler = [gs_handler_dict valueForKey:ID];
 	
+	CONFIRM_MESSAGE(ID);
+	
 	// TODO: Remove log
 	// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 	
@@ -82,6 +84,8 @@ void CLEAR_MESSAGE_HANDLER(void)
 		}
 		
 		STOP_NETWORK_INDICATOR();
+		
+		CONFIRM_MESSAGE(ID);
 		
 		[gs_handler_dict setValue:nil forKey:ID];
 	}
