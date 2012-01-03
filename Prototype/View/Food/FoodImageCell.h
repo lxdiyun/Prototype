@@ -12,7 +12,7 @@
 
 @interface FoodImageCell : UITableViewCell
 
-@property (retain) ImageV *foodImage;
+@property (strong) ImageV *foodImage;
 
 
 @end

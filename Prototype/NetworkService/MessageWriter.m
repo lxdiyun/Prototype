@@ -19,7 +19,6 @@ static NSMutableArray *gs_buffer_array = nil;
 static NSMutableDictionary *gs_pending_messages = nil;
 const static NSString *RESEVERED_MESSAGE_ID = @"RESERVED_ID";
 
-
 #pragma mark - write message
 
 static uint32_t get_msg_id(void)
@@ -97,16 +96,15 @@ static void send_buffer_with_id_priority(NSData *buffer,
 	[NetworkService requestSendMessage];
 }
 
-static void send_data_with_priority_and_bind_handler(NSData *message, 
-						     MESSAGE_PRIORITY priority,
-						     id target, 
-						     SEL handler, 
-						     uint32_t ID)
+static void send_data_with_priority_and_responder(NSData *message, 
+						  MESSAGE_PRIORITY priority,
+						  MessageResponder *responder, 
+						  uint32_t ID)
 {
 	START_NETWORK_INDICATOR();
 
 	// add handler first
-	ADD_MESSAGE_HANLDER(handler, target, ID);
+	ADD_MESSAGE_RESPOMDER(responder, ID);
 	
 	// then send
 	NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
@@ -114,7 +112,7 @@ static void send_data_with_priority_and_bind_handler(NSData *message,
 	[IDString release];
 }
 
-void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
+uint32_t SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
 					    id target, 
 					    SEL handler, 
 					    MESSAGE_PRIORITY priority)
@@ -125,16 +123,20 @@ void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict,
 		NSNumber *IDNumber = [NSNumber numberWithUnsignedLong:ID];
 		NSMutableData *data = [[[NSMutableData alloc] init] autorelease];
 		NSMutableDictionary *dictWithID = [[messageDict mutableCopy] autorelease];
+		MessageResponder *responder = [[MessageResponder alloc] init];
+		responder.target = target;
+		responder.handler = handler;
+									
 		
 		[dictWithID setValue:IDNumber forKey:@"id"];
 		
 		convert_msg_dictonary_to_data(dictWithID, data);
 		
-		send_data_with_priority_and_bind_handler(data, 
-							 priority, 
-							 target, 
-							 handler, 
-							 ID);
+		send_data_with_priority_and_responder(data, priority, responder, ID);
+		
+		[responder release];
+		
+		return ID;
 	}
 }
 

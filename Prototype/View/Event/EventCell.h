@@ -10,6 +10,6 @@
 
 @interface EventCell : UITableViewCell
 
-@property (retain,nonatomic) NSDictionary *eventDict;
+@property (strong,nonatomic) NSDictionary *eventDict;
 - (void) redraw;
 @end

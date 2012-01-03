@@ -27,8 +27,13 @@ typedef enum MESSAGE_PRIORITY_ENUM
 	NORMAL_PRIORITY = 0x2
 }MESSAGE_PRIORITY;
 
+@interface  MessageResponder: NSObject
+@property (strong) id target;
+@property (assign) SEL handler;
+@end
+
 // Message Writer
-void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
+uint32_t SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
 					    id target, 
 					    SEL handler, 
 					    MESSAGE_PRIORITY priority);
@@ -40,5 +45,5 @@ void STOP_PING(void);
 
 // Message Reader
 void HANDLE_MESSAGE(NSData * bufferData);
-void ADD_MESSAGE_HANLDER(SEL handler, id target, uint32_t ID);
+void ADD_MESSAGE_RESPOMDER(MessageResponder *responder, uint32_t ID);
 void CLEAR_MESSAGE_HANDLER(void);

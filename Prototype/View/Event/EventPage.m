@@ -24,8 +24,8 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 	EGORefreshTableHeaderView *_refreshHeaderView;
 }
 
-@property (retain) FoodPage *foodPage;
-@property (retain) EGORefreshTableHeaderView *refreshHeaderView;
+@property (strong) FoodPage *foodPage;
+@property (strong) EGORefreshTableHeaderView *refreshHeaderView;
 
 // event message
 - (void) requestOlderEvent;
@@ -100,8 +100,6 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 
 - (void) viewWillAppear:(BOOL)animated
 {	
-
-	
 	[super viewWillAppear:animated];
 }
 

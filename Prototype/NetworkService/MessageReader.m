@@ -35,7 +35,7 @@ void json_message_handler(NSData *buffer_data)
 	[jsonString release];
 	
 	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
-	NSArray *targetAndHandler = [gs_handler_dict valueForKey:ID];
+	MessageResponder *responder = [gs_handler_dict valueForKey:ID];
 	
 
 	STOP_NETWORK_INDICATOR();
@@ -44,20 +44,20 @@ void json_message_handler(NSData *buffer_data)
 	// TODO: Remove log
 	// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 	
-	if (targetAndHandler)
+	if (nil != responder)
 	{
-		[targetAndHandler retain];
+		[responder retain];
 		[gs_handler_dict setValue:nil forKey:ID];
 		
-		id target = [targetAndHandler objectAtIndex:0];
-		NSString *handlerString = [targetAndHandler objectAtIndex:1];
-		SEL handler = NSSelectorFromString(handlerString);
+		id target = responder.target;
+		SEL handler = responder.handler;
+		
 		if ([target respondsToSelector:handler])
 		{
 			[target performSelector:handler withObject:messageDict];
 		}
 		
-		[targetAndHandler release];
+		[responder release];
 	}
 }
 
@@ -90,9 +90,9 @@ void CLEAR_MESSAGE_HANDLER(void)
 	}
 }
 
-void ADD_MESSAGE_HANLDER(SEL handler, id target, uint32_t ID)
+void ADD_MESSAGE_RESPOMDER(MessageResponder *responder, uint32_t ID)
 {
-	if ((nil != handler) && (nil != target))
+	if ((nil != responder.target) && (nil != responder.handler))
 	{
 		if (nil == gs_handler_dict)
 		{
@@ -100,13 +100,9 @@ void ADD_MESSAGE_HANLDER(SEL handler, id target, uint32_t ID)
 		}
 
 		NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
-		NSMutableArray *targetAndHandler = [[NSMutableArray alloc] init];
-		[targetAndHandler addObject:target];
-		[targetAndHandler addObject:NSStringFromSelector(handler)];
 
-		[gs_handler_dict setValue:targetAndHandler forKey:IDString];
+		[gs_handler_dict setValue:responder forKey:IDString];
 
-		[targetAndHandler release];
 		[IDString release];
 	}
 }
@@ -130,3 +126,15 @@ void HANDLE_MESSAGE(NSData * buffer_data)
 	}
 }
 
+
+@interface  MessageResponder () 
+{
+	id _target;
+	SEL _handler;
+}
+@end
+
+@implementation MessageResponder
+@synthesize target = _target;
+@synthesize handler = _handler;
+@end

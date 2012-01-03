@@ -10,6 +10,6 @@
 
 @interface FoodPage : UITableViewController
 
-@property (retain) NSDictionary *foodDict;
+@property (strong) NSDictionary *foodDict;
 
 @end

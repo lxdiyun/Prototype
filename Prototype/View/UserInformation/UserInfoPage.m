@@ -29,10 +29,10 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	NSDictionary *_avatorDict;
 }
 
-@property (retain) NSArray *userInfoArray;
-@property (retain) UITextView *introduceView;
+@property (strong) NSArray *userInfoArray;
+@property (strong) UITextView *introduceView;
 @property (assign) BOOL cellChanged;
-@property (retain) NSDictionary *avatorDict;
+@property (strong) NSDictionary *avatorDict;
 
 - (void)initViewDisplay;
 - (void)initUserInfo;
@@ -270,9 +270,6 @@ UIImage *scaleAndRotateImage(UIImage *image);
 { 
 	switch (indexPath.section)
 	{
-	case 1:
-			return 44;
-			break;
 	case 2:
 		{
 			NSString *string = [[self.userInfoArray objectAtIndex:indexPath.section]
@@ -301,7 +298,8 @@ UIImage *scaleAndRotateImage(UIImage *image);
 		}
 		
 	default:
-			return 44;
+				return 44;
+
 	}
 	
 	

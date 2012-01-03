@@ -11,6 +11,6 @@
 
 @interface ImageV : UIImageView
 
-@property (retain, nonatomic) NSDictionary *picDict;
+@property (strong, nonatomic) NSDictionary *picDict;
 
 @end

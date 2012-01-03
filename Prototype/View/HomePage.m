@@ -66,6 +66,13 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 
 - (void) viewDidLoad
 {
+	UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"返回" 
+								       style:UIBarButtonItemStyleDone 
+								      target:nil 
+								      action:nil];
+	self.navigationItem.backBarButtonItem = backButton;
+	[backButton release];
+
 	[super viewDidLoad];
 }
 
@@ -137,14 +144,14 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	uint32_t row = indexPath.row;
-	
-	if (nil == MSWJ_PAGE_INSTANCE[row])
-	{
-		MSWJ_PAGE_INSTANCE[row] = [[MSWJ_PAGE_CLASS[row] alloc] init];
-	}
-	
-	[self.navigationController pushViewController:MSWJ_PAGE_INSTANCE[row] animated:YES];
+		uint32_t row = indexPath.row;
+		
+		if (nil == MSWJ_PAGE_INSTANCE[row])
+		{
+			MSWJ_PAGE_INSTANCE[row] = [[MSWJ_PAGE_CLASS[row] alloc] init];
+		}
+		
+		[self.navigationController pushViewController:MSWJ_PAGE_INSTANCE[row] animated:YES];
 }
 
 @end

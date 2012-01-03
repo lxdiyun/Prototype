@@ -84,7 +84,7 @@
 	}
 }
 
-- (void)dealloc 
+- (void) dealloc 
 {
 	[self setAvatorImageV:nil];
 	[self setAvatorLabel:nil];

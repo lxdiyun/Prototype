@@ -12,6 +12,6 @@
 
 @interface AvatorCell : UITableViewCell
 
-@property (retain, nonatomic)  ImageV *avatorImageV;
+@property (strong, nonatomic)  ImageV *avatorImageV;
 - (void) redraw;
 @end

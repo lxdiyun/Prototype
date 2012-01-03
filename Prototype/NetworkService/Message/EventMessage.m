@@ -10,6 +10,8 @@
 
 #import "Util.h"
 
+#import "Message.h"
+
 typedef enum EVENT_MESSAGE_TYPE_ENUM
 {
 	REQUEST_NEWER = 0x0,
@@ -73,6 +75,12 @@ static EventMessage *gs_shared_instance;
 	self.eventDict = nil;
 	self.eventArray = nil;
 	self.lastUpdatedDate = nil;
+	
+	for (int i = 0; i < MAX_EVENT_MESSAGE; ++i)
+	{
+		[_target[i] release];
+		_target[i] = nil; 
+	}
 }
 
 + (id) allocWithZone:(NSZone *)zone 
@@ -190,8 +198,12 @@ static EventMessage *gs_shared_instance;
 
 - (void) bindMessageType:(EVENT_MESSAGE_TYPE)type withHandler:(SEL)handler andTarget:(id)target
 {
-	_target[type] = target;
-	_handler[type] = handler; 
+	@autoreleasepool 
+	{
+		[_target[type] autorelease];
+		_target[type] = [target retain];
+		_handler[type] = handler; 
+	}
 }
 
 - (void) requestNewerWithCount:(uint32_t)count
@@ -244,7 +256,10 @@ static EventMessage *gs_shared_instance;
 			request = [self requestWithCursor:-1 count:count forward:true];
 		}
 		
-		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(requestOlderHandler:));
+		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
+						       self, 
+						       @selector(requestOlderHandler:), 
+						       NORMAL_PRIORITY);
 	}
 }
 
