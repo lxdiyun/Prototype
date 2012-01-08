@@ -23,11 +23,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "NetworkService/MessageReader.m"
-         timestampString = "347080858.194366"
+         timestampString = "347644258.374159"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "99"
-         endingLineNumber = "99"
+         startingLineNumber = "87"
+         endingLineNumber = "87"
          landmarkName = "ADD_MESSAGE_RESPOMDER()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -51,13 +51,41 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "NetworkService/MessageWriter.m"
-         timestampString = "347251204.261487"
+         timestampString = "347536050.018584"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "171"
-         endingLineNumber = "171"
+         startingLineNumber = "174"
+         endingLineNumber = "174"
          landmarkName = "CONFIRM_MESSAGE()"
          landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "View/ImageV.m"
+         timestampString = "347643059.560016"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "108"
+         endingLineNumber = "108"
+         landmarkName = "-setPicID:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "ObjectManager/ObjectManager.m"
+         timestampString = "347713762.307671"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "24"
+         endingLineNumber = "24"
+         landmarkName = "@implementation ObjectManager"
+         landmarkType = "3">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

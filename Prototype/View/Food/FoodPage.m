@@ -124,13 +124,15 @@
 	{
 		cell = [[[FoodImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.width);
+		
+		[cell redraw];
 	}
 	
-	NSDictionary *picDict = [self.foodDict valueForKey:@"pic"];
+	NSNumber *picID = [self.foodDict valueForKey:@"pic"];
 	
-	if (nil  != picDict)
+	if (nil  != picID)
 	{
-		cell.foodImage.picDict = picDict;
+		cell.foodImage.picID = picID;
 	}
 	
 	// Configure the cell...

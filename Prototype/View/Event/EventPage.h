@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-
-
-@interface EventPage : UITableViewController 
+@interface EventPage : UIViewController 
 
 @end

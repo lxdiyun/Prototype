@@ -8,10 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-@interface EventMessage : NSObject
+#import "ObjectManager.h"
+
+@interface EventManager : ObjectManager
++ (EventManager *)getInstnace;
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
 + (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
-+ (NSArray *) eventArray;
++ (NSArray *) eventKeyArray;
 + (BOOL) isNewerUpdating;
 + (NSDate *) lastUpdatedDate;
 @end

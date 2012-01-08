@@ -6,14 +6,16 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "LoginMessage.h"
+#import "LoginManager.h"
 
 #import "Util.h"
 #import "Message.h"
 
-@implementation LoginMessage
+@implementation LoginManager
 
-- (void) request
+DEFINE_SINGLETON(LoginManager);
+
++ (void) request
 {
 	@autoreleasepool 
 	{
@@ -34,15 +36,17 @@
 	}
 }
 
-- (void) handler:(id)dict
++ (void) handler:(id)dict
 {
 	if (![dict isKindOfClass: [NSDictionary class]])
 	{
 		LOG(@"Error handle non dict object");
 		return;
 	}
+	
+	// TODO handle login failed message
+	SET_USER_ID([dict valueForKey:@"result"]);
 
-	LOG(@"start ping");
 	START_PING();
 }
 

@@ -72,6 +72,8 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 								      action:nil];
 	self.navigationItem.backBarButtonItem = backButton;
 	[backButton release];
+	
+	self.view.backgroundColor = [Color greyColor];
 
 	[super viewDidLoad];
 }

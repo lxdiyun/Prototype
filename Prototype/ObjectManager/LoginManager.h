@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LoginMessage : NSObject
-- (void) request;
+#import "ObjectManager.h"
+
+@interface LoginManager : NSObject
++ (void) request;
 @end

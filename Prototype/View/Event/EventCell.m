@@ -8,11 +8,12 @@
 
 #import "EventCell.h"
 #import "ImageV.h"
+#import "Util.h"
 
 @interface EventCell () 
 {
-@private
-	NSDictionary *_eventDict;
+	@private
+		NSDictionary *_eventDict;
 	UILabel *_title;
 	UITextView *_desc;
 	ImageV *_picImageV;
@@ -30,9 +31,8 @@
 @synthesize desc = _desc;
 @synthesize picImageV = _picImageV;
 
-static CGFloat gs_title_heigth = 0;
+static CGFloat gs_title_height = 0;
 static CGFloat gs_pic_size = 0;
-static CGFloat gs_proportion = 1;
 
 - (void) redrawTitleLabel
 {
@@ -40,23 +40,26 @@ static CGFloat gs_proportion = 1;
 	{
 		[self.title removeFromSuperview];
 	}
-	
-	UIFont *font = [UIFont boldSystemFontOfSize:18.0 * gs_proportion];
-	CGFloat frameHeightHalf = self.contentView.frame.size.height / 2;
-	NSString *text = @"temp_text";
-	CGSize bestSize = [text sizeWithFont:font constrainedToSize:CGSizeMake(9999, frameHeightHalf) lineBreakMode: UILineBreakModeWordWrap];
-	
-	gs_title_heigth = bestSize.height;
-	
+
+	UIFont *font = [UIFont boldSystemFontOfSize:18.0 * GET_PROPORTION()];
+
+	gs_title_height = self.contentView.frame.size.width / 4;
+	CGFloat X = 0;
+	CGFloat Y = self.contentView.frame.size.height - gs_title_height;
+
+
 	self.title = [[[UILabel alloc] init] autorelease];
-	self.title.frame = CGRectMake(gs_pic_size + 10.0, 
-				      5.0, 
-				      self.contentView.frame.size.width - gs_pic_size - 10.0,
-				      gs_title_heigth);
+	self.title.frame = CGRectMake(X,
+				      Y,
+				      self.contentView.frame.size.width,
+				      gs_title_height);
 
 	self.title.font = font;
 	self.title.adjustsFontSizeToFitWidth = YES;
-	
+	self.title.backgroundColor = [UIColor clearColor];
+
+	self.title.textColor = [UIColor whiteColor];
+
 	[self.contentView addSubview:self.title];
 }
 
@@ -66,18 +69,18 @@ static CGFloat gs_proportion = 1;
 	{
 		[self.desc removeFromSuperview];
 	}
-	
-	UIFont *font = [UIFont boldSystemFontOfSize:15.0 * gs_proportion];
+
+	UIFont *font = [UIFont boldSystemFontOfSize:15.0 * GET_PROPORTION()];
 	CGFloat descLabelWidth = self.contentView.frame.size.width - gs_pic_size - 10.0;
-	CGFloat descLabelHeight= self.contentView.frame.size.height - gs_title_heigth - 10.0;
-	
+	CGFloat descLabelHeight= self.contentView.frame.size.height - gs_title_height - 10.0;
+
 	self.desc = [[[UITextView alloc] 
-		      initWithFrame:CGRectMake(gs_pic_size + 10.0, 
-					       gs_title_heigth + 10.0, 
-					       descLabelWidth, 
-					       descLabelHeight )] 
-		     autorelease];
-	
+		initWithFrame:CGRectMake(gs_pic_size + 10.0, 
+					 gs_title_height + 10.0, 
+					 descLabelWidth, 
+					 descLabelHeight )] 
+		autorelease];
+
 	self.desc.font = font;
 	self.desc.editable = NO;
 	self.desc.contentOffset = CGPointZero;
@@ -92,15 +95,15 @@ static CGFloat gs_proportion = 1;
 	{
 		[self.picImageV removeFromSuperview];
 	}
-	
-	gs_pic_size = self.contentView.frame.size.height - 10.0;
 
-	self.picImageV = [[[ImageV alloc] initWithFrame:CGRectMake(5.0, 
-								   5.0, 
+	gs_pic_size = self.contentView.frame.size.height;
+
+	self.picImageV = [[[ImageV alloc] initWithFrame:CGRectMake(0.0, 
+								   0.0, 
 								   gs_pic_size, 
 								   gs_pic_size)] 
-			  autorelease];
-	
+		autorelease];
+
 	[self.contentView addSubview:self.picImageV];
 }
 
@@ -108,10 +111,10 @@ static CGFloat gs_proportion = 1;
 {
 	@autoreleasepool 
 	{
-		gs_proportion = self.frame.size.width / 320.0;
+		self.contentView.backgroundColor = [Color brownColor];
 		[self redrawImageV];
 		[self redrawTitleLabel];
-		[self redrawDescLabel];
+		//[self redrawDescLabel];
 	}
 }
 
@@ -121,15 +124,26 @@ static CGFloat gs_proportion = 1;
 	{
 		return;
 	}
-	
+
 	[_eventDict release];
-	
+
 	_eventDict = [eventDict retain];
 	
-	self.picImageV.picDict = [self.eventDict valueForKey:@"pic"];
+	NSDictionary *objDict =  [self.eventDict valueForKey:@"obj"];
+
+	self.picImageV.picID = [objDict valueForKey:@"pic"];
+
+	self.title.text = [objDict valueForKey:@"name"];
+	self.desc.text = [objDict valueForKey:@"desc"];
 	
-	self.title.text = [self.eventDict valueForKey:@"name"];
-	self.desc.text = [self.eventDict valueForKey:@"desc"];
+	if (nil != self.eventDict)
+	{
+		self.title.backgroundColor = [Color blackColorAlpha];
+	}
+	else
+	{
+		self.title.backgroundColor = [UIColor clearColor];
+	}
 }
 
 - (void) dealloc
@@ -138,7 +152,7 @@ static CGFloat gs_proportion = 1;
 	self.title = nil;
 	self.desc = nil;
 	self.picImageV = nil;
-	
+
 	[super dealloc];
 }
 

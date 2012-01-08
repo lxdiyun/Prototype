@@ -13,6 +13,7 @@
 #import "Util.h"
 #import "ImageV.h"
 #import "AvatorCell.h"
+#import "LoginManager.h"
 
 UIImage *scaleAndRotateImage(UIImage *image);
 @interface UIImage (Extras) 
@@ -26,13 +27,13 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	NSArray *_userInfoArray;
 	UITextView *_introduceView;
 	BOOL _cellChanged;
-	NSDictionary *_avatorDict;
+	NSNumber *_avatorID;
 }
 
 @property (strong) NSArray *userInfoArray;
 @property (strong) UITextView *introduceView;
 @property (assign) BOOL cellChanged;
-@property (strong) NSDictionary *avatorDict;
+@property (strong) NSNumber *avatorID;
 
 - (void)initViewDisplay;
 - (void)initUserInfo;
@@ -47,7 +48,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 @synthesize userInfoArray = _userInfoArray;
 @synthesize introduceView = _introduceView;
 @synthesize cellChanged = _cellChanged;
-@synthesize avatorDict = _avatorDict;
+@synthesize avatorID = _avatorID;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -72,7 +73,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	
 	[_userInfoArray release];
 	[_introduceView release];
-	[_avatorDict release];
+	[_avatorID release];
 }
 
 #pragma mark - View lifecycle
@@ -84,10 +85,8 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	[self initViewDisplay];
 
 	[self initUserInfo];
-
 	
 	[self sendUserInfoRequest];
-
 	
 	self.cellChanged = YES;
 
@@ -102,6 +101,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 {
 	[self setTitle:@"个人设置"];
 	
+	self.view.backgroundColor = [Color greyColor];
 }
 
 - (void)initUserInfo
@@ -117,20 +117,27 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 - (void)sendUserInfoRequest
 {	
+	NSNumber *loginUserID = GET_USER_ID();
+	
+	if (nil == loginUserID)
+	{
+		// not login yet delay 2 seconds
+		[LoginManager request];
+		[self performSelector:@selector(sendUserInfoRequest) withObject:nil afterDelay:2.0];
+		return;
+	}
+	
 	@autoreleasepool 
 	{
-		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
 		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
 		
-		// TODO update to real username
-		[params setValue:@"wuvist" forKey:@"username"];
-		[params setValue:@"dc6670b66d02cb02990e65272a936f36d25598d4" forKey:@"pwd"];
-		
-		[request setValue:@"sys.login" forKey:@"method"];
-		[request setValue:params forKey:@"params"];
+		[request setValue:@"user.get" forKey:@"method"];
+		[request setValue:loginUserID forKey:@"params"];
 		
 		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(handleMessage:));
 	}
+	
+	[loginUserID release];
 }
 
 - (void)viewDidUnload
@@ -141,7 +148,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	// Release any retained subviews of the main view.
 	[self setUserInfoArray:nil];
 	[self setIntroduceView:nil];
-	[self setAvatorDict:nil];
+	[self setAvatorID:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -209,9 +216,9 @@ UIImage *scaleAndRotateImage(UIImage *image);
 			[cell redraw];
 		}
 
-		if (nil != self.avatorDict)
+		if (nil != self.avatorID)
 		{
-			cell.avatorImageV.picDict = self.avatorDict;
+			cell.avatorImageV.picID = self.avatorID;
 		}
 		
 		return cell;
@@ -374,6 +381,8 @@ UIImage *scaleAndRotateImage(UIImage *image);
 		return;
 	}
 	
+	LOG(@"%@", dict);
+	
 	NSDictionary *messageDict = (NSDictionary*)dict;
 	
 	NSString *userName = [NSString stringWithFormat:@"姓名：%@", [[messageDict objectForKey:@"result"] objectForKey:@"nick"]];
@@ -387,7 +396,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 			      [NSArray arrayWithObjects:@"个人介绍", introduceString, nil],
 			      nil];
 	
-	self.avatorDict = [[messageDict objectForKey:@"result"] objectForKey:@"avatar"];
+	self.avatorID = [[messageDict objectForKey:@"result"] objectForKey:@"avatar"];
 	
 	self.cellChanged = YES;
 	

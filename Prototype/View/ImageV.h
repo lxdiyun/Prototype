@@ -11,6 +11,6 @@
 
 @interface ImageV : UIImageView
 
-@property (strong, nonatomic) NSDictionary *picDict;
+@property (strong, nonatomic) NSNumber *picID;
 
 @end

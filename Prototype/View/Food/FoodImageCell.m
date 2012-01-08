@@ -8,6 +8,8 @@
 
 #import "FoodImageCell.h"
 
+#import "Util.h"
+
 @interface FoodImageCell () 
 {
 	ImageV *_foodImage;
@@ -26,8 +28,8 @@ static CGFloat gs_food_image_size = 0;
 	{
 		[self.foodImage removeFromSuperview];
 	}
-	
-	gs_food_image_size = [UIScreen mainScreen].bounds.size.width;
+
+	gs_food_image_size = self.frame.size.width;
 	
 	self.foodImage = [[[ImageV alloc] initWithFrame:CGRectMake(0.0, 
 								   0.0, 
@@ -38,16 +40,9 @@ static CGFloat gs_food_image_size = 0;
 	[self.contentView addSubview:self.foodImage];
 }
 
-- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (void) redraw
 {
-	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-	
-	if (nil != self)
-	{
-		[self redrawImageV];
-	}
-	
-	return self;
+	[self redrawImageV];
 }
 
 

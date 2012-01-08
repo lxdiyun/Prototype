@@ -9,14 +9,13 @@
 
 
 #import "Util.h"
-#import "LoginMessage.h"
+#import "LoginManager.h"
 #import "Message.h"
 
 @interface NetworkService () <NSStreamDelegate>
 {
 	NSInputStream *_inputStream;
 	NSOutputStream *_outputStream;
-	LoginMessage *_loginMessage;
 
 	BOOL _isWriting;
 	BOOL _outputStreamRest;
@@ -25,13 +24,9 @@
 
 @property (retain) NSInputStream *inputStream;
 @property (retain) NSOutputStream *outputStream;
-@property (retain) LoginMessage *loginMessage;
 @property (assign) BOOL isWriting;
 @property (assign) BOOL outputStreamRest;
 @property (assign) BOOL inputStreamRest;
-
-// initialization
-- (void) setup;
 
 // connection
 - (void) connect;
@@ -51,71 +46,33 @@
 @synthesize inputStream = _inputStream;
 @synthesize outputStream = _outputStream;
 @synthesize isWriting = _isWriting;
-@synthesize loginMessage = _loginMessage;
 @synthesize outputStreamRest = _outputStreamRest;
 @synthesize inputStreamRest = _inputStreamRest;
 
-#pragma mark -
-#pragma mark Singleton Methods
+#pragma mark - singleton
 
-static NetworkService *gs_shared_instance = nil;
+DEFINE_SINGLETON(NetworkService);
 
-+ (void) initialize 
+#pragma mark - life circle 
+
+- (id) init
 {
-	if (self == [NetworkService class]) 
+	self = [super init];
+	
+	if (nil != self)
 	{
-		gs_shared_instance = [[super allocWithZone:nil] init];
-		[gs_shared_instance setup];
-	}
-}
-
-+ (id) allocWithZone:(NSZone *)zone 
-{
-	return [gs_shared_instance retain];
-}
-
-- (id) copyWithZone:(NSZone *)zone 
-{
-	return self;
-}
-
-#if (!__has_feature(objc_arc))
-
-- (id) retain 
-{
-	return self;
-}
-
-- (unsigned) retainCount
-{
-	return UINT_MAX;  //denotes an object that cannot be released
-}
-
-- (oneway void) release 
-{
-	//do nothing
-}
-
-- (id) autorelease 
-{
-	return self;
-}
-#endif
-
-#pragma mark - initialization
-
-- (void) setup
-{
-	// init data
-	{
-		LoginMessage *loginMessage = [[LoginMessage alloc] init];
-		self.loginMessage = loginMessage;
-		[loginMessage release];
-
-		self.isWriting = NO;
+		// init data
+		{
+			LoginManager *loginMessage = [[LoginManager alloc] init];
+			[loginMessage release];
+			
+			self.isWriting = NO;
+		}
+		
+		[self connect];
 	}
 
-	[self connect];
+	return self;
 }
 
 - (void) dealloc 
@@ -126,7 +83,6 @@ static NetworkService *gs_shared_instance = nil;
 	// release object
 	self.inputStream = nil;
 	self.outputStream = nil;
-	self.loginMessage = nil;
 
 	[super dealloc];
 }
@@ -202,7 +158,7 @@ static NetworkService *gs_shared_instance = nil;
 		// LOG(@"Stream opened");
 		if (theStream == self.outputStream)
 		{
-			[self.loginMessage request];
+			[LoginManager request];
 		}
 		break;
 
@@ -381,7 +337,7 @@ static NetworkService *gs_shared_instance = nil;
 
 + (void) requestSendMessage
 {
-	[gs_shared_instance requestSendMessage];
+	[[self getInstnace] requestSendMessage];
 }
 
 @end

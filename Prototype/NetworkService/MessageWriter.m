@@ -53,9 +53,6 @@ static void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableDa
 			header = CFSwapInt32HostToBig(data.length) | (JSON_MSG << HEADER_LENGTH_BITS);
 		}
 		
-		// TODO remove log
-		// CLOG(@"message %s", data.bytes);
-		
 		if (nil !=output_data)
 		{
 			[output_data appendBytes:(void*)&header length:HEADER_SIZE];
@@ -163,6 +160,12 @@ NSData * POP_BUFFER(void)
 		[gs_buffer_array removeObjectAtIndex:0];
 	}
 	
+	// TODO remove log
+	if (4 < popBuffer.length)
+	{
+		CLOG(@"%s", popBuffer.bytes+4);
+	}
+	
 	return popBuffer;
 }
 
@@ -187,6 +190,8 @@ void REQUEUE_PENDING_MESSAGE(void)
 
 static void request_ping(CFRunLoopTimerRef timer, void *info)
 {
+	CLOG(@"request ping");
+	
 	uint32_t pingMessage = CFSwapInt32HostToBig(PING_PONG_MSG << HEADER_LENGTH_BITS);
 	
 	NSData *data = [[NSData alloc] initWithBytes:(void *)&pingMessage length:HEADER_SIZE];

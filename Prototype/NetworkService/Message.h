@@ -30,6 +30,8 @@ typedef enum MESSAGE_PRIORITY_ENUM
 @interface  MessageResponder: NSObject
 @property (strong) id target;
 @property (assign) SEL handler;
+- (void) perform;
+- (void) performWithObject:(id)object;
 @end
 
 // Message Writer

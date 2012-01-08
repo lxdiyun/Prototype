@@ -49,6 +49,9 @@
 	// Override point for customization after application launch.
 	self.window.backgroundColor = [UIColor whiteColor];
 	
+	// set status bar style
+	[application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+	
 	// init and show start page and navigater
 	HomePage *homePage = [[HomePage alloc] init];
 	UINavigationController *navco = [[UINavigationController alloc] initWithRootViewController:homePage];

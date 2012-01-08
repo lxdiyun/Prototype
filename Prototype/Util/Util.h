@@ -11,6 +11,7 @@
 
 #include <libgen.h>
 
+// LOG
 #ifdef DEBUG
 #define LOG(format, ...) { NSLog(@"%s %s %d:", basename(__FILE__), (char *)_cmd, __LINE__); NSLog(format, ## __VA_ARGS__); }
 #else
@@ -23,7 +24,67 @@
 #define CLOG(format, ...)
 #endif
 
+// singleton
+#if (!__has_feature(objc_arc))
+#define ARC_SINGLETON \
+- (id) retain \
+{ \
+return self; \
+} \
+- (unsigned) retainCount \
+{ \
+return UINT_MAX;  \
+}\
+\
+- (oneway void) release \
+{\
+}\
+- (id) autorelease \
+{ \
+return self; \
+}
+#else
+#define ARC_SINGLETON
+#endif
+
+#define DEFINE_SINGLETON(CLASS_NAME) \
+static CLASS_NAME *gs_shared_instance; \
++ (id) allocWithZone:(NSZone *)zone \
+{ \
+	if ([CLASS_NAME class] == self) \
+	{ \
+		return [gs_shared_instance retain]; \
+	} \
+	else \
+	{ \
+		return [super allocWithZone:zone]; \
+	} \
+} \
+- (id) copyWithZone:(NSZone *)zone \
+{ \
+	return self; \
+} \
+ARC_SINGLETON \
++ (void) initialize \
+{ \
+	if (self == [CLASS_NAME class]) \
+	{ \
+		gs_shared_instance = [[super allocWithZone:nil] init]; \
+	} \
+} \
++ (id) getInstnace \
+{\
+	return gs_shared_instance; \
+}
+
 #import <Foundation/Foundation.h>
+
+// login user id
+NSNumber * GET_USER_ID(void);
+void SET_USER_ID(NSNumber *ID);
+
+// sorter
+NSInteger ID_SORTER(id ID1, id ID2, void *context);
 
 // Network Message
 uint32_t SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler);
@@ -31,6 +92,18 @@ uint32_t SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL han
 // Network Indicator
 void START_NETWORK_INDICATOR(void);
 void STOP_NETWORK_INDICATOR(void);
+
+// view
+CGFloat GET_SCALE(void);
+CGFloat GET_PROPORTION(void);
+
+@interface Color : NSObject 
+
++ (UIColor *) greyColor;
++ (UIColor *) brownColor;
++ (UIColor *) blackColorAlpha;
+
+@end
 
 
 #endif

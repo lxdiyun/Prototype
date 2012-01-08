@@ -12,7 +12,6 @@
 
 @interface FoodImageCell : UITableViewCell
 
+- (void) redraw;
 @property (strong) ImageV *foodImage;
-
-
 @end

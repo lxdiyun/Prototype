@@ -49,13 +49,7 @@ void json_message_handler(NSData *buffer_data)
 		[responder retain];
 		[gs_handler_dict setValue:nil forKey:ID];
 		
-		id target = responder.target;
-		SEL handler = responder.handler;
-		
-		if ([target respondsToSelector:handler])
-		{
-			[target performSelector:handler withObject:messageDict];
-		}
+		[responder performWithObject:messageDict];
 		
 		[responder release];
 	}
@@ -73,15 +67,9 @@ void CLEAR_MESSAGE_HANDLER(void)
 {
 	for (NSString *ID in [gs_handler_dict allKeys])
 	{
-		NSArray *targetAndHandler = [gs_handler_dict valueForKey:ID];
+		MessageResponder *responder = [gs_handler_dict valueForKey:ID];
 		
-		id target = [targetAndHandler objectAtIndex:0];
-		NSString *handlerString = [targetAndHandler objectAtIndex:1];
-		SEL handler = NSSelectorFromString(handlerString);
-		if ([target respondsToSelector:handler])
-		{
-			[target performSelector:handler withObject:nil];
-		}
+		[responder performWithObject:nil];
 		
 		STOP_NETWORK_INDICATOR();
 		CONFIRM_MESSAGE(ID);
@@ -137,4 +125,34 @@ void HANDLE_MESSAGE(NSData * buffer_data)
 @implementation MessageResponder
 @synthesize target = _target;
 @synthesize handler = _handler;
+
+- (void) perform
+{
+	if ([self.target respondsToSelector:self.handler])
+	{
+		@autoreleasepool 
+		{
+			[self.target performSelector:self.handler];
+		}
+	}
+}
+
+- (void) performWithObject:(id)object
+{
+	if ([self.target respondsToSelector:self.handler])
+	{
+		@autoreleasepool 
+		{
+			[self.target performSelector:self.handler withObject:object];
+		}
+	}
+}
+
+- (void) dealloc
+{
+	self.target = nil;
+	self.handler = nil;
+	
+	[super dealloc];
+}
 @end
