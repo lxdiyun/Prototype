@@ -1,7 +1,4 @@
 //
-//  ImgMessage.m
-//  Prototype
-//
 //  Created by Adrian Lee on 1/6/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
@@ -11,16 +8,48 @@
 #import "Message.h"
 #import "Util.h"
 
+@interface ImageManager ()
+{
+	NSMutableDictionary *_imageSizeDict;
+}
+@property (strong) NSMutableDictionary *imageSizeDict;
+@end
 
 @implementation ImageManager
+
+@synthesize imageSizeDict = _imageSizeDict;
 
 #pragma mark - singleton
 
 DEFINE_SINGLETON(ImageManager);
 
+#pragma mark - life circle
+
+- (id) init
+{
+	self = [super init];
+	
+	if (nil != self)
+	{
+		// init data
+		NSMutableDictionary *tempDict = [[NSMutableDictionary alloc] init];
+		self.imageSizeDict = tempDict;
+		[tempDict release];
+	}
+	
+	return self;
+	
+}
+
+- (void) dealloc
+{
+	self.imageSizeDict = nil;
+	[super dealloc];
+}
+
 # pragma mark - request image
 
-+ (void) requestImageWithID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
++ (void) requestImageWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
 {
 	if (nil != ID)
 	{
@@ -31,48 +60,40 @@ DEFINE_SINGLETON(ImageManager);
 		NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 		
 		[request setValue:@"img.get" forKey:@"method"];
-		[request setValue:ID  forKey:@"params"];
 		
-		if (NO == [ImageManager isUpdatingObjectNumberID:ID])
-		{
-			[ImageManager markUpdatingNumberID:ID];
-			[ImageManager sendObjectRequest:request];
-		}
+		[self sendObjectRequest:request withNumberID:ID];
 		
 		[request release];
 	}
 }
 
 + (void) requestImageWithNumberIDArray:(NSArray *)numberIDArray
+{	
+	// no handler just send the message
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	
+	[request setValue:@"img.get" forKey:@"method"];
+	
+	[self sendObjectArrayRequest:request withNumberIDArray:numberIDArray];
+	
+	[request release];
+}
+
+#pragma mark - image size
+
++ (NSNumber *) getImageSizeWithNumberID:(NSNumber *)ID
 {
-	if (nil != numberIDArray)
+	@autoreleasepool 
 	{
-		// no handler just send the message
+		return [[[self getInstnace] imageSizeDict] valueForKey:[ID stringValue]];
+	}
+}
 
-		NSMutableArray *checkedArray = [[NSMutableArray alloc] init];
-		
-		for (NSNumber *ID in numberIDArray) 
-		{
-			if (NO == [ImageManager isUpdatingObjectNumberID:ID])
-			{
-				[checkedArray addObject:ID];
-				[ImageManager markUpdatingNumberID:ID];
-			}
-		}
-
-		if (0 < checkedArray.count)
-		{
-			NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-			
-			[request setValue:@"img.get" forKey:@"method"];
-			[request setValue:checkedArray  forKey:@"params"];
-			
-			[ImageManager sendObjectArrayRequest:request];
-			
-			[request release];
-		}
-		
-		[checkedArray release];
++ (void) setImageSize:(NSNumber *)size withNumberID:(NSNumber *)ID
+{
+	@autoreleasepool 
+	{
+		[[[self getInstnace] imageSizeDict] setValue:size  forKey:[ID stringValue]];
 	}
 }
 

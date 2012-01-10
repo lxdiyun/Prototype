@@ -33,7 +33,7 @@ void json_message_handler(NSData *buffer_data)
 	NSDictionary *messageDict = [jsonString objectFromJSONString];
 	
 	[jsonString release];
-	
+
 	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
 	MessageResponder *responder = [gs_handler_dict valueForKey:ID];
 	
@@ -57,7 +57,6 @@ void json_message_handler(NSData *buffer_data)
 
 void pong_message_handler(NSData *bufferData)
 {
-	// TODO remove log
 	CLOG(@"Receive pong message!");
 	
 	START_PING();

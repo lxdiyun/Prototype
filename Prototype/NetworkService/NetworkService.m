@@ -63,9 +63,6 @@ DEFINE_SINGLETON(NetworkService);
 	{
 		// init data
 		{
-			LoginManager *loginMessage = [[LoginManager alloc] init];
-			[loginMessage release];
-			
 			self.isWriting = NO;
 		}
 		
@@ -174,7 +171,6 @@ DEFINE_SINGLETON(NetworkService);
 
 	case NSStreamEventErrorOccurred:
 		LOG(@"Error Can not connect to the host!");
-
 		[self connectionRest];
 		break;
 

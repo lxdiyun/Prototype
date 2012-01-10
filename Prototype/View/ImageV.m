@@ -42,35 +42,69 @@
 		
 		NSString *baseUrl = [self.picDict valueForKey:@"base_url"];
 		NSMutableString *imageUrlString = nil;
+		NSMutableString *preImageUrlString = nil;
 		
 		if (nil != baseUrl)
 		{
-			NSString *size = [[NSString alloc] initWithFormat:@"%d", lrintf(self.frame.size.height*GET_SCALE())];
 			NSString *ID = [self.picDict valueForKey:@"id"];
 			NSString *salt = [self.picDict valueForKey:@"salt"];
 			NSString *type = [self.picDict valueForKey:@"type"];
-			
+			uint32_t real_size = lrintf(self.frame.size.height*GET_SCALE());
+			uint32_t cached_size = [[ImageManager getImageSizeWithNumberID:self.picID] intValue];
 			imageUrlString = [[NSMutableString alloc] init];
-			[imageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
 			
-			[size release];
+			if (cached_size > real_size)
+			{
+				// cached size bigger than real size
+				NSString *size = [[NSString alloc] initWithFormat:@"%d", cached_size];
+				[imageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
+				[size release];
+			}
+			else 
+			{
+				// cached size smaller than realsize or not cached
+				NSString *size = nil;
+				if (cached_size > 0)
+				{
+					preImageUrlString = [[NSMutableString alloc] init];
+					size = [[NSString alloc] initWithFormat:@"%d", cached_size];
+					[preImageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
+					[size release];
+				}
+				
+				size = [[NSString alloc] initWithFormat:@"%d", real_size]; 
+				[imageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
+				[size release];
+				
+				[ImageManager setImageSize:[NSNumber numberWithUnsignedInt:real_size] withNumberID:self.picID];
+			} 
+		}
+		
+		if ((nil == preImageUrlString) && (nil == imageUrlString))
+		{
+				[self setImage: nil];
+		}
+		
+		// set the image to the allready cached image
+		if (nil != preImageUrlString)
+		{
+			NSURL *imageUrl =  [[NSURL alloc] initWithString:preImageUrlString];
+			[self setImageWithURL:imageUrl];
+			
+			[preImageUrlString release];
+			[imageUrl release];
 		}
 
 		if (nil != imageUrlString) 
 		{
 			NSURL *imageUrl = [[NSURL alloc] initWithString:imageUrlString];
 			
-			[self setImageWithURL:imageUrl];
+			[self setImageWithURL:imageUrl placeholderImage:self.image];
 			
 			[imageUrl release];
 			[imageUrlString release];
 		}
-		else
-		{
-			[self setImage: nil];
-		}
 	}
-	
 }
 
 - (void) requsetPic
@@ -87,7 +121,7 @@
 		}
 		else
 		{
-			[ImageManager requestImageWithID:self.picID andHandler:@selector(requsetPic) andTarget:self];
+			[ImageManager requestImageWithNumberID:self.picID andHandler:@selector(requsetPic) andTarget:self];
 		}
 	}
 }

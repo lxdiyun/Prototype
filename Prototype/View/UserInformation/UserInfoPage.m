@@ -14,6 +14,7 @@
 #import "ImageV.h"
 #import "AvatorCell.h"
 #import "LoginManager.h"
+#import "ProfileMananger.h"
 
 UIImage *scaleAndRotateImage(UIImage *image);
 @interface UIImage (Extras) 
@@ -37,9 +38,8 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 - (void)initViewDisplay;
 - (void)initUserInfo;
-- (void)sendUserInfoRequest;
+- (void) sendUserInfoRequest;
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (void)handleMessage:(id)dict;
 - (void)refreshTableView;
 @end
 
@@ -49,6 +49,8 @@ UIImage *scaleAndRotateImage(UIImage *image);
 @synthesize introduceView = _introduceView;
 @synthesize cellChanged = _cellChanged;
 @synthesize avatorID = _avatorID;
+
+#pragma mark - life circle
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -106,38 +108,14 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 - (void)initUserInfo
 {
-	@autoreleasepool {
+	@autoreleasepool 
+	{
 		self.userInfoArray = [NSArray arrayWithObjects:
 				      [NSArray arrayWithObjects:@"个人信息", @"姓名：", @"所在地：", nil],
 				      [NSArray arrayWithObjects:@"头像", @"头像", nil],
 				      [NSArray arrayWithObjects:@"个人介绍", @"", nil],
 				      nil];
 	}
-}
-
-- (void)sendUserInfoRequest
-{	
-	NSNumber *loginUserID = GET_USER_ID();
-	
-	if (nil == loginUserID)
-	{
-		// not login yet delay 2 seconds
-		[LoginManager request];
-		[self performSelector:@selector(sendUserInfoRequest) withObject:nil afterDelay:2.0];
-		return;
-	}
-	
-	@autoreleasepool 
-	{
-		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
-		
-		[request setValue:@"user.get" forKey:@"method"];
-		[request setValue:loginUserID forKey:@"params"];
-		
-		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(handleMessage:));
-	}
-	
-	[loginUserID release];
 }
 
 - (void)viewDidUnload
@@ -372,46 +350,57 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	return Nil;
 }
 
-- (void)handleMessage:(id)dict
-{
+#pragma mark - message
 
-	if (![dict isKindOfClass: [NSDictionary class]])
+- (void) sendUserInfoRequest
+{	
+	NSNumber *loginUserID = [GET_USER_ID() retain];
+	
+	if (nil == loginUserID)
 	{
-		LOG(@"Error handle non dict object");
-		return;
+		[LoginManager requestWithHandler:@selector(sendUserInfoRequest) andTarget:self];
 	}
 	
-	LOG(@"%@", dict);
+	[ProfileMananger requestUserProfileWithNumberID:loginUserID andHandler:@selector(handleMessage) andTarget:self];
 	
-	NSDictionary *messageDict = (NSDictionary*)dict;
+	[loginUserID release];
+}
+
+- (void) handleMessage
+{
 	
-	NSString *userName = [NSString stringWithFormat:@"姓名：%@", [[messageDict objectForKey:@"result"] objectForKey:@"nick"]];
-	NSString *city = [NSString stringWithFormat:@"所在地：%@", [[messageDict objectForKey:@"result"] objectForKey:@"city"]];
+	NSDictionary *userProfile = [ProfileMananger getObjectWithNumberID:GET_USER_ID()];
 	
-	NSString *introduceString = [[messageDict objectForKey:@"result"] objectForKey:@"intro"];
-	
-	self.userInfoArray = [NSArray arrayWithObjects:
-			      [NSArray arrayWithObjects:@"个人信息", userName, city, nil],
-			      [NSArray arrayWithObjects:@"头像", @"头像", nil],
-			      [NSArray arrayWithObjects:@"个人介绍", introduceString, nil],
-			      nil];
-	
-	self.avatorID = [[messageDict objectForKey:@"result"] objectForKey:@"avatar"];
-	
-	self.cellChanged = YES;
-	
-	[self refreshTableView];
+	if (nil != userProfile)
+	{		
+		NSString *userName = [NSString stringWithFormat:@"姓名：%@", [userProfile valueForKey:@"nick"]];
+		NSString *city = [NSString stringWithFormat:@"所在地：%@", [userProfile valueForKey:@"city"]];
+		
+		NSString *introduceString = [userProfile valueForKey:@"intro"];
+		
+		self.userInfoArray = [NSArray arrayWithObjects:
+				      [NSArray arrayWithObjects:@"个人信息", userName, city, nil],
+				      [NSArray arrayWithObjects:@"头像", @"头像", nil],
+				      [NSArray arrayWithObjects:@"个人介绍", introduceString, nil],
+				      nil];
+		
+		self.avatorID = [userProfile valueForKey:@"avatar"];
+		
+		self.cellChanged = YES;
+		
+		[self refreshTableView];
+	}
 }
 
 - (void)refreshTableView
-{
-	LOG(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
-
+{	
 	if (YES == [self.view isKindOfClass:[UITableView class]])
 	{
 		[(UITableView *)self.view reloadData];
 	}
 }
+
+
 
 @end
 

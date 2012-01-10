@@ -24,6 +24,7 @@ void SET_USER_ID(NSNumber *ID)
 	{
 		return;
 	}
+	
 	[gs_login_user_id release];
 	gs_login_user_id = [ID retain];
 }

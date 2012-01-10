@@ -16,7 +16,7 @@
 #import "EventManager.h"
 
 const static uint32_t EVENT_REFRESH_WINDOW = 10;
-const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
+const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 5;
 
 @interface EventPage () <EGORefreshTableHeaderDelegate, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 {	
@@ -25,6 +25,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 	UITableView *_rightColumn;
 	FoodPage *_foodPage;
 	EGORefreshTableHeaderView *_refreshHeaderView;
+	BOOL _pushed;
 }
 
 @property (strong) UIScrollView *scrollColumn;
@@ -32,6 +33,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 @property (strong) UITableView *rightColumn;
 @property (strong) FoodPage *foodPage;
 @property (strong) EGORefreshTableHeaderView *refreshHeaderView;
+@property (assign) BOOL pushed;
 
 // event message
 - (void) requestOlderEvent;
@@ -48,6 +50,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 1;
 @synthesize rightColumn = _rightColumn;
 @synthesize foodPage = _foodPage;
 @synthesize refreshHeaderView = _refreshHeaderView;
+@synthesize pushed = _pushed;
 
 static CGFloat gs_frame_width;
 static CGFloat gs_frame_height;
@@ -158,6 +161,8 @@ static CGFloat gs_frame_height;
 		self.refreshHeaderView = view;
 		[view release];
 	}
+	
+	self.pushed = NO;
 }
 
 - (void) viewDidLoad
@@ -250,7 +255,7 @@ static CGFloat gs_frame_height;
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+{	
 	static NSString *CellIdentifier = @"Cell";
 
 	EventCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -286,11 +291,17 @@ static CGFloat gs_frame_height;
 #pragma mark - Table view delegate
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{	
+{		
 	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
 	if (eventIndex < [[EventManager eventKeyArray] count] && 0 <= eventIndex)
 	{
+		if (self.pushed)
+		{
+			return nil;
+		}
+		
+		self.pushed = YES;
 		
 		return indexPath;
 	}

@@ -1,7 +1,4 @@
 //
-//  ImgMessage.h
-//  Prototype
-//
 //  Created by Adrian Lee on 1/6/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
@@ -11,6 +8,8 @@
 #import "ObjectManager.h"
 
 @interface ImageManager : ObjectManager
-+ (void) requestImageWithID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
++ (void) requestImageWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
 + (void) requestImageWithNumberIDArray:(NSArray *)numberIDArray;
++ (NSNumber *) getImageSizeWithNumberID:(NSNumber *)ID;
++ (void) setImageSize:(NSNumber *)size withNumberID:(NSNumber *)ID;
 @end

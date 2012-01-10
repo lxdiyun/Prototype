@@ -11,6 +11,9 @@
 		4820461C14A45E69001120C1 /* EventPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820461914A45E69001120C1 /* EventPage.m */; };
 		4832407C14A9A4150084584F /* AvatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatorCell.m */; };
 		4832408914A9B9BC0084584F /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832408814A9B9BC0084584F /* EventCell.m */; };
+		487C95F814BA88C20075FFCD /* ProfileMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95F714BA88C20075FFCD /* ProfileMananger.m */; };
+		487C95FC14BAD1DD0075FFCD /* CommentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95FB14BAD1DD0075FFCD /* CommentManager.m */; };
+		487C95FF14BAEA420075FFCD /* ListObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95FE14BAEA420075FFCD /* ListObjectManager.m */; };
 		4889E0BA14AC10FB00067D66 /* MessageWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4889E0B914AC10FB00067D66 /* MessageWriter.m */; };
 		4889E0BD14AC11DF00067D66 /* MessageReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4889E0BC14AC11DF00067D66 /* MessageReader.m */; };
 		48917C2714A857B600C72AE9 /* ImageV.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C2614A857B600C72AE9 /* ImageV.m */; };
@@ -64,6 +67,12 @@
 		4832407A14A9A4150084584F /* AvatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AvatorCell.m; path = View/UserInformation/AvatorCell.m; sourceTree = "<group>"; };
 		4832408714A9B9BC0084584F /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventCell.h; path = View/Event/EventCell.h; sourceTree = "<group>"; };
 		4832408814A9B9BC0084584F /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventCell.m; path = View/Event/EventCell.m; sourceTree = "<group>"; };
+		487C95F614BA88C20075FFCD /* ProfileMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileMananger.h; sourceTree = "<group>"; };
+		487C95F714BA88C20075FFCD /* ProfileMananger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileMananger.m; sourceTree = "<group>"; };
+		487C95FA14BAD1DD0075FFCD /* CommentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentManager.h; sourceTree = "<group>"; };
+		487C95FB14BAD1DD0075FFCD /* CommentManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentManager.m; sourceTree = "<group>"; };
+		487C95FD14BAEA420075FFCD /* ListObjectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListObjectManager.h; sourceTree = "<group>"; };
+		487C95FE14BAEA420075FFCD /* ListObjectManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListObjectManager.m; sourceTree = "<group>"; };
 		4889E0B814AC10FB00067D66 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		4889E0B914AC10FB00067D66 /* MessageWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageWriter.m; sourceTree = "<group>"; };
 		4889E0BC14AC11DF00067D66 /* MessageReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageReader.m; sourceTree = "<group>"; };
@@ -187,6 +196,8 @@
 		48B76A6E14B875F200FD8646 /* ObjectManager */ = {
 			isa = PBXGroup;
 			children = (
+				487C95FD14BAEA420075FFCD /* ListObjectManager.h */,
+				487C95FE14BAEA420075FFCD /* ListObjectManager.m */,
 				48B76A8214B9E51B00FD8646 /* LoginManager.h */,
 				48B76A8314B9E51B00FD8646 /* LoginManager.m */,
 				48B76A7714B9D3C500FD8646 /* EventManager.h */,
@@ -195,6 +206,10 @@
 				48B76A7A14B9D3C600FD8646 /* ImageManager.m */,
 				48B76A6F14B8760700FD8646 /* ObjectManager.h */,
 				48B76A7014B8760700FD8646 /* ObjectManager.m */,
+				487C95F614BA88C20075FFCD /* ProfileMananger.h */,
+				487C95F714BA88C20075FFCD /* ProfileMananger.m */,
+				487C95FA14BAD1DD0075FFCD /* CommentManager.h */,
+				487C95FB14BAD1DD0075FFCD /* CommentManager.m */,
 			);
 			path = ObjectManager;
 			sourceTree = "<group>";
@@ -467,6 +482,9 @@
 				48B76A7B14B9D3C600FD8646 /* EventManager.m in Sources */,
 				48B76A7C14B9D3C600FD8646 /* ImageManager.m in Sources */,
 				48B76A8414B9E51B00FD8646 /* LoginManager.m in Sources */,
+				487C95F814BA88C20075FFCD /* ProfileMananger.m in Sources */,
+				487C95FC14BAD1DD0075FFCD /* CommentManager.m in Sources */,
+				487C95FF14BAEA420075FFCD /* ListObjectManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

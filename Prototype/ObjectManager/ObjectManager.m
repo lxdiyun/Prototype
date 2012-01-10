@@ -61,7 +61,19 @@
 	return nil;
 }
 
-#pragma mark - message handler
+#pragma mark - updating flag
+
+- (void) markUpdatingStringID:(NSString *)ID
+{
+	[self.updatingDict setValue:[NSNumber numberWithBool:YES] forKey:ID];
+}
+
+- (void) clearnUpdatingStringID:(NSString *)ID
+{
+	[self.updatingDict setValue:[NSNumber numberWithBool:NO] forKey:ID];
+}
+
+#pragma mark - resoponder
 
 - (void) checkAndPerformResponderWithID:(NSString *)ID
 {
@@ -97,8 +109,6 @@
 			responderArray = [[self.responderArrayDict valueForKey:ID] retain];
 			[self.responderArrayDict setValue:nil forKey:ID];
 			
-			
-			
 			if (nil != responderArray)
 			{
 				for (MessageResponder *responder in responderArray)
@@ -110,51 +120,7 @@
 			[responderArray release];
 		}
 	}
-
 }
-
-- (void) handlerForSingleResult:(id)result
-{
-	if (![result isKindOfClass: [NSDictionary class]])
-	{
-		LOG(@"Error handle non dict object");
-		return;
-	}
-	
-	NSDictionary *objectDict = [result valueForKey:@"result"];
-	NSString *objectID = [[objectDict valueForKey:@"id"] stringValue];
-	
-	[self.objectDict setValue:objectDict forKey:objectID];
-	[self.updatingDict setValue:[NSNumber numberWithBool:NO] forKey:objectID];
-	[self checkAndPerformResponderWithID:objectID];
-}
-
-- (void) handlerForArrayResult:(id)result
-{
-	if (![result isKindOfClass: [NSDictionary class]])
-	{
-		LOG(@"Error handle non dict object");
-		return;
-	}
-	
-	NSMutableArray *newObjectArray = [[NSMutableArray alloc] init];
-	
-	
-	for (NSDictionary *object in [result objectForKey:@"result"]) 
-	{
-		NSString *objectID = [[object valueForKey:@"id"] stringValue];
-		
-		[self.objectDict setValue:object forKey:objectID];
-		[self.updatingDict setValue:[NSNumber numberWithBool:NO] forKey:objectID];
-		[newObjectArray addObject:objectID];
-	}
-	
-	[self checkAndPerformResponderWithStringIDArray:newObjectArray];
-	[newObjectArray release];
-
-}
-
-#pragma mark - message request
 
 - (void) bindID:(NSString *)ID withResponder:(MessageResponder*)responder
 {
@@ -175,10 +141,50 @@
 	}
 }
 
-- (void) markUpdatingStringID:(NSString *)ID
+#pragma mark - message handler
+
+- (void) handlerForSingleResult:(id)result
 {
-	[self.updatingDict setValue:[NSNumber numberWithBool:YES] forKey:ID];
+	if (![result isKindOfClass: [NSDictionary class]])
+	{
+		LOG(@"Error handle non dict object");
+		return;
+	}
+	
+	NSDictionary *objectDict = [result valueForKey:@"result"];
+	NSString *objectID = [[objectDict valueForKey:@"id"] stringValue];
+	
+	[self.objectDict setValue:objectDict forKey:objectID];
+	[self clearnUpdatingStringID:objectID];
+	[self checkAndPerformResponderWithID:objectID];
 }
+
+- (void) handlerForArrayResult:(id)result
+{
+	if (![result isKindOfClass: [NSDictionary class]])
+	{
+		LOG(@"Error handle non dict object");
+		return;
+	}
+	
+	NSMutableArray *newObjectArray = [[NSMutableArray alloc] init];
+	
+	
+	for (NSDictionary *object in [result objectForKey:@"result"]) 
+	{
+		NSString *objectID = [[object valueForKey:@"id"] stringValue];
+		
+		[self.objectDict setValue:object forKey:objectID];
+		[self clearnUpdatingStringID:objectID];
+		[newObjectArray addObject:objectID];
+	}
+	
+	[self checkAndPerformResponderWithStringIDArray:newObjectArray];
+	[newObjectArray release];
+
+}
+
+#pragma mark - message request
 
 - (void) requestObjectWithRequest:(NSDictionary *)request
 {
@@ -220,14 +226,39 @@
 	[self bindStringID:[ID stringValue] withHandler:handler andTarget:target];
 }
 
-+ (void) sendObjectRequest:(NSDictionary *)request
++ (void) sendObjectRequest:(NSDictionary *)request withNumberID:(NSNumber *)ID
 {
-	[[self getInstnace] requestObjectWithRequest:request];
+	if (NO == [self isUpdatingObjectNumberID:ID])
+	{
+		[self markUpdatingNumberID:ID];
+		[request setValue:ID  forKey:@"params"];
+		[[self getInstnace] requestObjectWithRequest:request];
+	}
 }
 
-+ (void) sendObjectArrayRequest:(NSDictionary *)request
++ (void) sendObjectArrayRequest:(NSDictionary *)request withNumberIDArray:(NSArray *)IDArray;
 {
-	[[self getInstnace] requestObjectArrayWithRequest:request];
+	if (nil != IDArray)
+	{
+		NSMutableArray *checkedArray = [[NSMutableArray alloc] init];
+		
+		for (NSNumber *ID in IDArray) 
+		{
+			if (NO == [self isUpdatingObjectNumberID:ID])
+			{
+				[checkedArray addObject:ID];
+				[self markUpdatingNumberID:ID];
+			}
+		}
+		
+		if (0 < checkedArray.count)
+		{
+			[request setValue:checkedArray  forKey:@"params"];
+			[[self getInstnace] requestObjectArrayWithRequest:request];
+		}
+		
+		[checkedArray release];
+	}
 }
 
 + (void) markUpdatingStringID:(NSString *)ID
@@ -246,6 +277,16 @@
 	{
 		[self markUpdatingNumberID:ID];
 	}
+}
+
++ (void) cleanUpdatingStringID:(NSString *)ID
+{
+	[[self getInstnace] clearnUpdatingStringID:ID];
+}
+
++ (void) cleanUpdatingNumberID:(NSNumber *)ID
+{
+	[self cleanUpdatingStringID:[ID stringValue]];
 }
 
 + (BOOL) isUpdatingObjectStringID:(NSString *)ID

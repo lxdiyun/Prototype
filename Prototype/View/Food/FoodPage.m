@@ -75,6 +75,7 @@
 	{
 		[self.view performSelector:@selector(reloadData)];
 	}
+	self.title = [self.foodDict valueForKey:@"name"];
 	[super viewWillAppear:animated];
 }
 

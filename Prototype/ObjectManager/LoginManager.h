@@ -1,7 +1,4 @@
 //
-//  LoginMessage.h
-//  Prototype
-//
 //  Created by Adrian Lee on 12/29/11.
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
@@ -10,6 +7,7 @@
 
 #import "ObjectManager.h"
 
-@interface LoginManager : NSObject
+@interface LoginManager : ObjectManager
 + (void) request;
++ (void) requestWithHandler:(SEL)handler andTarget:(id)target;
 @end

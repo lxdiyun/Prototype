@@ -1,7 +1,4 @@
 //
-//  EventMessage.m
-//  Prototype
-//
 //  Created by Adrian Lee on 12/30/11.
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
@@ -12,272 +9,186 @@
 #import "Message.h"
 #import "ImageManager.h"
 
-typedef enum EVENT_MESSAGE_TYPE_ENUM
-{
-	REQUEST_NEWER = 0x0,
-	REQUEST_OLDER = 0x1,
-	MAX_EVENT_MESSAGE = 0x2
-} EVENT_MESSAGE_TYPE;
-
-@interface EventManager () 
-{
-	NSArray *_eventKeyArray;
-	NSDate *_lastUpdatedDate;
-}
-@property (retain) NSArray *eventKeyArray;
-@property (retain) NSDate *lastUpdatedDate;
-
-@end
+static NSString *gs_fakeEventID = nil;
 
 @implementation EventManager
-
-@synthesize eventKeyArray = _eventKeyArray;
-@synthesize lastUpdatedDate = _lastUpdatedDate;
-
-#pragma mark - life circle
-
-- (void) dealloc 
-{
-	self.eventKeyArray = nil;
-	self.lastUpdatedDate = nil;
-	
-	[super dealloc];
-}
 
 #pragma mark - singleton
 
 DEFINE_SINGLETON(EventManager);
 
-#pragma mark - message
+#pragma mark - life circle
 
-- (void)messageHandler:(id)dict
+- (id) init 
 {
-	if (![dict isKindOfClass: [NSDictionary class]])
+	self = [super init];
+	
+	if (nil != self) 
 	{
-		return;
+		if (nil == gs_fakeEventID)
+		{
+			gs_fakeEventID = [[NSString alloc] initWithFormat:@"%d", 0x1];
+		}
 	}
+	
+	return self;
+}
 
+- (void) dealloc
+{
+	gs_fakeEventID = nil;
+	[super dealloc];
+}
+
+#pragma mark - overwrite super class
+
+- (void) messageHandler:(id)dict withListID:(NSString *)ID
+{
+	[super messageHandler:dict withListID:ID];
+	
 	NSDictionary *messageDict = [(NSDictionary*)dict retain];
-
 	NSMutableArray *newPicArray = [[NSMutableArray alloc] init];
 	
-	for (NSDictionary *event in [messageDict objectForKey:@"result"]) 
+	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
 	{
-		[self.objectDict setValue:event forKey:[[event valueForKey:@"id"] stringValue]];
-
-		NSNumber *picID = [[event valueForKey:@"obj"] valueForKey:@"pic"];
+		NSNumber *picID = [[object valueForKey:@"obj"] valueForKey:@"pic"];
 		if (nil == [ImageManager getObjectWithNumberID:picID])
 		{
 			[newPicArray addObject:picID];
 		}
-	}
 
+	}
+	
 	// buffer the new image info
 	[ImageManager requestImageWithNumberIDArray:newPicArray];
-
+	
 	[newPicArray release];
-
-	// update event ID array
-	self.eventKeyArray = [[self.objectDict allKeys] sortedArrayUsingFunction:ID_SORTER context:nil];
-
 	[messageDict release];
 }
 
-- (void) requestHandlerWithType:(EVENT_MESSAGE_TYPE)type withDict:(id)dict
-{	
-	[self messageHandler:dict];
+#pragma mark - send request message
+
+- (void) setGetMethodForRequest:(NSMutableDictionary *)request
+{
+	[request setValue:@"event.get" forKey:@"method"];
+}
+
+-(void) sendRequestNewerWithCount:(uint32_t)count
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	uint32_t newestKey = [self getNewestKeyWithID:gs_fakeEventID];
 	
-	NSString *typeID = [[NSString alloc] initWithFormat:@"%d", type];
-	MessageResponder *responder = [self.responderArrayDict valueForKey:typeID];
+	[self setGetMethodForRequest:request];
 	
-	[self.updatingDict setValue:[NSNumber numberWithBool:NO] forKey:typeID];
-	
-	if (nil != responder)
+	if (0 < newestKey)
 	{
-		[responder perform];
+		[self setParms:params withCursor:newestKey count:count forward:NO];
+	}
+	else
+	{
+		[self setParms:params withCursor:-1 count:count forward:YES];
 	}
 	
-	[typeID release];
-}
-
-- (void) requestNewerHandler:(id)dict
-{
-	[self requestHandlerWithType:REQUEST_NEWER withDict:dict];
-}
-
-- (void) requestOlderHandler:(id)dict
-{
-	[self requestHandlerWithType:REQUEST_OLDER withDict:dict];
-}
-
-- (NSDictionary *) requestWithCursor:(int32_t)cursor count:(uint32_t)count forward:(BOOL)forward
-{	
-	NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
-	NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
-	
-	[params setValue:[NSNumber numberWithInteger:cursor] forKey:@"cursor"];
-	[params setValue:[NSNumber numberWithInteger:count] forKey:@"count"];
-	
-	[params setValue:[NSNumber numberWithBool:forward] forKey:@"forwarding"];
-	
-	[request setValue:@"event.get" forKey:@"method"];
 	[request setValue:params forKey:@"params"];
 	
-	return request;
+	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageDispatcher:))];
+	
+	[self bindMessageID:messageID withListID:[gs_fakeEventID intValue] withType:REQUEST_NEWER];
+	
+	[messageID release];
+	[params release];
+	[request release];
 }
 
-- (void) bindMessageType:(EVENT_MESSAGE_TYPE)type withHandler:(SEL)handler andTarget:(id)target
+-(void) sendRequestOlderWithCount:(uint32_t)count
 {
-	@autoreleasepool 
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	uint32_t oldestKey = [self getOldestKeyWithID:gs_fakeEventID];
+	
+	[self setGetMethodForRequest:request];
+	
+	if (0 < oldestKey)
 	{
-		if ((nil != handler) && (nil != target))
-		{
-			NSString *typeID = [[NSString alloc] initWithFormat:@"%d", type];
-			MessageResponder *responder = [[MessageResponder alloc] init];
-			
-			responder.target = target;
-			responder.handler = handler;
-			[self.responderArrayDict setValue:responder forKey:typeID];
-			
-			[responder release];
-			[typeID release];
-		}
+		[self setParms:params withCursor:oldestKey count:count forward:YES];
+		[request setValue:params forKey:@"params"];
+		
+		
 	}
-}
-
-- (void) requestNewerWithCount:(uint32_t)count
-{
-	@autoreleasepool 
+	else
 	{
-		int32_t newestEventID = -1;
-		NSDictionary *request;
-		
-		if (nil != self.eventKeyArray)
-		{
-			newestEventID = [[self.eventKeyArray lastObject] integerValue];
-		}
-		
-		self.lastUpdatedDate = [NSDate date];
-		
-		if (0 < newestEventID)
-		{
-			request = [self requestWithCursor:newestEventID count:count forward:false];
-		}
-		else
-		{
-			request = [self requestWithCursor:-1 count:count forward:true];
-		}
-		
-		SEND_MSG_AND_BIND_HANDLER(request, self, @selector(requestNewerHandler:));
+		[self setParms:params withCursor:-1 count:count forward:YES];
 	}
-}
-
-- (void) requestOlderWithCount:(uint32_t)count
-{
-	@autoreleasepool 
-	{
-		int32_t oldestEventID = -1;
-		NSDictionary *request;
-		
-		if (nil != self.eventKeyArray)
-		{
-			oldestEventID = [[self.eventKeyArray lastObject]  integerValue];
-		}
-		
-		if (0 < oldestEventID)
-		{
-			request = [self requestWithCursor:oldestEventID count:count forward:true];
-		}
-		else
-		{
-			// empty event list, also need to updae the last updated date 
-			self.lastUpdatedDate = [NSDate date];
-			request = [self requestWithCursor:-1 count:count forward:true];
-		}
-		
-		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
-						       self, 
-						       @selector(requestOlderHandler:), 
-						       NORMAL_PRIORITY);
-	}
-}
-
-- (BOOL) requestUpdateWith:(EVENT_MESSAGE_TYPE)type
-{
-	@autoreleasepool 
-	{
-		@synchronized (self)
-		{
-			NSNumber *typeID = [[[NSNumber alloc] initWithInt:type] autorelease];
-			if (YES == [[self class] isUpdatingObjectNumberID:typeID])
-			{
-				return NO;
-			}
-			
-			[[self class] markUpdatingNumberID:typeID];
-			
-			return YES;
-		}
-	}	
-}
-
-- (BOOL) isUpdatingMessage:(EVENT_MESSAGE_TYPE)type
-{
-	@autoreleasepool 
-	{
-		return [[self class] isUpdatingObjectNumberID:[NSNumber numberWithInt:type]];
-	}
-
+	
+	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageDispatcher:))];
+	
+	[self bindMessageID:messageID withListID:[gs_fakeEventID intValue] withType:REQUEST_OLDER];
+	
+	[messageID release];
+	[params release];
+	[request release];
 }
 
 #pragma mark - interface
 
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	if (NO == [[self getInstnace] requestUpdateWith:REQUEST_NEWER])
+	if (NO == [[self getInstnace] requestUpdateWith:REQUEST_NEWER withID:gs_fakeEventID])
 	{
 		return;
 	}
 
 	// bind target
-	[[self getInstnace] bindMessageType:REQUEST_NEWER withHandler:handler andTarget:target];
+	[[self getInstnace] bindMessageType:REQUEST_NEWER 
+				     withListID:gs_fakeEventID 
+				withHandler:handler 
+				  andTarget:target];
 
 	// then send request
-	[[self getInstnace] requestNewerWithCount:count];
+	[[self getInstnace] sendRequestNewerWithCount:count];
 }
 
 + (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	if (NO == [[self getInstnace] requestUpdateWith:REQUEST_OLDER])
+	if (0 >= [[self getInstnace] getOldestKeyWithID:gs_fakeEventID])
+	{
+		[self requestNewerCount:count withHandler:handler andTarget:target];
+		return;
+	}
+	if (NO == [[self getInstnace] requestUpdateWith:REQUEST_OLDER withID:gs_fakeEventID])
 	{
 		return;
 	}
 
 	// bind target
-	[[self getInstnace] bindMessageType:REQUEST_OLDER withHandler:handler andTarget:target];
+	[[self getInstnace] bindMessageType:REQUEST_OLDER withListID:gs_fakeEventID withHandler:handler andTarget:target ];
 
 	// then send request
-	[[self getInstnace] requestOlderWithCount:count];
+	[[self getInstnace] sendRequestOlderWithCount:count];
 }
 
 + (NSArray *) eventKeyArray
 {
-	return [self getInstnace].eventKeyArray; 
+	return [[[self getInstnace] objectKeyArrayDict] valueForKey:gs_fakeEventID]; 
 }
 
 + (BOOL) isNewerUpdating
 {
-	return [[self getInstnace] isUpdatingMessage:REQUEST_NEWER];
-}
-
-+ (BOOL) isOlderUpdating
-{
-	return [[self getInstnace] isUpdatingMessage:REQUEST_OLDER];
+	@autoreleasepool 
+	{
+		return [[self getInstnace] isUpatringWithType:REQUEST_NEWER withListID:gs_fakeEventID];
+	}
 }
 
 + (NSDate *)lastUpdatedDate
 {
-	return [self getInstnace].lastUpdatedDate;
+	return [[[self getInstnace] lastUpdatedDateDict] valueForKey:gs_fakeEventID];
+}
+
++ (NSDictionary *) getObjectWithStringID:(NSString *)objectID
+{
+	return [[self getInstnace] getObject:objectID inList:gs_fakeEventID];
 }
 
 @end
