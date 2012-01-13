@@ -17,26 +17,32 @@ typedef enum MESSAGE_TYPE_ENUM
 @property (retain) NSMutableDictionary *objectKeyArrayDict;
 @property (retain) NSDictionary *lastUpdatedDateDict;
 // object in list
-- (id) getObject:(NSString *)objectID inList:(NSString *)listID;
++ (id) getObject:(NSString *)objectID inList:(NSString *)listID;
 // updating flag
-- (BOOL) isUpatringWithType:(MESSAGE_TYPE)type withListID:(NSString *)ID;
-- (BOOL) requestUpdateWith:(MESSAGE_TYPE)type withID:(NSString *)ID;
-// bind and request message
-- (void) bindMessageType:(MESSAGE_TYPE)type 
-		  withListID:(NSString *)ID 
-	     withHandler:(SEL)handler 
-	       andTarget:(id)target;
-- (void) bindMessageID:(NSString *)messageID 
-	    withListID:(uint32_t)listID 
-	      withType:(MESSAGE_TYPE)type;
++ (BOOL) isUpdatingWithType:(MESSAGE_TYPE)type withListID:(NSString *)listID;
+// update date
++ (NSDate *)lastUpdatedDateForList:(NSString *)listID;
+// message request - get mthod
++ (void) requestNewerWithListID:(NSString *)listID 
+		       andCount:(uint32_t)count 
+		    withHandler:(SEL)handler 
+		      andTarget:(id)target;
++ (void) requestOlderWithListID:(NSString *)listID 
+		       andCount:(uint32_t)count 
+		    withHandler:(SEL)handler 
+		      andTarget:(id)target;
+// key array
++ (NSArray *) keyArrayForList:(NSString *)listID;
+
+// method that must be overwrite by sub class
+// request get method
+- (NSString *) getMethod;
+- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID;
+
+// method that can be overwrite by sub class
 // message handler
 - (void) messageHandler:(id)dict withListID:(NSString *)ID;
-// build message request
-- (void ) setParms:(NSMutableDictionary*)params 
-	withCursor:(int32_t)cursor 
-	     count:(uint32_t)count 
-	   forward:(BOOL)forward;
-// message key
-- (uint32_t) getNewestKeyWithID:(NSString *)ID;
-- (uint32_t) getOldestKeyWithID:(NSString *)ID;
+
+
+
 @end

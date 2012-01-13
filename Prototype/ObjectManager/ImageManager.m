@@ -47,38 +47,6 @@ DEFINE_SINGLETON(ImageManager);
 	[super dealloc];
 }
 
-# pragma mark - request image
-
-+ (void) requestImageWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
-{
-	if (nil != ID)
-	{
-		// bind handler
-		[ImageManager bindNumberID:ID withHandler:handler andTarget:target];	
-		
-		// then send message
-		NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-		
-		[request setValue:@"img.get" forKey:@"method"];
-		
-		[self sendObjectRequest:request withNumberID:ID];
-		
-		[request release];
-	}
-}
-
-+ (void) requestImageWithNumberIDArray:(NSArray *)numberIDArray
-{	
-	// no handler just send the message
-	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-	
-	[request setValue:@"img.get" forKey:@"method"];
-	
-	[self sendObjectArrayRequest:request withNumberIDArray:numberIDArray];
-	
-	[request release];
-}
-
 #pragma mark - image size
 
 + (NSNumber *) getImageSizeWithNumberID:(NSNumber *)ID
@@ -95,6 +63,14 @@ DEFINE_SINGLETON(ImageManager);
 	{
 		[[[self getInstnace] imageSizeDict] setValue:size  forKey:[ID stringValue]];
 	}
+}
+
+#pragma mark - overwrite super class method
+#pragma mark - overwrite request
+
++ (NSString *)getMethod
+{
+	return @"img.get";
 }
 
 @end

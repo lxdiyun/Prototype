@@ -163,7 +163,7 @@ NSData * POP_BUFFER(void)
 	// TODO remove log
 	if (4 < popBuffer.length)
 	{
-		// CLOG(@"%s", popBuffer.bytes + 4);
+		CLOG(@"%s", popBuffer.bytes + 4);
 	}
 	
 	return popBuffer;

@@ -15,8 +15,8 @@
 #import "EventCell.h"
 #import "EventManager.h"
 
-const static uint32_t EVENT_REFRESH_WINDOW = 10;
-const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 5;
+const static uint32_t EVENT_REFRESH_WINDOW = 21;
+const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 
 @interface EventPage () <EGORefreshTableHeaderDelegate, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource>
 {	
@@ -87,7 +87,7 @@ static CGFloat gs_frame_height;
 							      gs_frame_width, 
 							      gs_frame_height)];
 		view.delegate = self;
-		view.showsVerticalScrollIndicator = YES;
+		view.showsVerticalScrollIndicator = NO;
 		view.backgroundColor = [UIColor clearColor];
 		view.bounces = NO;
 		view.scrollsToTop = NO;
@@ -134,6 +134,7 @@ static CGFloat gs_frame_height;
 		view.delegate = self;
 		view.dataSource = self;
 		view.backgroundColor = [UIColor clearColor];
+		view.showsVerticalScrollIndicator = YES;
 		view.separatorStyle = UITableViewCellSeparatorStyleNone;
 		view.alwaysBounceVertical = NO;
 		view.bounces = NO;
@@ -368,10 +369,10 @@ static CGFloat gs_frame_height;
 #pragma mark - util
 - (void) refreshTableView
 {
-	static uint32_t s_lassEventArrayCount = 0;
+	static uint32_t s_lastEventArrayCount = 0;
 	uint32_t eventArrayCount = [[EventManager eventKeyArray] count];
 
-	if (s_lassEventArrayCount < eventArrayCount) 
+	if (s_lastEventArrayCount < eventArrayCount) 
 	{
 		if ([self.leftColumn respondsToSelector:@selector(reloadData)])
 		{
@@ -386,11 +387,17 @@ static CGFloat gs_frame_height;
 		self.leftColumn.bounces = YES;
 		self.rightColumn.bounces = YES;
 
-		s_lassEventArrayCount = eventArrayCount;
+		s_lastEventArrayCount = eventArrayCount;
 	}
 }
 
 #pragma mark - UIScrollViewDelegate Methods
+static UIScrollView *trigerView = nil;
+
+- (void) scrollViewWillBeginDragging:(UIScrollView *)view
+{
+	trigerView = view;
+}
 
 - (void) scrollViewDidScroll:(UIScrollView *)view
 {	
@@ -400,7 +407,13 @@ static CGFloat gs_frame_height;
 	}
 	else if (self.rightColumn == view)
 	{
+		
 		self.leftColumn.contentOffset = view.contentOffset;
+		
+		if (self.leftColumn == trigerView)
+		{
+			[self.rightColumn flashScrollIndicators];
+		}
 	}
 	
 	[self.refreshHeaderView egoRefreshScrollViewDidScroll:view];
@@ -408,6 +421,7 @@ static CGFloat gs_frame_height;
 
 - (void) scrollViewDidEndDragging:(UIScrollView *)view willDecelerate:(BOOL)decelerate
 {
+
 	[self.refreshHeaderView egoRefreshScrollViewDidEndDragging:view];
 }
 

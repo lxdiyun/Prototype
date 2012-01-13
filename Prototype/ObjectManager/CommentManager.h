@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "ObjectManager.h"
+#import "ListObjectManager.h"
 
-@interface CommentManager : ObjectManager
-
+@interface CommentManager : ListObjectManager
 @end

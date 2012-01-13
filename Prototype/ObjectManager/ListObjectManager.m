@@ -82,36 +82,53 @@
 	[super dealloc];
 }
 
-#pragma mark - object in list
-- (id) getObject:(NSString *)objectID inList:(NSString *)listID;
+
++ (id) getInstnace
 {
-	return [[self.objectDict valueForKey:listID] valueForKey:objectID];
+	LOG(@"Error should use the subclass method");
+	return nil;
 }
 
+#pragma mark - object in list
+
++ (id) getObject:(NSString *)objectID inList:(NSString *)listID
+{
+	if (!CHECK_STRING(listID))
+	{
+		return nil;	
+	}
+	
+	return [[[[self getInstnace] objectDict] valueForKey:listID] valueForKey:objectID];
+}
 
 #pragma mark - updating flag
 
-- (NSMutableDictionary *) getTypeUpdatingDict:(MESSAGE_TYPE)type
++ (NSMutableDictionary *) getTypeUpdatingDict:(MESSAGE_TYPE)type
 {
 	NSString *typeString = [[[NSString alloc] initWithFormat:@"%d", type] autorelease];
 	
-	NSMutableDictionary *typeDict = [self.updatingDict valueForKey:typeString];
+	NSMutableDictionary *typeDict = [[[self getInstnace] updatingDict] valueForKey:typeString];
 	if (nil == typeDict)
 	{
 		
 		typeDict = [[[NSMutableDictionary alloc] init] autorelease];
-		[self.updatingDict setValue:typeDict forKey:typeString];
+		[[[self getInstnace] updatingDict] setValue:typeDict forKey:typeString];
 	}
 	
 	return typeDict;
 }
 
-- (void) markUpdatingWithType:(MESSAGE_TYPE)type withListID:(NSString *)ID
++ (void) markUpdatingWithType:(MESSAGE_TYPE)type withListID:(NSString *)listID
 {
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+
 	@autoreleasepool 
 	{
 		NSMutableDictionary *typeDict = [self getTypeUpdatingDict:type];
-		[typeDict setValue:[NSNumber numberWithBool:YES] forKey:ID];
+		[typeDict setValue:[NSNumber numberWithBool:YES] forKey:listID];
 	}
 }
 
@@ -119,18 +136,23 @@
 {
 	@autoreleasepool 
 	{
-		NSMutableDictionary *typeDict = [self getTypeUpdatingDict:type];
+		NSMutableDictionary *typeDict = [[self class] getTypeUpdatingDict:type];
 		[typeDict setValue:[NSNumber numberWithBool:NO] forKey:ID];
 		
 	}
 }
 
-- (BOOL) isUpatringWithType:(MESSAGE_TYPE)type withListID:(NSString *)ID
++ (BOOL) isUpdatingWithType:(MESSAGE_TYPE)type withListID:(NSString *)listID
 {
+	if (!CHECK_STRING(listID))
+	{
+		return NO;	
+	}
+
 	@autoreleasepool 
 	{
 		NSMutableDictionary *typeDict = [self getTypeUpdatingDict:type];
-		NSNumber *updating = [typeDict valueForKey:ID];
+		NSNumber *updating = [typeDict valueForKey:listID];
 		
 		if (nil != updating)
 		{
@@ -143,19 +165,35 @@
 	}
 }
 
-- (BOOL) requestUpdateWith:(MESSAGE_TYPE)type withID:(NSString *)ID
++ (BOOL) requestUpdateWith:(MESSAGE_TYPE)type withListID:(NSString *)listID
 {
+	if (!CHECK_STRING(listID))
+	{
+		return NO;	
+	}
+
 	@synchronized (self)
 	{
-		if (YES == [self isUpatringWithType:type withListID:ID])
+		if (YES == [self isUpdatingWithType:type withListID:listID])
 		{
 			return NO;
 		}
 		
-		[self markUpdatingWithType:type withListID:ID];
+		[self markUpdatingWithType:type withListID:listID];
 		
 		return YES;
 	}
+}
+
+#pragma mark - update time
++ (NSDate *)lastUpdatedDateForList:(NSString *)listID
+{
+	if (!CHECK_STRING(listID))
+	{
+		return nil;	
+	}
+
+	return [[[self getInstnace] lastUpdatedDateDict] valueForKey:listID];
 }
 
 #pragma mark - resoponder
@@ -325,7 +363,18 @@
 }
 
 
-#pragma mark - message request
+#pragma mark - message request get method
+
+- (NSString *) getMethod
+{
+	LOG(@"Error should use the subclass method");
+	return nil;
+}
+
+- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
+{
+	LOG(@"Error should use the subclass method");
+}
 
 - (void ) setParms:(NSMutableDictionary*)params 
 	withCursor:(int32_t)cursor 
@@ -337,26 +386,169 @@
 	[params setValue:[NSNumber numberWithBool:forward] forKey:@"forwarding"];
 }
 
-- (uint32_t) getNewestKeyWithID:(NSString *)ID
+- (uint32_t) getNewestKeyWithlistID:(NSString *)ID
 {
-	int32_t objectKey;
+	uint32_t objectKey = 0;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:ID];
 	
-	objectKey = [[keyArray objectAtIndex:0] integerValue];
+	if (0 < keyArray.count)
+	{
+		objectKey = [[keyArray objectAtIndex:0] integerValue];
+	}
 	
 	return objectKey;
 }
 
-- (uint32_t) getOldestKeyWithID:(NSString *)ID
+- (uint32_t) getOldestKeyWithlistID:(NSString *)ID
 {
-	int32_t objectKey;
+	uint32_t objectKey = 0;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:ID];
 	
-	objectKey = [[keyArray lastObject] integerValue];
+	if (0 < keyArray.count)
+	{
+		objectKey = [[keyArray lastObject] integerValue];
+	}
 	
 	return objectKey;
+}
+
+
+-(void) sendRequestNewerWithCount:(uint32_t)count withListID:(NSString *)listID
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	uint32_t newestKey = [self getNewestKeyWithlistID:listID];
+	
+	// this will call the sub class method
+	[request setValue:[self getMethod] forKey:@"method"];
+	[self setGetMethodParams:params forList:listID];
+	
+	if (0 < newestKey)
+	{
+		[self setParms:params withCursor:newestKey count:count forward:NO];
+	}
+	else
+	{
+		[self setParms:params withCursor:-1 count:count forward:YES];
+	}
+	
+	[request setValue:params forKey:@"params"];
+	
+	NSString *messageID = [[NSString alloc] 
+			       initWithFormat:@"%u", 
+			       SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
+								      self, 
+								      @selector(messageDispatcher:), 
+								      NORMAL_PRIORITY)];
+	
+	[self bindMessageID:messageID withListID:[listID intValue] withType:REQUEST_NEWER];
+	
+	[messageID release];
+	[params release];
+	[request release];
+}
+
+-(void) sendRequestOlderWithCount:(uint32_t)count withListID:(NSString *)listID
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	uint32_t oldestKey = [self getOldestKeyWithlistID:listID];
+	
+	// this will call the sub class method
+	[request setValue:[self getMethod] forKey:@"method"];
+	[self setGetMethodParams:params forList:listID];
+	
+	if (0 < oldestKey)
+	{
+		[self setParms:params withCursor:oldestKey count:count forward:YES];
+		[request setValue:params forKey:@"params"];
+		
+		
+	}
+	else
+	{
+		[self setParms:params withCursor:-1 count:count forward:YES];
+	}
+	
+	NSString *messageID = [[NSString alloc] 
+			       initWithFormat:@"%u", 
+			       SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
+								      self, 
+								      @selector(messageDispatcher:), 
+								      NORMAL_PRIORITY)];
+	
+	[self bindMessageID:messageID withListID:[listID intValue] withType:REQUEST_OLDER];
+	
+	[messageID release];
+	[params release];
+	[request release];
+}
+
++ (void) requestNewerWithListID:(NSString *)listID 
+		       andCount:(uint32_t)count 
+		    withHandler:(SEL)handler 
+		      andTarget:(id)target
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	if (NO == [self requestUpdateWith:REQUEST_NEWER withListID:listID])
+	{
+		return;
+	}
+	
+	// bind target
+	[[self getInstnace] bindMessageType:REQUEST_NEWER 
+				 withListID:listID 
+				withHandler:handler 
+				  andTarget:target];
+	
+	// then send request
+	[[self getInstnace] sendRequestNewerWithCount:count withListID:listID];
+}
+
++ (void) requestOlderWithListID:(NSString *)listID 
+		       andCount:(uint32_t)count 
+		    withHandler:(SEL)handler 
+		      andTarget:(id)target
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	if (0 >= [[self getInstnace] getOldestKeyWithlistID:listID])
+	{
+		[self requestNewerWithListID:listID andCount:count withHandler:handler andTarget:target];
+		return;
+	}
+	
+	if (NO == [self requestUpdateWith:REQUEST_OLDER withListID:listID])
+	{
+		return;
+	}
+	
+	// bind target
+	[[self getInstnace] bindMessageType:REQUEST_OLDER withListID:listID withHandler:handler andTarget:target ];
+	
+	// then send request
+	[[self getInstnace] sendRequestOlderWithCount:count withListID:listID];
+}
+
+#pragma mark - key array
+
++ (NSArray *) keyArrayForList:(NSString *)listID
+{
+	if (!CHECK_STRING(listID))
+	{
+		return nil;	
+	}
+
+	return [[[self getInstnace] objectKeyArrayDict] valueForKey:listID]; 
 }
 
 @end

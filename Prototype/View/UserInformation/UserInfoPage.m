@@ -103,7 +103,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 {
 	[self setTitle:@"个人设置"];
 	
-	self.view.backgroundColor = [Color greyColor];
+	self.view.backgroundColor = [Color grey1Color];
 }
 
 - (void)initUserInfo
@@ -190,7 +190,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 		if (cell == nil) 
 		{
 			cell = [[[AvatorCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellType] autorelease];
-			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44);
+			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44*PROPORTION());
 			[cell redraw];
 		}
 
@@ -267,7 +267,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 			
 			// configure text view display
 			self.introduceView.frame = rect;
-			self.introduceView.font = [UIFont boldSystemFontOfSize:17.0];
+			self.introduceView.font = [UIFont boldSystemFontOfSize:17.0*PROPORTION()];
 			self.introduceView.userInteractionEnabled = NO;
 			self.introduceView.editable = NO;
 			self.introduceView.scrollEnabled = NO;
@@ -278,12 +278,12 @@ UIImage *scaleAndRotateImage(UIImage *image);
 			frame.size.height = self.introduceView.contentSize.height;
 			self.introduceView.frame = frame;
 			
-			return MAX(self.introduceView.frame.size.height, 44);
+			return MAX(self.introduceView.frame.size.height, 44*PROPORTION());
 			break;
 		}
 		
 	default:
-				return 44;
+				return 44*PROPORTION();
 
 	}
 	
@@ -347,7 +347,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 // did not provide selectable cell
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return Nil;
+	return nil;
 }
 
 #pragma mark - message
@@ -361,7 +361,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 		[LoginManager requestWithHandler:@selector(sendUserInfoRequest) andTarget:self];
 	}
 	
-	[ProfileMananger requestUserProfileWithNumberID:loginUserID andHandler:@selector(handleMessage) andTarget:self];
+	[ProfileMananger requestObjectWithNumberID:loginUserID andHandler:@selector(handleMessage) andTarget:self];
 	
 	[loginUserID release];
 }

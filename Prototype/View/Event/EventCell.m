@@ -19,9 +19,9 @@
 	ImageV *_picImageV;
 }
 
-@property (retain, nonatomic) UILabel *title;
-@property (retain, nonatomic) UITextView *desc;
-@property (retain, nonatomic) ImageV *picImageV;
+@property (strong, nonatomic) UILabel *title;
+@property (strong, nonatomic) UITextView *desc;
+@property (strong, nonatomic) ImageV *picImageV;
 @end
 
 @implementation EventCell
@@ -41,7 +41,7 @@ static CGFloat gs_pic_size = 0;
 		[self.title removeFromSuperview];
 	}
 
-	UIFont *font = [UIFont boldSystemFontOfSize:18.0 * GET_PROPORTION()];
+	UIFont *font = [UIFont boldSystemFontOfSize:18.0 * PROPORTION()];
 
 	gs_title_height = self.contentView.frame.size.width / 4;
 	CGFloat X = 0;
@@ -58,7 +58,7 @@ static CGFloat gs_pic_size = 0;
 	self.title.adjustsFontSizeToFitWidth = YES;
 	self.title.backgroundColor = [UIColor clearColor];
 
-	self.title.textColor = [UIColor whiteColor];
+	self.title.textColor = [Color whiteColor];
 
 	[self.contentView addSubview:self.title];
 }
@@ -70,7 +70,7 @@ static CGFloat gs_pic_size = 0;
 		[self.desc removeFromSuperview];
 	}
 
-	UIFont *font = [UIFont boldSystemFontOfSize:15.0 * GET_PROPORTION()];
+	UIFont *font = [UIFont boldSystemFontOfSize:15.0 * PROPORTION()];
 	CGFloat descLabelWidth = self.contentView.frame.size.width - gs_pic_size - 10.0;
 	CGFloat descLabelHeight= self.contentView.frame.size.height - gs_title_height - 10.0;
 

@@ -7,6 +7,4 @@
 #import "ObjectManager.h"
 
 @interface ProfileMananger : ObjectManager
-+ (void) requestUserProfileWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
-+ (void) requestUserProfileWithNumberIDArray:(NSArray *)numberIDArray;
 @end

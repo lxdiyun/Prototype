@@ -8,6 +8,8 @@
 
 #import "AvatorCell.h"
 
+#import "Util.h"
+
 @interface AvatorCell () 
 {
 	ImageV *_avatorImageV;
@@ -32,8 +34,8 @@
 - (void) calculateSize
 {
 	_imageSize = self.contentView.frame.size.height - 10;
-	_labelWidth = 50.0;
-	_labelHeight = 22.0;
+	_labelWidth = 50.0 * PROPORTION();
+	_labelHeight = 22.0 * PROPORTION();
 }
 
 - (void) redrawAvatorImageV
@@ -46,8 +48,8 @@
 	self.avatorImageV = [[[ImageV alloc] 
 		initWithFrame:CGRectMake(0.0, 0.0, _imageSize, _imageSize)] autorelease];
 	
-	self.avatorImageV.center = CGPointMake(_labelWidth + 15.0 + _imageSize/2,
-					       self.contentView.frame.size.height/2);
+	self.avatorImageV.center = CGPointMake(_labelWidth + 15.0 * PROPORTION() + _imageSize / 2,
+					       self.contentView.frame.size.height / 2);
 	
 	[self.contentView addSubview:self.avatorImageV];
 }
@@ -60,13 +62,13 @@
 	}
 	CGFloat frmaeHeight  = self.contentView.frame.size.height;
 
-	self.avatorLabel = [[[UILabel alloc] initWithFrame:CGRectMake(5.0, 
-								     (frmaeHeight - _labelHeight)/2, 
+	self.avatorLabel = [[[UILabel alloc] initWithFrame:CGRectMake(5.0 * PROPORTION(), 
+								     (frmaeHeight - _labelHeight) / 2, 
 								     _labelWidth, 
 								     _labelHeight)] 
 			    autorelease];
 
-	self.avatorLabel.font = [UIFont boldSystemFontOfSize:18.0];
+	self.avatorLabel.font = [UIFont boldSystemFontOfSize:18.0 * PROPORTION()];
 	self.avatorLabel.adjustsFontSizeToFitWidth = YES;
 	self.avatorLabel.backgroundColor = [UIColor clearColor];
 	self.avatorLabel.textAlignment = UITextAlignmentRight;

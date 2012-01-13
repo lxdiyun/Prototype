@@ -20,6 +20,13 @@
 		48917C2B14A8682300C72AE9 /* FoodPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C2914A8682300C72AE9 /* FoodPage.m */; };
 		48917C3314A86E0800C72AE9 /* FoodImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C3114A86E0800C72AE9 /* FoodImageCell.m */; };
 		489313571499D124004A4250 /* UserInfoPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 489313551499D124004A4250 /* UserInfoPage.m */; };
+		48A4548B14BD336300E8FA58 /* FoodCommentMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A4548A14BD336300E8FA58 /* FoodCommentMananger.m */; };
+		48AE48E414BD68E5002DA60D /* CommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AE48E314BD68E5002DA60D /* CommentCell.m */; };
+		48AE48EC14BE873A002DA60D /* DescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AE48EB14BE873A002DA60D /* DescriptionCell.m */; };
+		48AE48F014BEBFDC002DA60D /* TriangleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AE48EF14BEBFDB002DA60D /* TriangleView.m */; };
+		48AE48F314BED7C1002DA60D /* FoodTagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AE48F214BED7C1002DA60D /* FoodTagCell.m */; };
+		48AE48F614BEDAB3002DA60D /* FourCountView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AE48F514BEDAB3002DA60D /* FourCountView.m */; };
+		48AE490014BFEF11002DA60D /* tagIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 48AE48FF14BFEF11002DA60D /* tagIcon.png */; };
 		48B76A6B14B874F400FD8646 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B76A6914B874F400FD8646 /* Default.png */; };
 		48B76A6C14B874F400FD8646 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B76A6A14B874F400FD8646 /* Default@2x.png */; };
 		48B76A7114B8760700FD8646 /* ObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B76A7014B8760700FD8646 /* ObjectManager.m */; };
@@ -84,6 +91,19 @@
 		48917C3114A86E0800C72AE9 /* FoodImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FoodImageCell.m; path = View/Food/FoodImageCell.m; sourceTree = "<group>"; };
 		489313541499D124004A4250 /* UserInfoPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserInfoPage.h; path = View/UserInformation/UserInfoPage.h; sourceTree = "<group>"; };
 		489313551499D124004A4250 /* UserInfoPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserInfoPage.m; path = View/UserInformation/UserInfoPage.m; sourceTree = "<group>"; };
+		48A4548914BD336300E8FA58 /* FoodCommentMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodCommentMananger.h; sourceTree = "<group>"; };
+		48A4548A14BD336300E8FA58 /* FoodCommentMananger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodCommentMananger.m; sourceTree = "<group>"; };
+		48AE48E214BD68E4002DA60D /* CommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommentCell.h; path = View/CommentCell.h; sourceTree = "<group>"; };
+		48AE48E314BD68E5002DA60D /* CommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommentCell.m; path = View/CommentCell.m; sourceTree = "<group>"; };
+		48AE48EA14BE8739002DA60D /* DescriptionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DescriptionCell.h; path = View/DescriptionCell.h; sourceTree = "<group>"; };
+		48AE48EB14BE873A002DA60D /* DescriptionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DescriptionCell.m; path = View/DescriptionCell.m; sourceTree = "<group>"; };
+		48AE48EE14BEBFDB002DA60D /* TriangleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TriangleView.h; path = View/TriangleView.h; sourceTree = "<group>"; };
+		48AE48EF14BEBFDB002DA60D /* TriangleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TriangleView.m; path = View/TriangleView.m; sourceTree = "<group>"; };
+		48AE48F114BED7C1002DA60D /* FoodTagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FoodTagCell.h; path = View/Food/FoodTagCell.h; sourceTree = "<group>"; };
+		48AE48F214BED7C1002DA60D /* FoodTagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FoodTagCell.m; path = View/Food/FoodTagCell.m; sourceTree = "<group>"; };
+		48AE48F414BEDAB3002DA60D /* FourCountView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FourCountView.h; path = View/Food/FourCountView.h; sourceTree = "<group>"; };
+		48AE48F514BEDAB3002DA60D /* FourCountView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FourCountView.m; path = View/Food/FourCountView.m; sourceTree = "<group>"; };
+		48AE48FF14BFEF11002DA60D /* tagIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tagIcon.png; sourceTree = "<group>"; };
 		48B76A6914B874F400FD8646 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		48B76A6A14B874F400FD8646 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		48B76A6F14B8760700FD8646 /* ObjectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectManager.h; sourceTree = "<group>"; };
@@ -189,6 +209,10 @@
 				48917C2914A8682300C72AE9 /* FoodPage.m */,
 				48917C3014A86E0800C72AE9 /* FoodImageCell.h */,
 				48917C3114A86E0800C72AE9 /* FoodImageCell.m */,
+				48AE48F114BED7C1002DA60D /* FoodTagCell.h */,
+				48AE48F214BED7C1002DA60D /* FoodTagCell.m */,
+				48AE48F414BEDAB3002DA60D /* FourCountView.h */,
+				48AE48F514BEDAB3002DA60D /* FourCountView.m */,
 			);
 			name = Food;
 			sourceTree = "<group>";
@@ -210,6 +234,8 @@
 				487C95F714BA88C20075FFCD /* ProfileMananger.m */,
 				487C95FA14BAD1DD0075FFCD /* CommentManager.h */,
 				487C95FB14BAD1DD0075FFCD /* CommentManager.m */,
+				48A4548914BD336300E8FA58 /* FoodCommentMananger.h */,
+				48A4548A14BD336300E8FA58 /* FoodCommentMananger.m */,
 			);
 			path = ObjectManager;
 			sourceTree = "<group>";
@@ -263,6 +289,7 @@
 		48CE912B14AD9DBE00B1E9D3 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				48AE48FF14BFEF11002DA60D /* tagIcon.png */,
 				48B76A6914B874F400FD8646 /* Default.png */,
 				48B76A6A14B874F400FD8646 /* Default@2x.png */,
 				48CE914614ADF06600B1E9D3 /* p_gray.gif */,
@@ -354,6 +381,12 @@
 				48917C2614A857B600C72AE9 /* ImageV.m */,
 				48B9ED3C14AED60400046C26 /* HomePage.h */,
 				48B9ED3D14AED60500046C26 /* HomePage.m */,
+				48AE48E214BD68E4002DA60D /* CommentCell.h */,
+				48AE48E314BD68E5002DA60D /* CommentCell.m */,
+				48AE48EA14BE8739002DA60D /* DescriptionCell.h */,
+				48AE48EB14BE873A002DA60D /* DescriptionCell.m */,
+				48AE48EE14BEBFDB002DA60D /* TriangleView.h */,
+				48AE48EF14BEBFDB002DA60D /* TriangleView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -443,6 +476,7 @@
 				48CE914714ADF06600B1E9D3 /* p_gray.gif in Resources */,
 				48B76A6B14B874F400FD8646 /* Default.png in Resources */,
 				48B76A6C14B874F400FD8646 /* Default@2x.png in Resources */,
+				48AE490014BFEF11002DA60D /* tagIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +519,12 @@
 				487C95F814BA88C20075FFCD /* ProfileMananger.m in Sources */,
 				487C95FC14BAD1DD0075FFCD /* CommentManager.m in Sources */,
 				487C95FF14BAEA420075FFCD /* ListObjectManager.m in Sources */,
+				48A4548B14BD336300E8FA58 /* FoodCommentMananger.m in Sources */,
+				48AE48E414BD68E5002DA60D /* CommentCell.m in Sources */,
+				48AE48EC14BE873A002DA60D /* DescriptionCell.m in Sources */,
+				48AE48F014BEBFDC002DA60D /* TriangleView.m in Sources */,
+				48AE48F314BED7C1002DA60D /* FoodTagCell.m in Sources */,
+				48AE48F614BEDAB3002DA60D /* FourCountView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

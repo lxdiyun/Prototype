@@ -94,16 +94,28 @@ void START_NETWORK_INDICATOR(void);
 void STOP_NETWORK_INDICATOR(void);
 
 // view
-CGFloat GET_SCALE(void);
-CGFloat GET_PROPORTION(void);
+CGFloat SCALE(void);
+CGFloat PROPORTION(void);
+
+// check and error handling;
+BOOL CHECK_NUMBER(NSNumber *object);
+BOOL CHECK_STRING(NSString *object);
 
 @interface Color : NSObject 
 
-+ (UIColor *) greyColor;
++ (UIColor *) whiteColor;
++ (UIColor *) milkColor;
++ (UIColor *) orangeColor;
++ (UIColor *) grey1Color;
++ (UIColor *) grey2Color;
++ (UIColor *) grey3Color;
 + (UIColor *) brownColor;
 + (UIColor *) blackColorAlpha;
++ (UIColor *) tastyColor;
++ (UIColor *) specailColor;
++ (UIColor *) valuedColor;
++ (UIColor *) healthyColor;
 
 @end
-
 
 #endif

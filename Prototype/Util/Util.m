@@ -56,7 +56,7 @@ void STOP_NETWORK_INDICATOR(void)
 	[[SDNetworkActivityIndicator sharedActivityIndicator] stopActivity];
 }
 
-CGFloat GET_SCALE(void)
+CGFloat SCALE(void)
 {
 	static CGFloat s_sclae = 0;
 	
@@ -76,7 +76,7 @@ CGFloat GET_SCALE(void)
 	return s_sclae;
 }
 
-CGFloat GET_PROPORTION(void)
+CGFloat PROPORTION(void)
 {
 	static CGFloat s_proportion = 0;
 	
@@ -88,11 +88,83 @@ CGFloat GET_PROPORTION(void)
 	return s_proportion;
 }
 
+// check and error handling;
+BOOL CHECK_NUMBER(NSNumber *object)
+{
+	if ((nil != object) && [object isKindOfClass:[NSNumber class]])
+	{
+		return YES;
+	}
+	else
+	{
+		CLOG(@"Error object is not an NUMBER: %@", object);
+		return NO;
+	}
+}
+
+BOOL CHECK_STRING(NSString *object)
+{
+	if ((nil != object) && [object isKindOfClass:[NSString class]])
+	{
+		return YES;
+	}
+	else
+	{
+		CLOG(@"Error object is not an STRING: %@", object);
+		return NO;
+	}
+}
+
 @implementation Color
 
-+ (UIColor *) greyColor
++ (UIColor *) tastyColor
+{
+	return [UIColor colorWithRed:0x21/255.0 green:0xA6/255.0 blue:0xCE/255.0 alpha:1.0];
+}
+
++ (UIColor *) specailColor
+{
+	return [UIColor colorWithRed:0xDD/255.0 green:0x4B/255.0 blue:0x39/255.0 alpha:1.0];
+}
+
++ (UIColor *) valuedColor
+{
+	return [UIColor colorWithRed:0xFB/255.0 green:0xB0/255.0 blue:0x3B/255.0 alpha:1.0];
+}
+
++ (UIColor *) healthyColor
+{
+	return [UIColor colorWithRed:0x6A/255.0 green:0xC6/255.0 blue:0x00/255.0 alpha:1.0];
+}
+
++ (UIColor *) whiteColor 
+{
+	return [UIColor colorWithRed:0xFF/255.0 green:0xFF/255.0 blue:0xFF/255.0 alpha:1.0];
+}
+
++ (UIColor *) milkColor
+{
+	return [UIColor colorWithRed:0xE6/255.0 green:0xE6/255.0 blue:0xE6/255.0 alpha:1.0];
+}
+
++ (UIColor *) orangeColor
+{
+	return [UIColor colorWithRed:0xD3/255.0 green:0x8E/255.0 blue:0x33/255.0 alpha:1.0];
+}
+
++ (UIColor *) grey1Color
 {
 	return [UIColor colorWithRed:0xEE/255.0 green:0xEE/255.0 blue:0xEE/255.0 alpha:1.0];
+}
+
++ (UIColor *) grey2Color
+{
+	return [UIColor colorWithRed:0x66/255.0 green:0x66/255.0 blue:0x66/255.0 alpha:1.0];
+}
+
++ (UIColor *) grey3Color
+{
+	return [UIColor colorWithRed:0xAA/255.0 green:0xAA/255.0 blue:0xAA/255.0 alpha:1.0];
 }
 
 + (UIColor *) brownColor

@@ -49,7 +49,7 @@
 			NSString *ID = [self.picDict valueForKey:@"id"];
 			NSString *salt = [self.picDict valueForKey:@"salt"];
 			NSString *type = [self.picDict valueForKey:@"type"];
-			uint32_t real_size = lrintf(self.frame.size.height*GET_SCALE());
+			uint32_t real_size = lrintf(self.frame.size.height*SCALE());
 			uint32_t cached_size = [[ImageManager getImageSizeWithNumberID:self.picID] intValue];
 			imageUrlString = [[NSMutableString alloc] init];
 			
@@ -109,7 +109,7 @@
 
 - (void) requsetPic
 {
-	if (nil != self.picID)
+	if (CHECK_NUMBER(self.picID))
 	{
 
 		
@@ -121,7 +121,7 @@
 		}
 		else
 		{
-			[ImageManager requestImageWithNumberID:self.picID andHandler:@selector(requsetPic) andTarget:self];
+			[ImageManager requestObjectWithNumberID:self.picID andHandler:@selector(requsetPic) andTarget:self];
 		}
 	}
 }
@@ -140,7 +140,10 @@
 	[self cancelCurrentImageLoad];
 	self.picDict = nil;
 	
-	[self requsetPic];
+	if (nil != _picID)
+	{
+		[self requsetPic];
+	}
 }
 
 

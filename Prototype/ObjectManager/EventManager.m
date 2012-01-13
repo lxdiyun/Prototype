@@ -8,6 +8,7 @@
 #import "Util.h"
 #import "Message.h"
 #import "ImageManager.h"
+#import "ProfileMananger.h"
 
 static NSString *gs_fakeEventID = nil;
 
@@ -40,155 +41,113 @@ DEFINE_SINGLETON(EventManager);
 	[super dealloc];
 }
 
-#pragma mark - overwrite super class
-
-- (void) messageHandler:(id)dict withListID:(NSString *)ID
-{
-	[super messageHandler:dict withListID:ID];
-	
-	NSDictionary *messageDict = [(NSDictionary*)dict retain];
-	NSMutableArray *newPicArray = [[NSMutableArray alloc] init];
-	
-	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
-	{
-		NSNumber *picID = [[object valueForKey:@"obj"] valueForKey:@"pic"];
-		if (nil == [ImageManager getObjectWithNumberID:picID])
-		{
-			[newPicArray addObject:picID];
-		}
-
-	}
-	
-	// buffer the new image info
-	[ImageManager requestImageWithNumberIDArray:newPicArray];
-	
-	[newPicArray release];
-	[messageDict release];
-}
 
 #pragma mark - send request message
 
-- (void) setGetMethodForRequest:(NSMutableDictionary *)request
++ (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	[request setValue:@"event.get" forKey:@"method"];
+	return [self requestNewerWithListID:gs_fakeEventID 
+				   andCount:count 
+				withHandler:handler 
+				  andTarget:target];
 }
-
--(void) sendRequestNewerWithCount:(uint32_t)count
++ (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t newestKey = [self getNewestKeyWithID:gs_fakeEventID];
-	
-	[self setGetMethodForRequest:request];
-	
-	if (0 < newestKey)
-	{
-		[self setParms:params withCursor:newestKey count:count forward:NO];
-	}
-	else
-	{
-		[self setParms:params withCursor:-1 count:count forward:YES];
-	}
-	
-	[request setValue:params forKey:@"params"];
-	
-	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageDispatcher:))];
-	
-	[self bindMessageID:messageID withListID:[gs_fakeEventID intValue] withType:REQUEST_NEWER];
-	
-	[messageID release];
-	[params release];
-	[request release];
-}
-
--(void) sendRequestOlderWithCount:(uint32_t)count
-{
-	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t oldestKey = [self getOldestKeyWithID:gs_fakeEventID];
-	
-	[self setGetMethodForRequest:request];
-	
-	if (0 < oldestKey)
-	{
-		[self setParms:params withCursor:oldestKey count:count forward:YES];
-		[request setValue:params forKey:@"params"];
-		
-		
-	}
-	else
-	{
-		[self setParms:params withCursor:-1 count:count forward:YES];
-	}
-	
-	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", SEND_MSG_AND_BIND_HANDLER(request, self, @selector(messageDispatcher:))];
-	
-	[self bindMessageID:messageID withListID:[gs_fakeEventID intValue] withType:REQUEST_OLDER];
-	
-	[messageID release];
-	[params release];
-	[request release];
+	return [self requestOlderWithListID:gs_fakeEventID 
+				   andCount:count 
+				withHandler:handler 
+				  andTarget:target];
 }
 
 #pragma mark - interface
 
-+ (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
-{
-	if (NO == [[self getInstnace] requestUpdateWith:REQUEST_NEWER withID:gs_fakeEventID])
-	{
-		return;
-	}
-
-	// bind target
-	[[self getInstnace] bindMessageType:REQUEST_NEWER 
-				     withListID:gs_fakeEventID 
-				withHandler:handler 
-				  andTarget:target];
-
-	// then send request
-	[[self getInstnace] sendRequestNewerWithCount:count];
-}
-
-+ (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
-{
-	if (0 >= [[self getInstnace] getOldestKeyWithID:gs_fakeEventID])
-	{
-		[self requestNewerCount:count withHandler:handler andTarget:target];
-		return;
-	}
-	if (NO == [[self getInstnace] requestUpdateWith:REQUEST_OLDER withID:gs_fakeEventID])
-	{
-		return;
-	}
-
-	// bind target
-	[[self getInstnace] bindMessageType:REQUEST_OLDER withListID:gs_fakeEventID withHandler:handler andTarget:target ];
-
-	// then send request
-	[[self getInstnace] sendRequestOlderWithCount:count];
-}
-
 + (NSArray *) eventKeyArray
 {
-	return [[[self getInstnace] objectKeyArrayDict] valueForKey:gs_fakeEventID]; 
+	return [self keyArrayForList:gs_fakeEventID]; 
 }
 
 + (BOOL) isNewerUpdating
 {
 	@autoreleasepool 
 	{
-		return [[self getInstnace] isUpatringWithType:REQUEST_NEWER withListID:gs_fakeEventID];
+		return [self isUpdatingWithType:REQUEST_NEWER withListID:gs_fakeEventID];
 	}
 }
 
 + (NSDate *)lastUpdatedDate
 {
-	return [[[self getInstnace] lastUpdatedDateDict] valueForKey:gs_fakeEventID];
+	return [self lastUpdatedDateForList:gs_fakeEventID];
 }
 
 + (NSDictionary *) getObjectWithStringID:(NSString *)objectID
 {
-	return [[self getInstnace] getObject:objectID inList:gs_fakeEventID];
+	return [self getObject:objectID inList:gs_fakeEventID];
 }
+
+#pragma mark - overwrite super class
+#pragma mark - overwrite handler
+
+- (void) messageHandler:(id)dict withListID:(NSString *)ID
+{
+	[super messageHandler:dict withListID:ID];
+	
+	NSDictionary *messageDict = [(NSDictionary*)dict retain];
+	NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
+	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
+	
+	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
+	{
+		NSNumber *picID = [[object valueForKey:@"obj"] valueForKey:@"pic"];
+		if (CHECK_NUMBER(picID))
+		{
+			if (nil == [ImageManager getObjectWithNumberID:picID])
+			{
+				[newPicSet addObject:picID];
+			}
+		}
+		else
+		{
+			LOG(@"Error failed to get picID from \n:%@", object);
+		}
+		
+		NSNumber *userID = [[object valueForKey:@"obj"] objectForKey:@"user"];
+		
+		if (CHECK_NUMBER(userID))
+		{
+			if (nil == [ProfileMananger getObjectWithNumberID:userID])
+			{
+				[newUserSet addObject:userID];
+			}
+		}
+		else
+		{
+			LOG(@"Error failed to get userID from \n:%@", object);
+		}
+		
+	}
+	
+	// cache the new image info
+	[ImageManager requestObjectWithNumberIDArray:[newPicSet allObjects]];
+	
+	// cacahe the new user info
+	[ProfileMananger requestObjectWithNumberIDArray:[newUserSet allObjects]];
+	
+	[newUserSet release];
+	[newPicSet release];
+	[messageDict release];
+}
+
+#pragma mark - overwrite requsest get method
+
+- (NSString *) getMethod
+{
+	return @"event.get";
+}
+
+- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
+{
+	// do nothing
+}
+
 
 @end

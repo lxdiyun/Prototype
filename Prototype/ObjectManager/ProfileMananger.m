@@ -15,50 +15,8 @@ DEFINE_SINGLETON(ProfileMananger);
 
 #pragma mark - message
 
-+ (void) requestUserProfileWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target
-{
-	if (nil != ID)
-	{
-		// bind handler
-		[ProfileMananger bindNumberID:ID withHandler:handler andTarget:target];	
-		
-		// then send message
-		NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-		
-		[request setValue:@"user.get" forKey:@"method"];
-		
-		[self sendObjectRequest:request withNumberID:ID];
-		
-		[request release];
-	}
-}
-
-+ (void) requestUserProfileWithNumberIDArray:(NSArray *)numberIDArray
-{
-	if (nil != numberIDArray)
-	{
-		// no handler just send the message
-		NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-		
-		[request setValue:@"user.get" forKey:@"method"];
-		
-		[self sendObjectArrayRequest:request withNumberIDArray:numberIDArray];
-		
-		[request release];
-	}
-}
-
+#pragma mark - overwrite super class method
 #pragma mark - handler overwrite
-
-- (void) cacheAvatorInfoWithUserID:(NSString *)ID
-{
-	NSNumber *avatarID = [[self.objectDict valueForKey:ID] valueForKey:@"avatar"];
-	
-	if (nil == [ImageManager getObjectWithNumberID:avatarID])
-	{
-		[ImageManager requestImageWithNumberID:avatarID andHandler:nil andTarget:nil];
-	}
-}
 
 - (void) checkAndPerformResponderWithID:(NSString *)ID
 {
@@ -66,7 +24,19 @@ DEFINE_SINGLETON(ProfileMananger);
 	{
 		[super checkAndPerformResponderWithID:ID];
 		
-		[self cacheAvatorInfoWithUserID:ID];
+		NSNumber *avatarID = [[self.objectDict valueForKey:ID] valueForKey:@"avatar"];
+		
+		if (CHECK_NUMBER(avatarID))
+		{
+			if (nil == [ImageManager getObjectWithNumberID:avatarID])
+			{
+				[ImageManager requestObjectWithNumberID:avatarID andHandler:nil andTarget:nil];
+			}
+		}
+		else
+		{
+			LOG(@"Error can't get avator ID for user: %@", ID);
+		}
 	}
 }
 
@@ -75,11 +45,35 @@ DEFINE_SINGLETON(ProfileMananger);
 	@autoreleasepool 
 	{
 		[super checkAndPerformResponderWithStringIDArray:IDArray];
+		
+		NSMutableSet *newPicSet = [[[NSMutableSet alloc] init] autorelease];
+
 		for (NSString *ID in IDArray)
 		{
-			[self cacheAvatorInfoWithUserID:ID];
+			NSNumber *avatarID = [[self.objectDict valueForKey:ID] valueForKey:@"avatar"];
+			
+			if (CHECK_NUMBER(avatarID))
+			{
+				if (nil == [ImageManager getObjectWithNumberID:avatarID])
+				{
+					[newPicSet addObject:avatarID];
+				}
+			}
+			else
+			{
+				LOG(@"Error can't get avator ID for user: %@", ID);
+			}
 		}
+		
+		// cache avator info
+		[ImageManager requestObjectWithNumberIDArray:[newPicSet allObjects]];
 	}
+}
+
+#pragma mark - overwrite request
++(NSString *) getMethod
+{
+	return @"user.get";
 }
 
 @end

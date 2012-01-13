@@ -8,8 +8,6 @@
 #import "ObjectManager.h"
 
 @interface ImageManager : ObjectManager
-+ (void) requestImageWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
-+ (void) requestImageWithNumberIDArray:(NSArray *)numberIDArray;
 + (NSNumber *) getImageSizeWithNumberID:(NSNumber *)ID;
 + (void) setImageSize:(NSNumber *)size withNumberID:(NSNumber *)ID;
 @end
