@@ -15,6 +15,7 @@
 {
 	NSMutableDictionary *_objectDict;
 	NSMutableDictionary *_responderArrayDict;
+	NSMutableDictionary *_responderDictForCreate;
 	NSMutableDictionary *_updatingDict;
 	NSArray *_IDArray;
 }
@@ -24,6 +25,7 @@
 
 @synthesize objectDict = _objectDict;
 @synthesize responderArrayDict = _responderArrayDict;
+@synthesize responderDictForCreate = _responderDictForCreate;
 @synthesize updatingDict = _updatingDict;
 
 #pragma mark - life circle
@@ -39,6 +41,7 @@
 		{
 			self.objectDict = [[[NSMutableDictionary alloc] init] autorelease];
 			self.responderArrayDict = [[[NSMutableDictionary alloc] init] autorelease];
+			self.responderDictForCreate = [[[NSMutableDictionary alloc] init] autorelease];
 			self.updatingDict = [[[NSMutableDictionary alloc] init] autorelease];
 		}
 	}
@@ -50,6 +53,7 @@
 {
 	self.objectDict = nil;
 	self.responderArrayDict = nil;
+	self.responderDictForCreate = nil;
 	self.updatingDict = nil;
 
 	[super dealloc];
@@ -73,21 +77,131 @@
 	[self.updatingDict setValue:[NSNumber numberWithBool:NO] forKey:ID];
 }
 
-#pragma mark - resoponder
+#pragma mark - updating flag interface
+
++ (void) markUpdatingStringID:(NSString *)ID
+{
+	if (!CHECK_STRING(ID))
+	{
+		return;
+	}
+	
+	[[self getInstnace] markUpdatingStringID:ID];
+}
+
++ (void) markUpdatingNumberID:(NSNumber *)ID
+{
+	if (!CHECK_NUMBER(ID))
+	{
+		return;
+	}
+	
+	[self markUpdatingStringID:[ID stringValue]];
+}
+
++ (void) markUpdatingNumberIDArray:(NSArray *)IDArray
+{
+	for (NSNumber *ID in IDArray)
+	{
+		if (!CHECK_NUMBER(ID))
+		{
+			continue;
+		}
+		
+		[self markUpdatingNumberID:ID];
+	}
+}
+
++ (void) cleanUpdatingStringID:(NSString *)ID
+{
+	if (!CHECK_STRING(ID))
+	{
+		return;
+	}
+	
+	[[self getInstnace] clearnUpdatingStringID:ID];
+}
+
++ (void) cleanUpdatingNumberID:(NSNumber *)ID
+{
+	if (!CHECK_NUMBER(ID))
+	{
+		return;
+	}
+	
+	[self cleanUpdatingStringID:[ID stringValue]];
+}
+
++ (BOOL) isUpdatingObjectStringID:(NSString *)ID
+{
+	if (!CHECK_STRING(ID))
+	{
+		return NO;
+	}
+	
+	NSNumber *updating = [[[self getInstnace] updatingDict] valueForKey:ID];
+	
+	if (nil != updating)
+	{
+		return  [updating boolValue];
+	}
+	else
+	{
+		return NO;
+	}
+}
+
++ (BOOL) isUpdatingObjectNumberID:(NSNumber *)ID
+{
+	if (!CHECK_NUMBER(ID))
+	{
+		return NO;
+	}
+	
+	return [self isUpdatingObjectStringID:[ID stringValue]];
+}
+
+#pragma mark - class interface get objects
+
++ (NSDictionary *) getObjectWithStringID:(NSString *)ID
+{
+	if (CHECK_STRING(ID))
+	{
+		return [[[self getInstnace] objectDict] valueForKey:ID];
+	}
+	else
+	{
+		return nil;
+	}
+}
+
++ (NSDictionary *) getObjectWithNumberID:(NSNumber *)ID
+{
+	if (CHECK_NUMBER(ID))
+	{
+		return [self getObjectWithStringID:[ID stringValue]];
+	}
+	else
+	{
+		return nil;
+	}
+}
+
+#pragma mark - get method - handler
 
 - (void) checkAndPerformResponderWithID:(NSString *)ID
 {
 	@autoreleasepool 
 	{
 		NSArray *responderArray;
-
+		
 		@synchronized (_responderArrayDict)
 		{
 			responderArray = [[self.responderArrayDict valueForKey:ID] retain];
 			[self.responderArrayDict setValue:nil forKey:ID];
 			[responderArray autorelease];
 		}
-
+		
 		if (nil != responderArray)
 		{
 			for (MessageResponder *responder in responderArray)
@@ -103,12 +217,12 @@
 	@synchronized (_responderArrayDict)
 	{
 		NSArray *responderArray;
-
+		
 		for (NSString *ID in IDArray)
 		{
 			responderArray = [[self.responderArrayDict valueForKey:ID] retain];
 			[self.responderArrayDict setValue:nil forKey:ID];
-
+			
 			if (nil != responderArray)
 			{
 				for (MessageResponder *responder in responderArray)
@@ -116,32 +230,11 @@
 					[responder perform];
 				}
 			}
-
+			
 			[responderArray release];
 		}
 	}
 }
-
-- (void) bindID:(NSString *)ID withResponder:(MessageResponder*)responder
-{
-	@synchronized (_responderArrayDict)
-	{
-		NSMutableArray *responderArray =  [self.responderArrayDict valueForKey:ID];
-
-		if (nil == responderArray)
-		{
-			responderArray = [[NSMutableArray alloc] initWithObjects:responder, nil];
-			[self.responderArrayDict setValue:responderArray forKey:ID];
-			[responderArray release];
-		}
-		else
-		{
-			[responderArray addObject:responder];
-		}
-	}
-}
-
-#pragma mark - message handler
 
 - (void) handlerForSingleResult:(id)result
 {
@@ -184,79 +277,24 @@
 
 }
 
-#pragma mark - message request
+#pragma mark - get method - send
 
-- (void) requestObjectWithRequest:(NSDictionary *)request
+- (void) bindID:(NSString *)ID withResponder:(MessageResponder*)responder
 {
-	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, self, @selector(handlerForSingleResult:), NORMAL_PRIORITY);
-}
-
-- (void) requestObjectArrayWithRequest:(NSDictionary *)request
-{
-	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, self, @selector(handlerForArrayResult:), NORMAL_PRIORITY);
-}
-
-# pragma mark - message request get
-
-+ (NSString *) getMethod
-{
-	LOG(@"Error should use the subclass method");
-	return nil;
-}
-
-+ (void) requestObjectWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target
-{
-	if (CHECK_NUMBER(ID))
+	@synchronized (_responderArrayDict)
 	{
-		// bind handler
-		[self bindNumberID:ID withHandler:handler andTarget:target];	
-
-		// then send message
-		NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-
-		[request setValue:[self getMethod] forKey:@"method"];
-
-		[self sendObjectRequest:request withNumberID:ID];
-
-		[request release];
-	}
-}
-
-+ (void) requestObjectWithNumberIDArray:(NSArray *)numberIDArray
-{	
-	// no handler just send the message
-	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
-
-	[request setValue:[self getMethod] forKey:@"method"];
-
-	[self sendObjectArrayRequest:request withNumberIDArray:numberIDArray];
-
-	[request release];
-}
-
-#pragma mark - interface
-
-+ (NSDictionary *) getObjectWithStringID:(NSString *)ID
-{
-	if (CHECK_STRING(ID))
-	{
-		return [[[self getInstnace] objectDict] valueForKey:ID];
-	}
-	else
-	{
-		return nil;
-	}
-}
-
-+ (NSDictionary *) getObjectWithNumberID:(NSNumber *)ID
-{
-	if (CHECK_NUMBER(ID))
-	{
-		return [self getObjectWithStringID:[ID stringValue]];
-	}
-	else
-	{
-		return nil;
+		NSMutableArray *responderArray =  [self.responderArrayDict valueForKey:ID];
+		
+		if (nil == responderArray)
+		{
+			responderArray = [[NSMutableArray alloc] initWithObjects:responder, nil];
+			[self.responderArrayDict setValue:responderArray forKey:ID];
+			[responderArray release];
+		}
+		else
+		{
+			[responderArray addObject:responder];
+		}
 	}
 }
 
@@ -273,7 +311,7 @@
 		responder.target = target;
 		responder.handler = handler;
 		[[self getInstnace] bindID:ID withResponder:responder];
-
+		
 		[responder release];
 	}
 }
@@ -294,7 +332,8 @@
 	{
 		[self markUpdatingNumberID:ID];
 		[request setValue:ID  forKey:@"params"];
-		[[self getInstnace] requestObjectWithRequest:request];
+
+		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, [self getInstnace], @selector(handlerForSingleResult:), NORMAL_PRIORITY);
 	}
 }
 
@@ -303,7 +342,7 @@
 	if (nil != IDArray)
 	{
 		NSMutableSet *checkedSet = [[NSMutableSet alloc] init];
-
+		
 		for (NSNumber *ID in IDArray) 
 		{
 			if (!CHECK_NUMBER(ID))
@@ -317,96 +356,161 @@
 				[self markUpdatingNumberID:ID];
 			}
 		}
-
+		
 		if (0 < checkedSet.count)
 		{
 			[request setValue:[checkedSet allObjects] forKey:@"params"];
-			[[self getInstnace] requestObjectArrayWithRequest:request];
-		}
 
+			SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, [self getInstnace], @selector(handlerForArrayResult:), NORMAL_PRIORITY);;
+		}
+		
 		[checkedSet release];
 	}
 }
 
-+ (void) markUpdatingStringID:(NSString *)ID
+# pragma mark - get method - interface
+
+- (NSString *) getMethod
 {
-	if (!CHECK_STRING(ID))
-	{
-		return;
-	}
-	
-	[[self getInstnace] markUpdatingStringID:ID];
+	LOG(@"Error should use the subclass method");
+	return nil;
 }
 
-+ (void) markUpdatingNumberID:(NSNumber *)ID
++ (void) requestObjectWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target
 {
-	if (!CHECK_NUMBER(ID))
+	if (CHECK_NUMBER(ID))
 	{
-		return;
+		// bind handler
+		[self bindNumberID:ID withHandler:handler andTarget:target];	
+
+		// then send message
+		NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+
+		[request setValue:[[self getInstnace] getMethod] forKey:@"method"];
+
+		[self sendObjectRequest:request withNumberID:ID];
+
+		[request release];
 	}
-	
-	[self markUpdatingStringID:[ID stringValue]];
 }
 
-+ (void) markUpdatingNumberIDArray:(NSArray *)IDArray
++ (void) requestObjectWithNumberIDArray:(NSArray *)numberIDArray
+{	
+	// no handler just send the message
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+
+	[request setValue:[[self getInstnace] getMethod] forKey:@"method"];
+
+	[self sendObjectArrayRequest:request withNumberIDArray:numberIDArray];
+
+	[request release];
+}
+
+#pragma mark - create method - handler
+
+- (void) checkAndPerformResponderForCreateWithMessageID:(NSString *)ID
 {
-	for (NSNumber *ID in IDArray)
+	@autoreleasepool 
 	{
-		if (!CHECK_NUMBER(ID))
+		MessageResponder *responder;
+		
+		@synchronized (_responderDictForCreate)
 		{
-			continue;
+			responder = [[self.responderDictForCreate valueForKey:ID] retain];
+			[self.responderDictForCreate setValue:nil forKey:ID];
+			[responder autorelease];
 		}
-
-		[self markUpdatingNumberID:ID];
+		
+		if (nil != responder)
+		{
+			[responder perform];
+		}
 	}
 }
 
-+ (void) cleanUpdatingStringID:(NSString *)ID
+- (void) handlerForCreate:(id)result
+{
+	if (![result isKindOfClass: [NSDictionary class]])
+	{
+		LOG(@"Error handle non dict object");
+		return;
+	}
+	
+	NSString *messageID = [[result valueForKey:@"id"] stringValue];
+	NSDictionary *objectDict = [result valueForKey:@"result"];
+	NSString *objectID = [[objectDict valueForKey:@"id"] stringValue];
+	
+	[self.objectDict setValue:objectDict forKey:objectID];
+	[self checkAndPerformResponderForCreateWithMessageID:messageID];
+}
+
+#pragma mark - create method - send
+
+- (void) bindCreateMessageID:(NSString *)ID withResponder:(MessageResponder*)responder
+{
+	
+	@synchronized (_responderDictForCreate)
+	{
+		[self.responderDictForCreate setValue:responder forKey:ID];
+	}
+}
+
++ (void) bindCreateMessageID:(NSString *)ID WithHandler:(SEL)handler andTarget:(id)target
 {
 	if (!CHECK_STRING(ID))
 	{
 		return;
 	}
 	
-	[[self getInstnace] clearnUpdatingStringID:ID];
+	if ((target != nil) && (handler != nil))
+	{
+		MessageResponder *responder = [[MessageResponder alloc] init];
+		responder.target = target;
+		responder.handler = handler;
+		[[self getInstnace] bindCreateMessageID:ID withResponder:responder];
+		
+		[responder release];
+	}
 }
 
-+ (void) cleanUpdatingNumberID:(NSNumber *)ID
+#pragma mark - create method interfaces
+
+- (NSString *) createMethod
 {
-	if (!CHECK_NUMBER(ID))
-	{
-		return;
-	}
-	
-	[self cleanUpdatingStringID:[ID stringValue]];
+	LOG(@"Error should use the subclass method");
+	return nil;
 }
 
-+ (BOOL) isUpdatingObjectStringID:(NSString *)ID
+- (void) setParamsForRequest:(NSMutableDictionary *)request
 {
-	if (!CHECK_STRING(ID))
-	{
-		return NO;
-	}
-	
-	NSNumber *updating = [[[self getInstnace] updatingDict] valueForKey:ID];
-
-	if (nil != updating)
-	{
-		return  [updating boolValue];
-	}
-	else
-	{
-		return NO;
-	}
+	LOG(@"Error should use the subclass method");
 }
 
-+ (BOOL) isUpdatingObjectNumberID:(NSNumber *)ID
++ (uint32_t) createObjectWithHandler:(SEL)handler andTarget:(id)target
 {
-	if (!CHECK_NUMBER(ID))
-	{
-		return NO;
-	}
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	
-	return [self isUpdatingObjectStringID:[ID stringValue]];
+	[request setValue:[[self getInstnace] createMethod] forKey:@"method"];
+
+	[[self getInstnace] setParamsForRequest:request];
+	
+	uint32_t ID = GET_MSG_ID();
+	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];
+	
+	// bind the handler first
+	[self bindCreateMessageID:messageID WithHandler:handler andTarget:target];
+	
+	// then send the request 
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
+						      [self getInstnace], 
+						      @selector(handlerForCreate:), 
+						      NORMAL_PRIORITY,
+						      ID);
+
+	[messageID release];
+	[request release];
+	
+	return ID;
 }
+
 @end

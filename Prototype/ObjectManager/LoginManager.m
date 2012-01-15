@@ -48,8 +48,9 @@ DEFINE_SINGLETON(LoginManager);
 		{
 			return;
 		}
+
 		[self markUpdatingStringID:gs_fakeLoginStringID];
-		
+
 		NSMutableDictionary *params =  [[[NSMutableDictionary alloc] init] autorelease];
 		NSMutableDictionary *request =  [[[NSMutableDictionary alloc] init] autorelease];
 
@@ -87,7 +88,7 @@ DEFINE_SINGLETON(LoginManager);
 	
 	[[self class] cleanUpdatingStringID:gs_fakeLoginStringID];
 	
-	[self performSelector:@selector(checkAndPerformResponderWithID:) withObject:gs_fakeLoginStringID];
+	[self checkAndPerformResponderWithID:gs_fakeLoginStringID];
 
 	START_PING();
 }

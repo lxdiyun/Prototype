@@ -54,6 +54,9 @@
 		48CE913F14AD9DD100B1E9D3 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48CE913E14AD9DD100B1E9D3 /* EGORefreshTableHeaderView.m */; };
 		48CE914514ADA0A700B1E9D3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48CE914414ADA0A700B1E9D3 /* QuartzCore.framework */; };
 		48CE914714ADF06600B1E9D3 /* p_gray.gif in Resources */ = {isa = PBXBuildFile; fileRef = 48CE914614ADF06600B1E9D3 /* p_gray.gif */; };
+		48D5C51414C018BA0089B6C8 /* MessageBinary.m in Sources */ = {isa = PBXBuildFile; fileRef = 48D5C51314C018BA0089B6C8 /* MessageBinary.m */; };
+		48E50D7B14C28EEA0091627F /* MessagePingPong.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E50D7A14C28EEA0091627F /* MessagePingPong.m */; };
+		48E50D7D14C291B70091627F /* MessageJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E50D7C14C291B60091627F /* MessageJson.m */; };
 		48EA6D5A14998A84008AE765 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48EA6D5914998A84008AE765 /* UIKit.framework */; };
 		48EA6D5C14998A84008AE765 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48EA6D5B14998A84008AE765 /* Foundation.framework */; };
 		48EA6D5E14998A84008AE765 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48EA6D5D14998A84008AE765 /* CoreGraphics.framework */; };
@@ -150,6 +153,10 @@
 		48CE913E14AD9DD100B1E9D3 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
 		48CE914414ADA0A700B1E9D3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		48CE914614ADF06600B1E9D3 /* p_gray.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = p_gray.gif; sourceTree = "<group>"; };
+		48D5C51314C018BA0089B6C8 /* MessageBinary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageBinary.m; sourceTree = "<group>"; };
+		48E50D7814C28E8B0091627F /* MessagePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePrivate.h; sourceTree = "<group>"; };
+		48E50D7A14C28EEA0091627F /* MessagePingPong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePingPong.m; sourceTree = "<group>"; };
+		48E50D7C14C291B60091627F /* MessageJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageJson.m; sourceTree = "<group>"; };
 		48EA6D5514998A84008AE765 /* Prototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prototype.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48EA6D5914998A84008AE765 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		48EA6D5B14998A84008AE765 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -408,8 +415,12 @@
 				48EB985D14A0649600466A4E /* NetworkService.h */,
 				48EB985E14A0649600466A4E /* NetworkService.m */,
 				4889E0B814AC10FB00067D66 /* Message.h */,
+				48E50D7A14C28EEA0091627F /* MessagePingPong.m */,
+				48E50D7814C28E8B0091627F /* MessagePrivate.h */,
 				4889E0B914AC10FB00067D66 /* MessageWriter.m */,
 				4889E0BC14AC11DF00067D66 /* MessageReader.m */,
+				48D5C51314C018BA0089B6C8 /* MessageBinary.m */,
+				48E50D7C14C291B60091627F /* MessageJson.m */,
 			);
 			path = NetworkService;
 			sourceTree = "<group>";
@@ -525,6 +536,9 @@
 				48AE48F014BEBFDC002DA60D /* TriangleView.m in Sources */,
 				48AE48F314BED7C1002DA60D /* FoodTagCell.m in Sources */,
 				48AE48F614BEDAB3002DA60D /* FourCountView.m in Sources */,
+				48D5C51414C018BA0089B6C8 /* MessageBinary.m in Sources */,
+				48E50D7B14C28EEA0091627F /* MessagePingPong.m in Sources */,
+				48E50D7D14C291B70091627F /* MessageJson.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

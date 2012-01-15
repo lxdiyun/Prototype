@@ -116,7 +116,7 @@ const static CGFloat SINGLE_LABEL_WIDTH = 25.0;
 									height)] 
 			      autorelease];
 		self.tasty.backgroundColor = [Color tastyColor];
-		X += width;
+		X += width - 1 ;
 		[self addSubview:self.tasty];
 	}
 	
@@ -134,7 +134,7 @@ const static CGFloat SINGLE_LABEL_WIDTH = 25.0;
 									  height)] 
 				autorelease];
 		self.special.backgroundColor = [Color specailColor];
-		X += width;
+		X += width - 1;
 		[self addSubview:self.special];
 	}
 	
@@ -152,7 +152,7 @@ const static CGFloat SINGLE_LABEL_WIDTH = 25.0;
 									 height)] 
 			       autorelease];
 		self.valued.backgroundColor = [Color valuedColor];
-		X += width;
+		X += width - 1;
 		[self addSubview:self.valued];
 	}
 	
@@ -171,7 +171,7 @@ const static CGFloat SINGLE_LABEL_WIDTH = 25.0;
 									  height)] 
 				autorelease];
 		self.healthy.backgroundColor = [Color healthyColor];
-		// X += width;
+		// X += width - 1;
 		[self addSubview:self.healthy];
 	}
 }

@@ -20,7 +20,7 @@
 	CGFloat _labelHeight;
 }
 
-@property (retain)  UILabel *avatorLabel;
+@property (strong)  UILabel *avatorLabel;
 
 @end
 

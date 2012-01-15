@@ -70,12 +70,12 @@ UIImage *scaleAndRotateImage(UIImage *image);
 }
 
 - (void)dealloc
-{
-	LOG(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
-	
+{	
 	[_userInfoArray release];
 	[_introduceView release];
 	[_avatorID release];
+	
+	[super dealloc];
 }
 
 #pragma mark - View lifecycle

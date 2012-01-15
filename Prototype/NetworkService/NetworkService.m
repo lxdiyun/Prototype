@@ -22,8 +22,8 @@
 	BOOL _inputStreamRest;
 }
 
-@property (retain) NSInputStream *inputStream;
-@property (retain) NSOutputStream *outputStream;
+@property (strong) NSInputStream *inputStream;
+@property (strong) NSOutputStream *outputStream;
 @property (assign) BOOL isWriting;
 @property (assign) BOOL outputStreamRest;
 @property (assign) BOOL inputStreamRest;
@@ -139,7 +139,7 @@ DEFINE_SINGLETON(NetworkService);
 	self.outputStreamRest = YES;
 	
 	STOP_PING();
-	REQUEUE_PENDING_MESSAGE();
+	ROLLBACK_ALL_PENDING_MESSAGE();
 	
 	[self connect];
 }

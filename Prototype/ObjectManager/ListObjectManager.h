@@ -14,8 +14,8 @@ typedef enum MESSAGE_TYPE_ENUM
 
 @interface ListObjectManager : NSObject
 @property (strong) NSMutableDictionary *objectDict;
-@property (retain) NSMutableDictionary *objectKeyArrayDict;
-@property (retain) NSDictionary *lastUpdatedDateDict;
+@property (strong) NSMutableDictionary *objectKeyArrayDict;
+@property (strong) NSDictionary *lastUpdatedDateDict;
 // object in list
 + (id) getObject:(NSString *)objectID inList:(NSString *)listID;
 // updating flag

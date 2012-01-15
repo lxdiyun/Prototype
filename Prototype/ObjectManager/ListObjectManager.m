@@ -33,7 +33,7 @@
 }
 @property (strong) NSMutableDictionary *responderArrayDict;
 @property (strong) NSMutableDictionary *updatingDict;
-@property (retain) NSMutableDictionary *messageDict;
+@property (strong) NSMutableDictionary *messageDict;
 @end
 
 @implementation ListObjectManager

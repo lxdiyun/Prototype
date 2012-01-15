@@ -41,6 +41,18 @@ NSInteger ID_SORTER(id ID1, id ID2, void *context)
 		return NSOrderedSame;
 }
 
+NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context)
+{
+	uint32_t v1 = [ID1 integerValue];
+	uint32_t v2 = [ID2 integerValue];
+	if (v1 < v2)
+		return NSOrderedAscending;
+	else if (v1 > v2)
+		return NSOrderedDescending;
+	else
+		return NSOrderedSame;
+}
+
 uint32_t SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler)
 {
 	return SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(messageDict, target, handler, NORMAL_PRIORITY);

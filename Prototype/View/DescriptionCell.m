@@ -276,7 +276,6 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 	
 		[self requestUserProfile];
 	}
-
 }
 
 @end

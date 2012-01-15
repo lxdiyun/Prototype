@@ -164,6 +164,7 @@ static int32_t s_lastCommentArrayCount = -1;
 	self.foodID = [[self.foodDict valueForKey:@"id"] stringValue];
 	[self forceRefreshTableView];
 	[self requestNewerComment];
+	self.tableView.contentOffset = CGPointZero;
 	
 	[super viewWillAppear:animated];
 }

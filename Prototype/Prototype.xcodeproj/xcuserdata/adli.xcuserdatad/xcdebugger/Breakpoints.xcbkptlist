@@ -22,41 +22,13 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "NetworkService/MessageReader.m"
-         timestampString = "347882605.151199"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "86"
-         endingLineNumber = "86"
-         landmarkName = "ADD_MESSAGE_RESPOMDER()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "NetworkService/MessageReader.m"
-         timestampString = "347882031.551139"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "33"
-         endingLineNumber = "33"
-         landmarkName = "json_message_handler()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
          filePath = "NetworkService/MessageWriter.m"
-         timestampString = "347536050.018584"
+         timestampString = "348327298.133129"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "174"
-         endingLineNumber = "174"
-         landmarkName = "CONFIRM_MESSAGE()"
+         startingLineNumber = "213"
+         endingLineNumber = "213"
+         landmarkName = "ROLLBACK_ALL_PENDING_MESSAGE()"
          landmarkType = "7">
       </FileBreakpoint>
       <FileBreakpoint
@@ -93,12 +65,12 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "NetworkService/MessageWriter.m"
-         timestampString = "347786440.348391"
+         timestampString = "348327298.133129"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "166"
-         endingLineNumber = "166"
-         landmarkName = "POP_BUFFER()"
+         startingLineNumber = "180"
+         endingLineNumber = "180"
+         landmarkName = "CONFIRM_MESSAGE()"
          landmarkType = "7">
       </FileBreakpoint>
       <FileBreakpoint
@@ -140,11 +112,11 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "113"
          endingLineNumber = "113"
-         landmarkName = "CHECK_STRING()"
+         landmarkName = "CHECK_NUMBER()"
          landmarkType = "7">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "Yes"
+         shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
@@ -154,7 +126,33 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "100"
          endingLineNumber = "100"
-         landmarkName = "CHECK_NUMBER()"
+         landmarkName = "PROPORTION()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "NetworkService/MessageBinaryWriter.m"
+         timestampString = "348296284.694346"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "13"
+         endingLineNumber = "13">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "NetworkService/MessageWriter.m"
+         timestampString = "348327298.133129"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "160"
+         endingLineNumber = "160"
+         landmarkName = "POP_BUFFER()"
          landmarkType = "7">
       </FileBreakpoint>
    </FileBreakpoints>

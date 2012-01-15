@@ -11,13 +11,16 @@
 @interface ImageManager ()
 {
 	NSMutableDictionary *_imageSizeDict;
+	NSDictionary *_createParams;
 }
 @property (strong) NSMutableDictionary *imageSizeDict;
+@property (strong) NSDictionary *createParams;
 @end
 
 @implementation ImageManager
 
 @synthesize imageSizeDict = _imageSizeDict;
+@synthesize createParams = _createParams;
 
 #pragma mark - singleton
 
@@ -44,6 +47,7 @@ DEFINE_SINGLETON(ImageManager);
 - (void) dealloc
 {
 	self.imageSizeDict = nil;
+	self.createParams = nil;
 	[super dealloc];
 }
 
@@ -65,12 +69,47 @@ DEFINE_SINGLETON(ImageManager);
 	}
 }
 
-#pragma mark - overwrite super class method
-#pragma mark - overwrite request
+#pragma mark - create image
 
-+ (NSString *)getMethod
++ (void) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target
+{
+	@autoreleasepool 
+	{
+
+		NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
+		
+		NSData *imageData = UIImageJPEGRepresentation(image, (CGFloat)1.0);
+		
+		[params setValue:@"new_image" forKey:@"file_name"];
+		[params setValue:[NSNumber numberWithUnsignedInteger:imageData.length] 
+			  forKey:@"file_size"];
+		
+		[[self getInstnace ] setCreateParams: params];
+		
+		uint32_t messageID = [self createObjectWithHandler:handler andTarget:target];
+		NSString *fileID = [[[NSString alloc] initWithFormat:@"%u", messageID] autorelease];
+		UPLOAD_FILE(imageData, fileID);
+	}
+}
+
+#pragma mark - overwrite super class method
+#pragma mark - overwrite get method
+
+- (NSString *) getMethod
 {
 	return @"img.get";
+}
+
+#pragma mark - overwrite create method
+
+- (NSString *) createMethod
+{
+	return @"img.create";
+}
+
+- (void) setParamsForRequest:(NSMutableDictionary *)request
+{
+	[request setValue:self.createParams forKey:@"params"];	
 }
 
 @end

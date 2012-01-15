@@ -16,7 +16,7 @@ DEFINE_SINGLETON(ProfileMananger);
 #pragma mark - message
 
 #pragma mark - overwrite super class method
-#pragma mark - handler overwrite
+#pragma mark - get method handler overwrite
 
 - (void) checkAndPerformResponderWithID:(NSString *)ID
 {
@@ -70,8 +70,8 @@ DEFINE_SINGLETON(ProfileMananger);
 	}
 }
 
-#pragma mark - overwrite request
-+(NSString *) getMethod
+#pragma mark - overwrite get method
+- (NSString *) getMethod
 {
 	return @"user.get";
 }

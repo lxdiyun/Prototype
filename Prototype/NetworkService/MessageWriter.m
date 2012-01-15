@@ -7,21 +7,87 @@
 //
 
 #import "Message.h"
+#import "MessagePrivate.h"
 
 #import "JSONKit.h"
 
 #import "NetworkService.h"
-
 #import "Util.h"
 
-static CFRunLoopTimerRef gs_ping_timer = NULL;
-static NSMutableArray *gs_buffer_array = nil;
-static NSMutableDictionary *gs_pending_messages = nil;
-const static NSString *RESEVERED_MESSAGE_ID = @"RESERVED_ID";
+static NSMutableArray *gs_buffer_array[PRIORITY_TYPE_MAX] = {nil};
+static NSMutableDictionary *gs_pending_messages[PRIORITY_TYPE_MAX] = {nil};
 
 #pragma mark - write message
 
-static uint32_t get_msg_id(void)
+static void convert_msg_dictonary_to_data(NSDictionary *input_dict, NSMutableData * output_data)
+{
+	convert_dictonary_to_json_data(input_dict, output_data);
+}
+
+void send_buffer_with_id_priority(NSData *buffer, 
+				  const NSString *IDString, 
+				  MESSAGE_PRIORITY prioirty)
+{
+	NSArray *IDAndBuffer = [[NSArray alloc] initWithObjects:IDString, buffer, nil];
+
+	if (nil == gs_buffer_array[prioirty])
+	{
+		gs_buffer_array[prioirty] = [[NSMutableArray alloc] init];
+	}
+
+	[gs_buffer_array[prioirty] addObject:IDAndBuffer];
+
+	[IDAndBuffer release];
+
+	// request send
+	[NetworkService requestSendMessage];
+}
+
+static void send_data_with_priority_and_responder(NSData *message, 
+						  MESSAGE_PRIORITY priority,
+						  MessageResponder *responder, 
+						  uint32_t ID)
+{
+	START_NETWORK_INDICATOR();
+
+	// add handler first
+	ADD_MESSAGE_RESPONDER(responder, ID);
+
+	// then send
+	NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
+	send_buffer_with_id_priority(message, IDString, priority);
+	[IDString release];
+}
+
+static void add_pending_message(NSArray *IDAndBuffer, MESSAGE_PRIORITY priority)
+{
+	if (nil == gs_pending_messages[priority])
+	{
+		gs_pending_messages[priority] = [[NSMutableDictionary alloc] init];
+	}
+
+	NSString *ID = [IDAndBuffer objectAtIndex:0]; 
+
+	if (RESEVERED_MESSAGE_ID != ID)
+	{
+		NSMutableArray *bufferArray = [gs_pending_messages[priority] valueForKey:ID];
+
+		if (nil == bufferArray)
+		{
+			bufferArray = [[NSMutableArray alloc] init];
+
+			[gs_pending_messages[priority] setValue:bufferArray forKey:ID];
+
+			[bufferArray release];
+		}
+
+		[bufferArray addObject:IDAndBuffer];
+	}	
+}
+
+#pragma mark - write meesage interface
+
+uint32_t GET_MSG_ID(void)
 {
 	const static uint32_t INIT_ID = 0x10;
 	const static uint32_t MAX_ID = 0xFFFF;
@@ -41,89 +107,20 @@ static uint32_t get_msg_id(void)
 	}
 }
 
-static void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableData * output_data)
+void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(NSDictionary *messageDict, 
+						   id target, 
+						   SEL handler, 
+						   MESSAGE_PRIORITY priority,
+						   uint32_t ID)
 {
 	@autoreleasepool 
 	{
-		NSData *data = [input_dict JSONData];
-		uint32_t header;
-		
-		if (nil != data)
-		{
-			header = CFSwapInt32HostToBig(data.length) | (JSON_MSG << HEADER_LENGTH_BITS);
-		}
-		
-		if (nil !=output_data)
-		{
-			[output_data appendBytes:(void*)&header length:HEADER_SIZE];
-			[output_data appendData: data];
-		}
-	}			
-}
-
-static void convert_msg_dictonary_to_data(NSDictionary *input_dict, NSMutableData * output_data)
-{	
-	convert_dictonary_to_json_data(input_dict, output_data);
-}
-
-static void send_buffer_with_id_priority(NSData *buffer, 
-					 const NSString *IDString, 
-					 MESSAGE_PRIORITY prioirty)
-{
-	NSArray *IDAndBuffer = [[NSArray alloc] initWithObjects:IDString, buffer, nil];
-	
-	if (nil == gs_buffer_array)
-	{
-		gs_buffer_array = [[NSMutableArray alloc] init];
-	}
-	
-	if (HIGHEST_PRIORITY == prioirty)
-	{
-		[gs_buffer_array insertObject:IDAndBuffer atIndex:0];
-	}
-	else
-	{
-	
-		[gs_buffer_array addObject:IDAndBuffer];
-	}
-	
-	[IDAndBuffer release];
-	
-	// request send
-	[NetworkService requestSendMessage];
-}
-
-static void send_data_with_priority_and_responder(NSData *message, 
-						  MESSAGE_PRIORITY priority,
-						  MessageResponder *responder, 
-						  uint32_t ID)
-{
-	START_NETWORK_INDICATOR();
-
-	// add handler first
-	ADD_MESSAGE_RESPOMDER(responder, ID);
-	
-	// then send
-	NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
-	send_buffer_with_id_priority(message, IDString, priority);
-	[IDString release];
-}
-
-uint32_t SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
-					    id target, 
-					    SEL handler, 
-					    MESSAGE_PRIORITY priority)
-{
-	@autoreleasepool 
-	{
-		uint32_t ID = get_msg_id();
 		NSNumber *IDNumber = [NSNumber numberWithUnsignedLong:ID];
 		NSMutableData *data = [[[NSMutableData alloc] init] autorelease];
 		NSMutableDictionary *dictWithID = [[messageDict mutableCopy] autorelease];
-		MessageResponder *responder = [[MessageResponder alloc] init];
+		MessageResponder *responder = [[[MessageResponder alloc] init] autorelease];
 		responder.target = target;
 		responder.handler = handler;
-									
 		
 		[dictWithID setValue:IDNumber forKey:@"id"];
 		
@@ -131,107 +128,95 @@ uint32_t SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict,
 		
 		send_data_with_priority_and_responder(data, priority, responder, ID);
 		
-		[responder release];
 		
-		return ID;
 	}
+}
+
+uint32_t SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
+						id target, 
+						SEL handler, 
+						MESSAGE_PRIORITY priority)
+{
+	uint32_t ID = GET_MSG_ID();
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(messageDict, 
+						      target, 
+						      handler, 
+						      priority,
+						      ID);
+	return ID;
 }
 
 NSData * POP_BUFFER(void)
 {
-	if (nil == gs_pending_messages)
-	{
-		gs_pending_messages = [[NSMutableDictionary alloc] init];
-	}
-	
 	NSData * popBuffer = nil;
-	
-	if (0 < [gs_buffer_array count])
+
+	for (int priority = 0; priority < PRIORITY_TYPE_MAX; ++priority)
 	{
-		NSArray *IDandBuffer = [gs_buffer_array objectAtIndex:0]; 
-		NSString *ID = [IDandBuffer objectAtIndex:0]; 
-		popBuffer = [IDandBuffer objectAtIndex:1];
-		
-		if (RESEVERED_MESSAGE_ID != ID)
+		if (0 < [gs_buffer_array[priority] count])
 		{
-			[gs_pending_messages setValue:popBuffer forKey:ID];
+			NSArray *IDAndBuffer = [gs_buffer_array[priority] objectAtIndex:0]; 
+			popBuffer = [IDAndBuffer objectAtIndex:1];
+
+			add_pending_message(IDAndBuffer, priority);
+			
+			[gs_buffer_array[priority] removeObjectAtIndex:0];
+
+			break;
 		}
-		
-		[gs_buffer_array removeObjectAtIndex:0];
 	}
-	
+
 	// TODO remove log
 	if (4 < popBuffer.length)
 	{
 		CLOG(@"%s", popBuffer.bytes + 4);
 	}
-	
+
 	return popBuffer;
 }
 
 void CONFIRM_MESSAGE(NSString *ID)
 {
-	[gs_pending_messages setValue:nil forKey:ID];
+	for (int i = 0; i < PRIORITY_TYPE_MAX; ++i)
+	{
+		[gs_pending_messages[i] setValue:nil forKey:ID];
+	}
 }
 
-void REQUEUE_PENDING_MESSAGE(void)
+BOOL ROLLBACK_PENDING_MEESAGE(MESSAGE_PRIORITY priority, NSString *ID)
 {
-	for (NSString *ID in [gs_pending_messages allKeys])
+	BOOL findTheMessages = NO;
+	
+	NSMutableArray *IDAndBufferArray = [gs_pending_messages[priority] valueForKey:ID];
+	
+	if (nil != IDAndBufferArray)
 	{
-		NSData *messageBuffer = [gs_pending_messages valueForKey:ID];
+		findTheMessages = YES;
 		
-		send_buffer_with_id_priority(messageBuffer, ID, NORMAL_PRIORITY);
-		
-		[gs_pending_messages setValue:nil forKey:ID];
+		// roll back the message buffer in reversed buffer
+		for (int i = [IDAndBufferArray count] - 1; i >= 0; --i)
+		{
+			NSArray *IDAndBuffer = [IDAndBufferArray objectAtIndex:i];
+			[gs_buffer_array[priority] insertObject:IDAndBuffer atIndex:0];
+		}
 	}
+
+	return findTheMessages;
 }
 
-#pragma mark - PING Message
-
-static void request_ping(CFRunLoopTimerRef timer, void *info)
+void ROLLBACK_ALL_PENDING_MESSAGE(void)
 {
-	CLOG(@"request ping");
-	
-	uint32_t pingMessage = CFSwapInt32HostToBig(PING_PONG_MSG << HEADER_LENGTH_BITS);
-	
-	NSData *data = [[NSData alloc] initWithBytes:(void *)&pingMessage length:HEADER_SIZE];
-	
-	send_buffer_with_id_priority(data, RESEVERED_MESSAGE_ID, HIGHEST_PRIORITY);
-	
-	[NetworkService requestSendMessage];
-	
-	[data release];
-}
+	for (int priority = 0; priority < PRIORITY_TYPE_MAX; ++priority)
+	{
+		for (NSString *ID in [[gs_pending_messages[priority] allKeys] 
+		     sortedArrayUsingFunction:ID_SORTER_REVERSE 
+				      context:nil])
+		{
+			ROLLBACK_PENDING_MEESAGE(priority, ID);
+		}
 
-void START_PING(void)
-{
-	if (NULL == gs_ping_timer)
-	{
-		CFRunLoopRef runLoop = CFRunLoopGetCurrent();
-		// the ping timer will be fire 50 seconds later 
-		// set interval to a long time(double type max value) that the 
-		// timer only fire once, and can be reactive later
-		gs_ping_timer = CFRunLoopTimerCreate(kCFAllocatorDefault, 
-						     CFAbsoluteTimeGetCurrent() + 50.0,
-						     DBL_MAX,
-						     0, 
-						     0,
-						     &request_ping, 
-						     NULL);
-		CFRunLoopAddTimer(runLoop, gs_ping_timer, kCFRunLoopCommonModes);
-	}
-	else
-	{
-		// reactive the timer
-		CFRunLoopTimerSetNextFireDate(gs_ping_timer, 
-					      CFAbsoluteTimeGetCurrent() + 50.0);
+		[gs_pending_messages[priority] removeAllObjects];
 	}
 }
 
-void STOP_PING(void)
-{
-	if (NULL != gs_ping_timer)
-	{
-		CFRunLoopTimerSetNextFireDate(gs_ping_timer, DBL_MAX);
-	}
-}
+#pragma mark - binary Message
+
