@@ -24,7 +24,7 @@ void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableData * ou
 		
 		if (nil != data)
 		{
-			header = CFSwapInt32HostToBig(data.length) | (JSON_MSG << HEADER_LENGTH_BITS);
+			header = CFSwapInt32HostToBig(data.length | (JSON_MSG << HEADER_LENGTH_BITS));
 		}
 		
 		if (nil !=output_data)
@@ -52,12 +52,11 @@ void json_message_handler(NSData *buffer_data)
 	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
 	MessageResponder *responder = [gs_handler_dict valueForKey:ID];
 	
-	
+	// TODO: Remove log
+	CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
+
 	STOP_NETWORK_INDICATOR();
 	CONFIRM_MESSAGE(ID);
-	
-	// TODO: Remove log
-	// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 	
 	if (nil != responder)
 	{

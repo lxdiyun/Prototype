@@ -49,7 +49,7 @@ static void generate_binary_message(NSMutableData *input_data,
 		
 		if (nil != input_data)
 		{
-			header = CFSwapInt32HostToBig(input_data.length) | (BINARY_MSG << HEADER_LENGTH_BITS);
+			header = CFSwapInt32HostToBig((input_data.length + BINARY_ACTION_BYTE_SIZE) | (BINARY_MSG << HEADER_LENGTH_BITS));
 		}
 		
 		if (nil != output_data)
@@ -75,51 +75,54 @@ static void generate_binary_message(NSMutableData *input_data,
  * | data                          |
  * | ...                           |
  */
-void UPLOAD_FILE(NSData *file, NSString *ID)
+void UPLOAD_FILE(NSData *file, uint32_t file_ID)
 {
-	uint32_t file_ID  = [ID intValue];
-	
 	if (nil == file)
 	{
 		CLOG(@"empty file to upload")
 		return;
 	}
-	
+	NSString *IDString = [[NSString alloc] initWithFormat:@"%u", file_ID];
 	// cut file data into pieces with window size
 	uint32_t offset = 0;
 	uint32_t file_length = file.length;
-	uint8_t pieces[BINARY_MSG_WINDOW];
+	uint8_t pieces[BINARY_MSG_WINDOW + 1];
+	uint32_t file_id_in_bigendian = CFSwapInt32HostToBig(file_ID);
 
 	do
 	{
 		NSMutableData *payload = [[NSMutableData alloc] init];
 		NSMutableData *binary_message = [[NSMutableData alloc] init];
 		
-		[payload appendBytes:(void*)&file_ID length:sizeof(file_ID)];
-		[payload appendBytes:(void*)&offset length:sizeof(offset)];
+		uint32_t offset_in_bigendian = CFSwapInt32HostToBig(offset);
 		
-		uint32_t lefted_length = file_length - offset;
+		[payload appendBytes:(void*)&file_id_in_bigendian length:sizeof(file_id_in_bigendian)];
+		[payload appendBytes:(void*)&offset_in_bigendian length:sizeof(offset_in_bigendian)];
 		
-		if (BINARY_MSG_WINDOW < lefted_length)
+		uint32_t lefted_bytes = file_length - offset;
+		
+		if (BINARY_MSG_WINDOW < lefted_bytes)
 		{
 			[file getBytes:pieces range:NSMakeRange(offset, BINARY_MSG_WINDOW)];
 			[payload appendBytes:pieces length:BINARY_MSG_WINDOW];
 		}
 		else
 		{
-			[file getBytes:pieces range:NSMakeRange(offset, lefted_length)];
-			[payload appendBytes:pieces length:lefted_length];
+			[file getBytes:pieces range:NSMakeRange(offset, lefted_bytes)];
+			[payload appendBytes:pieces length:lefted_bytes];
 		}
 
 		generate_binary_message(payload, binary_message, UPLOAD_FILE_ACTION);
 		
-		send_buffer_with_id_priority(binary_message, ID, BINARY_PRIORITY);
+		send_buffer_with_id_priority(binary_message, IDString, BINARY_PRIORITY);
 		
 		[binary_message release];
 		[payload release];
 		
 		offset += BINARY_MSG_WINDOW;
 	} while (offset < file_length);	
+	
+	[IDString release];
 }
 
 #pragma mark - binary message handler

@@ -408,7 +408,7 @@
 
 #pragma mark - create method - handler
 
-- (void) checkAndPerformResponderForCreateWithMessageID:(NSString *)ID
+- (void) checkAndPerformResponderForCreateWithMessageID:(NSString *)ID andResult:(id)result
 {
 	@autoreleasepool 
 	{
@@ -423,7 +423,7 @@
 		
 		if (nil != responder)
 		{
-			[responder perform];
+			[responder performWithObject:result];
 		}
 	}
 }
@@ -441,7 +441,7 @@
 	NSString *objectID = [[objectDict valueForKey:@"id"] stringValue];
 	
 	[self.objectDict setValue:objectDict forKey:objectID];
-	[self checkAndPerformResponderForCreateWithMessageID:messageID];
+	[self checkAndPerformResponderForCreateWithMessageID:messageID andResult:result];
 }
 
 #pragma mark - create method - send

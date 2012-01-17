@@ -67,6 +67,6 @@ void START_PING(void);
 void STOP_PING(void);
 
 // Binary Message
-void UPLOAD_FILE(NSData *file, NSString *ID);
+void UPLOAD_FILE(NSData *file, uint32_t file_ID);
 
 #endif

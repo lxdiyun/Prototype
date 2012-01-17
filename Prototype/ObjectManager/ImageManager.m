@@ -7,6 +7,10 @@
 
 #import "Message.h"
 #import "Util.h"
+#import "UIImage+Scale.h"
+
+const static CGFloat MAX_IMAGE_WIDTH = 640.0;
+const static CGFloat MAX_IMAGE_HEIGHT = 960.0;
 
 @interface ImageManager ()
 {
@@ -78,7 +82,9 @@ DEFINE_SINGLETON(ImageManager);
 
 		NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
 		
-		NSData *imageData = UIImageJPEGRepresentation(image, (CGFloat)1.0);
+		UIImage *resizedImage = [image reduceToSize:CGSizeMake(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)];
+		
+		NSData *imageData = UIImageJPEGRepresentation(resizedImage, (CGFloat)0.8);
 		
 		[params setValue:@"new_image" forKey:@"file_name"];
 		[params setValue:[NSNumber numberWithUnsignedInteger:imageData.length] 
@@ -87,8 +93,7 @@ DEFINE_SINGLETON(ImageManager);
 		[[self getInstnace ] setCreateParams: params];
 		
 		uint32_t messageID = [self createObjectWithHandler:handler andTarget:target];
-		NSString *fileID = [[[NSString alloc] initWithFormat:@"%u", messageID] autorelease];
-		UPLOAD_FILE(imageData, fileID);
+		UPLOAD_FILE(imageData, messageID);
 	}
 }
 

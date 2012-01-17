@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UserInfoPage : UITableViewController <UITableViewDelegate>
+@interface UserInfoPage : UITableViewController
 
 @end

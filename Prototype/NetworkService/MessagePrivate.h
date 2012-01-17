@@ -12,6 +12,10 @@
 #import <Foundation/Foundation.h>
 
 // reserved message ID for PING message
+// Please note that message use this ID will be not add into
+// pending message queue. So that the user must make sure that
+// the buffer for the message won't be release before network
+// service send it.
 const static NSString *RESEVERED_MESSAGE_ID = @"RESERVED_ID";
 // handler dictionary for message reader and handler
 extern NSMutableDictionary *gs_handler_dict;

@@ -15,26 +15,24 @@
 #import "AvatorCell.h"
 #import "LoginManager.h"
 #import "ProfileMananger.h"
+#import "PhotoSelector.h"
+#import "ImageManager.h"
 
-UIImage *scaleAndRotateImage(UIImage *image);
-@interface UIImage (Extras) 
-- (UIImage*)imageByScalingAndCroppingForSize:(CGSize)targetSize;
-@end
-
-
-@interface  UserInfoPage   ()
+@interface  UserInfoPage   () <UITableViewDelegate, PhototSelectorDelegate>
 {
 @private
 	NSArray *_userInfoArray;
 	UITextView *_introduceView;
 	BOOL _cellChanged;
 	NSNumber *_avatorID;
+	PhotoSelector *_photoSelector;
 }
 
 @property (strong) NSArray *userInfoArray;
 @property (strong) UITextView *introduceView;
 @property (assign) BOOL cellChanged;
 @property (strong) NSNumber *avatorID;
+@property (strong) PhotoSelector *photoSelector;
 
 - (void)initViewDisplay;
 - (void)initUserInfo;
@@ -49,6 +47,7 @@ UIImage *scaleAndRotateImage(UIImage *image);
 @synthesize introduceView = _introduceView;
 @synthesize cellChanged = _cellChanged;
 @synthesize avatorID = _avatorID;
+@synthesize photoSelector = _photoSelector;
 
 #pragma mark - life circle
 
@@ -101,9 +100,12 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 - (void)initViewDisplay
 {
-	[self setTitle:@"个人设置"];
-	
-	self.view.backgroundColor = [Color grey1Color];
+	@autoreleasepool 
+	{
+		[self setTitle:@"个人设置"];
+		self.photoSelector = [[[PhotoSelector alloc] init] autorelease];
+		self.view.backgroundColor = [Color grey1Color];
+	}
 }
 
 - (void)initUserInfo
@@ -120,13 +122,12 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 - (void)viewDidUnload
 {
-	LOG(@"%@:%s:%d start", [self class], (char *)_cmd, __LINE__);
+	self.userInfoArray = nil;
+	self.introduceView = nil;
+	self.avatorID = nil;
+	self.photoSelector = nil;
 	
 	[super viewDidUnload];
-	// Release any retained subviews of the main view.
-	[self setUserInfoArray:nil];
-	[self setIntroduceView:nil];
-	[self setAvatorID:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -332,22 +333,27 @@ UIImage *scaleAndRotateImage(UIImage *image);
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	// Navigation logic may go here. Create and push another view controller.
-	/*
-	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-	 // ...
-	 // Pass the selected object to the new view controller.
-	 [self.navigationController pushViewController:detailViewController animated:YES];
-	 [detailViewController release];
-	 */
+	if (indexPath.section == 1)
+	{
+		self.photoSelector.delegate = self;
+		[self.photoSelector.actionSheet showInView:self.view];
+		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	}
 }
 
 // did not provide selectable cell
--(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return nil;
+	if (indexPath.section == 1)
+	{
+		return indexPath;
+	}
+	else
+	{
+		return nil;
+	}
 }
 
 #pragma mark - message
@@ -359,6 +365,8 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	if (nil == loginUserID)
 	{
 		[LoginManager requestWithHandler:@selector(sendUserInfoRequest) andTarget:self];
+		
+		return;
 	}
 	
 	[ProfileMananger requestObjectWithNumberID:loginUserID andHandler:@selector(handleMessage) andTarget:self];
@@ -398,6 +406,26 @@ UIImage *scaleAndRotateImage(UIImage *image);
 	{
 		[(UITableView *)self.view reloadData];
 	}
+}
+
+#pragma mark - PhototSelectorDelegate
+
+- (void) uploadImageHandler:(id)result
+{
+	LOG(@"%@", result);
+	self.avatorID = [[result valueForKey:@"result"] valueForKey:@"id"];
+	[self refreshTableView];
+}
+
+- (void) didSelectPhotoWithSelector:(PhotoSelector *)selector
+{
+	LOG(@"start upload");
+	[ImageManager createImage:selector.selectedImage 
+		      withHandler:@selector(uploadImageHandler:) 
+			andTarget:self];
+	
+	// release the origin image
+	selector.selectedImage = nil;
 }
 
 
