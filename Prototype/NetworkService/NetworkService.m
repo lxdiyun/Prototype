@@ -96,6 +96,8 @@ DEFINE_SINGLETON(NetworkService);
 	CFStreamCreatePairWithSocketToHost(NULL, 
 					   (CFStringRef)@"175.156.203.104", 
 					   4040, 
+//					   (CFStringRef)@"192.168.2.107",
+//					   8080,
 					   &readStream, 
 					   &writeStream);
 	self.inputStream = (NSInputStream *)readStream;

@@ -10,7 +10,7 @@
 #import "ImageManager.h"
 #import "ProfileMananger.h"
 
-static NSString *gs_fakeEventID = nil;
+static NSString *gs_fakeListtID = nil;
 
 @implementation EventManager
 
@@ -26,9 +26,9 @@ DEFINE_SINGLETON(EventManager);
 	
 	if (nil != self) 
 	{
-		if (nil == gs_fakeEventID)
+		if (nil == gs_fakeListtID)
 		{
-			gs_fakeEventID = [[NSString alloc] initWithFormat:@"%d", 0x1];
+			gs_fakeListtID = [[NSString alloc] initWithFormat:@"%d", 0x1];
 		}
 	}
 	
@@ -37,7 +37,7 @@ DEFINE_SINGLETON(EventManager);
 
 - (void) dealloc
 {
-	gs_fakeEventID = nil;
+	gs_fakeListtID = nil;
 	[super dealloc];
 }
 
@@ -46,14 +46,14 @@ DEFINE_SINGLETON(EventManager);
 
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	return [self requestNewerWithListID:gs_fakeEventID 
+	return [self requestNewerWithListID:gs_fakeListtID 
 				   andCount:count 
 				withHandler:handler 
 				  andTarget:target];
 }
 + (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
-	return [self requestOlderWithListID:gs_fakeEventID 
+	return [self requestOlderWithListID:gs_fakeListtID 
 				   andCount:count 
 				withHandler:handler 
 				  andTarget:target];
@@ -63,33 +63,33 @@ DEFINE_SINGLETON(EventManager);
 
 + (NSArray *) eventKeyArray
 {
-	return [self keyArrayForList:gs_fakeEventID]; 
+	return [self keyArrayForList:gs_fakeListtID]; 
 }
 
 + (BOOL) isNewerUpdating
 {
 	@autoreleasepool 
 	{
-		return [self isUpdatingWithType:REQUEST_NEWER withListID:gs_fakeEventID];
+		return [self isUpdatingWithType:REQUEST_NEWER withListID:gs_fakeListtID];
 	}
 }
 
 + (NSDate *)lastUpdatedDate
 {
-	return [self lastUpdatedDateForList:gs_fakeEventID];
+	return [self lastUpdatedDateForList:gs_fakeListtID];
 }
 
 + (NSDictionary *) getObjectWithStringID:(NSString *)objectID
 {
-	return [self getObject:objectID inList:gs_fakeEventID];
+	return [self getObject:objectID inList:gs_fakeListtID];
 }
 
 #pragma mark - overwrite super class
 #pragma mark - overwrite handler
 
-- (void) messageHandler:(id)dict withListID:(NSString *)ID
+- (void) getMethodHandler:(id)dict withListID:(NSString *)ID
 {
-	[super messageHandler:dict withListID:ID];
+	[super getMethodHandler:dict withListID:ID];
 	
 	NSDictionary *messageDict = [(NSDictionary*)dict retain];
 	NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
@@ -123,7 +123,6 @@ DEFINE_SINGLETON(EventManager);
 		{
 			LOG(@"Error failed to get userID from \n:%@", object);
 		}
-		
 	}
 	
 	// cache the new image info

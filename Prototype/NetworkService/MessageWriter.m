@@ -127,8 +127,6 @@ void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(NSDictionary *messageDict,
 		convert_msg_dictonary_to_data(dictWithID, data);
 		
 		send_data_with_priority_and_responder(data, priority, responder, ID);
-		
-		
 	}
 }
 

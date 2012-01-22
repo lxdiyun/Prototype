@@ -22,7 +22,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	UIActionSheet *_actionSheet;
 	UIImagePickerController *_imagePickerController;
 	UIImage *_selectedImage;
-	UIViewController<PhototSelectorDelegate> * _delegate;
+	NSObject<PhototSelectorDelegate> *_delegate;
 	UIImagePickerControllerSourceType _actionArray[MAX_PHOTO_SELECT_ACTION];
 	NSInteger _actionMaxIndex;
 }
@@ -116,7 +116,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 
 #pragma mark - image picker methods
 
-- (void)showImagePicker:(UIImagePickerControllerSourceType)sourceType
+- (void) showImagePicker:(UIImagePickerControllerSourceType)sourceType
 {
 	if ([UIImagePickerController isSourceTypeAvailable:sourceType])
 	{
@@ -130,7 +130,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 		self.imagePickerController.sourceType = sourceType;
 
 		self.imagePickerController.delegate = self;
-		[self.delegate presentModalViewController:self.imagePickerController animated:YES];
+		[self.delegate showModalView:self.imagePickerController];
 	}
 }
 
@@ -154,7 +154,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	// release the picker or will receive mermory warning
 	self.imagePickerController = nil;
 	
-	[self.delegate dismissModalViewControllerAnimated:YES];
+	[self.delegate dismissSelector:self];
 	
 	[self.delegate performSelector:@selector(didSelectPhotoWithSelector:) 
 			    withObject:self
@@ -163,7 +163,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 
 - (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker 
 {
-	[self.delegate dismissModalViewControllerAnimated:YES];
+	[self.delegate dismissSelector:self];
 }
 
 @end

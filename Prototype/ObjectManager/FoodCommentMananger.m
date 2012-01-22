@@ -18,13 +18,9 @@ DEFINE_SINGLETON(FoodCommentMananger);
 #pragma mark - overwrite super class method
 #pragma mark - overwrite requsest get method
 
-- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID;
+- (NSString *) getObjectType;
 {
-	@autoreleasepool 
-	{
-		[params setValue:@"food" forKey:@"obj_type"];
-		[params setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"obj_id"];
-	}
+	return @"food";
 }
 
 @end

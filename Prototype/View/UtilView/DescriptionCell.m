@@ -165,13 +165,13 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 	
 	CGFloat X = PADING1 + AVATOR_SIZE + PADING2;
 	CGFloat Y = PADING3;
-	CGFloat width = self.contentView.frame.size.width / PROPORTION()  - X - PADING1;
+	CGFloat width = self.contentView.frame.size.width - ((X + PADING2) * PROPORTION());
 	CGFloat height = FONT_SIZE;
 	
 	self.userAndDate = [[[UILabel alloc] init] autorelease];
 	self.userAndDate.frame = CGRectMake(X * PROPORTION(),
 					    Y * PROPORTION(),
-					    width * PROPORTION(),
+					    width,
 					    height * PROPORTION());
 	
 	self.userAndDate.font = font;

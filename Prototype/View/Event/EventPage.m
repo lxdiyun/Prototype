@@ -40,7 +40,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 - (void) requestNewerEvent;
 
 // util
-- (void) refreshTableView;
+- (void) refreshTableView:(id)result;
 @end
 
 @implementation EventPage
@@ -229,13 +229,14 @@ static CGFloat gs_frame_height;
 - (NSInteger) getEventIndexTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
 	int32_t eventIndex = -1;
+
 	if (self.leftColumn == tableView)
 	{
 		eventIndex = 2 * indexPath.row;
 	}
 	else
 	{
-		eventIndex = 2 * (indexPath.row - 1) + 1;
+		eventIndex = 2 * indexPath.row + 1;
 	}
 	
 	return eventIndex;
@@ -252,7 +253,7 @@ static CGFloat gs_frame_height;
 {
 	// Return the number of rows in the section.
 	uint32_t count = [EventManager eventKeyArray].count;
-	return count/2 + 1;
+	return count / 2 + count % 2;
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -332,6 +333,8 @@ static CGFloat gs_frame_height;
 		self.foodPage.foodDict = [event valueForKey:@"obj"];
 		
 		[self.navigationController pushViewController:self.foodPage animated:YES];
+		self.foodPage.tableView.contentOffset = CGPointZero;
+		[self.foodPage requestNewerComment];
 	}
 }
 
@@ -350,24 +353,29 @@ static CGFloat gs_frame_height;
 
 #pragma mark - message
 
-- (void) requestNewerEventHandler
+- (void) requestNewerEventHandler:(id)result
 {	
-	[self refreshTableView];
+	[self refreshTableView:nil];
 	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.leftColumn];
 }
 
 - (void) requestNewerEvent
 {	
-	[EventManager requestNewerCount:EVENT_REFRESH_WINDOW withHandler:@selector(requestNewerEventHandler) andTarget:self];
+	[EventManager requestNewerCount:EVENT_REFRESH_WINDOW 
+			    withHandler:@selector(requestNewerEventHandler:) 
+			      andTarget:self];
 }
 
 - (void) requestOlderEvent
 {
-	[EventManager requestOlderCount:EVENT_REFRESH_WINDOW withHandler:@selector(refreshTableView) andTarget:self];
+	[EventManager requestOlderCount:EVENT_REFRESH_WINDOW 
+			    withHandler:@selector(refreshTableView:) 
+			      andTarget:self];
 }
 
 #pragma mark - util
-- (void) refreshTableView
+
+- (void) refreshTableView:(id)result
 {
 	static uint32_t s_lastEventArrayCount = 0;
 	uint32_t eventArrayCount = [[EventManager eventKeyArray] count];

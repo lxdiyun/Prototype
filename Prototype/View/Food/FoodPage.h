@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface FoodPage : UITableViewController
-
+- (void) requestNewerComment;
 @property (strong) NSDictionary *foodDict;
 
 @end

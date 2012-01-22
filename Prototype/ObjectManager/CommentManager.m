@@ -11,14 +11,52 @@
 #import "ProfileMananger.h"
 #import "Util.h"
 
+@interface CommentManager ()
+{
+	NSString *_createCommentString;
+}
+@property (strong) NSString *createCommentString;
+
+@end
+
 @implementation CommentManager
+
+@synthesize createCommentString = _createCommentString;
+
+#pragma mark - life circle
+
++ (id) getInstnace
+{
+	LOG(@"Error should use the subclass method");
+	return nil;
+}
+
+- (void) dealloc
+{
+	self.createCommentString = nil;
+}
+
+#pragma mark - class interface
++ (void) createComment:(NSString *)text forList:(NSString *)listID withHandler:(SEL)handler andTarget:target
+{
+	[[self getInstnace] setCreateCommentString:text];
+	
+	[self requestCreateWithListID:listID withHandler:handler andTarget:target];
+}
+
+#pragma mark - method that must be overwrite by subclass
+- (NSString *) getObjectType;
+{
+	LOG(@"Error should use the subclass method");
+	return nil;
+}
 
 #pragma mark - overwrite super class method
 #pragma mark - overwrite handler
 
-- (void) messageHandler:(id)dict withListID:(NSString *)ID
+- (void) getMethodHandler:(id)dict withListID:(NSString *)ID
 {
-	[super messageHandler:dict withListID:ID];
+	[super getMethodHandler:dict withListID:ID];
 	
 	NSDictionary *messageDict = [(NSDictionary*)dict retain];
 	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
@@ -48,11 +86,37 @@
 }
 
 
-#pragma mark - overwrite requsest get method
+#pragma mark - overwrite super classs get method
 
 - (NSString *) getMethod
 {
 	return @"comment.get";
+}
+
+- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
+{
+	@autoreleasepool 
+	{
+		[params setValue:[self getObjectType] forKey:@"obj_type"];
+		[params setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"obj_id"];
+	}
+	
+}
+
+#pragma mark - overwrite super classs create method
+- (NSString *) createMethod
+{
+	return @"comment.create";
+}
+
+- (void) setCreateMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
+{
+	@autoreleasepool 
+	{
+		[params setValue:[self getObjectType] forKey:@"obj_type"];
+		[params setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"obj_id"];
+		[params setValue:self.createCommentString forKey:@"msg"];
+	}
 }
 
 @end

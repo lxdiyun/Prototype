@@ -14,19 +14,21 @@
 @interface ObjectManager ()
 {
 	NSMutableDictionary *_objectDict;
-	NSMutableDictionary *_responderArrayDict;
+	NSMutableDictionary *_responderDictForGet;
 	NSMutableDictionary *_responderDictForCreate;
 	NSMutableDictionary *_updatingDict;
 	NSArray *_IDArray;
+	NSDictionary *_createParams;
 }
 @end
 
 @implementation ObjectManager
 
 @synthesize objectDict = _objectDict;
-@synthesize responderArrayDict = _responderArrayDict;
+@synthesize responderDictForGet = _responderDictForGet;
 @synthesize responderDictForCreate = _responderDictForCreate;
 @synthesize updatingDict = _updatingDict;
+@synthesize createParams = _createParams;
 
 #pragma mark - life circle
 
@@ -40,7 +42,7 @@
 		@autoreleasepool 
 		{
 			self.objectDict = [[[NSMutableDictionary alloc] init] autorelease];
-			self.responderArrayDict = [[[NSMutableDictionary alloc] init] autorelease];
+			self.responderDictForGet = [[[NSMutableDictionary alloc] init] autorelease];
 			self.responderDictForCreate = [[[NSMutableDictionary alloc] init] autorelease];
 			self.updatingDict = [[[NSMutableDictionary alloc] init] autorelease];
 		}
@@ -52,17 +54,38 @@
 - (void) dealloc 
 {
 	self.objectDict = nil;
-	self.responderArrayDict = nil;
+	self.responderDictForGet = nil;
 	self.responderDictForCreate = nil;
 	self.updatingDict = nil;
+	self.createParams = nil;
 
 	[super dealloc];
 }
 
 + (id) getInstnace
 {
-	LOG(@"Error should not get here");
+	LOG(@"Error should not get here, use the sub class method");
 	return nil;
+}
+
+#pragma mark - save and restore
++ (void) save
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[[self getInstnace] objectDict] 
+						  forKey:[self description]];
+}
+
++ (void) restore
+{
+	@autoreleasepool {
+		NSDictionary *objectDict = [[NSUserDefaults standardUserDefaults] 
+					    objectForKey:[self description]];
+		
+		if (nil != objectDict)
+		{
+			[[self getInstnace] setObjectDict:[NSMutableDictionary  dictionaryWithDictionary:objectDict]];
+		}
+	}
 }
 
 #pragma mark - updating flag
@@ -187,6 +210,28 @@
 	}
 }
 
+#pragma mark - class interface set objects
++ (void) setObject:(NSDictionary *)object withStringID:(NSString *)ID
+{
+	if (!CHECK_STRING(ID))
+	{
+		return;
+	}
+
+	[[[self getInstnace] objectDict] setValue:object forKey:ID];
+}
+
++ (void) setObject:(NSDictionary *)object withNumberID:(NSNumber *)ID
+{
+	if (!CHECK_NUMBER(ID))
+	{
+		return;
+	}
+	
+	[self setObject:object withStringID:[ID stringValue]];
+	
+}
+
 #pragma mark - get method - handler
 
 - (void) checkAndPerformResponderWithID:(NSString *)ID
@@ -195,10 +240,10 @@
 	{
 		NSArray *responderArray;
 		
-		@synchronized (_responderArrayDict)
+		@synchronized (_responderDictForGet)
 		{
-			responderArray = [[self.responderArrayDict valueForKey:ID] retain];
-			[self.responderArrayDict setValue:nil forKey:ID];
+			responderArray = [[self.responderDictForGet valueForKey:ID] retain];
+			[self.responderDictForGet setValue:nil forKey:ID];
 			[responderArray autorelease];
 		}
 		
@@ -214,14 +259,14 @@
 
 - (void) checkAndPerformResponderWithStringIDArray:(NSArray *)IDArray
 {
-	@synchronized (_responderArrayDict)
+	@synchronized (_responderDictForGet)
 	{
 		NSArray *responderArray;
 		
 		for (NSString *ID in IDArray)
 		{
-			responderArray = [[self.responderArrayDict valueForKey:ID] retain];
-			[self.responderArrayDict setValue:nil forKey:ID];
+			responderArray = [[self.responderDictForGet valueForKey:ID] retain];
+			[self.responderDictForGet setValue:nil forKey:ID];
 			
 			if (nil != responderArray)
 			{
@@ -281,14 +326,14 @@
 
 - (void) bindID:(NSString *)ID withResponder:(MessageResponder*)responder
 {
-	@synchronized (_responderArrayDict)
+	@synchronized (_responderDictForGet)
 	{
-		NSMutableArray *responderArray =  [self.responderArrayDict valueForKey:ID];
+		NSMutableArray *responderArray =  [self.responderDictForGet valueForKey:ID];
 		
 		if (nil == responderArray)
 		{
 			responderArray = [[NSMutableArray alloc] initWithObjects:responder, nil];
-			[self.responderArrayDict setValue:responderArray forKey:ID];
+			[self.responderDictForGet setValue:responderArray forKey:ID];
 			[responderArray release];
 		}
 		else
@@ -481,7 +526,7 @@
 	return nil;
 }
 
-- (void) setParamsForRequest:(NSMutableDictionary *)request
+- (void) setParamsForCreate:(NSMutableDictionary *)request
 {
 	LOG(@"Error should use the subclass method");
 }
@@ -492,7 +537,7 @@
 	
 	[request setValue:[[self getInstnace] createMethod] forKey:@"method"];
 
-	[[self getInstnace] setParamsForRequest:request];
+	[[self getInstnace] setParamsForCreate:request];
 	
 	uint32_t ID = GET_MSG_ID();
 	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];

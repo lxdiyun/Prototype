@@ -7,87 +7,40 @@
 //
 
 #import "EventCell.h"
+
+#import <QuartzCore/QuartzCore.h>
+
 #import "ImageV.h"
 #import "Util.h"
+#import "ProfileMananger.h"
+
+const static CGFloat AVATOR_SIZE = 44;
+const static CGFloat AVATOR_BORDER = 3.0;
+const static CGFloat FONT_SIZE = 15.0;
+const static CGFloat PADING1 = 10.0; // padding from left cell border
+const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
+const static CGFloat PADING3 = 15.0; // padding from top virtical boder
+const static CGFloat PADING4 = 10.0; // padding between element virtical and bottom border
 
 @interface EventCell () 
 {
-	@private
-		NSDictionary *_eventDict;
-	UILabel *_title;
-	UITextView *_desc;
+
+	NSDictionary *_eventDict;
 	ImageV *_picImageV;
+	ImageV *_avator;
 }
 
-@property (strong, nonatomic) UILabel *title;
-@property (strong, nonatomic) UITextView *desc;
 @property (strong, nonatomic) ImageV *picImageV;
+@property (strong, nonatomic) ImageV *avator;
 @end
 
 @implementation EventCell
 
 @synthesize eventDict = _eventDict;
-@synthesize title = _title;
-@synthesize desc = _desc;
 @synthesize picImageV = _picImageV;
+@synthesize avator = _avator;
 
-static CGFloat gs_title_height = 0;
 static CGFloat gs_pic_size = 0;
-
-- (void) redrawTitleLabel
-{
-	if (nil != self.title)
-	{
-		[self.title removeFromSuperview];
-	}
-
-	UIFont *font = [UIFont boldSystemFontOfSize:18.0 * PROPORTION()];
-
-	gs_title_height = self.contentView.frame.size.width / 4;
-	CGFloat X = 0;
-	CGFloat Y = self.contentView.frame.size.height - gs_title_height;
-
-
-	self.title = [[[UILabel alloc] init] autorelease];
-	self.title.frame = CGRectMake(X,
-				      Y,
-				      self.contentView.frame.size.width,
-				      gs_title_height);
-
-	self.title.font = font;
-	self.title.adjustsFontSizeToFitWidth = YES;
-	self.title.backgroundColor = [UIColor clearColor];
-
-	self.title.textColor = [Color whiteColor];
-
-	[self.contentView addSubview:self.title];
-}
-
-- (void) redrawDescLabel
-{
-	if (nil != self.desc)
-	{
-		[self.desc removeFromSuperview];
-	}
-
-	UIFont *font = [UIFont boldSystemFontOfSize:15.0 * PROPORTION()];
-	CGFloat descLabelWidth = self.contentView.frame.size.width - gs_pic_size - 10.0;
-	CGFloat descLabelHeight= self.contentView.frame.size.height - gs_title_height - 10.0;
-
-	self.desc = [[[UITextView alloc] 
-		initWithFrame:CGRectMake(gs_pic_size + 10.0, 
-					 gs_title_height + 10.0, 
-					 descLabelWidth, 
-					 descLabelHeight )] 
-		autorelease];
-
-	self.desc.font = font;
-	self.desc.editable = NO;
-	self.desc.contentOffset = CGPointZero;
-	self.desc.scrollEnabled = YES;
-
-	[self.contentView addSubview:self.desc];
-}
 
 - (void) redrawImageV
 {
@@ -107,14 +60,60 @@ static CGFloat gs_pic_size = 0;
 	[self.contentView addSubview:self.picImageV];
 }
 
+- (void) redrawAvator
+{
+	if (nil != self.avator)
+	{
+		[self.avator removeFromSuperview];
+	}
+	
+	CGFloat X = PADING1 * PROPORTION();
+	CGFloat Y = gs_pic_size - (PADING4 + AVATOR_SIZE) * PROPORTION();
+	CGFloat width = AVATOR_SIZE * PROPORTION();
+	CGFloat height = AVATOR_SIZE * PROPORTION();
+	
+	self.avator = [[[ImageV alloc] initWithFrame:CGRectMake(X, 
+								Y, 
+								width, 
+								height)] 
+			  autorelease];
+	
+	[self.contentView addSubview:self.avator];
+}
+
 - (void) redraw
 {
 	@autoreleasepool 
 	{
 		self.contentView.backgroundColor = [Color brownColor];
 		[self redrawImageV];
-		[self redrawTitleLabel];
-		//[self redrawDescLabel];
+		[self redrawAvator];
+	}
+}
+
+#pragma mark - message
+
+- (void) requestUserProfile
+{
+	NSNumber * userID = [[self.eventDict valueForKey:@"obj"] valueForKey:@"user"];
+	
+	if (nil != userID)
+	{
+		NSDictionary * userProfile = [ProfileMananger getObjectWithNumberID:userID];
+		
+		if (nil != userProfile)
+		{
+			self.avator.picID = [userProfile valueForKey:@"avatar"];
+			[self.avator.layer setBorderColor:[[Color blackColorAlpha] CGColor]];
+			[self.avator.layer setBorderWidth: AVATOR_BORDER * PROPORTION()];
+			
+		}
+		else
+		{
+			[ProfileMananger requestObjectWithNumberID:userID 
+							andHandler:@selector(requestUserProfile) 
+							 andTarget:self];
+		}
 	}
 }
 
@@ -133,25 +132,16 @@ static CGFloat gs_pic_size = 0;
 
 	self.picImageV.picID = [objDict valueForKey:@"pic"];
 
-	self.title.text = [objDict valueForKey:@"name"];
-	self.desc.text = [objDict valueForKey:@"desc"];
-	
-	if (nil != self.eventDict)
-	{
-		self.title.backgroundColor = [Color blackColorAlpha];
-	}
-	else
-	{
-		self.title.backgroundColor = [UIColor clearColor];
-	}
+	[self requestUserProfile];
 }
 
 - (void) dealloc
 {
 	self.eventDict = nil;
-	self.title = nil;
-	self.desc = nil;
 	self.picImageV = nil;
+	self.avator = nil;
+	
+	[self.avator.layer setBorderWidth: 0.0];
 
 	[super dealloc];
 }

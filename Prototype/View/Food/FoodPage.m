@@ -16,6 +16,7 @@
 #import "CommentCell.h"
 #import "DescriptionCell.h"
 #import "Util.h"
+#import "TextInputer.h"
 
 const static uint32_t COMMENT_REFRESH_WINDOW = 8;
 const static uint32_t ROW_TO_MORE_COMMENT_FROM_BOTTOM = 2;
@@ -29,16 +30,21 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	FOOD_SECTION_MAX
 } FOOD_PAGE_SECTION;
 
-@interface FoodPage () <UIScrollViewDelegate, EGORefreshTableHeaderDelegate>
+@interface FoodPage () <UIScrollViewDelegate, EGORefreshTableHeaderDelegate, TextInputerDeletgate>
 {
 @private
 	NSDictionary *_foodDict;
 	NSString *_foodID;
 	EGORefreshTableHeaderView *_refreshHeaderView;
+	TextInputer *_inputer;
+	UINavigationController *_navco;
+	
 }
 
 @property (strong) NSString *foodID;
 @property (strong) EGORefreshTableHeaderView *refreshHeaderView;
+@property (strong, nonatomic) TextInputer *inputer;
+@property (strong, nonatomic) UINavigationController *navco;
 @end
 
 
@@ -48,11 +54,13 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 @synthesize foodDict = _foodDict;
 @synthesize foodID = _foodID;
 @synthesize refreshHeaderView = _refreshHeaderView;
+@synthesize inputer = _inputer;
+@synthesize navco = _navco;
 
 #pragma mark - util
 static int32_t s_lastCommentArrayCount = -1;
 
-- (void) refreshTableView
+- (void) refreshTableView:(id)result
 {
 	int32_t commentArrayCount = [[FoodCommentMananger keyArrayForList:self.foodID] count];
 
@@ -68,14 +76,14 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	s_lastCommentArrayCount = -1;
 	
-	[self refreshTableView];
+	[self refreshTableView:nil];
 }
 
 #pragma mark message
 
-- (void) requestNewerCommentHandler
+- (void) requestNewerCommentHandler:(id)result
 {	
-	[self refreshTableView];
+	[self refreshTableView:nil];
 	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
@@ -83,7 +91,7 @@ static int32_t s_lastCommentArrayCount = -1;
 {	
 	[FoodCommentMananger requestNewerWithListID:self.foodID 
 					   andCount:COMMENT_REFRESH_WINDOW 
-					withHandler:@selector(requestNewerCommentHandler) 
+					withHandler:@selector(requestNewerCommentHandler:) 
 					  andTarget:self];
 }
 
@@ -91,7 +99,7 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	[FoodCommentMananger requestOlderWithListID:self.foodID 
 					   andCount:COMMENT_REFRESH_WINDOW 
-					withHandler:@selector(refreshTableView) 
+					withHandler:@selector(refreshTableView:) 
 					  andTarget:self];
 }
 
@@ -119,33 +127,40 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) setupView
 {
-	// init header
-	if (nil == self.refreshHeaderView) 
+	@autoreleasepool 
 	{
+		// init header
+		if (nil == self.refreshHeaderView) 
+		{
+			
+			EGORefreshTableHeaderView *view = [[[EGORefreshTableHeaderView alloc] 
+							    initWithFrame:CGRectMake(0.0f, 
+										     0.0f - self.tableView.bounds.size.height, 
+										     self.tableView.frame.size.width,
+										     self.tableView.bounds.size.height)] autorelease];
+			
+			view.delegate = self;
+			[self.tableView addSubview:view];
+			
+			self.refreshHeaderView = view;
+		}
 		
-		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] 
-						   initWithFrame:CGRectMake(0.0f, 
-									    0.0f - self.tableView.bounds.size.height, 
-									    self.tableView.frame.size.width,
-									    self.tableView.bounds.size.height)];
-		
-		view.delegate = self;
-		[self.tableView addSubview:view];
-		
-		self.refreshHeaderView = view;
-		[view release];
+		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
+							   initWithImage:[UIImage imageNamed:@"comIcon.png"] 
+							   style:UIBarButtonItemStylePlain 
+							   target:self 
+							   action:@selector(inputComment:)] autorelease];
 	}
 }
 
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
+
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-	
 	self.view.backgroundColor = [Color orangeColor];
 	
-	// Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	[self setupView];
 }
 
 - (void) viewDidUnload
@@ -155,16 +170,15 @@ static int32_t s_lastCommentArrayCount = -1;
 	self.foodDict = nil;
 	self.foodID = nil;
 	self.refreshHeaderView = nil;
+	self.inputer = nil;
+	self.navco = nil;
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {	
-	[self setupView];
 	self.title = [self.foodDict valueForKey:@"name"];
 	self.foodID = [[self.foodDict valueForKey:@"id"] stringValue];
 	[self forceRefreshTableView];
-	[self requestNewerComment];
-	self.tableView.contentOffset = CGPointZero;
 	
 	[super viewWillAppear:animated];
 }
@@ -204,23 +218,13 @@ static int32_t s_lastCommentArrayCount = -1;
 
 	switch (section)
 	{
-		case FOOD_TAG:
-			return 1;
-			break;
-		case FOOD_PIC:
-			return 1;
-			break;
-		case FOOD_DESC:
-			return 1;
 		case FOOD_COMMENT:
 			return [[FoodCommentMananger keyArrayForList:self.foodID] count];
 			break;
 		default:
-			return 0;
+			return 1;
 			break;
 	}
-
-	return 1 + [[FoodCommentMananger keyArrayForList:self.foodID] count];
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -240,7 +244,6 @@ static int32_t s_lastCommentArrayCount = -1;
 					 reuseIdentifier:tagCellIdentifier] 
 					autorelease];
 				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 30.0 * PROPORTION());
-				
 			}
 			
 			if (nil  != self.foodDict)
@@ -286,8 +289,7 @@ static int32_t s_lastCommentArrayCount = -1;
 					 initWithStyle:UITableViewCellStyleDefault 
 					 reuseIdentifier:descCellIdentifier] 
 					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.width);
-				
+				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0 * PROPORTION());
 			}
 			
 			cell.objectDict = self.foodDict;
@@ -295,6 +297,7 @@ static int32_t s_lastCommentArrayCount = -1;
 			return cell;
 		}
 			break;
+
 		case FOOD_COMMENT:
 		{
 			static NSString *commentCellIdentifier = @"commentCell";
@@ -334,11 +337,9 @@ static int32_t s_lastCommentArrayCount = -1;
 			break;
 		case FOOD_DESC:
 		{
-			
 			return [DescriptionCell cellHeightForObject:self.foodDict forCellWidth:self.view.frame.size.width];
 		}
 			break;
-			
 		case FOOD_COMMENT:
 		{
 			NSArray * keyArray = [FoodCommentMananger keyArrayForList:self.foodID];
@@ -463,6 +464,52 @@ static int32_t s_lastCommentArrayCount = -1;
 	{
 		return [NSDate date];
 	}
+}
+
+#pragma mark - NewComment handler
+
+- (void) newCommentHandler:(id)result
+{
+	[self requestNewerComment];
+	[self refreshTableView:nil];
+}
+
+#pragma mark - textInputerDelegate
+
+- (void) inputComment:(id)sender
+{
+	@autoreleasepool 
+	{
+		if (nil == self.inputer)
+		{
+			self.inputer = [[[TextInputer alloc] init] autorelease];
+			self.inputer.delegate = self;
+		}
+		
+		if (nil == self.navco)
+		{
+			self.navco = [[[UINavigationController alloc] initWithRootViewController:self.inputer] autorelease];
+			self.navco.navigationBar.barStyle = UIBarStyleBlack;
+			self.inputer.title = @"添加评论";
+		}
+		
+		[self presentModalViewController:self.navco animated:YES];
+		[self dismissModalViewControllerAnimated:YES];
+	}
+}
+
+- (void) textDoneWithTextInputer:(TextInputer *)inputer
+{
+	[self dismissModalViewControllerAnimated:YES];
+	[FoodCommentMananger createComment:inputer.text.text 
+				   forList:self.foodID 
+			       withHandler:@selector(newCommentHandler:) 
+				 andTarget:self];
+}
+
+- (void) cancelWithTextInputer:(TextInputer *)inputer
+{
+	[self dismissModalViewControllerAnimated:YES];
 }
 
 

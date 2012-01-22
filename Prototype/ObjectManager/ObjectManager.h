@@ -10,9 +10,14 @@
 
 @interface ObjectManager : NSObject
 @property (strong) NSMutableDictionary *objectDict;
-@property (strong) NSMutableDictionary *responderArrayDict;
+@property (strong) NSMutableDictionary *responderDictForGet;
 @property (strong) NSMutableDictionary *responderDictForCreate;
 @property (strong) NSMutableDictionary *updatingDict;
+@property (strong) NSDictionary *createParams;
+
+// save and restore
++ (void) save;
++ (void) restore;
 
 // object updating flagss
 + (void) markUpdatingStringID:(NSString *)ID;
@@ -27,8 +32,12 @@
 + (NSDictionary *) getObjectWithStringID:(NSString *)ID;
 + (NSDictionary *) getObjectWithNumberID:(NSNumber *)ID;
 
+// set object
++ (void) setObject:(NSDictionary *)object withStringID:(NSString *)ID;
++ (void) setObject:(NSDictionary *)object withNumberID:(NSNumber *)ID;
+
 // get method
-// handler
+// internal handler
 - (void) checkAndPerformResponderWithID:(NSString *)ID;
 - (void) checkAndPerformResponderWithStringIDArray:(NSArray *)IDArray;
 // bind object handler
@@ -39,6 +48,9 @@
 + (void) requestObjectWithNumberIDArray:(NSArray *)numberIDArray;
 
 // create method
+// internal handler
+// request create object
+- (void) handlerForCreate:(id)result;
 + (uint32_t) createObjectWithHandler:(SEL)handler andTarget:(id)target;
 
 
@@ -47,6 +59,6 @@
 - (NSString *) getMethod;
 // create method
 - (NSString *) createMethod;
-- (void) setParamsForRequest:(NSMutableDictionary *)request;
+- (void) setParamsForCreate:(NSMutableDictionary *)request;
 
 @end

@@ -15,16 +15,13 @@ const static CGFloat MAX_IMAGE_HEIGHT = 960.0;
 @interface ImageManager ()
 {
 	NSMutableDictionary *_imageSizeDict;
-	NSDictionary *_createParams;
 }
 @property (strong) NSMutableDictionary *imageSizeDict;
-@property (strong) NSDictionary *createParams;
 @end
 
 @implementation ImageManager
 
 @synthesize imageSizeDict = _imageSizeDict;
-@synthesize createParams = _createParams;
 
 #pragma mark - singleton
 
@@ -51,7 +48,7 @@ DEFINE_SINGLETON(ImageManager);
 - (void) dealloc
 {
 	self.imageSizeDict = nil;
-	self.createParams = nil;
+
 	[super dealloc];
 }
 
@@ -112,7 +109,7 @@ DEFINE_SINGLETON(ImageManager);
 	return @"img.create";
 }
 
-- (void) setParamsForRequest:(NSMutableDictionary *)request
+- (void) setParamsForCreate:(NSMutableDictionary *)request
 {
 	[request setValue:self.createParams forKey:@"params"];	
 }

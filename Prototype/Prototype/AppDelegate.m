@@ -8,18 +8,36 @@
 
 #import "AppDelegate.h"
 
-#import "HomePage.h"
+#import "EventPage.h"
+#import "UserInfoPage.h"
+#import "ShareNewEvent.h"
 #import "Util.h"
+#import "ObjectSaver.h"
 
-@interface AppDelegate ()
+typedef enum MSWJ_PAGE_ENUM
+{
+	HOME_PAGE = 0x0,
+	NOTICE_PAGE = 0x1,
+	SHARE_PAGE = 0x2,
+	PRIVATE_MESSAGE_PAGE = 0x3,
+	PERSONAL_SETTING_PAGE = 0x4,
+	MSWJ_PAGE_QUANTITY
+} MSWJ_PAGE;
+
+static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"通知", @"分享美食", @"私信", @"个人设置", };
+static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"Notice.png", @"Share.png", @"PrivateMessage.png", @"More.png"};
+static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 
+static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
+
+
+@interface AppDelegate () <UITabBarControllerDelegate>
 {
 @private
-	HomePage *_homePage;
-	UINavigationController *_navco;
+	UITabBarController *_tabco;
+	
 }
 
-@property (strong) HomePage *homePage;
-@property (strong) UINavigationController *navco;
+@property (strong, nonatomic) UITabBarController *tabco;
 @end
 
 @implementation AppDelegate
@@ -28,14 +46,45 @@
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
-@synthesize homePage = _homePage;
-@synthesize navco = _navco;
+@synthesize tabco = _tabco;
+
+#pragma mark - life circle
+
+- (void) setupPageClass
+{
+	MSWJ_PAGE_CLASS[HOME_PAGE] = [EventPage class];
+	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [UIViewController class];
+	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
+	MSWJ_PAGE_CLASS[PRIVATE_MESSAGE_PAGE] = [UIViewController class];
+	MSWJ_PAGE_CLASS[PERSONAL_SETTING_PAGE] = [UserInfoPage class];
+}
+
+- (void) initPageClass
+{
+	for (int i = 0; i < MSWJ_PAGE_QUANTITY; ++i)
+	{
+		if (nil == MSWJ_PAGE_INSTANCE[i])
+		{
+			MSWJ_PAGE_INSTANCE[i] = [[MSWJ_PAGE_CLASS[i] alloc] init];
+			MSWJ_PAGE_INSTANCE[i].title = MSWJ_PAGE_NAME[i];
+		}
+	}
+}
+
+- (void) releasePageInstance
+{
+	for (int i = 0; i < MSWJ_PAGE_QUANTITY; ++i)
+	{
+		[MSWJ_PAGE_INSTANCE[i] release];
+		MSWJ_PAGE_CLASS[i] = nil;
+	}
+}
 
 - (void)dealloc
 {
-	self.navco = nil;
-	self.homePage = nil;
-
+	self.tabco = nil;
+	[self releasePageInstance];
+	
 	[_window release];
 	[__managedObjectContext release];
 	[__managedObjectModel release];
@@ -45,6 +94,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	// restore cache
+	[ObjectSaver restoreAll];
+	
 	self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	// Override point for customization after application launch.
 	self.window.backgroundColor = [Color whiteColor];
@@ -52,21 +104,37 @@
 	// set status bar style
 	[application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
 	
-	// init and show start page and navigater
-	HomePage *homePage = [[HomePage alloc] init];
-	UINavigationController *navco = [[UINavigationController alloc] initWithRootViewController:homePage];
+	// init and show page 
+	[self setupPageClass];
 	
-	navco.navigationBar.barStyle = UIBarStyleBlack;
+	[self initPageClass];
 	
-	self.homePage = homePage;
-	self.navco = navco;
+	NSMutableArray *tabBarViewControllers = [[NSMutableArray alloc] initWithCapacity:MSWJ_PAGE_QUANTITY];
+	UITabBarController *tabBarController = [[UITabBarController alloc] init];
+	
+	for (int i = 0; i < MSWJ_PAGE_QUANTITY; ++i)
+	{
+		UINavigationController *navco = [[UINavigationController alloc] initWithRootViewController:MSWJ_PAGE_INSTANCE[i]];
+		[tabBarViewControllers addObject:navco];
+		navco.navigationBar.barStyle = UIBarStyleBlack;
+		navco.tabBarItem.image = [UIImage imageNamed:MSWJ_ICON[i]];
+		[navco release];
+	}
+	
+	tabBarController.viewControllers = tabBarViewControllers;
+	
+	self.tabco = tabBarController;
+	self.tabco.delegate = self;
+	
+	[[[self.tabco.viewControllers objectAtIndex:1] tabBarItem] setBadgeValue:@"2"];
 
-	[self.window addSubview:navco.view];
+	[self.window addSubview:self.tabco.view];
+
+	[tabBarController release];
+	[tabBarViewControllers release];
 	
 	[self.window makeKeyAndVisible];
 	
-	[homePage release];
-	[navco release];
 	return YES;
 }
 
@@ -80,17 +148,12 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-	/*
-	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-	 */
+	[ObjectSaver saveAll];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-	/*
-	 Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-	 */
+	[ObjectSaver restoreAll];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -102,7 +165,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-	// Saves changes in the application's managed object context before the application terminates.
+	[ObjectSaver saveAll];
 	[self saveContext];
 }
 
@@ -214,9 +277,30 @@
 /**
  Returns the URL to the application's Documents directory.
  */
-- (NSURL *)applicationDocumentsDirectory
+- (NSURL *) applicationDocumentsDirectory
 {
 	return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+#pragma mark - UITabBarDelegate
+
+- (BOOL) tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
+
+{
+	if ([tabBarController.viewControllers objectAtIndex:SHARE_PAGE] == viewController)
+	{
+		ShareNewEvent *sharer = (ShareNewEvent *)MSWJ_PAGE_INSTANCE[SHARE_PAGE];
+		
+		sharer.delegate = self.tabco;
+
+		[sharer start];
+		
+		return NO;
+	}
+	else
+	{
+		return YES;
+	}
 }
 
 @end

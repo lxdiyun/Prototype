@@ -16,7 +16,7 @@ const static CGFloat AVATOR_SIZE = 44;
 const static CGFloat FONT_SIZE = 15.0;
 const static CGFloat PADING1 = 13.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
-const static CGFloat PADING3 =  15.0; // padding from top virtical boder
+const static CGFloat PADING3 = 15.0; // padding from top virtical boder
 const static CGFloat PADING4 = 9.0; // padding between element virtical and bottom border
 
 @interface CommentCell () 
@@ -132,14 +132,14 @@ const static CGFloat PADING4 = 9.0; // padding between element virtical and bott
 	UIFont *font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
 	
 	CGFloat X = PADING1 + AVATOR_SIZE + PADING2;
-	CGFloat Y = FONT_SIZE;
-	CGFloat width = self.contentView.frame.size.width / PROPORTION() - X - PADING1;
+	CGFloat Y = PADING3;
+	CGFloat width = self.contentView.frame.size.width - ((X + PADING2) * PROPORTION());
 	CGFloat height = FONT_SIZE;
 	
 	self.userAndDate = [[[UILabel alloc] init] autorelease];
 	self.userAndDate.frame = CGRectMake(X * PROPORTION(),
 					    Y * PROPORTION(),
-					    width * PROPORTION(),
+					    width,
 					    height * PROPORTION());
 	
 	self.userAndDate.font = font;
@@ -174,7 +174,7 @@ const static CGFloat PADING4 = 9.0; // padding between element virtical and bott
 	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE * PROPORTION()];
 	CGFloat X = PADING1 + AVATOR_SIZE + PADING2;
 	CGFloat Y = PADING3 + FONT_SIZE + PADING4;
-	CGFloat width = self.contentView.frame.size.width - ((X + PADING1) * PROPORTION());
+	CGFloat width = self.contentView.frame.size.width - ((X + PADING2) * PROPORTION());
 	CGFloat height = [[self class] getCommentHeightFor:self.commentDict 
 					   forCommentWidth:width];
 	

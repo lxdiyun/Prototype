@@ -52,6 +52,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         UIImage* sourceImage = self; 
         CGFloat targetWidth = targetSize.width;
         CGFloat targetHeight = targetSize.height;
+	CGFloat ratio = 1.0;
 	
         CGImageRef imageRef = [sourceImage CGImage];
         CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
@@ -66,11 +67,15 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 	
         if (sourceImage.imageOrientation == UIImageOrientationUp || sourceImage.imageOrientation == UIImageOrientationDown) 
 	{
+		ratio =  targetWidth / self.size.width;
+		targetHeight = self.size.height * ratio;
                 bitmap = CGBitmapContextCreate(NULL, targetWidth, targetHeight, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
 		
         } 
 	else 
 	{
+		ratio =  targetWidth / self.size.height;
+		targetHeight = self.size.width * ratio;
                 bitmap = CGBitmapContextCreate(NULL, targetHeight, targetWidth, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
 		
         }       

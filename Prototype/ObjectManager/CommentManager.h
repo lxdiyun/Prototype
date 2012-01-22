@@ -9,4 +9,11 @@
 #import "ListObjectManager.h"
 
 @interface CommentManager : ListObjectManager
++ (void) createComment:(NSString *)text 
+	       forList:(NSString *)listID 
+	   withHandler:(SEL)handler 
+	     andTarget:target;
+// method that must overwrite by subclass
+- (NSString *) getObjectType;
+
 @end

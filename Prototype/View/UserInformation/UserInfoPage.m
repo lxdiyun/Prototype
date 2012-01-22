@@ -51,7 +51,7 @@
 
 #pragma mark - life circle
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id) initWithStyle:(UITableViewStyle)style
 {
 	self = [super initWithStyle:UITableViewStyleGrouped];
 	if (nil != self) 
@@ -60,7 +60,7 @@
 	return self;
 }
 
-- (void)didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
 	// Releases the view if it doesn't have a superview.
 	[super didReceiveMemoryWarning];
@@ -68,7 +68,7 @@
 	// Release any cached data, images, etc that aren't in use.
 }
 
-- (void)dealloc
+- (void) dealloc
 {	
 	[_userInfoArray release];
 	[_introduceView release];
@@ -79,7 +79,7 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
 	[super viewDidLoad];
 
@@ -98,7 +98,7 @@
 	// self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-- (void)initViewDisplay
+- (void) initViewDisplay
 {
 	@autoreleasepool 
 	{
@@ -108,7 +108,7 @@
 	}
 }
 
-- (void)initUserInfo
+- (void) initUserInfo
 {
 	@autoreleasepool 
 	{
@@ -120,7 +120,7 @@
 	}
 }
 
-- (void)viewDidUnload
+- (void) viewDidUnload
 {
 	self.userInfoArray = nil;
 	self.introduceView = nil;
@@ -130,27 +130,27 @@
 	[super viewDidUnload];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void) viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	// Return YES for supported orientations
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -158,12 +158,12 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
 	return self.userInfoArray.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	// first element is for sectoin title
 	// hide for first two section user name city and avator
 	if((section == 0) || (section == 1)) 
@@ -174,14 +174,14 @@
 	return [[self.userInfoArray objectAtIndex:section] objectAtIndex:0];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	// Return the number of rows in the section.
 	// decrease one for section title
 	return ([[self.userInfoArray objectAtIndex:section] count] - 1);
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	if (1 == indexPath.section)
 	{
@@ -230,7 +230,7 @@
 	return cell;
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void) configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	switch (indexPath.section)
 	{
@@ -252,7 +252,7 @@
 
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  
 { 
 	switch (indexPath.section)
 	{
@@ -268,7 +268,7 @@
 			
 			// configure text view display
 			self.introduceView.frame = rect;
-			self.introduceView.font = [UIFont boldSystemFontOfSize:17.0*PROPORTION()];
+			self.introduceView.font = [UIFont boldSystemFontOfSize:17.0 * PROPORTION()];
 			self.introduceView.userInteractionEnabled = NO;
 			self.introduceView.editable = NO;
 			self.introduceView.scrollEnabled = NO;
@@ -284,7 +284,7 @@
 		}
 		
 	default:
-				return 44*PROPORTION();
+				return 44 * PROPORTION();
 
 	}
 	
@@ -358,23 +358,7 @@
 
 #pragma mark - message
 
-- (void) sendUserInfoRequest
-{	
-	NSNumber *loginUserID = [GET_USER_ID() retain];
-	
-	if (nil == loginUserID)
-	{
-		[LoginManager requestWithHandler:@selector(sendUserInfoRequest) andTarget:self];
-		
-		return;
-	}
-	
-	[ProfileMananger requestObjectWithNumberID:loginUserID andHandler:@selector(handleMessage) andTarget:self];
-	
-	[loginUserID release];
-}
-
-- (void) handleMessage
+- (void) getUserProfile
 {
 	
 	NSDictionary *userProfile = [ProfileMananger getObjectWithNumberID:GET_USER_ID()];
@@ -385,6 +369,8 @@
 		NSString *city = [NSString stringWithFormat:@"所在地：%@", [userProfile valueForKey:@"city"]];
 		
 		NSString *introduceString = [userProfile valueForKey:@"intro"];
+		
+		LOG(@"%@", userProfile);
 		
 		self.userInfoArray = [NSArray arrayWithObjects:
 				      [NSArray arrayWithObjects:@"个人信息", userName, city, nil],
@@ -398,6 +384,26 @@
 		
 		[self refreshTableView];
 	}
+	else
+	{
+		[ProfileMananger requestObjectWithNumberID:GET_USER_ID() andHandler:@selector(getUserProfile) andTarget:self];
+	}
+}
+
+- (void) sendUserInfoRequest
+{	
+	NSNumber *loginUserID = [GET_USER_ID() retain];
+	
+	if (nil == loginUserID)
+	{
+		[LoginManager requestWithHandler:@selector(sendUserInfoRequest) andTarget:self];
+		
+		return;
+	}
+	
+	[self getUserProfile];
+	
+	[loginUserID release];
 }
 
 - (void)refreshTableView
@@ -412,14 +418,22 @@
 
 - (void) uploadImageHandler:(id)result
 {
-	LOG(@"%@", result);
 	self.avatorID = [[result valueForKey:@"result"] valueForKey:@"id"];
 	[self refreshTableView];
 }
 
+- (void) dismissSelector:(PhotoSelector *)selector
+{
+	[self dismissModalViewControllerAnimated:YES];
+}
+
+- (void) showModalView:(UIViewController *)modalView
+{
+	[self presentModalViewController:modalView animated:YES];
+}
+
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector
 {
-	LOG(@"start upload");
 	[ImageManager createImage:selector.selectedImage 
 		      withHandler:@selector(uploadImageHandler:) 
 			andTarget:self];

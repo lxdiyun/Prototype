@@ -14,9 +14,11 @@
 @interface PhotoSelector : UIViewController
 @property (strong) UIImage *selectedImage;
 @property (strong) UIActionSheet *actionSheet;
-@property (strong) UIViewController<PhototSelectorDelegate> *delegate;
+@property (assign) NSObject<PhototSelectorDelegate> *delegate;
 @end
 
 @protocol PhototSelectorDelegate 
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector;
+- (void) dismissSelector:(PhotoSelector *)selector;
+- (void) showModalView:(UIViewController *)modalView;
 @end

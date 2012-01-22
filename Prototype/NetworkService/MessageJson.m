@@ -53,7 +53,7 @@ void json_message_handler(NSData *buffer_data)
 	MessageResponder *responder = [gs_handler_dict valueForKey:ID];
 	
 	// TODO: Remove log
-	CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
+	// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 
 	STOP_NETWORK_INDICATOR();
 	CONFIRM_MESSAGE(ID);
