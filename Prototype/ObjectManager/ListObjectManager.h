@@ -19,8 +19,8 @@ typedef enum MESSAGE_TYPE_ENUM
 @property (strong) NSDictionary *lastUpdatedDateDict;
 
 // save and restore
-+ (void) save;
-+ (void) restore;
++ (void) saveTo:(NSMutableDictionary *)dict;
++ (void) restoreFrom:(NSMutableDictionary *)dict;
 
 // key array
 + (NSArray *) keyArrayForList:(NSString *)listID;

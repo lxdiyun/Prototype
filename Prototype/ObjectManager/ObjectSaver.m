@@ -13,6 +13,7 @@
 #import "ProfileMananger.h"
 #import "FoodCommentMananger.h"
 #import "FoodManager.h"
+#import "Util.h"
 
 typedef enum MSWJ_OBJECT_ENUM
 {
@@ -28,6 +29,108 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 
 @implementation ObjectSaver
 
+#pragma mark - Application's Documents directory
+
+
++ (NSString *) applicationCacheDirectory 
+{
+	return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+}
+
+#pragma mark - save and restore plist
+
++ (void) saveData:(NSDictionary *)dict
+{
+	NSString *path = [[self applicationCacheDirectory] 
+			  stringByAppendingPathComponent:@"DataCache.plist"];
+	LOG(@"path = %@", path);
+	NSData *plistData;
+	NSString *error;
+	
+	plistData = [NSPropertyListSerialization dataFromPropertyList:dict
+							       format:NSPropertyListBinaryFormat_v1_0
+						     errorDescription:&error];
+	if(nil != plistData) 
+	{
+		[plistData writeToFile:path atomically:YES];
+		NSError *nserror = nil;
+		[plistData writeToFile:path options:NSDataWritingFileProtectionComplete error:&nserror];
+		
+		if (nil != nserror)
+		{
+			LOG(@"Error: %@", nserror);
+		}
+	}
+	else {
+		LOG(@"Error: %@", error);
+		[error release];
+	}
+}
+
++ (NSMutableDictionary *) restoreData
+{
+	NSString *path = [[self applicationCacheDirectory] 
+			  stringByAppendingPathComponent:@"DataCache.plist"];
+	LOG(@"path = %@", path);
+	NSData *plistData = [NSData dataWithContentsOfFile:path];
+	NSString *error;
+	NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
+	NSMutableDictionary *plist;
+	
+	plist = [NSPropertyListSerialization propertyListFromData:plistData
+						 mutabilityOption:NSPropertyListMutableContainersAndLeaves
+							   format:&format
+						 errorDescription:&error];
+	if(nil == plist)
+	{
+		LOG(@"Error: %@", error);
+		[error release];
+		
+		return nil;
+	}
+	
+	return plist;
+}
+
+
+#pragma mark - interface
+
++ (void) saveAll
+{
+	@autoreleasepool 
+	{
+		NSMutableDictionary *objectDicitionary = [[NSMutableDictionary alloc] init];
+		
+		for (int i = 0; i < MSWJ_OBJECT_QUANTITY; ++i)
+		{
+			[MSWJ_OBJECT_CLASS[i] saveTo:objectDicitionary];
+		}
+		
+		[self saveData:objectDicitionary];
+		
+		[objectDicitionary release];
+	}
+}
+
++ (void) restoreAll
+{
+	@autoreleasepool 
+	{
+		NSMutableDictionary *objectDicitionary = [self restoreData];
+		
+		if (nil != objectDicitionary)
+		{
+			for (int i = 0; i < MSWJ_OBJECT_QUANTITY; ++i)
+			{
+				[MSWJ_OBJECT_CLASS[i] restoreFrom:objectDicitionary];
+			}
+		}
+	}
+	
+}
+
+#pragma mark - life circle
+
 + (void) setupObjectClass
 {
 	MSWJ_OBJECT_CLASS[EVENT_MANAGER] = [EventManager class];
@@ -40,22 +143,6 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 + (void) initialize
 {
 	[self setupObjectClass];
-}
-
-+ (void) saveAll
-{
-	for (int i = 0; i < MSWJ_OBJECT_QUANTITY; ++i)
-	{
-		[MSWJ_OBJECT_CLASS[i] save];
-	}
-}
-
-+ (void) restoreAll
-{
-	for (int i = 0; i < MSWJ_OBJECT_QUANTITY; ++i)
-	{
-		[MSWJ_OBJECT_CLASS[i] restore];
-	}
 }
 
 @end

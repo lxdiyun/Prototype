@@ -51,7 +51,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
         UIImage* sourceImage = self; 
         CGFloat targetWidth = targetSize.width;
-        CGFloat targetHeight = targetSize.height;
+        CGFloat targetHeight = 0.0;
 	CGFloat ratio = 1.0;
 	
         CGImageRef imageRef = [sourceImage CGImage];

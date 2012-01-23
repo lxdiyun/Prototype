@@ -16,8 +16,8 @@
 @property (strong) NSDictionary *createParams;
 
 // save and restore
-+ (void) save;
-+ (void) restore;
++ (void) saveTo:(NSMutableDictionary *)dict;
++ (void) restoreFrom:(NSMutableDictionary *)dict;
 
 // object updating flagss
 + (void) markUpdatingStringID:(NSString *)ID;

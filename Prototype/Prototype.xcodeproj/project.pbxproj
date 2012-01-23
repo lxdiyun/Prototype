@@ -216,7 +216,7 @@
 		48E50D7814C28E8B0091627F /* MessagePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePrivate.h; sourceTree = "<group>"; };
 		48E50D7A14C28EEA0091627F /* MessagePingPong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePingPong.m; sourceTree = "<group>"; };
 		48E50D7C14C291B60091627F /* MessageJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageJson.m; sourceTree = "<group>"; };
-		48EA6D5514998A84008AE765 /* 美食玩家.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "美食玩家.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		48EA6D5514998A84008AE765 /* 美食玩家_alpha.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "美食玩家_alpha.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48EA6D5914998A84008AE765 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		48EA6D5B14998A84008AE765 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		48EA6D5D14998A84008AE765 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -465,7 +465,7 @@
 		48EA6D5614998A84008AE765 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				48EA6D5514998A84008AE765 /* 美食玩家.app */,
+				48EA6D5514998A84008AE765 /* 美食玩家_alpha.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -562,7 +562,7 @@
 			);
 			name = Prototype;
 			productName = Prototype;
-			productReference = 48EA6D5514998A84008AE765 /* 美食玩家.app */;
+			productReference = 48EA6D5514998A84008AE765 /* 美食玩家_alpha.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -764,7 +764,7 @@
 				INFOPLIST_FILE = "Prototype/Prototype-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "美食玩家";
+				PRODUCT_NAME = "美食玩家_alpha";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

@@ -95,9 +95,6 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 	// Override point for customization after application launch.
 	self.window.backgroundColor = [Color whiteColor];
 	
-	// set status bar style
-	[application setStatusBarStyle:UIStatusBarStyleBlackOpaque];
-	
 	// init and show page 
 	[self setupPageClass];
 	
@@ -161,16 +158,6 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 - (void)applicationWillTerminate:(UIApplication *)application
 {
 	[ObjectSaver saveAll];
-}
-
-#pragma mark - Application's Documents directory
-
-/**
- Returns the URL to the application's Documents directory.
- */
-- (NSURL *) applicationDocumentsDirectory
-{
-	return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
 #pragma mark - UITabBarDelegate

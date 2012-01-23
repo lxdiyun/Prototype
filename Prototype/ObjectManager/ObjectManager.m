@@ -69,21 +69,21 @@
 }
 
 #pragma mark - save and restore
-+ (void) save
++ (void) saveTo:(NSMutableDictionary *)dict
+
 {
-	[[NSUserDefaults standardUserDefaults] setObject:[[self getInstnace] objectDict] 
-						  forKey:[self description]];
+	[dict setObject:[[self getInstnace] objectDict] 
+		 forKey:[self description]];
 }
 
-+ (void) restore
++ (void) restoreFrom:(NSDictionary *)dict
 {
 	@autoreleasepool {
-		NSDictionary *objectDict = [[NSUserDefaults standardUserDefaults] 
-					    objectForKey:[self description]];
+		NSMutableDictionary *objectDict = [dict objectForKey:[self description]];
 		
 		if (nil != objectDict)
 		{
-			[[self getInstnace] setObjectDict:[NSMutableDictionary  dictionaryWithDictionary:objectDict]];
+			[[self getInstnace] setObjectDict:objectDict];
 		}
 	}
 }
