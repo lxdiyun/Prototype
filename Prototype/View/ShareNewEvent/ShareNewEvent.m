@@ -85,11 +85,11 @@
 			self.navco = [[[UINavigationController alloc] initWithRootViewController:self.createFood] autorelease];
 			self.navco.navigationBar.barStyle = UIBarStyleBlack;
 		}
+
+		[self.createFood needScrollToBegin];
+		[self.delegate presentModalViewController:self.navco animated:YES];
 		
 		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:1.0];
-
-		[self.createFood scrollToBegin];
-		[self.delegate presentModalViewController:self.navco animated:YES];
 	}
 
 }

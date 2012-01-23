@@ -43,7 +43,6 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 {
 	NSString *path = [[self applicationCacheDirectory] 
 			  stringByAppendingPathComponent:@"DataCache.plist"];
-	LOG(@"path = %@", path);
 	NSData *plistData;
 	NSString *error;
 	
@@ -71,7 +70,6 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 {
 	NSString *path = [[self applicationCacheDirectory] 
 			  stringByAppendingPathComponent:@"DataCache.plist"];
-	LOG(@"path = %@", path);
 	NSData *plistData = [NSData dataWithContentsOfFile:path];
 	NSString *error;
 	NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;

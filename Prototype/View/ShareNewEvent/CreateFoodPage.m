@@ -13,6 +13,7 @@
 #import "Util.h"
 #import "FoodManager.h"
 #import "TextInputer.h"
+#import "CreateFoodFourCount.h"
 
 const static CGFloat FONT_SIZE = 15.0;
 
@@ -38,11 +39,13 @@ static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"名字：", @"城�
 static UITextField *FOOD_DETAIL_TETX_VIEW[NEW_FOOD_DETAIL_MAX] = {nil};
 static UITextView *FOOD_DESC_TEXT_VIEW = nil;
 static CreateFoodImage *CREATE_FOOD_HEADER;
+static CreateFoodFourCount *CREATE_FOOD_FOUR_COUNT_HEADER;
 static TextInputer *FOOD_DESC_INPUTER =  nil;
-static UINavigationController *NAVCO = nil;
+static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
-@interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate>
+@interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, CreateFoodFourCountDelegate>
 - (BOOL) checkParamsReady;
+- (void) scrollToBegin;
 @end
 
 @implementation CreateFoodPage
@@ -79,7 +82,7 @@ static UINavigationController *NAVCO = nil;
 	FOOD_DESC_TEXT_VIEW = nil;
 	CREATE_FOOD_HEADER = nil;
 	FOOD_DESC_INPUTER = nil;
-	NAVCO = nil;
+	CREATE_FOOD_FOUR_COUNT_HEADER = nil;
 
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"分享" 
 										  style:UIBarButtonItemStyleDone 
@@ -112,8 +115,8 @@ static UINavigationController *NAVCO = nil;
 	[FOOD_DESC_INPUTER release];
 	FOOD_DESC_INPUTER = nil;
 	
-	[NAVCO release];
-	NAVCO = nil;
+	[CREATE_FOOD_FOUR_COUNT_HEADER release];
+	CREATE_FOOD_FOUR_COUNT_HEADER = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -132,6 +135,11 @@ static UINavigationController *NAVCO = nil;
 
 - (void)viewDidAppear:(BOOL)animated
 {
+	if (NEED_SCROOL_TO_BEGIN)
+	{
+		[self scrollToBegin];
+	}
+
 	[super viewDidAppear:animated];
 }
 
@@ -274,21 +282,42 @@ static UINavigationController *NAVCO = nil;
 
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	if (FOOD_IMAGE == section)
+	switch (section) 
 	{
-		if (nil == CREATE_FOOD_HEADER)
+		case FOOD_IMAGE:
 		{
-			CREATE_FOOD_HEADER = [[CreateFoodImage alloc] initWithFrame:CGRectMake(0.0, 
-												0.0, 
-												self.view.frame.size.width, 
-												self.view.frame.size.width)];
-			[CREATE_FOOD_HEADER redraw];
+			if (nil == CREATE_FOOD_HEADER)
+			{
+				CREATE_FOOD_HEADER = [[CreateFoodImage alloc] 
+						      initWithFrame:CGRectMake(0.0, 
+									       0.0, 
+									       self.view.frame.size.width, 
+									       self.view.frame.size.width)];
+				[CREATE_FOOD_HEADER redraw];
+			}
+			
+			return CREATE_FOOD_HEADER;
 		}
-
-		return CREATE_FOOD_HEADER;
+			break;
+		case FOOD_FOUR_COUNT:
+		{
+			if (nil == CREATE_FOOD_FOUR_COUNT_HEADER)
+			{
+				CREATE_FOOD_FOUR_COUNT_HEADER = [[CreateFoodFourCount alloc] 
+								 initWithFrame:CGRectMake(0.0, 
+											  0.0, 
+											  self.view.frame.size.width, 
+											  44 * PROPORTION())];
+				CREATE_FOOD_FOUR_COUNT_HEADER.delegate = self;
+			}
+			
+			return CREATE_FOOD_FOUR_COUNT_HEADER;
+		}
+			
+		default:
+			return nil;
+			break;
 	}
-
-	return nil;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -297,6 +326,9 @@ static UINavigationController *NAVCO = nil;
 	{
 		case FOOD_IMAGE:
 			return self.view.frame.size.width;
+			break;
+		case FOOD_FOUR_COUNT:
+			return 44.0 * PROPORTION();
 			break;
 		case FOOD_DESC:
 			return 28.0 * PROPORTION();
@@ -322,10 +354,15 @@ static UINavigationController *NAVCO = nil;
 
 #pragma mark - interface and action
 
+- (void) needScrollToBegin
+{
+	NEED_SCROOL_TO_BEGIN = YES;
+}
+
 - (void) scrollToBegin
 {
+	NEED_SCROOL_TO_BEGIN = NO;
 	
-	[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:FOOD_NAME inSection:FOOD_DETAIL] atScrollPosition:UITableViewScrollPositionTop animated:NO];
 	[FOOD_DETAIL_TETX_VIEW[FOOD_NAME] becomeFirstResponder];
 }
 
@@ -349,7 +386,7 @@ static UINavigationController *NAVCO = nil;
 		return NO;
 	}
 
-	return YES;
+	return [CREATE_FOOD_FOUR_COUNT_HEADER isFourCountSelected];
 }
 
 - (void) imageUploadCompleted:(id)result
@@ -382,11 +419,8 @@ static UINavigationController *NAVCO = nil;
 		[params setValue:FOOD_DETAIL_TETX_VIEW[FOOD_PLACE].text forKey:@"place_name"];
 		[params setValue:FOOD_DESC_TEXT_VIEW.text forKey:@"desc"];
 		[params setValue:CREATE_FOOD_HEADER.selectedImage.picID forKey:@"pic"];
-		[params setValue:[NSNumber numberWithBool:NO]  forKey:@"like_special"];
-		[params setValue:[NSNumber numberWithBool:NO]  forKey:@"like_valued"];
-		[params setValue:[NSNumber numberWithBool:NO]  forKey:@"like_tasty"];
-		[params setValue:[NSNumber numberWithBool:NO]  forKey:@"like_healthy"];
 		[params setValue:[FOOD_DETAIL_TETX_VIEW[FOOD_TAG].text componentsSeparatedByString:@" "] forKey:@"category"];
+		[CREATE_FOOD_FOUR_COUNT_HEADER setFoutCountParams:params];
 
 		[FoodManager createFood:params withHandler:@selector(foodCreated:) andTarget:self];
 
@@ -400,7 +434,22 @@ static UINavigationController *NAVCO = nil;
 
 - (void) foodCreated:(id)result
 {
-
+	@autoreleasepool 
+	{
+		[CREATE_FOOD_FOUR_COUNT_HEADER cleanFourCount];
+		
+		CREATE_FOOD_HEADER.selectedImage.picID = nil;
+		
+		for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
+		{
+			FOOD_DETAIL_TETX_VIEW[i].text = @"";
+		}
+		
+		FOOD_DESC_TEXT_VIEW.text = @"";
+		
+		[self dismissModalViewControllerAnimated:YES];
+	}
+	
 }
 
 - (void) showTextInputer
@@ -413,7 +462,10 @@ static UINavigationController *NAVCO = nil;
 		FOOD_DESC_INPUTER.drawCancel = NO;
 	}
 	
-	FOOD_DESC_INPUTER.text.text = FOOD_DESC_TEXT_VIEW.text;
+	if (0 < FOOD_DESC_TEXT_VIEW.text.length)
+	{
+		FOOD_DESC_INPUTER.text.text = FOOD_DESC_TEXT_VIEW.text;
+	}
 	
 	[self.navigationController pushViewController:FOOD_DESC_INPUTER animated:YES];
 }
@@ -422,7 +474,14 @@ static UINavigationController *NAVCO = nil;
 
 - (BOOL) textFieldShouldReturn:(UITextField *)textField
 {	
-	
+	if ([self checkParamsReady])
+	{
+		self.navigationItem.rightBarButtonItem.enabled = YES;
+	}
+	else
+	{
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
 
 	int i;
 
@@ -442,17 +501,8 @@ static UINavigationController *NAVCO = nil;
 	{
 		[textField resignFirstResponder];
 		[FOOD_DESC_TEXT_VIEW becomeFirstResponder];
-	}
-
-	
-
-	if ([self checkParamsReady])
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
+		
+		return NO;
 	}
 
 	return YES;
@@ -504,7 +554,7 @@ static UINavigationController *NAVCO = nil;
 {
 	if (FOOD_DESC_TEXT_VIEW == textView)
 	{
-		[FOOD_DESC_TEXT_VIEW becomeFirstResponder];
+		//[FOOD_DESC_TEXT_VIEW becomeFirstResponder];
 		[self showTextInputer];
 	}
 	
@@ -524,6 +574,20 @@ static UINavigationController *NAVCO = nil;
 {
 	[self.navigationController popViewControllerAnimated:YES];
 	[FOOD_DESC_TEXT_VIEW resignFirstResponder];
+}
+
+#pragma mark - CreateFoodFourCountDelegate
+
+- (void) fourCountSelected
+{
+	if ([self checkParamsReady])
+	{
+		self.navigationItem.rightBarButtonItem.enabled = YES;
+	}
+	else
+	{
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
 }
 
 @end

@@ -95,6 +95,42 @@ DEFINE_SINGLETON(ImageManager);
 }
 
 #pragma mark - overwrite super class method
+
+#pragma mark - overwrite save and restore
++ (void) saveTo:(NSMutableDictionary *)dict
+{
+	[super saveTo:dict];
+	
+	NSMutableString *key = [[NSMutableString alloc] initWithString:[self description]];
+	[key appendString:@"Image_Size"];
+	
+	[dict setObject:[[self getInstnace] imageSizeDict] 
+		 forKey:key];
+	
+	[key release];
+}
+
++ (void) restoreFrom:(NSMutableDictionary *)dict
+{
+	@autoreleasepool 
+	{
+		[super restoreFrom:dict];
+		
+		NSMutableString *key = [[NSMutableString alloc] initWithString:[self description]];
+		[key appendString:@"Image_Size"];
+		
+		NSMutableDictionary *imageSizeDict = [dict objectForKey:key];
+		
+		if (nil != imageSizeDict)
+		{
+			[[self getInstnace] setImageSizeDict:imageSizeDict];
+		}
+		
+		[key release];
+	}
+
+}
+
 #pragma mark - overwrite get method
 
 - (NSString *) getMethod

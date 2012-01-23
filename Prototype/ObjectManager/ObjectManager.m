@@ -78,7 +78,8 @@
 
 + (void) restoreFrom:(NSDictionary *)dict
 {
-	@autoreleasepool {
+	@autoreleasepool 
+	{
 		NSMutableDictionary *objectDict = [dict objectForKey:[self description]];
 		
 		if (nil != objectDict)

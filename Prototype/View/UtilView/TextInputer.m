@@ -57,21 +57,26 @@ const static CGFloat FONT_SIZE = 15.0;
 
 - (void) cancelEdit:(id)sender
 {
+	self.text.text = @"";
 	[self.delegate cancelWithTextInputer:self];
 }
 
 - (void) textDone:(id)sender
 {
-	if (0 < self.text.text.length)
+	@autoreleasepool 
 	{
-		[self.delegate textDoneWithTextInputer:self];
-		self.text.text = nil;
-		self.navigationItem.rightBarButtonItem.enabled = NO;
+		if (0 < self.text.text.length)
+		{
+			[self.delegate textDoneWithTextInputer:self];
+			self.text.text = @"";
+			self.navigationItem.rightBarButtonItem.enabled = NO;
+		}
+		else
+		{
+			[self cancelEdit:self];
+		}
 	}
-	else
-	{
-		[self cancelEdit:self];
-	}
+	
 }
 
 #pragma mark - View draw
@@ -122,9 +127,17 @@ const static CGFloat FONT_SIZE = 15.0;
 
 - (void) viewWillAppear:(BOOL)animated
 {
-	[self.text becomeFirstResponder];
-
 	[super viewWillAppear:animated];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
+	
+	if (![self.text isFirstResponder])
+	{
+		[self.text becomeFirstResponder];
+	}
 }
 
 - (void) viewDidUnload

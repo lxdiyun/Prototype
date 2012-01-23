@@ -77,7 +77,7 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 	}
 }
 
-- (void)dealloc
+- (void) dealloc
 {
 	self.tabco = nil;
 	[self releasePageInstance];
@@ -86,7 +86,7 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 	[super dealloc];
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	// restore cache
 	[ObjectSaver restoreAll];
@@ -129,7 +129,7 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 	return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
+- (void) applicationWillResignActive:(UIApplication *)application
 {
 	/*
 	 TODO
@@ -138,24 +138,24 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 	 */
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
+- (void) applicationDidEnterBackground:(UIApplication *)application
 {
 	[ObjectSaver saveAll];
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
+- (void) applicationWillEnterForeground:(UIApplication *)application
 {
 	[ObjectSaver restoreAll];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
+- (void) applicationDidBecomeActive:(UIApplication *)application
 {
 	/*
 	 Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 	 */
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application
+- (void) applicationWillTerminate:(UIApplication *)application
 {
 	[ObjectSaver saveAll];
 }
