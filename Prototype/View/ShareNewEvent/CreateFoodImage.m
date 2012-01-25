@@ -21,7 +21,6 @@ const static CGFloat PADING1 = 10.0; // padding between element horizontal and f
 	NSString *_uploadFileID;
 }
 
-@property (strong, nonatomic) UIProgressView *progressView;
 @end
 
 @implementation CreateFoodImage
@@ -79,7 +78,7 @@ const static CGFloat PADING1 = 10.0; // padding between element horizontal and f
 	[self addSubview:self.progressView];
 }
 
-- (void) redraw
+- (void) redrawAll
 {
 	@autoreleasepool 
 	{
@@ -96,6 +95,12 @@ const static CGFloat PADING1 = 10.0; // padding between element horizontal and f
 	{
 		BIND_PROGRESS_VIEW_WITH_FILE_ID(self.progressView, self.uploadFileID);
 	}
+}
+
+- (void) cleanImage
+{
+	[self redrawAll];
+	self.progressView.progress = 0.0;
 }
 
 @end

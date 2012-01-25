@@ -90,7 +90,7 @@
 		[self.createFood needScrollToBegin];
 		[self.delegate presentModalViewController:self.navco animated:YES];
 		
-		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:1.0];
+		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:2.0];
 	}
 
 }

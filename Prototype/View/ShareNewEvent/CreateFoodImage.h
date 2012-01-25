@@ -13,7 +13,9 @@
 
 @property (strong, nonatomic) ImageV *selectedImage;
 @property (strong) NSString *uploadFileID;
+@property (strong, nonatomic) UIProgressView *progressView;
 
-- (void) redraw;
+- (void) redrawAll;
+- (void) cleanImage;
 - (void) resetProgress;
 @end

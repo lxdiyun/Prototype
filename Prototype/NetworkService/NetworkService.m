@@ -168,7 +168,7 @@ DEFINE_SINGLETON(NetworkService);
 
 	case NSStreamEventHasSpaceAvailable:
 		// LOG(@"Ouput stream is ready");
-		[self writeMessage];
+		[self performSelector:@selector(writeMessage) withObject:nil afterDelay:0.0];
 		break;
 
 	case NSStreamEventErrorOccurred:
@@ -188,7 +188,7 @@ DEFINE_SINGLETON(NetworkService);
 #pragma mark - write methods
 
 - (void) writeMessage
-{
+{	
 	@synchronized(self)
 	{
 		if (self.isWriting)
@@ -248,7 +248,7 @@ DEFINE_SINGLETON(NetworkService);
 
 - (void) readMessage
 {
-	static uint8_t s_buffer[1024*8];
+	static uint8_t s_buffer[1024 * 8];
 	static uint32_t s_currentMessageLefted  = 0;
 	static uint32_t s_offset = 0;
 	static NSMutableData *s_bufferData = nil;

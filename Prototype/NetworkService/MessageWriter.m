@@ -38,9 +38,6 @@ void send_buffer_with_id_priority(NSData *buffer,
 	[gs_buffer_array[prioirty] addObject:IDAndBuffer];
 
 	[IDAndBuffer release];
-
-	// request send
-	[NetworkService requestSendMessage];
 }
 
 static void send_data_with_priority_and_responder(NSData *message, 
@@ -55,7 +52,12 @@ static void send_data_with_priority_and_responder(NSData *message,
 
 	// then send
 	NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
+	
 	send_buffer_with_id_priority(message, IDString, priority);
+	
+	// request send
+	[NetworkService requestSendMessage];
+	
 	[IDString release];
 }
 

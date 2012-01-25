@@ -26,7 +26,7 @@
  */
 
 const static uint8_t BINARY_ACTION_BYTE_SIZE = sizeof(uint8_t);
-const static uint32_t BINARY_MSG_WINDOW = 0x400; // 1024 bytes
+const static uint32_t BINARY_MSG_WINDOW = 0x100; // 256 * 1 bytes
 
 typedef enum BINARY_MSG_ACTION_ENUM
 {
@@ -90,7 +90,7 @@ void UPLOAD_FILE(NSData *file, uint32_t file_ID)
 	uint32_t file_length = file.length;
 	uint8_t pieces[BINARY_MSG_WINDOW + 1];
 	uint32_t file_id_in_bigendian = CFSwapInt32HostToBig(file_ID);
-	uint32_t packetCount = 0;
+	uint32_t packet_count = 0;
 
 	do
 	{
@@ -123,8 +123,11 @@ void UPLOAD_FILE(NSData *file, uint32_t file_ID)
 		[payload release];
 		
 		offset += BINARY_MSG_WINDOW;
-		++packetCount;
+		++packet_count;
 	} while (offset < file_length);
+	
+	// request send
+	[NetworkService requestSendMessage];
 	
 	if (nil == gs_packet_count_dict)
 	{
@@ -133,7 +136,7 @@ void UPLOAD_FILE(NSData *file, uint32_t file_ID)
 	
 	@autoreleasepool 
 	{
-		[gs_packet_count_dict setValue:[NSNumber numberWithUnsignedLong:packetCount] forKey:IDString];
+		[gs_packet_count_dict setValue:[NSNumber numberWithUnsignedLong:packet_count] forKey:IDString];
 	}
 	
 	[IDString release];

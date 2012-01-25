@@ -340,7 +340,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 									       0.0, 
 									       self.view.frame.size.width, 
 									       self.view.frame.size.width)];
-				[CREATE_FOOD_IMAGE_HEADER redraw];
+				[CREATE_FOOD_IMAGE_HEADER redrawAll];
 			}
 			
 			return CREATE_FOOD_IMAGE_HEADER;
@@ -445,7 +445,6 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 		NSString *IDString = [[NSString alloc] initWithFormat:@"%u", fileID];
 		
 		CREATE_FOOD_IMAGE_HEADER.uploadFileID = IDString;
-		[CREATE_FOOD_IMAGE_HEADER redraw];
 		[CREATE_FOOD_IMAGE_HEADER resetProgress];
 		
 		[IDString release];
@@ -552,8 +551,11 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 		[params release];
 	}
 }
-- (void)cancelCreate:(id)sender
+
+- (void) cancelCreate:(id)sender
 {
+	[CREATE_FOOD_IMAGE_HEADER cleanImage];
+	
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -578,6 +580,8 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 		
 		FOOD_DESC_TEXT_VIEW.text = @"";
 		
+		[CREATE_FOOD_IMAGE_HEADER cleanImage];
+
 		[self dismissModalViewControllerAnimated:YES];
 	}
 	
