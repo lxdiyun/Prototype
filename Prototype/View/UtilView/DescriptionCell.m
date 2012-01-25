@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "DescriptionCell.h"
+
+#import <QuartzCore/QuartzCore.h>
 
 #import "ImageV.h"
 #import "Util.h"

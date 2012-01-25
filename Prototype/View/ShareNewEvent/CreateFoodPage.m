@@ -14,6 +14,8 @@
 #import "FoodManager.h"
 #import "TextInputer.h"
 #import "CreateFoodFourCount.h"
+#import "ProfileMananger.h"
+#import "LoginManager.h"
 
 const static CGFloat FONT_SIZE = 15.0;
 
@@ -38,12 +40,16 @@ typedef enum NEW_FOOD_DETAIL_ENUM
 static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"名字：", @"城市：", @"所在地：", @"类型："};
 static UITextField *FOOD_DETAIL_TETX_VIEW[NEW_FOOD_DETAIL_MAX] = {nil};
 static UITextView *FOOD_DESC_TEXT_VIEW = nil;
-static CreateFoodImage *CREATE_FOOD_HEADER;
+
+static UILabel *FOOD_DETAIL_STAR_LABEL[NEW_FOOD_DETAIL_MAX] = {nil};
+static UILabel *FOOD_DESC_STAR_LABEL = nil;
+static CreateFoodImage *CREATE_FOOD_IMAGE_HEADER;
 static CreateFoodFourCount *CREATE_FOOD_FOUR_COUNT_HEADER;
 static TextInputer *FOOD_DESC_INPUTER =  nil;
 static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 @interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, CreateFoodFourCountDelegate>
+- (void) updateCity;
 - (BOOL) checkParamsReady;
 - (void) scrollToBegin;
 @end
@@ -70,19 +76,21 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
 	[super viewDidLoad];
 
 	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 	{
 		FOOD_DETAIL_TETX_VIEW[i] = nil;
+		FOOD_DETAIL_STAR_LABEL[i] = nil;
 	}
 
 	FOOD_DESC_TEXT_VIEW = nil;
-	CREATE_FOOD_HEADER = nil;
+	CREATE_FOOD_IMAGE_HEADER = nil;
 	FOOD_DESC_INPUTER = nil;
 	CREATE_FOOD_FOUR_COUNT_HEADER = nil;
+	FOOD_DESC_STAR_LABEL = nil;
 
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"分享" 
 										  style:UIBarButtonItemStyleDone 
@@ -96,7 +104,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
-- (void)viewDidUnload
+- (void) viewDidUnload
 {
 	[super viewDidUnload];
 
@@ -104,22 +112,27 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	{
 		[FOOD_DETAIL_TETX_VIEW[i] release];
 		FOOD_DETAIL_TETX_VIEW[i] = nil;
+		[FOOD_DETAIL_STAR_LABEL[i] release];
+		FOOD_DETAIL_STAR_LABEL[i] = nil;
 	}
 
 	[FOOD_DESC_TEXT_VIEW release]; 
 	FOOD_DESC_TEXT_VIEW = nil;
 
-	[CREATE_FOOD_HEADER release];
-	CREATE_FOOD_HEADER = nil;
+	[CREATE_FOOD_IMAGE_HEADER release];
+	CREATE_FOOD_IMAGE_HEADER = nil;
 
 	[FOOD_DESC_INPUTER release];
 	FOOD_DESC_INPUTER = nil;
 	
 	[CREATE_FOOD_FOUR_COUNT_HEADER release];
 	CREATE_FOOD_FOUR_COUNT_HEADER = nil;
+	
+	[FOOD_DESC_STAR_LABEL release];
+	FOOD_DESC_STAR_LABEL = nil;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 
@@ -133,27 +146,28 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	}
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void) viewDidAppear:(BOOL)animated
 {
 	if (NEED_SCROOL_TO_BEGIN)
 	{
 		[self scrollToBegin];
 	}
 
+	[self updateCity];
 	[super viewDidAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	// Return YES for supported orientations
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -161,11 +175,22 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 #pragma mark - Table view data source
 
+- (UILabel *) createStarLabel
+{
+	
+	UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(5.0, 0.0, FONT_SIZE * PROPORTION(), FONT_SIZE * PROPORTION())] autorelease];
+	label.text = @"*";
+	label.backgroundColor = [UIColor clearColor];
+	label.textColor = [UIColor redColor];
+	label.font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+
+	return label;
+}
+
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
 	return NEW_FOOD_SECTION_MAX;
 }
-
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -229,9 +254,24 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 					FOOD_DETAIL_TETX_VIEW[indexPath.row].delegate = self;
 					FOOD_DETAIL_TETX_VIEW[indexPath.row].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 					FOOD_DETAIL_TETX_VIEW[indexPath.row].returnKeyType = UIReturnKeyNext;
+					
+					if (FOOD_TAG != indexPath.row)
+					{
+						if (nil == FOOD_DETAIL_STAR_LABEL[indexPath.row])
+						{
+							FOOD_DETAIL_STAR_LABEL[indexPath.row] = [[self createStarLabel] retain];
+						}
+						
+						[cell.contentView addSubview:FOOD_DETAIL_STAR_LABEL[indexPath.row]];
+					}
 				}
 
 				[cell addSubview:FOOD_DETAIL_TETX_VIEW[indexPath.row]];
+			}
+			
+			if (FOOD_CITY == indexPath.row)
+			{
+				[self updateCity];
 			}
 
 			return cell;
@@ -252,16 +292,23 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 				if (nil == FOOD_DESC_TEXT_VIEW)
 				{
-					FOOD_DESC_TEXT_VIEW = [[UITextView alloc] initWithFrame:CGRectMake(10.0, 
+					FOOD_DESC_TEXT_VIEW = [[UITextView alloc] initWithFrame:CGRectMake(0.0, 
 													   0.0, 
-													   self.view.frame.size.width - 20.0, 
+													   self.view.frame.size.width, 
 													   88 * PROPORTION())];
 					FOOD_DESC_TEXT_VIEW.backgroundColor = [UIColor clearColor];
 					FOOD_DESC_TEXT_VIEW.font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
 					FOOD_DESC_TEXT_VIEW.delegate = self;
 				}
 
-				[cell addSubview:FOOD_DESC_TEXT_VIEW];
+				[cell.contentView addSubview:FOOD_DESC_TEXT_VIEW];
+				
+				if (nil == FOOD_DESC_STAR_LABEL)
+				{
+					FOOD_DESC_STAR_LABEL = [[self createStarLabel] retain];
+				}
+				
+				[cell.contentView addSubview:FOOD_DESC_STAR_LABEL];
 			}
 
 			return cell;
@@ -286,17 +333,17 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	{
 		case FOOD_IMAGE:
 		{
-			if (nil == CREATE_FOOD_HEADER)
+			if (nil == CREATE_FOOD_IMAGE_HEADER)
 			{
-				CREATE_FOOD_HEADER = [[CreateFoodImage alloc] 
+				CREATE_FOOD_IMAGE_HEADER = [[CreateFoodImage alloc] 
 						      initWithFrame:CGRectMake(0.0, 
 									       0.0, 
 									       self.view.frame.size.width, 
 									       self.view.frame.size.width)];
-				[CREATE_FOOD_HEADER redraw];
+				[CREATE_FOOD_IMAGE_HEADER redraw];
 			}
 			
-			return CREATE_FOOD_HEADER;
+			return CREATE_FOOD_IMAGE_HEADER;
 		}
 			break;
 		case FOOD_FOUR_COUNT:
@@ -354,15 +401,52 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 #pragma mark - interface and action
 
+
+- (void) requestUserCity
+{
+	NSNumber *loginID = GET_USER_ID();
+	
+	if (nil != loginID)
+	{
+		NSDictionary *loginUserProfile = [ProfileMananger getObjectWithNumberID:loginID];
+		
+		if (nil != loginUserProfile)
+		{
+			FOOD_DETAIL_TETX_VIEW[FOOD_CITY].text = [loginUserProfile valueForKey:@"city"];
+			[self checkParamsReady];
+		}
+		else
+		{
+			[ProfileMananger requestObjectWithNumberID:loginID andHandler:@selector(requestUserCity) andTarget:self];
+		}
+	}
+	else
+	{
+		[LoginManager requestWithHandler:@selector(requestUserCity) andTarget:self];
+	}
+	
+}
+
+- (void) updateCity
+{
+	if (nil != FOOD_DETAIL_TETX_VIEW[FOOD_CITY])
+	{
+		if (0 == FOOD_DETAIL_TETX_VIEW[FOOD_CITY].text.length)
+		{
+			[self requestUserCity];
+		}
+	}
+}
+
 - (void) resetImageWithUploadFileID:(uint32_t)fileID;
 {
-	if (nil != CREATE_FOOD_HEADER)
+	if (nil != CREATE_FOOD_IMAGE_HEADER)
 	{
 		NSString *IDString = [[NSString alloc] initWithFormat:@"%u", fileID];
 		
-		CREATE_FOOD_HEADER.uploadFileID = IDString;
-		[CREATE_FOOD_HEADER redraw];
-		[CREATE_FOOD_HEADER resetProgress];
+		CREATE_FOOD_IMAGE_HEADER.uploadFileID = IDString;
+		[CREATE_FOOD_IMAGE_HEADER redraw];
+		[CREATE_FOOD_IMAGE_HEADER resetProgress];
 		
 		[IDString release];
 	}
@@ -382,36 +466,51 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 - (BOOL) checkParamsReady
 {
-	if (nil == CREATE_FOOD_HEADER.selectedImage.picID)
+	BOOL paramsReady = YES;
+	
+	if (nil == CREATE_FOOD_IMAGE_HEADER.selectedImage.picID)
 	{
-		return NO;
+		paramsReady = NO;
 	}
 
 	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 	{
+		if (FOOD_TAG == i)
+		{
+			continue;
+		}
+
 		if (0 >= FOOD_DETAIL_TETX_VIEW[i].text.length)
 		{
-			return NO;
+			paramsReady = NO;
+			FOOD_DETAIL_STAR_LABEL[i].textColor = [UIColor redColor];
+		}
+		else
+		{
+			FOOD_DETAIL_STAR_LABEL[i].textColor = [UIColor clearColor];
 		}
 	}
 
 	if (0 >= FOOD_DESC_TEXT_VIEW.text.length)
 	{
-		return NO;
+		paramsReady = NO;
+		FOOD_DESC_STAR_LABEL.textColor = [UIColor redColor];
+	}
+	else
+	{
+		FOOD_DESC_STAR_LABEL.textColor = [UIColor clearColor];
 	}
 
-	return [CREATE_FOOD_FOUR_COUNT_HEADER isFourCountSelected];
+	if (![CREATE_FOOD_FOUR_COUNT_HEADER isFourCountSelected])
+	{
+		paramsReady = NO;
+	}
+	
+	return paramsReady;
 }
 
-- (void) imageUploadCompleted:(id)result
+- (void) updateShareButton
 {
-	NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
-
-	if (CHECK_NUMBER(picID))
-	{
-		CREATE_FOOD_HEADER.selectedImage.picID = picID;
-	}
-
 	if ([self checkParamsReady])
 	{
 		self.navigationItem.rightBarButtonItem.enabled = YES;
@@ -420,6 +519,18 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	{
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 	}
+}
+
+- (void) imageUploadCompleted:(id)result
+{
+	NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
+
+	if (CHECK_NUMBER(picID))
+	{
+		CREATE_FOOD_IMAGE_HEADER.selectedImage.picID = picID;
+	}
+
+	[self updateShareButton];
 }
 
 - (void) createFood:(id)sender
@@ -432,7 +543,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 		[params setValue:FOOD_DETAIL_TETX_VIEW[FOOD_CITY].text forKey:@"city"];
 		[params setValue:FOOD_DETAIL_TETX_VIEW[FOOD_PLACE].text forKey:@"place_name"];
 		[params setValue:FOOD_DESC_TEXT_VIEW.text forKey:@"desc"];
-		[params setValue:CREATE_FOOD_HEADER.selectedImage.picID forKey:@"pic"];
+		[params setValue:CREATE_FOOD_IMAGE_HEADER.selectedImage.picID forKey:@"pic"];
 		[params setValue:[FOOD_DETAIL_TETX_VIEW[FOOD_TAG].text componentsSeparatedByString:@" "] forKey:@"category"];
 		[CREATE_FOOD_FOUR_COUNT_HEADER setFoutCountParams:params];
 
@@ -452,10 +563,16 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	{
 		[CREATE_FOOD_FOUR_COUNT_HEADER cleanFourCount];
 		
-		CREATE_FOOD_HEADER.selectedImage.picID = nil;
+		CREATE_FOOD_IMAGE_HEADER.selectedImage.picID = nil;
 		
 		for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 		{
+			if (FOOD_CITY == i)
+			{
+				// Do not clean city text
+				continue;
+			}
+
 			FOOD_DETAIL_TETX_VIEW[i].text = @"";
 		}
 		
@@ -474,6 +591,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 		FOOD_DESC_INPUTER.delegate = self;
 		FOOD_DESC_INPUTER.sendButtonTitle = @"完成";
 		FOOD_DESC_INPUTER.drawCancel = NO;
+		FOOD_DESC_INPUTER.title = @"美食介绍";
 	}
 	
 	if (0 < FOOD_DESC_TEXT_VIEW.text.length)
@@ -488,14 +606,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 - (BOOL) textFieldShouldReturn:(UITextField *)textField
 {	
-	if ([self checkParamsReady])
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	[self updateShareButton];
 
 	int i;
 
@@ -535,14 +646,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 - (void) textFieldDidEndEditing:(UITextField *)textField
 {
-	if ([self checkParamsReady])
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	[self updateShareButton];
 }
 
 - (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
@@ -554,14 +658,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 - (void) textViewDidChange:(UITextView *)textView
 {
-	if ([self checkParamsReady])
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	[self updateShareButton];
 }
 
 - (BOOL) textViewShouldBeginEditing:(UITextView *)textView
@@ -594,14 +691,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 - (void) fourCountSelected
 {
-	if ([self checkParamsReady])
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	[self updateShareButton];
 }
 
 @end

@@ -32,6 +32,7 @@ static BOOL gs_four_count_selected_flag[FOUR_COUNT_MAX] = {NO};
 static UILabel *gs_four_count_color_label[FOUR_COUNT_MAX] = {nil};
 static UILabel *gs_four_count_text_label[FOUR_COUNT_MAX] = {nil};
 static NSString *gs_four_count_text[FOUR_COUNT_MAX] = {@"美味", @"特色", @"超值", @"健康"};
+static UILabel *gs_star_label = nil;
 
 @implementation CreateFoodFourCount
 
@@ -101,6 +102,14 @@ static NSString *gs_four_count_text[FOUR_COUNT_MAX] = {@"美味", @"特色", @"�
 		x += buttonWidth;
 	}
 	
+	gs_star_label =[[[UILabel alloc] initWithFrame:CGRectMake(5.0, 0.0, FONT_SIZE * PROPORTION(), FONT_SIZE * PROPORTION())] autorelease];
+	gs_star_label.text = @"*";
+	gs_star_label.backgroundColor = [UIColor clearColor];
+	gs_star_label.textColor = [UIColor redColor];
+	gs_star_label.font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+	
+	[self addSubview:gs_star_label];
+	
 	self.backgroundColor = [Color milkColor];
 }
 
@@ -135,6 +144,9 @@ static NSString *gs_four_count_text[FOUR_COUNT_MAX] = {@"美味", @"特色", @"�
 		[gs_four_count_color[i] release];
 		gs_four_count_color[i] = nil;
 	}
+	
+	[gs_star_label release];
+	gs_star_label = nil;
 
 	[super dealloc];
 }
@@ -170,10 +182,12 @@ static NSString *gs_four_count_text[FOUR_COUNT_MAX] = {@"美味", @"特色", @"�
 	{
 		if (YES == gs_four_count_selected_flag[i])
 		{
+			gs_star_label.textColor = [UIColor clearColor];
 			return YES;
 		}
 	}
 	
+	gs_star_label.textColor = [UIColor redColor];
 	return NO;
 }
 
@@ -191,6 +205,7 @@ static NSString *gs_four_count_text[FOUR_COUNT_MAX] = {@"美味", @"特色", @"�
 	{
 		gs_four_count_selected_flag[i] = NO;
 		gs_four_count_color_label[i].backgroundColor = [Color grey2Color];
+		gs_star_label.textColor = [UIColor redColor];
 	}
 }
 
