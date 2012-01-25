@@ -115,6 +115,15 @@ static CGFloat gs_pic_size = 0;
 							 andTarget:self];
 		}
 	}
+	else
+	{
+		if (nil != self.avator)
+		{
+			self.avator.picID = nil;
+			[self.avator.layer setBorderColor:[[UIColor clearColor] CGColor]];
+			[self.avator.layer setBorderWidth: 0.0];
+		}
+	}
 }
 
 - (void) setEventDict:(NSDictionary *)eventDict

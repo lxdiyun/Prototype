@@ -354,6 +354,20 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 #pragma mark - interface and action
 
+- (void) resetImageWithUploadFileID:(uint32_t)fileID;
+{
+	if (nil != CREATE_FOOD_HEADER)
+	{
+		NSString *IDString = [[NSString alloc] initWithFormat:@"%u", fileID];
+		
+		CREATE_FOOD_HEADER.uploadFileID = IDString;
+		[CREATE_FOOD_HEADER redraw];
+		[CREATE_FOOD_HEADER resetProgress];
+		
+		[IDString release];
+	}
+}
+
 - (void) needScrollToBegin
 {
 	NEED_SCROOL_TO_BEGIN = YES;

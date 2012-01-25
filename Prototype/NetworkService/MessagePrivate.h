@@ -24,6 +24,7 @@ extern NSMutableDictionary *gs_handler_dict;
 void send_buffer_with_id_priority(NSData *buffer, 
 				  const NSString *IDString, 
 				  MESSAGE_PRIORITY prioirty);
+uint32_t pending_message_count(MESSAGE_PRIORITY priority, NSString *ID);
 
 // json message
 void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableData * output_data);
@@ -34,5 +35,7 @@ void pong_message_handler(NSData *buffer_data);
 
 // binary message 
 void binary_message_handler(NSData *buffer_data);
+void update_upload_progress(NSString *IDString);
+void clean_progress(NSString *IDString);
 
 #endif

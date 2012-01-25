@@ -68,5 +68,7 @@ void STOP_PING(void);
 
 // Binary Message
 void UPLOAD_FILE(NSData *file, uint32_t file_ID);
+void BIND_PROGRESS_VIEW_WITH_FILE_ID(UIProgressView *progressView, 
+				     NSString *IDString);
 
 #endif

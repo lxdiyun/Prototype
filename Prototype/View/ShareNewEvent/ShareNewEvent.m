@@ -47,11 +47,6 @@
 
 #pragma mark - PhototSelectorDelegate
 
-- (void) uploadImageFinisedHandler:(NSDictionary *)result
-{
-	
-}
-
 - (void) dismissSelector:(PhotoSelector *)selector
 {
 	[self.delegate dismissModalViewControllerAnimated:YES];
@@ -64,11 +59,17 @@
 
 - (void) uploadImage:(PhotoSelector *)selector
 {
-	[ImageManager createImage:selector.selectedImage 
-		      withHandler:@selector(imageUploadCompleted:)
-			andTarget:self.createFood];
+	@autoreleasepool 
+	{
+		uint32_t fileID = [ImageManager createImage:selector.selectedImage 
+						withHandler:@selector(imageUploadCompleted:)
+						  andTarget:self.createFood];
+		
+		[self.createFood resetImageWithUploadFileID:fileID];
+		
+		selector.selectedImage = nil;
+	}
 	
-	selector.selectedImage = nil;
 }
 
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector

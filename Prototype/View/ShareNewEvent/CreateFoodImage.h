@@ -12,6 +12,8 @@
 @interface CreateFoodImage : UIView
 
 @property (strong, nonatomic) ImageV *selectedImage;
+@property (strong) NSString *uploadFileID;
 
 - (void) redraw;
+- (void) resetProgress;
 @end

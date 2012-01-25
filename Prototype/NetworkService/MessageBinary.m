@@ -26,7 +26,6 @@
  */
 
 const static uint8_t BINARY_ACTION_BYTE_SIZE = sizeof(uint8_t);
-
 const static uint32_t BINARY_MSG_WINDOW = 0x400; // 1024 bytes
 
 typedef enum BINARY_MSG_ACTION_ENUM
@@ -35,6 +34,8 @@ typedef enum BINARY_MSG_ACTION_ENUM
 	UPLOAD_FILE_ACTION = 0x1
 } BINARY_MSG_ACTION;
 
+static NSMutableDictionary *gs_progress_view_dict = nil;
+static NSMutableDictionary *gs_packet_count_dict = nil;
 
 #pragma mark - binary message request
 
@@ -82,12 +83,14 @@ void UPLOAD_FILE(NSData *file, uint32_t file_ID)
 		CLOG(@"empty file to upload")
 		return;
 	}
+
 	NSString *IDString = [[NSString alloc] initWithFormat:@"%u", file_ID];
 	// cut file data into pieces with window size
 	uint32_t offset = 0;
 	uint32_t file_length = file.length;
 	uint8_t pieces[BINARY_MSG_WINDOW + 1];
 	uint32_t file_id_in_bigendian = CFSwapInt32HostToBig(file_ID);
+	uint32_t packetCount = 0;
 
 	do
 	{
@@ -120,7 +123,18 @@ void UPLOAD_FILE(NSData *file, uint32_t file_ID)
 		[payload release];
 		
 		offset += BINARY_MSG_WINDOW;
-	} while (offset < file_length);	
+		++packetCount;
+	} while (offset < file_length);
+	
+	if (nil == gs_packet_count_dict)
+	{
+		gs_packet_count_dict = [[NSMutableDictionary alloc] init];
+	}
+	
+	@autoreleasepool 
+	{
+		[gs_packet_count_dict setValue:[NSNumber numberWithUnsignedLong:packetCount] forKey:IDString];
+	}
 	
 	[IDString release];
 }
@@ -129,5 +143,62 @@ void UPLOAD_FILE(NSData *file, uint32_t file_ID)
 
 void binary_message_handler(NSData *buffer_data)
 {
+	// TODO handle binary message reply
 	CLOG(@"receive binary mesage:%@", buffer_data);
 }
+
+# pragma mark - upload progress
+
+static float upload_progress_for_file_ID(NSString *IDString)
+{
+	
+	uint32_t pending_count = pending_message_count(BINARY_PRIORITY, IDString);
+	uint32_t totalPacket = [[gs_packet_count_dict valueForKey:IDString] unsignedLongValue];
+
+	return pending_count * 1.0 / totalPacket;
+}
+
+void update_upload_progress(NSString *IDString)
+{
+	if (!CHECK_STRING(IDString))
+	{
+		return;
+	}
+	
+	float progress = upload_progress_for_file_ID(IDString); 
+	
+	UIProgressView *progressView = [gs_progress_view_dict valueForKey:IDString];
+	
+	if (nil != progressView)
+	{
+		[progressView setProgress:progress];
+	}
+}
+
+void clean_progress(NSString *IDString)
+{
+	if (!CHECK_STRING(IDString))
+	{
+		return;
+	}
+	
+	[gs_packet_count_dict setValue:nil forKey:IDString];
+	[gs_progress_view_dict setValue:nil forKey:IDString];
+}
+
+void BIND_PROGRESS_VIEW_WITH_FILE_ID(UIProgressView *progressView, 
+				     NSString *IDString)
+{
+	if (!CHECK_STRING(IDString))
+	{
+		return;
+	}
+	
+	if (nil == gs_progress_view_dict)
+	{
+		gs_progress_view_dict = [[NSMutableDictionary alloc] init];
+	}
+	
+	[gs_progress_view_dict setValue:progressView forKey:IDString];
+}
+

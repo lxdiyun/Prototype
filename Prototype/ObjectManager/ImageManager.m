@@ -72,11 +72,10 @@ DEFINE_SINGLETON(ImageManager);
 
 #pragma mark - create image
 
-+ (void) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target
++ (uint32_t) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target
 {
 	@autoreleasepool 
 	{
-
 		NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
 		
 		UIImage *resizedImage = [image reduceToSize:CGSizeMake(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)];
@@ -91,6 +90,8 @@ DEFINE_SINGLETON(ImageManager);
 		
 		uint32_t messageID = [self createObjectWithHandler:handler andTarget:target];
 		UPLOAD_FILE(imageData, messageID);
+		
+		return messageID;
 	}
 }
 

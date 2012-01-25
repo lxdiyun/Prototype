@@ -82,6 +82,12 @@ static void add_pending_message(NSArray *IDAndBuffer, MESSAGE_PRIORITY priority)
 		}
 
 		[bufferArray addObject:IDAndBuffer];
+		
+		// update upload progress
+		if (priority == BINARY_PRIORITY)
+		{
+			update_upload_progress(ID);
+		}
 	}	
 }
 
@@ -192,9 +198,19 @@ NSData * POP_BUFFER(void)
 
 void CONFIRM_MESSAGE(NSString *ID)
 {
+	if (!CHECK_STRING(ID))
+	{
+		return;
+	}
+
 	for (int i = 0; i < PRIORITY_TYPE_MAX; ++i)
 	{
 		[gs_pending_messages[i] setValue:nil forKey:ID];
+		
+		if (BINARY_PRIORITY == i)
+		{
+			clean_progress(ID);
+		}
 	}
 }
 
@@ -234,5 +250,8 @@ void ROLLBACK_ALL_PENDING_MESSAGE(void)
 	}
 }
 
-#pragma mark - binary Message
+uint32_t pending_message_count(MESSAGE_PRIORITY priority, NSString *ID)
+{
+	return [[gs_pending_messages[priority] valueForKey:ID] count];
+}
 

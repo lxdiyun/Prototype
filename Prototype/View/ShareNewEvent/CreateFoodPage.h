@@ -12,4 +12,5 @@
 @interface CreateFoodPage : UITableViewController 
 - (void) imageUploadCompleted:(id)result;
 - (void) needScrollToBegin;
+- (void) resetImageWithUploadFileID:(uint32_t)fileID;
 @end
