@@ -16,6 +16,8 @@
 #import "CreateFoodFourCount.h"
 #import "ProfileMananger.h"
 #import "LoginManager.h"
+#import "TagSelector.h"
+#import "EventPage.h"
 
 const static CGFloat FONT_SIZE = 15.0;
 
@@ -40,15 +42,15 @@ typedef enum NEW_FOOD_DETAIL_ENUM
 static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"名字：", @"城市：", @"所在地：", @"类型："};
 static UITextField *FOOD_DETAIL_TETX_VIEW[NEW_FOOD_DETAIL_MAX] = {nil};
 static UITextView *FOOD_DESC_TEXT_VIEW = nil;
-
 static UILabel *FOOD_DETAIL_STAR_LABEL[NEW_FOOD_DETAIL_MAX] = {nil};
 static UILabel *FOOD_DESC_STAR_LABEL = nil;
 static CreateFoodImage *CREATE_FOOD_IMAGE_HEADER;
 static CreateFoodFourCount *CREATE_FOOD_FOUR_COUNT_HEADER;
 static TextInputer *FOOD_DESC_INPUTER =  nil;
+static TagSelector *TAG_SELECTOR = nil;
 static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
-@interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, CreateFoodFourCountDelegate>
+@interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, CreateFoodFourCountDelegate, TagSelectorDelegate>
 - (void) updateCity;
 - (BOOL) checkParamsReady;
 - (void) scrollToBegin;
@@ -91,6 +93,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	FOOD_DESC_INPUTER = nil;
 	CREATE_FOOD_FOUR_COUNT_HEADER = nil;
 	FOOD_DESC_STAR_LABEL = nil;
+	TAG_SELECTOR = nil;
 
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"分享" 
 										  style:UIBarButtonItemStyleDone 
@@ -130,6 +133,9 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 	
 	[FOOD_DESC_STAR_LABEL release];
 	FOOD_DESC_STAR_LABEL = nil;
+	
+	[TAG_SELECTOR release];
+	TAG_SELECTOR = nil;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -296,6 +302,7 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 													   0.0, 
 													   self.view.frame.size.width, 
 													   88 * PROPORTION())];
+					FOOD_DESC_TEXT_VIEW.scrollEnabled = NO;
 					FOOD_DESC_TEXT_VIEW.backgroundColor = [UIColor clearColor];
 					FOOD_DESC_TEXT_VIEW.font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
 					FOOD_DESC_TEXT_VIEW.delegate = self;
@@ -390,7 +397,22 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 {
 	switch (indexPath.section) {
 	case FOOD_DESC:
-		return 88 * PROPORTION();
+		{
+			// configure the description cell
+			NSString *descString = FOOD_DESC_TEXT_VIEW.text;
+			CGRect frame = FOOD_DESC_TEXT_VIEW.frame;
+			frame.size.width = FOOD_DESC_TEXT_VIEW.superview.frame.size.width;
+			frame.size.height = FOOD_DESC_TEXT_VIEW.superview.frame.size.height;
+			FOOD_DESC_TEXT_VIEW.frame = frame;
+			FOOD_DESC_TEXT_VIEW.text = descString;
+			
+			frame = FOOD_DESC_TEXT_VIEW.frame;
+			frame.size.height = MAX(FOOD_DESC_TEXT_VIEW.contentSize.height, 88 * PROPORTION());
+			FOOD_DESC_TEXT_VIEW.frame = frame;
+			FOOD_DESC_TEXT_VIEW.text = descString;
+			
+			return frame.size.height;
+		}
 		break;
 
 	default:
@@ -583,6 +605,8 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 		[CREATE_FOOD_IMAGE_HEADER cleanImage];
 
 		[self dismissModalViewControllerAnimated:YES];
+		
+		[EventPage requestUpdate];
 	}
 	
 }
@@ -598,10 +622,9 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 		FOOD_DESC_INPUTER.title = @"美食介绍";
 	}
 	
-	if (0 < FOOD_DESC_TEXT_VIEW.text.length)
-	{
-		FOOD_DESC_INPUTER.text.text = FOOD_DESC_TEXT_VIEW.text;
-	}
+
+	FOOD_DESC_INPUTER.text.text = FOOD_DESC_TEXT_VIEW.text;
+
 	
 	[self.navigationController pushViewController:FOOD_DESC_INPUTER animated:YES];
 }
@@ -655,6 +678,25 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 
 - (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
 {
+	if (FOOD_DETAIL_TETX_VIEW[FOOD_TAG] == textField)
+	{
+		if (0 >= textField.text.length)
+		{
+			if (nil == TAG_SELECTOR)
+			{
+				TAG_SELECTOR = [[TagSelector alloc] init];
+				TAG_SELECTOR.delegate = self;
+			}
+			
+			if (self.navigationController.topViewController != TAG_SELECTOR)
+			{
+				[self.navigationController pushViewController:TAG_SELECTOR animated:YES];
+
+				return NO;
+			}
+		}
+	}
+
 	return YES;
 }
 
@@ -669,7 +711,6 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 {
 	if (FOOD_DESC_TEXT_VIEW == textView)
 	{
-		//[FOOD_DESC_TEXT_VIEW becomeFirstResponder];
 		[self showTextInputer];
 	}
 	
@@ -681,13 +722,16 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 - (void) textDoneWithTextInputer:(TextInputer *)inputer
 {
 	FOOD_DESC_TEXT_VIEW.text = inputer.text.text;
+	inputer.text.text = nil;
 	[self.navigationController popViewControllerAnimated:YES];
+	[self.tableView reloadData];
 	[FOOD_DESC_TEXT_VIEW resignFirstResponder];
 }
 
 - (void) cancelWithTextInputer:(TextInputer *)inputer
 {
 	[self.navigationController popViewControllerAnimated:YES];
+	inputer.text.text = nil;
 	[FOOD_DESC_TEXT_VIEW resignFirstResponder];
 }
 
@@ -696,6 +740,31 @@ static BOOL NEED_SCROOL_TO_BEGIN = NO;
 - (void) fourCountSelected
 {
 	[self updateShareButton];
+}
+
+#pragma mark - TagSelectorDelegate
+
+- (void) focusFoodText
+{	
+	if (![FOOD_DETAIL_TETX_VIEW[FOOD_TAG] isFirstResponder])
+	{
+		[FOOD_DETAIL_TETX_VIEW[FOOD_TAG] becomeFirstResponder];
+	}
+	
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) didSelectTags:(TagSelector *)sender
+{
+	FOOD_DETAIL_TETX_VIEW[FOOD_TAG].text = sender.selctedTags;
+	sender.selctedTags = nil;
+
+	[self focusFoodText];
+}
+
+- (void) cancelSelectTags:(TagSelector *)sender
+{
+	[self focusFoodText];
 }
 
 @end

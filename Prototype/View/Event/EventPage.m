@@ -55,6 +55,12 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 static CGFloat gs_frame_width;
 static CGFloat gs_frame_height;
 
+#pragma mark - singleton
+
+DEFINE_SINGLETON(EventPage);
+
+#pragma mark - lifecycle
+
 - (void) didReceiveMemoryWarning
 {
 	// Releases the view if it doesn't have a superview.
@@ -457,6 +463,13 @@ static UIScrollView *trigerView = nil;
 	{
 		return [NSDate date];
 	}
+}
+
+#pragma mark - class interface
+
++ (void) requestUpdate
+{
+	[[self getInstnace] requestNewerEvent];
 }
 
 @end

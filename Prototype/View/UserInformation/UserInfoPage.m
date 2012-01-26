@@ -279,7 +279,7 @@
 			frame.size.height = self.introduceView.contentSize.height;
 			self.introduceView.frame = frame;
 			
-			return MAX(self.introduceView.frame.size.height, 44*PROPORTION());
+			return MAX(self.introduceView.frame.size.height, 44 * PROPORTION());
 			break;
 		}
 		

@@ -168,7 +168,7 @@ DEFINE_SINGLETON(NetworkService);
 
 	case NSStreamEventHasSpaceAvailable:
 		// LOG(@"Ouput stream is ready");
-		[self performSelector:@selector(writeMessage) withObject:nil afterDelay:0.0];
+		[self writeMessage];
 		break;
 
 	case NSStreamEventErrorOccurred:

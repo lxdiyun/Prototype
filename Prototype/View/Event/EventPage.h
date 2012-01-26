@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface EventPage : UIViewController 
-
++ (void) requestUpdate;
 @end

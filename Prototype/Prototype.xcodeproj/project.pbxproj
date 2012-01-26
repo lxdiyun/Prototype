@@ -83,6 +83,7 @@
 		48E2E20B14C95A6F00223175 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 48E2E20A14C95A6F00223175 /* Icon-72.png */; };
 		48E50D7B14C28EEA0091627F /* MessagePingPong.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E50D7A14C28EEA0091627F /* MessagePingPong.m */; };
 		48E50D7D14C291B70091627F /* MessageJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E50D7C14C291B60091627F /* MessageJson.m */; };
+		48E8ADF414D0F32A00B9882C /* TagSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E8ADF314D0F32A00B9882C /* TagSelector.m */; };
 		48EA6D5A14998A84008AE765 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48EA6D5914998A84008AE765 /* UIKit.framework */; };
 		48EA6D5C14998A84008AE765 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48EA6D5B14998A84008AE765 /* Foundation.framework */; };
 		48EA6D5E14998A84008AE765 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48EA6D5D14998A84008AE765 /* CoreGraphics.framework */; };
@@ -219,6 +220,8 @@
 		48E50D7814C28E8B0091627F /* MessagePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePrivate.h; sourceTree = "<group>"; };
 		48E50D7A14C28EEA0091627F /* MessagePingPong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePingPong.m; sourceTree = "<group>"; };
 		48E50D7C14C291B60091627F /* MessageJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageJson.m; sourceTree = "<group>"; };
+		48E8ADF214D0F32A00B9882C /* TagSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagSelector.h; sourceTree = "<group>"; };
+		48E8ADF314D0F32A00B9882C /* TagSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagSelector.m; sourceTree = "<group>"; };
 		48EA6D5514998A84008AE765 /* 美食玩家_alpha.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "美食玩家_alpha.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48EA6D5914998A84008AE765 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		48EA6D5B14998A84008AE765 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -305,6 +308,8 @@
 				48B0D0AA14C55FC300517100 /* TextInputer.m */,
 				48B0D0B814C56CC400517100 /* TextFieldCell.h */,
 				48B0D0B914C56CC500517100 /* TextFieldCell.m */,
+				48E8ADF214D0F32A00B9882C /* TagSelector.h */,
+				48E8ADF314D0F32A00B9882C /* TagSelector.m */,
 			);
 			name = UtilView;
 			path = View/UtilView;
@@ -690,6 +695,7 @@
 				48C21BE114CC17940025807F /* CreateFoodPage.m in Sources */,
 				48C21BE414CC17FB0025807F /* ShareNewEvent.m in Sources */,
 				4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */,
+				48E8ADF414D0F32A00B9882C /* TagSelector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
