@@ -84,7 +84,9 @@ NSNumber * GET_USER_ID(void);
 void SET_USER_ID(NSNumber *ID);
 
 // sorter
+// hight ID => low ID
 NSInteger ID_SORTER(id ID1, id ID2, void *context);
+// low ID => hight ID
 NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context);
 
 // Network Message

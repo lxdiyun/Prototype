@@ -70,10 +70,9 @@
 
 #pragma mark - save and restore
 + (void) saveTo:(NSMutableDictionary *)dict
-
 {
 	[dict setObject:[[self getInstnace] objectDict] 
-		 forKey:[self description]];
+		 forKey:[self description]];;
 }
 
 + (void) restoreFrom:(NSDictionary *)dict

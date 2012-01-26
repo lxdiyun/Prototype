@@ -10,8 +10,6 @@
 #import "ImageManager.h"
 #import "ProfileMananger.h"
 
-const static uint16_t EVENT_SAVE_TO_CACHE = 20;
-
 static NSString *gs_fakeListtID = nil;
 
 @implementation EventManager
@@ -149,24 +147,5 @@ DEFINE_SINGLETON(EventManager);
 {
 	// do nothing
 }
-
-#pragma mark - overwrite save and restore
-
-+ (void) saveTo:(NSMutableDictionary *)dict;
-{
-	NSMutableDictionary *topEvent = [[NSMutableDictionary alloc] init];
-	NSArray *keyArray = [self keyArrayForList:gs_fakeListtID];
-	
-	for (int i = 0; (i < EVENT_SAVE_TO_CACHE) && i < keyArray.count; ++i)
-	{
-		NSString *key = [keyArray objectAtIndex:i];
-		[topEvent setValue:[[[self getInstnace] objectDict] valueForKey:key] forKey:key];
-	}
-	
-	[dict setObject:topEvent forKey:[self description]];
-	
-	[topEvent release];
-}
-
 
 @end

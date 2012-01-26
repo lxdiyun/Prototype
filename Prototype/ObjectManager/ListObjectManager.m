@@ -9,6 +9,9 @@
 #import "Message.h"
 #import "ImageManager.h"
 
+// object Manager
+const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
+
 // Auxiliary class
 @interface Handler : NSObject
 @property (assign) LIST_OBJECT_MESSAGE_TYPE type;
@@ -89,9 +92,29 @@
 #pragma mark - save and restore
 
 + (void) saveTo:(NSMutableDictionary *)dict;
-{
-	[dict setObject:[[self getInstnace] objectDict] 
-	 forKey:[self description]];
+{	
+	NSDictionary *allObject = [[self getInstnace] objectDict];
+	NSMutableDictionary *topAllObject = [[NSMutableDictionary alloc] init];
+	
+	for (NSString *listID in [allObject allKeys])
+	{
+		NSMutableDictionary *topObject = [[NSMutableDictionary alloc] init];
+		NSDictionary *listObjectDict = [allObject valueForKey:listID];
+		NSArray *keyArray = [self keyArrayForList:listID];
+		
+		for (int i = 0; (i < OBJECT_SAVE_TO_CACHE) && i < keyArray.count; ++i)
+		{
+			NSString *key = [keyArray objectAtIndex:i];
+			[topObject setValue:[listObjectDict valueForKey:key] forKey:key];
+		}
+		
+		[topAllObject setValue:topObject forKey:listID];
+		
+		[topObject release];
+	}
+
+	[dict setObject:topAllObject forKey:[self description]];
+	[topAllObject release];
 }
 
 + (void) restoreFrom:(NSMutableDictionary *)dict
