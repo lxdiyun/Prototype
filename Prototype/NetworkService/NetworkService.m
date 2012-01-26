@@ -16,7 +16,7 @@
 {
 	NSInputStream *_inputStream;
 	NSOutputStream *_outputStream;
-
+	
 	BOOL _isWriting;
 	BOOL _outputStreamRest;
 	BOOL _inputStreamRest;
@@ -68,19 +68,19 @@ DEFINE_SINGLETON(NetworkService);
 		
 		[self connect];
 	}
-
+	
 	return self;
 }
 
 - (void) dealloc 
 {
-
+	
 	[self closeStream];
-
+	
 	// release object
 	self.inputStream = nil;
 	self.outputStream = nil;
-
+	
 	[super dealloc];
 }
 
@@ -89,23 +89,23 @@ DEFINE_SINGLETON(NetworkService);
 - (void) connect 
 {
 	[self closeStream];
-
+	
 	CFReadStreamRef readStream;
 	CFWriteStreamRef writeStream;
 	// TODO: replace the network host address
 	CFStreamCreatePairWithSocketToHost(NULL, 
 					   (CFStringRef)@"175.156.203.104", 
 					   4040, 
-//					   (CFStringRef)@"192.168.2.107",
-//					   8080,
+					   //					   (CFStringRef)@"192.168.2.107",
+					   //					   8080,
 					   &readStream, 
 					   &writeStream);
 	self.inputStream = (NSInputStream *)readStream;
 	self.outputStream = (NSOutputStream *)writeStream;
-
+	
 	[self.inputStream setDelegate:self];
 	[self.outputStream setDelegate:self];
-
+	
 	// change runloop mode to default if gui interaction is more importang
 	// don't forget the close method
 	[self.inputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] 
@@ -153,35 +153,36 @@ DEFINE_SINGLETON(NetworkService);
 	// TODO remove log
 	switch (streamEvent) 
 	{
-	case NSStreamEventOpenCompleted:
-		// LOG(@"Stream opened");
-		if (theStream == self.outputStream)
-		{
-			[LoginManager request];
-		}
-		break;
-
-	case NSStreamEventHasBytesAvailable:
-		// LOG(@"Input Stream ready");
-		[self readMessage];
-		break;
-
-	case NSStreamEventHasSpaceAvailable:
-		// LOG(@"Ouput stream is ready");
-		[self writeMessage];
-		break;
-
-	case NSStreamEventErrorOccurred:
-		LOG(@"Error Can not connect to the host!");
-		[self connectionRest];
-		break;
-
-	case NSStreamEventEndEncountered:
-		LOG(@"Error No buffer left to read!");
-		break;
-
-	default:
-		LOG(@"Error Unknown event %i", streamEvent);
+		case NSStreamEventOpenCompleted:
+			// LOG(@"Stream opened");
+			if (theStream == self.outputStream)
+			{
+				[LoginManager request];
+			}
+			break;
+			
+		case NSStreamEventHasBytesAvailable:
+			// LOG(@"Input Stream ready");
+			[self readMessage];
+			break;
+			
+		case NSStreamEventHasSpaceAvailable:
+			// LOG(@"Ouput stream is ready");			
+			// only 0.001 sencond per time to write. will not block the ui event
+			[self performSelector:@selector(writeMessage) withObject:nil afterDelay:0.001];
+			break;
+			
+		case NSStreamEventErrorOccurred:
+			LOG(@"Error Can not connect to the host!");
+			[self connectionRest];
+			break;
+			
+		case NSStreamEventEndEncountered:
+			LOG(@"Error No buffer left to read!");
+			break;
+			
+		default:
+			LOG(@"Error Unknown event %i", streamEvent);
 	}
 }
 
@@ -195,10 +196,10 @@ DEFINE_SINGLETON(NetworkService);
 		{
 			return;
 		}
-
+		
 		self.isWriting = YES;
 	}
-
+	
 	static uint32_t s_offset;
 	static uint32_t s_bufferLength = 0;
 	static NSData *s_buffer;
@@ -210,11 +211,11 @@ DEFINE_SINGLETON(NetworkService);
 		
 		self.outputStreamRest = NO;
 	}
-
+	
 	if (0 == s_bufferLength)
 	{
 		s_buffer = POP_BUFFER();
-
+		
 		if (nil == s_buffer)
 		{
 			// have no buffer to write, just reutun
@@ -222,25 +223,25 @@ DEFINE_SINGLETON(NetworkService);
 			
 			return;
 		}
-
+		
 		s_bufferLength = s_buffer.length;
 		s_offset = 0;
 	}
-
+	
 	if (0 < s_bufferLength)
 	{
 		uint32_t actuallyWritten = 0;
 		actuallyWritten = [self.outputStream write:s_buffer.bytes + s_offset
 						 maxLength:s_bufferLength];
 		s_offset += actuallyWritten;
-
+		
 		if ((s_offset >= s_bufferLength))
 		{
 			s_bufferLength = 0;
 			s_offset = 0;
 		}
 	}
-
+	
 	self.isWriting = NO;
 }
 
@@ -252,7 +253,7 @@ DEFINE_SINGLETON(NetworkService);
 	static uint32_t s_currentMessageLefted  = 0;
 	static uint32_t s_offset = 0;
 	static NSMutableData *s_bufferData = nil;
-
+	
 	if (self.inputStreamRest)
 	{
 		s_currentMessageLefted = 0;
@@ -262,22 +263,22 @@ DEFINE_SINGLETON(NetworkService);
 	}
 	
 	START_NETWORK_INDICATOR();
-
+	
 	int actuallyReaded = [self.inputStream read:s_buffer + s_offset
 					  maxLength:sizeof(s_buffer) - s_offset];
 	STOP_NETWORK_INDICATOR();
-
+	
 	if ( 0 > actuallyReaded)
 	{
 		LOG(@"Error read input stream error with %d", actuallyReaded);
 	}
-
+	
 	while (0 < actuallyReaded)
 	{
 		if (0 == s_currentMessageLefted)
 		{
 			assert(nil == s_bufferData);
-
+			
 			if (HEADER_SIZE <= (actuallyReaded + s_offset))
 			{
 				// readed buffer is longer than header
@@ -290,11 +291,11 @@ DEFINE_SINGLETON(NetworkService);
 			{
 				// readed buffer is shorter than header
 				s_offset += actuallyReaded;
-
+				
 				return;
 			}
 		}
-
+		
 		if (s_currentMessageLefted > actuallyReaded)
 		{
 			// message still not read complete
@@ -309,14 +310,14 @@ DEFINE_SINGLETON(NetworkService);
 			HANDLE_MESSAGE(s_bufferData);
 			[s_bufferData release];
 			s_bufferData = nil;
-
+			
 			// move the buffer left from tail to head if needed
 			uint32_t bufferLeft  = actuallyReaded - s_currentMessageLefted;
 			if (0 < bufferLeft)
 			{
 				memmove(s_buffer, (s_buffer + s_currentMessageLefted), bufferLeft);
 			}
-
+			
 			actuallyReaded = bufferLeft;
 			s_currentMessageLefted = 0;
 		}

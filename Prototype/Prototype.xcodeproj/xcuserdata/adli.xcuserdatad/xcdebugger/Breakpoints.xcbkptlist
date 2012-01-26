@@ -147,11 +147,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "348981038.179406"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "604"
-         endingLineNumber = "604"
+         startingLineNumber = "605"
+         endingLineNumber = "605"
          landmarkName = "+requestOlderWithListID:andCount:withHandler:andTarget:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -161,11 +161,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "348981038.179406"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "607"
-         endingLineNumber = "607"
+         startingLineNumber = "608"
+         endingLineNumber = "608"
          landmarkName = "+requestOlderWithListID:andCount:withHandler:andTarget:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -175,11 +175,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "348981038.179406"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "698"
-         endingLineNumber = "698"
+         startingLineNumber = "699"
+         endingLineNumber = "699"
          landmarkName = "+requestCreateWithListID:withHandler:andTarget:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -189,11 +189,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "348981038.179406"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "692"
-         endingLineNumber = "692"
+         startingLineNumber = "693"
+         endingLineNumber = "693"
          landmarkName = "+requestCreateWithListID:withHandler:andTarget:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -283,11 +283,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/EventManager.m"
-         timestampString = "348979940.140218"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "98"
-         endingLineNumber = "98"
+         startingLineNumber = "100"
+         endingLineNumber = "100"
          landmarkName = "-getMethodHandler:withListID:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -297,11 +297,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "348981038.179406"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "414"
-         endingLineNumber = "414"
+         startingLineNumber = "415"
+         endingLineNumber = "415"
          landmarkName = "-getMethodHandler:withListID:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -311,11 +311,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "348981038.179406"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "408"
-         endingLineNumber = "408"
+         startingLineNumber = "409"
+         endingLineNumber = "409"
          landmarkName = "-getMethodHandler:withListID:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -325,11 +325,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "348981038.179406"
+         timestampString = "349274768.037008"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "410"
-         endingLineNumber = "410"
+         startingLineNumber = "411"
+         endingLineNumber = "411"
          landmarkName = "-getMethodHandler:withListID:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -416,6 +416,20 @@
          endingLineNumber = "693"
          landmarkName = "-textFieldShouldBeginEditing:"
          landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "NetworkService/MessageBinary.m"
+         timestampString = "349264366.493841"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "83"
+         endingLineNumber = "83"
+         landmarkName = "UPLOAD_FILE()"
+         landmarkType = "7">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

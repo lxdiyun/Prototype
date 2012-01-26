@@ -87,6 +87,7 @@
 }
 
 #pragma mark - save and restore
+
 + (void) saveTo:(NSMutableDictionary *)dict;
 {
 	[dict setObject:[[self getInstnace] objectDict] 

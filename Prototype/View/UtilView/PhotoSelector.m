@@ -151,11 +151,13 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 {	
 	self.selectedImage = [info valueForKey:UIImagePickerControllerOriginalImage];
 	
-	// release the picker or will receive mermory warning
-	self.imagePickerController = nil;
-	
 	[self.delegate dismissSelector:self];
+
+	// release the picker or will receive mermory warning
+	self.imagePickerController = nil;	
 	
+	
+	// need to wait to let the view to dismiss, otherwise the ui will block
 	[self.delegate performSelector:@selector(didSelectPhotoWithSelector:) 
 			    withObject:self
 			    afterDelay:1.0];

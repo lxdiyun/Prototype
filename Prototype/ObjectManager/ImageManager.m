@@ -98,6 +98,7 @@ DEFINE_SINGLETON(ImageManager);
 #pragma mark - overwrite super class method
 
 #pragma mark - overwrite save and restore
+
 + (void) saveTo:(NSMutableDictionary *)dict
 {
 	[super saveTo:dict];
