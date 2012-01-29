@@ -18,32 +18,46 @@
 #import "PhotoSelector.h"
 #import "ImageManager.h"
 
-@interface  UserInfoPage   () <UITableViewDelegate, PhototSelectorDelegate>
+const static CGFloat FONT_SIZE = 15.0;
+
+typedef enum USER_INFO_SECTION_ENUM
 {
-@private
-	NSArray *_userInfoArray;
-	UITextView *_introduceView;
-	BOOL _cellChanged;
+	USER_DETAIL = 0x0,
+	USER_AVATOR = 0x1,
+	USER_INTRO = 0x2,
+	USER_INFO_SECTION_MAX
+} USER_INFO_SECTION;
+
+typedef enum USER_DETAIL_ENUM
+{
+	USER_NAME = 0x0,
+	USER_PLACE = 0x1,
+	USER_DETAIL_MAX
+} USER_DETAIL_TYPE;
+
+static NSString *USER_DETAIL_TITLE[USER_DETAIL_MAX] = {@"名字：", @"所在地："};
+static NSString *USER_AVATOR_TITLE = @"头像：";
+static NSString *USER_INTRO_TITLE = @"个人介绍";
+
+@interface  UserInfoPage   () <UITableViewDelegate, UITextFieldDelegate, PhototSelectorDelegate, UITextViewDelegate>
+{
 	NSNumber *_avatorID;
 	PhotoSelector *_photoSelector;
+	UITextView *_introduceView;
+	UITextField *_userDetailTextView[USER_DETAIL_MAX];
 }
 
-@property (strong) NSArray *userInfoArray;
 @property (strong) UITextView *introduceView;
 @property (assign) BOOL cellChanged;
 @property (strong) NSNumber *avatorID;
 @property (strong) PhotoSelector *photoSelector;
 
-- (void)initViewDisplay;
-- (void)initUserInfo;
+- (void) initViewDisplay;
 - (void) sendUserInfoRequest;
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (void)refreshTableView;
 @end
 
 @implementation UserInfoPage
 
-@synthesize userInfoArray = _userInfoArray;
 @synthesize introduceView = _introduceView;
 @synthesize cellChanged = _cellChanged;
 @synthesize avatorID = _avatorID;
@@ -70,7 +84,6 @@
 
 - (void) dealloc
 {	
-	[_userInfoArray release];
 	[_introduceView release];
 	[_avatorID release];
 	
@@ -84,12 +97,13 @@
 	[super viewDidLoad];
 
 	[self initViewDisplay];
-
-	[self initUserInfo];
-	
-	[self sendUserInfoRequest];
 	
 	self.cellChanged = YES;
+	
+	for (int i = 0; i < USER_DETAIL_MAX; ++i)
+	{
+		_userDetailTextView[i] = nil;
+	}
 
 	// Uncomment the following line to preserve selection between presentations.
 	// self.clearsSelectionOnViewWillAppear = NO;
@@ -108,24 +122,18 @@
 	}
 }
 
-- (void) initUserInfo
-{
-	@autoreleasepool 
-	{
-		self.userInfoArray = [NSArray arrayWithObjects:
-				      [NSArray arrayWithObjects:@"个人信息", @"姓名：", @"所在地：", nil],
-				      [NSArray arrayWithObjects:@"头像", @"头像", nil],
-				      [NSArray arrayWithObjects:@"个人介绍", @"", nil],
-				      nil];
-	}
-}
-
 - (void) viewDidUnload
 {
-	self.userInfoArray = nil;
+
 	self.introduceView = nil;
 	self.avatorID = nil;
 	self.photoSelector = nil;
+	
+	for (int i = 0; i < USER_DETAIL_MAX; ++i)
+	{
+		[_userDetailTextView[i] release];
+		_userDetailTextView[i] = nil;
+	}
 	
 	[super viewDidUnload];
 }
@@ -138,6 +146,8 @@
 - (void) viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
+	
+	[self sendUserInfoRequest];
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -160,126 +170,144 @@
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return self.userInfoArray.count;
-}
-
-- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	// first element is for sectoin title
-	// hide for first two section user name city and avator
-	if((section == 0) || (section == 1)) 
-	{
-		return nil;
-	}
-	
-	return [[self.userInfoArray objectAtIndex:section] objectAtIndex:0];
+	return USER_INFO_SECTION_MAX;
 }
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	// Return the number of rows in the section.
-	// decrease one for section title
-	return ([[self.userInfoArray objectAtIndex:section] count] - 1);
+	switch (section) 
+	{
+		case USER_DETAIL:
+			return USER_DETAIL_MAX;
+		default:
+			return 1;
+	}
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (1 == indexPath.section)
+	switch (indexPath.section) 
 	{
-		static NSString *cellType = @"AvatorCell";
-		
-		AvatorCell *cell = [tableView dequeueReusableCellWithIdentifier:cellType];
-		if (cell == nil) 
+	case USER_DETAIL:
 		{
-			cell = [[[AvatorCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellType] autorelease];
-			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44*PROPORTION());
-			[cell redraw];
-		}
-
-		if (nil != self.avatorID)
-		{
-			cell.avatorImageV.picID = self.avatorID;
-		}
-		
-		return cell;
-	}
-	
-	NSString *CellIdentifier = [[self.userInfoArray objectAtIndex:indexPath.section] objectAtIndex:0];
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	
-	if (cell == nil) 
-	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		if (2 == indexPath.section)
-		{
-			UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
-			self.introduceView = textView;
-
-			[cell.contentView addSubview:self.introduceView];
+			NSString *cellType = USER_DETAIL_TITLE[indexPath.row];
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellType];
 			
-			[textView release];
+			if (nil == cell)
+			{
+				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 
+							       reuseIdentifier:cellType] autorelease];
+				cell.textLabel.textColor = [Color grey2Color];
+				cell.textLabel.font = [UIFont systemFontOfSize:13.0 * PROPORTION()];
+				cell.textLabel.text = USER_DETAIL_TITLE[indexPath.row];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				
+				if (nil == _userDetailTextView[indexPath.row])
+				{
+					CGFloat X = 75.0;
+					CGFloat Y = 0.0;
+					CGFloat width = (cell.contentView.frame.size.width - X) * PROPORTION();
+					CGFloat height = 44 * PROPORTION();
+					_userDetailTextView[indexPath.row] = [[UITextField alloc] initWithFrame:CGRectMake(X, 
+																Y, 
+																width, 
+																height)];
+					_userDetailTextView[indexPath.row].center = CGPointMake(_userDetailTextView[indexPath.row].center.x, cell.center.y);
+					_userDetailTextView[indexPath.row].font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+					_userDetailTextView[indexPath.row].delegate = self;
+					_userDetailTextView[indexPath.row].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+					_userDetailTextView[indexPath.row].returnKeyType = UIReturnKeyNext;
+				}
+				
+				[cell.contentView addSubview:_userDetailTextView[indexPath.row]];
+			}
+
+			return cell;
 		}
-	}
-
-	// Configure the cell...
-
-	if (YES == self.cellChanged)
-	{
-		[self configureCell:cell atIndexPath:indexPath];
-	}
-	
-	return cell;
-}
-
-- (void) configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-	switch (indexPath.section)
-	{
-			
-	case 2:
+			break;
+		case USER_AVATOR:
 		{
-			cell.textLabel.enabled =  NO;
-			cell.textLabel.hidden = YES;
+			AvatorCell *cell = [tableView dequeueReusableCellWithIdentifier:USER_AVATOR_TITLE];
 			
-			self.cellChanged = NO;
+			if (cell == nil) 
+			{
+				cell = [[[AvatorCell alloc] initWithStyle:UITableViewCellStyleValue2 
+							  reuseIdentifier:USER_AVATOR_TITLE] autorelease];
+				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44 * PROPORTION());
+				[cell redraw];
+				cell.textLabel.textColor = [Color grey2Color];
+				cell.textLabel.font = [UIFont systemFontOfSize:13.0 * PROPORTION()];
+				cell.textLabel.text = USER_AVATOR_TITLE;
+			}
+			
+			if (nil != self.avatorID)
+			{
+				cell.avatorImageV.picID = self.avatorID;
+			}
+			
+			return cell;
+		}
+			break;
+		case USER_INTRO:
+		{
+			NSString *CellIdentifier = @"UserIntro";
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+			
+			if (nil == cell) 
+			{
+				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+							       reuseIdentifier:CellIdentifier] autorelease];
+				
+				if (nil == self.introduceView)
+				{
+					UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
+
+					textView = [[UITextView alloc] initWithFrame:CGRectMake(0.0, 
+												0.0, 
+												cell.contentView.frame.size.width, 
+												88 * PROPORTION())];
+					textView.scrollEnabled = NO;
+					textView.backgroundColor = [UIColor clearColor];
+					textView.font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+					textView.delegate = self;
+					
+					self.introduceView = textView;
+										
+					[textView release];
+				}
+				
+				[cell.contentView addSubview:self.introduceView];
+			}
+			
+			
+			
+			return cell;
 		}
 			break;
 	default:
-			cell.textLabel.text = [[self.userInfoArray objectAtIndex:
-						indexPath.section] 
-					       objectAtIndex:(indexPath.row + 1)];
-			break;
+		return nil;
 	}
-
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  
 { 
 	switch (indexPath.section)
 	{
-	case 2:
+	case USER_INTRO:
 		{
-			NSString *string = [[self.userInfoArray objectAtIndex:indexPath.section]
-					    objectAtIndex:1];
-			
-			CGRect rect = CGRectMake(0, 
-						 0, 
-						 self.introduceView.superview.frame.size.width, 
-						 self.introduceView.superview.frame.size.height);
-			
-			// configure text view display
-			self.introduceView.frame = rect;
-			self.introduceView.font = [UIFont boldSystemFontOfSize:17.0 * PROPORTION()];
-			self.introduceView.userInteractionEnabled = NO;
-			self.introduceView.editable = NO;
-			self.introduceView.scrollEnabled = NO;
-			self.introduceView.backgroundColor = [UIColor clearColor];
-			self.introduceView.text = string;
-			
+			NSString *descString = self.introduceView.text;
 			CGRect frame = self.introduceView.frame;
-			frame.size.height = self.introduceView.contentSize.height;
+			frame.size.width = self.introduceView.superview.frame.size.width;
+			frame.size.height = self.introduceView.superview.frame.size.height;
 			self.introduceView.frame = frame;
+			self.introduceView.text = descString;
 			
-			return MAX(self.introduceView.frame.size.height, 44 * PROPORTION());
+			frame = self.introduceView.frame;
+			frame.size.height = MAX(self.introduceView.contentSize.height, 88 * PROPORTION());
+			self.introduceView.frame = frame;
+			self.introduceView.text = descString;
+			
+			return frame.size.height;
 			break;
 		}
 		
@@ -292,50 +320,23 @@
 
 }
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
- {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
- }   
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }   
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
- {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
 #pragma mark - Table view delegate
+
+- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
+{
+	switch (section)
+	{
+	case USER_INTRO:
+		return USER_INTRO_TITLE;
+		break;
+	default:
+		return nil;
+	}
+}
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (indexPath.section == 1)
+	if (indexPath.section == USER_AVATOR)
 	{
 		self.photoSelector.delegate = self;
 		[self.photoSelector.actionSheet showInView:self.view];
@@ -346,7 +347,7 @@
 // did not provide selectable cell
 -(NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (indexPath.section == 1)
+	if (indexPath.section == USER_AVATOR)
 	{
 		return indexPath;
 	}
@@ -365,24 +366,17 @@
 	
 	if (nil != userProfile)
 	{		
-		NSString *userName = [NSString stringWithFormat:@"姓名：%@", [userProfile valueForKey:@"nick"]];
-		NSString *city = [NSString stringWithFormat:@"所在地：%@", [userProfile valueForKey:@"city"]];
-		
 		NSString *introduceString = [userProfile valueForKey:@"intro"];
 		
-		LOG(@"%@", userProfile);
-		
-		self.userInfoArray = [NSArray arrayWithObjects:
-				      [NSArray arrayWithObjects:@"个人信息", userName, city, nil],
-				      [NSArray arrayWithObjects:@"头像", @"头像", nil],
-				      [NSArray arrayWithObjects:@"个人介绍", introduceString, nil],
-				      nil];
+		_userDetailTextView[USER_NAME].text = [userProfile valueForKey:@"nick"];
+		_userDetailTextView[USER_PLACE].text = [userProfile valueForKey:@"city"];
+		_introduceView.text = introduceString;
 		
 		self.avatorID = [userProfile valueForKey:@"avatar"];
 		
 		self.cellChanged = YES;
 		
-		[self refreshTableView];
+		[self.tableView reloadData];
 	}
 	else
 	{
@@ -406,20 +400,11 @@
 	[loginUserID release];
 }
 
-- (void)refreshTableView
-{	
-	if (YES == [self.view isKindOfClass:[UITableView class]])
-	{
-		[(UITableView *)self.view reloadData];
-	}
-}
-
 #pragma mark - PhototSelectorDelegate
 
 - (void) uploadImageHandler:(id)result
 {
 	self.avatorID = [[result valueForKey:@"result"] valueForKey:@"id"];
-	[self refreshTableView];
 }
 
 - (void) dismissSelector:(PhotoSelector *)selector
@@ -442,7 +427,7 @@
 	selector.selectedImage = nil;
 }
 
-
+#pragma mark - UITextFieldDelegate
 
 @end
 

@@ -70,22 +70,18 @@ void STOP_NETWORK_INDICATOR(void)
 
 CGFloat SCALE(void)
 {
-	static CGFloat s_sclae = 0;
-	
-	if (0.1 >= s_sclae)
+	CGFloat sclae = 0;
+
+	if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
 	{
-	
-		if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
-		{
-			s_sclae = [[UIScreen mainScreen] scale];
-		}
-		else
-		{
-			s_sclae = 1.0;
-		}
+		sclae = [[UIScreen mainScreen] scale];
+	}
+	else
+	{
+		sclae = 1.0;
 	}
 	
-	return s_sclae;
+	return sclae;
 }
 
 CGFloat PROPORTION(void)

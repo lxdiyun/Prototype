@@ -127,9 +127,10 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 				self.imagePickerController = [[[UIImagePickerController alloc] init] autorelease];
 			}
 		}
-		self.imagePickerController.sourceType = sourceType;
 
+		self.imagePickerController.sourceType = sourceType;
 		self.imagePickerController.delegate = self;
+
 		[self.delegate showModalView:self.imagePickerController];
 	}
 }
@@ -166,6 +167,9 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 - (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker 
 {
 	[self.delegate dismissSelector:self];
+	
+	// release the picker or will receive mermory warning
+	self.imagePickerController = nil;
 }
 
 @end

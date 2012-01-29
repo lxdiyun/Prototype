@@ -230,11 +230,14 @@ static CGFloat gs_txtPostContentHeight = 0;
 		keyboardHeight = keyboardRect.size.width;
 	}
 
-	gs_txtPostContentHeight= self.text.bounds.size.height;
+	if (0 == gs_txtPostContentHeight)
+	{
+		gs_txtPostContentHeight = self.text.bounds.size.height;
+	}
 
 	CGRect frame = self.text.frame;
 
-	frame.size.height -= keyboardHeight;
+	frame.size.height = gs_txtPostContentHeight - keyboardHeight;
 	
 	self.text.frame = frame;
 }
@@ -244,6 +247,7 @@ static CGFloat gs_txtPostContentHeight = 0;
 	NSDictionary *userInfo = [notif userInfo];
 	CGRect frame = self.text.frame;
 	frame.size.height = gs_txtPostContentHeight;
+	gs_txtPostContentHeight = 0;
 	NSValue *animationDurationValue = [userInfo valueForKey:@"UIKeyboardAnimationDurationUserInfoKey"];
 	NSTimeInterval animationDuration;
 	[animationDurationValue getValue:&animationDuration];

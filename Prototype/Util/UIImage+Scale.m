@@ -9,41 +9,29 @@
 #import "UIImage+Scale.h"
 
 #include <math.h>
-static inline double radians (double degrees) {return degrees * M_PI/180;}
+static inline double radians (double degrees) {return degrees * M_PI / 180;}
 
 @implementation UIImage (Scale)
 
 - (BOOL) checkBeforeScale:(CGSize)targetSize
 {
 	UIImage* sourceImage = self; 
-	CGSize size = sourceImage.size;
+	CGFloat orginMAXLength = MAX(sourceImage.size.width, sourceImage.size.height);
+	CGFloat orginMINLength = MIN(sourceImage.size.width, sourceImage.size.height);
+	CGFloat targetMAXLength = MAX(targetSize.width, targetSize.height);
+	CGFloat targetMINLength = MIN(targetSize.width, targetSize.height);
 	
-	if (sourceImage.imageOrientation == UIImageOrientationUp || 
-	    sourceImage.imageOrientation == UIImageOrientationDown)
+	if (targetMAXLength < orginMAXLength) 
 	{
-		if ((size.width > targetSize.width) || (size.height > targetSize.height))
-		{
-			return YES;
-		}
-		else
-		{
-			return NO;
-		}
-	}
-	else if (sourceImage.imageOrientation == UIImageOrientationLeft || 
-		 sourceImage.imageOrientation == UIImageOrientationRight)
-	{
-		if ((size.width > targetSize.height) || (size.height > targetSize.width))
-		{
-			return YES;
-		}
-		else
-		{
-			return NO;
-		}
+		return YES;
 	}
 	
-	return YES;
+	if (targetMINLength < orginMINLength)
+	{
+		return YES;
+	}
+	
+	return NO;
 }
 
 - (UIImage *) imageByScalingToSize:(CGSize)targetSize
@@ -51,7 +39,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
         UIImage* sourceImage = self; 
         CGFloat targetWidth = targetSize.width;
-        CGFloat targetHeight = 0.0;
+        CGFloat targetHeight =targetSize.height;
 	CGFloat ratio = 1.0;
 	
         CGImageRef imageRef = [sourceImage CGImage];
@@ -67,17 +55,32 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 	
         if (sourceImage.imageOrientation == UIImageOrientationUp || sourceImage.imageOrientation == UIImageOrientationDown) 
 	{
+		// image in horizontal
+
+		if (targetWidth < targetHeight)
+		{
+			targetWidth = targetSize.height;
+			targetHeight = targetSize.width;
+		}
+
 		ratio =  targetWidth / self.size.width;
 		targetHeight = self.size.height * ratio;
-                bitmap = CGBitmapContextCreate(NULL, targetWidth, targetHeight, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
 		
+                bitmap = CGBitmapContextCreate(NULL, targetWidth, targetHeight, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
         } 
 	else 
 	{
-		ratio =  targetWidth / self.size.height;
-		targetHeight = self.size.width * ratio;
-                bitmap = CGBitmapContextCreate(NULL, targetHeight, targetWidth, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
+		// image in vertical
+		if (targetWidth > targetHeight)
+		{
+			targetWidth = targetSize.height;
+			targetHeight = targetSize.width;
+		}
+
+		ratio =  targetWidth / self.size.width;
+		targetHeight = self.size.height * ratio;
 		
+                bitmap = CGBitmapContextCreate(NULL, targetWidth, targetHeight, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
         }       
 	
         if (sourceImage.imageOrientation == UIImageOrientationLeft) 
