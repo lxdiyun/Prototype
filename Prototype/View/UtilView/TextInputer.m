@@ -124,7 +124,6 @@ const static CGFloat FONT_SIZE = 15.0;
 
 - (void) loadView
 {
-	[self redraw];
 }
 
 - (void) viewWillAppear:(BOOL)animated

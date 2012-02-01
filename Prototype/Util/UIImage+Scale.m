@@ -39,7 +39,7 @@ static inline double radians (double degrees) {return degrees * M_PI / 180;}
 
         UIImage* sourceImage = self; 
         CGFloat targetWidth = targetSize.width;
-        CGFloat targetHeight =targetSize.height;
+        CGFloat targetHeight = targetSize.height;
 	CGFloat ratio = 1.0;
 	
         CGImageRef imageRef = [sourceImage CGImage];
@@ -60,7 +60,6 @@ static inline double radians (double degrees) {return degrees * M_PI / 180;}
 		if (targetWidth < targetHeight)
 		{
 			targetWidth = targetSize.height;
-			targetHeight = targetSize.width;
 		}
 
 		ratio =  targetWidth / self.size.width;
@@ -74,7 +73,6 @@ static inline double radians (double degrees) {return degrees * M_PI / 180;}
 		if (targetWidth > targetHeight)
 		{
 			targetWidth = targetSize.height;
-			targetHeight = targetSize.width;
 		}
 
 		ratio =  targetWidth / self.size.width;

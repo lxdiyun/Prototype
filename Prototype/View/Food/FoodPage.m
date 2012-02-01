@@ -484,6 +484,7 @@ static int32_t s_lastCommentArrayCount = -1;
 		{
 			self.inputer = [[[TextInputer alloc] init] autorelease];
 			self.inputer.delegate = self;
+			[self.inputer redraw];
 		}
 		
 		if (nil == self.navco)

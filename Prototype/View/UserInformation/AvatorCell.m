@@ -13,6 +13,7 @@
 @interface AvatorCell () 
 {
 	ImageV *_avatorImageV;
+	UIProgressView *_progressBar;
 	
 	CGFloat _imageSize;
 	CGFloat _labelWidth;
@@ -24,6 +25,7 @@
 @implementation AvatorCell
 
 @synthesize avatorImageV = _avatorImageV;
+@synthesize progressBar = _progressBar;
 
 - (void) calculateSize
 {
@@ -55,9 +57,40 @@
 	}
 }
 
+- (void) showProgressBar
+{
+	@autoreleasepool 
+	{
+		[self hideProgressBar];
+		
+		CGFloat X = 80.0;
+		CGFloat Y = 0.0;
+		CGFloat W = self.contentView.frame.size.width - X - 10.0;
+		CGFloat H = self.contentView.frame.size.height;
+		
+		self.progressBar = [[[UIProgressView alloc] initWithFrame:CGRectMake(X, Y, W, H)] autorelease];
+
+		CGPoint center = self.progressBar.center;
+		center.y = self.contentView.center.y;
+		self.progressBar.center = center;
+		
+		[self.contentView addSubview:self.progressBar];
+	}
+}
+- (void) hideProgressBar
+{
+	if (nil != self.progressBar)
+	{
+		[self.progressBar removeFromSuperview];
+		self.progressBar = nil;
+	}
+}
+
 - (void) dealloc 
 {
 	[self setAvatorImageV:nil];
+	[self setProgressBar:nil];
+
 	[super dealloc];
 }
 

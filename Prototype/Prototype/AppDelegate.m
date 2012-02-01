@@ -28,15 +28,13 @@ static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"通知", 
 static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"Notice.png", @"Share.png", @"PrivateMessage.png", @"More.png"};
 static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 
 static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
+static UIViewController *gs_currentViewController;
 
 
 @interface AppDelegate () <UITabBarControllerDelegate>
 {
-@private
 	UITabBarController *_tabco;
-	
 }
-
 @property (strong, nonatomic) UITabBarController *tabco;
 @end
 
@@ -117,6 +115,8 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 	self.tabco = tabBarController;
 	self.tabco.delegate = self;
 	
+	gs_currentViewController = self.tabco;
+	
 	[[[self.tabco.viewControllers objectAtIndex:1] tabBarItem] setBadgeValue:@"2"];
 
 	[self.window addSubview:self.tabco.view];
@@ -179,6 +179,13 @@ static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 	{
 		return YES;
 	}
+}
+
+#pragma mark - class interface
+
++ (UIViewController *) currentViewController
+{
+	return gs_currentViewController;
 }
 
 @end

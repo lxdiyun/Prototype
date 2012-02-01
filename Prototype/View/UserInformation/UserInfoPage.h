@@ -10,4 +10,6 @@
 
 @interface UserInfoPage : UITableViewController
 
++ (void) reloadData;
+
 @end

@@ -12,6 +12,7 @@
 #include "JSONKit.h"
 
 #include "Util.h"
+#include "LoginManager.h"
 
 #pragma mark -- json message converter
 
@@ -37,6 +38,18 @@ void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableData * ou
 
 #pragma mark - json message handler
 
+static void error_handler(NSDictionary *errorMessage)
+{
+	NSString *error = [errorMessage valueForKey:@"error"];
+	
+	CLOG(@"Error = %@", error);
+	
+	if ([error isEqualToString:@"not logined"])
+	{
+		[LoginManager handleNotLoginMessage:errorMessage];
+	}
+}
+
 void json_message_handler(NSData *buffer_data)
 {
 	uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)buffer_data.bytes);
@@ -51,20 +64,29 @@ void json_message_handler(NSData *buffer_data)
 	
 	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
 	MessageResponder *responder = [gs_handler_dict valueForKey:ID];
-	
+	NSString *error = [messageDict valueForKey:@"error"];
+
+	if (nil != error)
+	{
+		error_handler(messageDict);
+	}
+
 	// TODO: Remove log
 	// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
-
-	STOP_NETWORK_INDICATOR();
-	CONFIRM_MESSAGE(ID);
 	
-	if (nil != responder)
+	if (nil != ID)
 	{
-		[responder retain];
-		[gs_handler_dict setValue:nil forKey:ID];
+		STOP_NETWORK_INDICATOR();
+		CONFIRM_MESSAGE(ID);
 		
-		[responder performWithObject:messageDict];
-		
-		[responder release];
+		if (nil != responder)
+		{
+			[responder retain];
+			[gs_handler_dict setValue:nil forKey:ID];
+			
+			[responder performWithObject:messageDict];
+			
+			[responder release];
+		}
 	}
 }

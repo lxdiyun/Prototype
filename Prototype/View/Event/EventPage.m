@@ -383,26 +383,13 @@ DEFINE_SINGLETON(EventPage);
 
 - (void) refreshTableView:(id)result
 {
-	static uint32_t s_lastEventArrayCount = 0;
-	uint32_t eventArrayCount = [[EventManager eventKeyArray] count];
 
-	if (s_lastEventArrayCount < eventArrayCount) 
-	{
-		if ([self.leftColumn respondsToSelector:@selector(reloadData)])
-		{
-			[self.leftColumn performSelector:@selector(reloadData)];
-		}
-
-		if ([self.rightColumn respondsToSelector:@selector(reloadData)])
-		{
-			[self.rightColumn performSelector:@selector(reloadData)];
-		}
-		
-		self.leftColumn.bounces = YES;
-		self.rightColumn.bounces = YES;
-
-		s_lastEventArrayCount = eventArrayCount;
-	}
+	[self.leftColumn reloadData];
+	
+	[self.rightColumn reloadData];
+	
+	self.leftColumn.bounces = YES;
+	self.rightColumn.bounces = YES;
 }
 
 #pragma mark - UIScrollViewDelegate Methods
@@ -470,6 +457,12 @@ static UIScrollView *trigerView = nil;
 + (void) requestUpdate
 {
 	[[self getInstnace] requestNewerEvent];
+}
+
++ (void) reloadData
+{
+	[[[self getInstnace] navigationController] popToRootViewControllerAnimated:NO];
+	[[self getInstnace] refreshTableView:nil];	
 }
 
 @end

@@ -12,6 +12,11 @@
 
 @interface AvatorCell : UITableViewCell
 
-@property (strong, nonatomic)  ImageV *avatorImageV;
+@property (strong, nonatomic) ImageV *avatorImageV;
+@property (strong, nonatomic) UIProgressView *progressBar;
+
 - (void) redraw;
+- (void) showProgressBar;
+- (void) hideProgressBar;
+
 @end

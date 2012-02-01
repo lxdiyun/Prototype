@@ -60,7 +60,8 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 			LOG(@"Error: %@", nserror);
 		}
 	}
-	else {
+	else 
+	{
 		LOG(@"Error: %@", error);
 		[error release];
 	}
@@ -125,6 +126,12 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 		}
 	}
 	
+}
+
++ (void) resetUserInfo
+{
+	[EventManager reset];
+	[self saveAll];
 }
 
 #pragma mark - life circle

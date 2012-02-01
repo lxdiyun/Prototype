@@ -12,6 +12,7 @@
 		4832407C14A9A4150084584F /* AvatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatorCell.m */; };
 		4832408914A9B9BC0084584F /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832408814A9B9BC0084584F /* EventCell.m */; };
 		4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */; };
+		48635FA414D791260008CD6A /* LoginPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48635FA314D791260008CD6A /* LoginPage.m */; };
 		487C95F814BA88C20075FFCD /* ProfileMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95F714BA88C20075FFCD /* ProfileMananger.m */; };
 		487C95FC14BAD1DD0075FFCD /* CommentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95FB14BAD1DD0075FFCD /* CommentManager.m */; };
 		487C95FF14BAEA420075FFCD /* ListObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95FE14BAEA420075FFCD /* ListObjectManager.m */; };
@@ -106,6 +107,8 @@
 		4832408814A9B9BC0084584F /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventCell.m; path = View/Event/EventCell.m; sourceTree = "<group>"; };
 		4832B28B14CD16DA0021F5AB /* CreateFoodFourCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateFoodFourCount.h; sourceTree = "<group>"; };
 		4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateFoodFourCount.m; sourceTree = "<group>"; };
+		48635FA214D791260008CD6A /* LoginPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginPage.h; sourceTree = "<group>"; };
+		48635FA314D791260008CD6A /* LoginPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginPage.m; sourceTree = "<group>"; };
 		487C95F614BA88C20075FFCD /* ProfileMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileMananger.h; sourceTree = "<group>"; };
 		487C95F714BA88C20075FFCD /* ProfileMananger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileMananger.m; sourceTree = "<group>"; };
 		487C95FA14BAD1DD0075FFCD /* CommentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentManager.h; sourceTree = "<group>"; };
@@ -274,6 +277,16 @@
 				4832408814A9B9BC0084584F /* EventCell.m */,
 			);
 			name = Event;
+			sourceTree = "<group>";
+		};
+		48635FA014D7910C0008CD6A /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				48635FA214D791260008CD6A /* LoginPage.h */,
+				48635FA314D791260008CD6A /* LoginPage.m */,
+			);
+			name = Login;
+			path = View/Login;
 			sourceTree = "<group>";
 		};
 		48917C2D14A8686E00C72AE9 /* Food */ = {
@@ -517,6 +530,7 @@
 		48EA6D7514998AC3008AE765 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				48635FA014D7910C0008CD6A /* Login */,
 				48C21BDB14CC17940025807F /* ShareNewEvent */,
 				48B0D06614C3C50200517100 /* UtilView */,
 				48917C2D14A8686E00C72AE9 /* Food */,
@@ -696,6 +710,7 @@
 				48C21BE414CC17FB0025807F /* ShareNewEvent.m in Sources */,
 				4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */,
 				48E8ADF414D0F32A00B9882C /* TagSelector.m in Sources */,
+				48635FA414D791260008CD6A /* LoginPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

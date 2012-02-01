@@ -69,7 +69,6 @@
 		
 		selector.selectedImage = nil;
 	}
-	
 }
 
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector

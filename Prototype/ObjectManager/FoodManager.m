@@ -138,9 +138,4 @@ DEFINE_SINGLETON(FoodManager);
 	return @"food.create";
 }
 
-- (void) setParamsForCreate:(NSMutableDictionary *)request
-{
-	[request setValue:self.createParams forKey:@"params"];	
-}
-
 @end

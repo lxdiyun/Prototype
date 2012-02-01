@@ -10,4 +10,7 @@
 @interface LoginManager : ObjectManager
 + (void) request;
 + (void) requestWithHandler:(SEL)handler andTarget:(id)target;
++ (void) handleNotLoginMessage:(id)messsge;
++ (void) changeLoginUser;
++ (void) logoutCurrentUser;
 @end

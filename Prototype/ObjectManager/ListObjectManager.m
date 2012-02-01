@@ -130,11 +130,23 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 				NSDictionary *listDict = [objectDict valueForKey:key];
 				NSArray *listKeyArray = [[listDict allKeys] sortedArrayUsingFunction:ID_SORTER 
 											     context:nil];
-				[[[self getInstnace] objectKeyArrayDict ] setValue:listKeyArray forKey:key];
+				[[[self getInstnace] objectKeyArrayDict] setValue:listKeyArray forKey:key];
 			}
 		}
 	}
 	
+}
+
++ (void) reset
+{
+	NSMutableDictionary *newEmptyDict = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *emptyKeyArrayDict = [[NSMutableDictionary alloc] init];
+
+	[[self getInstnace] setObjectDict:newEmptyDict];
+	[[self getInstnace] setObjectKeyArrayDict:emptyKeyArrayDict];
+	
+	[newEmptyDict release];
+	[emptyKeyArrayDict release];
 }
 
 #pragma mark - key array

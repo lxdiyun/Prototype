@@ -13,6 +13,16 @@
 #pragma mark - singleton
 DEFINE_SINGLETON(ProfileMananger);
 
+#pragma mark - class interface
++ (void) updateProfile:(NSDictionary *)params 
+	   withHandler:(SEL)handler 
+	     andTarget:target
+{
+	[[self getInstnace] setUpdateParams:params];
+	
+	[self updateObjectWithhandler:handler andTarget:target];
+}
+
 #pragma mark - message
 
 #pragma mark - overwrite super class method
@@ -74,6 +84,13 @@ DEFINE_SINGLETON(ProfileMananger);
 - (NSString *) getMethod
 {
 	return @"user.get";
+}
+
+#pragma mark - overwrite update method
+
+- (NSString *) updateMethod
+{
+	return @"user.update";
 }
 
 @end

@@ -21,6 +21,7 @@ typedef enum MESSAGE_TYPE_ENUM
 // save and restore
 + (void) saveTo:(NSMutableDictionary *)dict;
 + (void) restoreFrom:(NSMutableDictionary *)dict;
++ (void) reset;
 
 // key array
 + (NSArray *) keyArrayForList:(NSString *)listID;
@@ -32,7 +33,7 @@ typedef enum MESSAGE_TYPE_ENUM
 + (BOOL) isUpdatingWithType:(LIST_OBJECT_MESSAGE_TYPE)type withListID:(NSString *)listID;
 
 // update date
-+ (NSDate *)lastUpdatedDateForList:(NSString *)listID;
++ (NSDate *) lastUpdatedDateForList:(NSString *)listID;
 
 // get method
 + (void) requestNewerWithListID:(NSString *)listID 

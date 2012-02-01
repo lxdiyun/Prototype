@@ -37,6 +37,7 @@ DEFINE_SINGLETON(EventManager);
 
 - (void) dealloc
 {
+	[gs_fakeListtID release];
 	gs_fakeListtID = nil;
 	[super dealloc];
 }

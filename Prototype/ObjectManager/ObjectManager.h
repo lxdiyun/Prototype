@@ -14,6 +14,7 @@
 @property (strong) NSMutableDictionary *responderDictForCreate;
 @property (strong) NSMutableDictionary *updatingDict;
 @property (strong) NSDictionary *createParams;
+@property (strong) NSDictionary *updateParams;
 
 // save and restore
 + (void) saveTo:(NSMutableDictionary *)dict;
@@ -49,9 +50,14 @@
 
 // create method
 // internal handler
-// request create object
 - (void) handlerForCreate:(id)result;
+// request create object
 + (uint32_t) createObjectWithHandler:(SEL)handler andTarget:(id)target;
+
+// update method
+- (void) handlerForUpate:(id)result;
+// request update object
++ (uint32_t) updateObjectWithhandler:(SEL)handler andTarget:(id)target;
 
 
 // functions that must be overwrite by sub class if you want to use that method
@@ -59,6 +65,5 @@
 - (NSString *) getMethod;
 // create method
 - (NSString *) createMethod;
-- (void) setParamsForCreate:(NSMutableDictionary *)request;
 
 @end

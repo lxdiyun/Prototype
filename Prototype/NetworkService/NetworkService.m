@@ -339,4 +339,15 @@ DEFINE_SINGLETON(NetworkService);
 	[[self getInstnace] requestSendMessage];
 }
 
++ (void) reconnect
+{
+	[[self getInstnace] closeStream];
+	[[self getInstnace] connectionRest];
+}
+
++ (void) stop
+{
+	[[self getInstnace] closeStream];
+}
+
 @end

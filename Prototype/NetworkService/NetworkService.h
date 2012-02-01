@@ -9,4 +9,6 @@
 
 @interface NetworkService: NSObject
 + (void) requestSendMessage;
++ (void) reconnect;
++ (void) stop;
 @end

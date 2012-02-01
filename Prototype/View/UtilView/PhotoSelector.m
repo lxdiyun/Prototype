@@ -161,7 +161,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	// need to wait to let the view to dismiss, otherwise the ui will block
 	[self.delegate performSelector:@selector(didSelectPhotoWithSelector:) 
 			    withObject:self
-			    afterDelay:1.0];
+			    afterDelay:2.0];
 }
 
 - (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker 

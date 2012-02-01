@@ -19,6 +19,7 @@
 	NSMutableDictionary *_updatingDict;
 	NSArray *_IDArray;
 	NSDictionary *_createParams;
+	NSDictionary *_updateParams;
 }
 @end
 
@@ -29,6 +30,7 @@
 @synthesize responderDictForCreate = _responderDictForCreate;
 @synthesize updatingDict = _updatingDict;
 @synthesize createParams = _createParams;
+@synthesize updateParams = _updateParams;
 
 #pragma mark - life circle
 
@@ -58,6 +60,7 @@
 	self.responderDictForCreate = nil;
 	self.updatingDict = nil;
 	self.createParams = nil;
+	self.updateParams = nil;
 
 	[super dealloc];
 }
@@ -69,6 +72,7 @@
 }
 
 #pragma mark - save and restore
+
 + (void) saveTo:(NSMutableDictionary *)dict
 {
 	[dict setObject:[[self getInstnace] objectDict] 
@@ -211,6 +215,7 @@
 }
 
 #pragma mark - class interface set objects
+
 + (void) setObject:(NSDictionary *)object withStringID:(NSString *)ID
 {
 	if (!CHECK_STRING(ID))
@@ -526,18 +531,13 @@
 	return nil;
 }
 
-- (void) setParamsForCreate:(NSMutableDictionary *)request
-{
-	LOG(@"Error should use the subclass method");
-}
-
 + (uint32_t) createObjectWithHandler:(SEL)handler andTarget:(id)target
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	
 	[request setValue:[[self getInstnace] createMethod] forKey:@"method"];
 
-	[[self getInstnace] setParamsForCreate:request];
+	[request setValue:[[self getInstnace] createParams] forKey:@"params"];
 	
 	uint32_t ID = GET_MSG_ID();
 	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];
@@ -552,6 +552,109 @@
 						      NORMAL_PRIORITY,
 						      ID);
 
+	[messageID release];
+	[request release];
+	
+	return ID;
+}
+
+#pragma mark - update method handler
+
+- (void) checkAndPerformResponderForUpdateWithMessageID:(NSString *)ID andResult:(id)result
+{
+	@autoreleasepool 
+	{
+		MessageResponder *responder;
+		
+		@synchronized (_responderDictForCreate)
+		{
+			responder = [[self.responderDictForGet valueForKey:ID] retain];
+			[self.responderDictForGet setValue:nil forKey:ID];
+			[responder autorelease];
+		}
+		
+		if (nil != responder)
+		{
+			[responder performWithObject:result];
+		}
+	}
+}
+
+
+- (void) handlerForUpate:(id)result
+{
+	if (![result isKindOfClass: [NSDictionary class]])
+	{
+		LOG(@"Error handle non dict object");
+		return;
+	}
+	
+	NSString *messageID = [[result valueForKey:@"id"] stringValue];
+	NSDictionary *objectDict = [result valueForKey:@"result"];
+	NSString *objectID = [[objectDict valueForKey:@"id"] stringValue];
+	
+	[self.objectDict setValue:objectDict forKey:objectID];
+	[self checkAndPerformResponderForUpdateWithMessageID:messageID andResult:result];
+}
+
+#pragma mark - update method - send
+
+- (void) bindUpdateMessageID:(NSString *)ID withResponder:(MessageResponder*)responder
+{
+	
+	@synchronized (_responderDictForCreate)
+	{
+		[self.responderDictForGet setValue:responder forKey:ID];
+	}
+}
+
++ (void) bindUpdateMessageID:(NSString *)ID WithHandler:(SEL)handler andTarget:(id)target
+{
+	if (!CHECK_STRING(ID))
+	{
+		return;
+	}
+	
+	if ((target != nil) && (handler != nil))
+	{
+		MessageResponder *responder = [[MessageResponder alloc] init];
+		responder.target = target;
+		responder.handler = handler;
+		[[self getInstnace] bindUpdateMessageID:ID withResponder:responder];
+		
+		[responder release];
+	}
+}
+
+#pragma mark - update method interfaces
+
+- (NSString *) updateMethod
+{
+	LOG(@"Error should use the subclass method");
+	return nil;
+}
+
++ (uint32_t) updateObjectWithhandler:(SEL)handler andTarget:(id)target
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	
+	[request setValue:[[self getInstnace] updateMethod] forKey:@"method"];
+	
+	[request setValue:[[self getInstnace] updateParams] forKey:@"params"];	
+	
+	uint32_t ID = GET_MSG_ID();
+	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];
+	
+	// bind the handler first
+	[self bindCreateMessageID:messageID WithHandler:handler andTarget:target];
+	
+	// then send the request 
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
+						      [self getInstnace], 
+						      @selector(handlerForCreate:), 
+						      NORMAL_PRIORITY,
+						      ID);
+	
 	[messageID release];
 	[request release];
 	

@@ -7,4 +7,9 @@
 #import "ObjectManager.h"
 
 @interface ProfileMananger : ObjectManager
+
++ (void) updateProfile:(NSDictionary *)params 
+	   withHandler:(SEL)handler 
+	     andTarget:target;
+
 @end

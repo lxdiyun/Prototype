@@ -174,24 +174,14 @@ NSData * POP_BUFFER(void)
 	if (nil != popBuffer)
 	{
 		// TODO remove log
-		NSMutableString *sendData = [[NSMutableString alloc] initWithFormat:@"\n"];
-		for (int i = 0; i < popBuffer.length; ++i)
-		{
-			[sendData appendString:[NSString stringWithFormat:@"%2x ",*(uint8_t *)(popBuffer.bytes + i)]];
-			if (0 == ((i + 1) % 16 ))
-			{
-				[sendData appendString:@"\n"];
-			}
-			
-		}
-		
-		// CLOG(@"%@", sendData);
-		
-		[sendData release];
-		
+		// CLOG(@"%@", popBuffer);
 		if ((4 < popBuffer.length) && !(*(uint8_t *)(popBuffer.bytes) & (BINARY_MSG << 6)))
 		{
-			CLOG(@"%s", popBuffer.bytes + 4);
+			NSString *msgString = [[NSString alloc] initWithData:popBuffer encoding:NSUTF8StringEncoding];
+			NSString *msgWithoutHeader = [msgString substringFromIndex:4];
+			CLOG(@"%@", msgWithoutHeader);
+
+			[msgString release];
 		}
 	}
 
