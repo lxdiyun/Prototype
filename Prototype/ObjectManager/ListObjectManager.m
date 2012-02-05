@@ -127,10 +127,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 			[[self getInstnace] setObjectDict:objectDict];
 			for (NSString *key in [objectDict allKeys]) 
 			{
-				NSDictionary *listDict = [objectDict valueForKey:key];
-				NSArray *listKeyArray = [[listDict allKeys] sortedArrayUsingFunction:ID_SORTER 
-											     context:nil];
-				[[[self getInstnace] objectKeyArrayDict] setValue:listKeyArray forKey:key];
+				[[self getInstnace] updateKeyArrayForList:key withResult:nil forward:NO];
 			}
 		}
 	}
@@ -150,6 +147,19 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 #pragma mark - key array
+
+- (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward;
+{
+	NSDictionary *listDict = [self.objectDict valueForKey:listID];
+	
+	if (nil != listDict)
+	{
+		[self.objectKeyArrayDict setValue:[[listDict allKeys] 
+						   sortedArrayUsingFunction:ID_SORTER 
+						   context:nil] 
+					   forKey:listID];
+	}
+}
 
 + (NSArray *) keyArrayForList:(NSString *)listID
 {
@@ -258,6 +268,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 #pragma mark - update time
+
 + (NSDate *)lastUpdatedDateForList:(NSString *)listID
 {
 	if (!CHECK_STRING(listID))
@@ -294,11 +305,6 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	@autoreleasepool 
 	{
-		if ((type == REQUEST_NEWER) || (type == REQUEST_OLDER))
-		{
-			[self getMethodHandler:result withListID:ID];
-		}
-		
 		NSMutableDictionary *typeDict = [self getTypeResponderArrayDictWithType:type];
 		NSArray *responderArray = nil;
 		
@@ -376,11 +382,11 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 			
 			[self.lastUpdatedDateDict setValue:date forKey:ID];
 			
-			[self getMethodHandler:dict withListID:ID];
+			[self getMethodHandler:dict withListID:ID forward:NO];
 		}
 			break;
 		case REQUEST_OLDER:
-			[self getMethodHandler:dict withListID:ID];
+			[self getMethodHandler:dict withListID:ID forward:YES];
 			break;
 		case LIST_OBJECT_CREATE:
 			[self createMethodHanlder:dict withListID:ID];
@@ -427,32 +433,39 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 #pragma mark - get method handler
 
-- (void) getMethodHandler:(id)result withListID:(NSString *)ID
+- (void) getMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward
 {
 	
 	NSDictionary *messageDict = [(NSDictionary*)result retain];
-	
-	NSDictionary *listDict = [self.objectDict valueForKey:ID];
+	NSMutableArray *resultArray = [[NSMutableArray alloc] init];
+	NSDictionary *listDict = [self.objectDict valueForKey:listID];
 	
 	if (nil == listDict)
 	{
 		listDict = [[NSMutableDictionary alloc] init];
-		[self.objectDict setValue:listDict forKey:ID];
+		[self.objectDict setValue:listDict forKey:listID];
 		[listDict autorelease];
 	}
 	
 	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
 	{
 		[listDict setValue:object forKey:[[object valueForKey:@"id"] stringValue]];
+
+		if (forward)
+		{
+			[resultArray addObject:object];
+		}
+		else
+		{
+			[resultArray insertObject:object atIndex:0];
+		}
 	}
 	
 	// update object key array
-	[self.objectKeyArrayDict setValue:[[listDict allKeys] 
-					   sortedArrayUsingFunction:ID_SORTER 
-					   context:nil] 
-				   forKey:ID];
+	[self updateKeyArrayForList:listID withResult:resultArray forward:forward];
 	
 	[messageDict release];
+	[resultArray release];
 }
 
 #pragma mark - get method interface
@@ -478,11 +491,11 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[params setValue:[NSNumber numberWithBool:forward] forKey:@"forwarding"];
 }
 
-- (uint32_t) getNewestKeyWithlistID:(NSString *)ID
+- (uint32_t) getNewestKeyWithlistID:(NSString *)listID
 {
 	uint32_t objectKey = 0;
 	
-	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:ID];
+	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
 	if (0 < keyArray.count)
 	{
@@ -492,11 +505,11 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	return objectKey;
 }
 
-- (uint32_t) getOldestKeyWithlistID:(NSString *)ID
+- (uint32_t) getOldestKeyWithlistID:(NSString *)listID
 {
 	uint32_t objectKey = 0;
 	
-	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:ID];
+	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
 	if (0 < keyArray.count)
 	{
@@ -645,30 +658,29 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 #pragma mark create method handler
 
-- (void) createMethodHanlder:(id)result withListID:(NSString *)ID;
+- (void) createMethodHanlder:(id)result withListID:(NSString *)listID;
 {
 	NSDictionary *messageDict = [(NSDictionary*)result retain];
-	
-	NSDictionary *listDict = [self.objectDict valueForKey:ID];
+	NSMutableArray *resultArray = [[NSMutableArray alloc] init];
+	NSDictionary *listDict = [self.objectDict valueForKey:listID];
 	
 	if (nil == listDict)
 	{
 		listDict = [[NSMutableDictionary alloc] init];
-		[self.objectDict setValue:listDict forKey:ID];
+		[self.objectDict setValue:listDict forKey:listID];
 		[listDict autorelease];
 	}
 	
 	NSDictionary *object = [messageDict objectForKey:@"result"];
 
 	[listDict setValue:object forKey:[[object valueForKey:@"id"] stringValue]];
+	[resultArray insertObject:object atIndex:0];
 
 	// update object key array
-	[self.objectKeyArrayDict setValue:[[listDict allKeys] 
-					   sortedArrayUsingFunction:ID_SORTER 
-					   context:nil] 
-				   forKey:ID];
+	[self updateKeyArrayForList:listID withResult:resultArray forward:NO];
 	
 	[messageDict release];
+	[resultArray release];
 }
 
 #pragma mark - create method
@@ -699,8 +711,6 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	
 	// bind the handler
 	[self bindMessageID:messageIDString withListID:[listID intValue] withType:LIST_OBJECT_CREATE];
-	
-	LOG(@"%@", request);
 	
 	// then send
 	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
@@ -733,6 +743,5 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	// then send request
 	[[self getInstnace] sendRequestCreateWithListID:listID];
 }
-
 
 @end

@@ -1,35 +1,47 @@
 //
-//  Created by Adrian Lee on 12/30/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  ConversationListManager.m
+//  Prototype
+//
+//  Created by Adrian Lee on 2/3/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "EventManager.h"
+#import "ConversationListManager.h"
 
 #import "Util.h"
-#import "Message.h"
-#import "ImageManager.h"
 #import "ProfileMananger.h"
 
 static NSString *gs_fakeListID = nil;
 
-@implementation EventManager
+@interface ConversationListManager () 
+{
+}
+
+@end
+
+@implementation ConversationListManager
+
 
 #pragma mark - singleton
 
-DEFINE_SINGLETON(EventManager);
+DEFINE_SINGLETON(ConversationListManager);
 
 #pragma mark - life circle
 
-- (id) init 
+- (id) init
 {
 	self = [super init];
 	
-	if (nil != self) 
+	if (self)
 	{
-		if (nil == gs_fakeListID)
+		@autoreleasepool 
 		{
-			gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
+			if (nil == gs_fakeListID)
+			{
+				gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
+			}
 		}
+		
 	}
 	
 	return self;
@@ -39,9 +51,9 @@ DEFINE_SINGLETON(EventManager);
 {
 	[gs_fakeListID release];
 	gs_fakeListID = nil;
+	
 	[super dealloc];
 }
-
 
 #pragma mark - send request message
 
@@ -85,7 +97,6 @@ DEFINE_SINGLETON(EventManager);
 	return [self getObject:objectID inList:gs_fakeListID];
 }
 
-#pragma mark - overwrite super class
 #pragma mark - overwrite handler
 
 - (void) getMethodHandler:(id)dict withListID:(NSString *)ID forward:(BOOL)forward
@@ -93,25 +104,11 @@ DEFINE_SINGLETON(EventManager);
 	[super getMethodHandler:dict withListID:ID forward:forward];
 	
 	NSDictionary *messageDict = [(NSDictionary*)dict retain];
-	NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
 	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
 	
 	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
 	{
-		NSNumber *picID = [[object valueForKey:@"obj"] valueForKey:@"pic"];
-		if (CHECK_NUMBER(picID))
-		{
-			if (nil == [ImageManager getObjectWithNumberID:picID])
-			{
-				[newPicSet addObject:picID];
-			}
-		}
-		else
-		{
-			LOG(@"Error failed to get picID from \n:%@", object);
-		}
-		
-		NSNumber *userID = [[object valueForKey:@"obj"] objectForKey:@"user"];
+		NSNumber *userID = [object objectForKey:@"target"];
 		
 		if (CHECK_NUMBER(userID))
 		{
@@ -126,14 +123,11 @@ DEFINE_SINGLETON(EventManager);
 		}
 	}
 	
-	// cache the new image info
-	[ImageManager requestObjectWithNumberIDArray:[newPicSet allObjects]];
 	
 	// cacahe the new user info
 	[ProfileMananger requestObjectWithNumberIDArray:[newUserSet allObjects]];
 	
 	[newUserSet release];
-	[newPicSet release];
 	[messageDict release];
 }
 
@@ -141,12 +135,63 @@ DEFINE_SINGLETON(EventManager);
 
 - (NSString *) getMethod
 {
-	return @"event.get";
+	return @"msg.get_conversation_list";
 }
 
 - (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
 {
 	// do nothing
+}
+
+#pragma mark - overwrite  key array
+
+- (void) updateKey:(NSString *)key inArray:(NSMutableArray *)array forward:(BOOL)forward
+{
+	NSMutableArray *reomveKeyArray = [[NSMutableArray alloc] init];
+	for (NSUInteger i = 0; i < array.count; ++i)
+	{
+		if ([key isEqualToString:[array objectAtIndex:i]])
+		{
+			[reomveKeyArray addObject:[NSNumber numberWithUnsignedInt:i]];
+		}
+	}
+	
+	for (NSNumber *index in reomveKeyArray)
+	{
+		[array removeObjectAtIndex:[index unsignedIntegerValue]];
+	}
+	
+	if (forward)
+	{
+		[array addObject:key];
+	}
+	else
+	{
+		[array insertObject:key atIndex:0];
+	}
+	
+	[reomveKeyArray release];
+}
+
+- (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward
+{
+	@autoreleasepool 
+	{
+		NSMutableArray *keyArray = [[[[self class] keyArray] mutableCopy] autorelease];
+		
+		if (nil == keyArray)
+		{
+			keyArray = [[[NSMutableArray alloc] init] autorelease];
+		}
+		
+		for (NSDictionary *object in result) 
+		{
+			NSString *key = [[object valueForKey:@"id"] stringValue];
+			[self updateKey:key inArray:keyArray forward:forward];
+		}
+		
+		[self.objectKeyArrayDict setValue:keyArray forKey:listID];
+	}
 }
 
 @end

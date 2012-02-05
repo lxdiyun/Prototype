@@ -1,13 +1,14 @@
 //
-//  Created by Adrian Lee on 12/30/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  ConversationListManager.h
+//  Prototype
 //
-
-#import <Foundation/Foundation.h>
+//  Created by Adrian Lee on 2/3/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//
 
 #import "ListObjectManager.h"
 
-@interface EventManager : ListObjectManager
+@interface ConversationListManager : ListObjectManager
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
 + (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
 + (NSArray *) keyArray;

@@ -556,6 +556,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	
 	self.navigationItem.leftBarButtonItem = self.cancelButton;
 	self.navigationItem.rightBarButtonItem = self.saveButton;
+	self.avatorCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
 	[self updateSaveButton];
 }
@@ -568,6 +569,8 @@ DEFINE_SINGLETON(UserInfoPage);
 	
 	self.navigationItem.leftBarButtonItem = nil;
 	self.navigationItem.rightBarButtonItem = self.editButton;
+	self.avatorCell.accessoryType = UITableViewCellAccessoryNone;
+	[self.avatorCell hideProgressBar];
 	
 	[self sendUserInfoRequest];
 }
@@ -628,6 +631,7 @@ DEFINE_SINGLETON(UserInfoPage);
 
 	self.navigationItem.leftBarButtonItem = self.logoutButton;
 	self.navigationItem.rightBarButtonItem = self.editButton;
+	self.avatorCell.accessoryType = UITableViewCellAccessoryNone;
 }
 
 - (void) logoutUser:(id)sender

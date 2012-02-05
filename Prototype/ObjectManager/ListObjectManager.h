@@ -24,6 +24,7 @@ typedef enum MESSAGE_TYPE_ENUM
 + (void) reset;
 
 // key array
+- (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward;
 + (NSArray *) keyArrayForList:(NSString *)listID;
 
 // object in list
@@ -44,13 +45,13 @@ typedef enum MESSAGE_TYPE_ENUM
 		       andCount:(uint32_t)count 
 		    withHandler:(SEL)handler 
 		      andTarget:(id)target;
-- (void) getMethodHandler:(id)result withListID:(NSString *)ID;
+- (void) getMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward;
 
 // create method
 + (void) requestCreateWithListID:(NSString *)listID 
 		     withHandler:(SEL)handler 
 		       andTarget:(id)target;
-- (void) createMethodHanlder:(id)result withListID:(NSString *)ID;
+- (void) createMethodHanlder:(id)result withListID:(NSString *)listID;
 
 // method that must be overwrite by sub class
 // get method

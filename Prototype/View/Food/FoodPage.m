@@ -32,7 +32,6 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 @interface FoodPage () <UIScrollViewDelegate, EGORefreshTableHeaderDelegate, TextInputerDeletgate>
 {
-@private
 	NSDictionary *_foodDict;
 	NSString *_foodID;
 	EGORefreshTableHeaderView *_refreshHeaderView;

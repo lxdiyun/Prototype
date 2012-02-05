@@ -252,13 +252,13 @@ DEFINE_SINGLETON(EventPage);
 {
 	// Return the number of sections.
 	return 1;
-
 }
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	// Return the number of rows in the section.
-	uint32_t count = [EventManager eventKeyArray].count;
+	uint32_t count = [EventManager keyArray].count;
+
 	return count / 2 + count % 2;
 }
 
@@ -277,9 +277,9 @@ DEFINE_SINGLETON(EventPage);
 	// Configure the cell...
 	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if (eventIndex < [[EventManager eventKeyArray] count] && 0 <= eventIndex) 
+	if (eventIndex < [[EventManager keyArray] count] && 0 <= eventIndex) 
 	{
-		NSString *eventID = [[EventManager eventKeyArray] objectAtIndex:eventIndex];
+		NSString *eventID = [[EventManager keyArray] objectAtIndex:eventIndex];
 		NSDictionary *event = [EventManager getObjectWithStringID:eventID];
 		cell.eventDict = event;
 	}	
@@ -302,7 +302,7 @@ DEFINE_SINGLETON(EventPage);
 {		
 	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if (eventIndex < [[EventManager eventKeyArray] count] && 0 <= eventIndex)
+	if (eventIndex < [[EventManager keyArray] count] && 0 <= eventIndex)
 	{
 		if (self.pushed)
 		{
@@ -331,10 +331,10 @@ DEFINE_SINGLETON(EventPage);
 	
 	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if (eventIndex < [[EventManager eventKeyArray] count] && 0 <= eventIndex) 
+	if (eventIndex < [[EventManager keyArray] count] && 0 <= eventIndex) 
 	{
 	
-		NSString *eventID = [[EventManager eventKeyArray] objectAtIndex:eventIndex];
+		NSString *eventID = [[EventManager keyArray] objectAtIndex:eventIndex];
 		NSDictionary *event = [EventManager getObjectWithStringID:eventID];
 		self.foodPage.foodDict = [event valueForKey:@"obj"];
 		
@@ -350,7 +350,7 @@ DEFINE_SINGLETON(EventPage);
 {
 	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if ((([EventManager eventKeyArray].count - ROW_TO_MORE_EVENT_FROM_BOTTOM) <= eventIndex) 
+	if ((([EventManager keyArray].count - ROW_TO_MORE_EVENT_FROM_BOTTOM) <= eventIndex) 
 	    && (0 <= eventIndex))
 	{
 		[self requestOlderEvent];

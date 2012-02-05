@@ -40,7 +40,7 @@
 + (void) createComment:(NSString *)text forList:(NSString *)listID withHandler:(SEL)handler andTarget:target
 {
 	[[self getInstnace] setCreateCommentString:text];
-	
+
 	[self requestCreateWithListID:listID withHandler:handler andTarget:target];
 }
 
@@ -54,9 +54,9 @@
 #pragma mark - overwrite super class method
 #pragma mark - overwrite handler
 
-- (void) getMethodHandler:(id)dict withListID:(NSString *)ID
+- (void) getMethodHandler:(id)dict withListID:(NSString *)ID forward:(BOOL)forward
 {
-	[super getMethodHandler:dict withListID:ID];
+	[super getMethodHandler:dict withListID:ID forward:forward];
 	
 	NSDictionary *messageDict = [(NSDictionary*)dict retain];
 	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
@@ -104,6 +104,7 @@
 }
 
 #pragma mark - overwrite super classs create method
+
 - (NSString *) createMethod
 {
 	return @"comment.create";

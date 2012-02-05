@@ -13,13 +13,14 @@
 #import "ShareNewEvent.h"
 #import "Util.h"
 #import "ObjectSaver.h"
+#import "ConversationPage.h"
 
 typedef enum MSWJ_PAGE_ENUM
 {
 	HOME_PAGE = 0x0,
 	NOTICE_PAGE = 0x1,
 	SHARE_PAGE = 0x2,
-	PRIVATE_MESSAGE_PAGE = 0x3,
+	CONVERSATION_PAGE = 0x3,
 	PERSONAL_SETTING_PAGE = 0x4,
 	MSWJ_PAGE_QUANTITY
 } MSWJ_PAGE;
@@ -35,7 +36,7 @@ static UIViewController *gs_currentViewController;
 {
 	UITabBarController *_tabco;
 }
-@property (strong, nonatomic) UITabBarController *tabco;
+@property (strong) UITabBarController *tabco;
 @end
 
 @implementation AppDelegate
@@ -50,7 +51,7 @@ static UIViewController *gs_currentViewController;
 	MSWJ_PAGE_CLASS[HOME_PAGE] = [EventPage class];
 	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [UIViewController class];
 	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
-	MSWJ_PAGE_CLASS[PRIVATE_MESSAGE_PAGE] = [UIViewController class];
+	MSWJ_PAGE_CLASS[CONVERSATION_PAGE] = [ConversationPage class];
 	MSWJ_PAGE_CLASS[PERSONAL_SETTING_PAGE] = [UserInfoPage class];
 }
 
@@ -85,10 +86,7 @@ static UIViewController *gs_currentViewController;
 }
 
 - (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-	// restore cache
-	[ObjectSaver restoreAll];
-	
+{	
 	self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	// Override point for customization after application launch.
 	self.window.backgroundColor = [Color whiteColor];
@@ -110,19 +108,20 @@ static UIViewController *gs_currentViewController;
 		[navco release];
 	}
 	
-	tabBarController.viewControllers = tabBarViewControllers;
+	[tabBarController setViewControllers:tabBarViewControllers animated:NO];
+	tabBarController.delegate = self;
 	
 	self.tabco = tabBarController;
-	self.tabco.delegate = self;
 	
 	gs_currentViewController = self.tabco;
-	
-	[[[self.tabco.viewControllers objectAtIndex:1] tabBarItem] setBadgeValue:@"2"];
 
 	[self.window addSubview:self.tabco.view];
 
-	[tabBarController release];
+	//[tabBarController release];
 	[tabBarViewControllers release];
+	
+	// restore cache
+	[ObjectSaver restoreAll];
 	
 	[self.window makeKeyAndVisible];
 	

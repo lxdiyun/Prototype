@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		481D4AF314DBD19800979A20 /* ConversationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF214DBD19800979A20 /* ConversationManager.m */; };
+		481D4AF714DBD39600979A20 /* ConversationDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF614DBD39600979A20 /* ConversationDetailPage.m */; };
+		481D4AFA14DBDBE500979A20 /* DetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF914DBDBE500979A20 /* DetailCell.m */; };
 		4820460714A41D7C001120C1 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820460614A41D7C001120C1 /* Util.m */; };
 		4820461C14A45E69001120C1 /* EventPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820461914A45E69001120C1 /* EventPage.m */; };
 		4832407C14A9A4150084584F /* AvatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatorCell.m */; };
@@ -18,6 +21,9 @@
 		487C95FF14BAEA420075FFCD /* ListObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95FE14BAEA420075FFCD /* ListObjectManager.m */; };
 		4889E0BA14AC10FB00067D66 /* MessageWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4889E0B914AC10FB00067D66 /* MessageWriter.m */; };
 		4889E0BD14AC11DF00067D66 /* MessageReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4889E0BC14AC11DF00067D66 /* MessageReader.m */; };
+		4891276F14DB838B003E7FEB /* ConversationListManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4891276E14DB838B003E7FEB /* ConversationListManager.m */; };
+		4891277414DBB17B003E7FEB /* ConversationPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4891277314DBB17B003E7FEB /* ConversationPage.m */; };
+		4891277814DBC826003E7FEB /* ListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4891277714DBC826003E7FEB /* ListCell.m */; };
 		48917C2B14A8682300C72AE9 /* FoodPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C2914A8682300C72AE9 /* FoodPage.m */; };
 		48917C3314A86E0800C72AE9 /* FoodImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C3114A86E0800C72AE9 /* FoodImageCell.m */; };
 		489313571499D124004A4250 /* UserInfoPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 489313551499D124004A4250 /* UserInfoPage.m */; };
@@ -97,6 +103,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		481D4AF114DBD19800979A20 /* ConversationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationManager.h; sourceTree = "<group>"; };
+		481D4AF214DBD19800979A20 /* ConversationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationManager.m; sourceTree = "<group>"; };
+		481D4AF514DBD39600979A20 /* ConversationDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationDetailPage.h; sourceTree = "<group>"; };
+		481D4AF614DBD39600979A20 /* ConversationDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationDetailPage.m; sourceTree = "<group>"; };
+		481D4AF814DBDBE500979A20 /* DetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailCell.h; sourceTree = "<group>"; };
+		481D4AF914DBDBE500979A20 /* DetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailCell.m; sourceTree = "<group>"; };
 		4820460514A41D7C001120C1 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Util.h; path = Util/Util.h; sourceTree = "<group>"; };
 		4820460614A41D7C001120C1 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = Util/Util.m; sourceTree = "<group>"; };
 		4820461814A45E69001120C1 /* EventPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventPage.h; path = View/Event/EventPage.h; sourceTree = "<group>"; };
@@ -118,6 +130,12 @@
 		4889E0B814AC10FB00067D66 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		4889E0B914AC10FB00067D66 /* MessageWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageWriter.m; sourceTree = "<group>"; };
 		4889E0BC14AC11DF00067D66 /* MessageReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageReader.m; sourceTree = "<group>"; };
+		4891276D14DB838B003E7FEB /* ConversationListManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationListManager.h; sourceTree = "<group>"; };
+		4891276E14DB838B003E7FEB /* ConversationListManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationListManager.m; sourceTree = "<group>"; };
+		4891277314DBB17B003E7FEB /* ConversationPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationPage.m; sourceTree = "<group>"; };
+		4891277514DBB26A003E7FEB /* ConversationPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationPage.h; sourceTree = "<group>"; };
+		4891277614DBC826003E7FEB /* ListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListCell.h; sourceTree = "<group>"; };
+		4891277714DBC826003E7FEB /* ListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListCell.m; sourceTree = "<group>"; };
 		48917C2814A8682300C72AE9 /* FoodPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FoodPage.h; path = View/Food/FoodPage.h; sourceTree = "<group>"; };
 		48917C2914A8682300C72AE9 /* FoodPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = FoodPage.m; path = View/Food/FoodPage.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		48917C3014A86E0800C72AE9 /* FoodImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FoodImageCell.h; path = View/Food/FoodImageCell.h; sourceTree = "<group>"; };
@@ -225,7 +243,7 @@
 		48E50D7C14C291B60091627F /* MessageJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageJson.m; sourceTree = "<group>"; };
 		48E8ADF214D0F32A00B9882C /* TagSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagSelector.h; sourceTree = "<group>"; };
 		48E8ADF314D0F32A00B9882C /* TagSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagSelector.m; sourceTree = "<group>"; };
-		48EA6D5514998A84008AE765 /* 美食玩家_alpha.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "美食玩家_alpha.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		48EA6D5514998A84008AE765 /* 美食玩家_debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "美食玩家_debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48EA6D5914998A84008AE765 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		48EA6D5B14998A84008AE765 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		48EA6D5D14998A84008AE765 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -287,6 +305,22 @@
 			);
 			name = Login;
 			path = View/Login;
+			sourceTree = "<group>";
+		};
+		4891277114DBB15B003E7FEB /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				4891277514DBB26A003E7FEB /* ConversationPage.h */,
+				4891277314DBB17B003E7FEB /* ConversationPage.m */,
+				4891277614DBC826003E7FEB /* ListCell.h */,
+				4891277714DBC826003E7FEB /* ListCell.m */,
+				481D4AF514DBD39600979A20 /* ConversationDetailPage.h */,
+				481D4AF614DBD39600979A20 /* ConversationDetailPage.m */,
+				481D4AF814DBDBE500979A20 /* DetailCell.h */,
+				481D4AF914DBDBE500979A20 /* DetailCell.m */,
+			);
+			name = Conversation;
+			path = View/Conversation;
 			sourceTree = "<group>";
 		};
 		48917C2D14A8686E00C72AE9 /* Food */ = {
@@ -351,6 +385,10 @@
 				48E2E18C14C6A7F000223175 /* FoodManager.m */,
 				48E2E1F614C9018600223175 /* ObjectSaver.h */,
 				48E2E1F714C9018600223175 /* ObjectSaver.m */,
+				4891276D14DB838B003E7FEB /* ConversationListManager.h */,
+				4891276E14DB838B003E7FEB /* ConversationListManager.m */,
+				481D4AF114DBD19800979A20 /* ConversationManager.h */,
+				481D4AF214DBD19800979A20 /* ConversationManager.m */,
 			);
 			path = ObjectManager;
 			sourceTree = "<group>";
@@ -488,7 +526,7 @@
 		48EA6D5614998A84008AE765 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				48EA6D5514998A84008AE765 /* 美食玩家_alpha.app */,
+				48EA6D5514998A84008AE765 /* 美食玩家_debug.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -530,6 +568,7 @@
 		48EA6D7514998AC3008AE765 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				4891277114DBB15B003E7FEB /* Conversation */,
 				48635FA014D7910C0008CD6A /* Login */,
 				48C21BDB14CC17940025807F /* ShareNewEvent */,
 				48B0D06614C3C50200517100 /* UtilView */,
@@ -586,7 +625,7 @@
 			);
 			name = Prototype;
 			productName = Prototype;
-			productReference = 48EA6D5514998A84008AE765 /* 美食玩家_alpha.app */;
+			productReference = 48EA6D5514998A84008AE765 /* 美食玩家_debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -711,6 +750,12 @@
 				4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */,
 				48E8ADF414D0F32A00B9882C /* TagSelector.m in Sources */,
 				48635FA414D791260008CD6A /* LoginPage.m in Sources */,
+				4891276F14DB838B003E7FEB /* ConversationListManager.m in Sources */,
+				4891277414DBB17B003E7FEB /* ConversationPage.m in Sources */,
+				4891277814DBC826003E7FEB /* ListCell.m in Sources */,
+				481D4AF314DBD19800979A20 /* ConversationManager.m in Sources */,
+				481D4AF714DBD39600979A20 /* ConversationDetailPage.m in Sources */,
+				481D4AFA14DBDBE500979A20 /* DetailCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -750,9 +795,9 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "美食玩家_Alpha";
+				PRODUCT_NAME = "美食玩家_debug";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -773,7 +818,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "美食玩家";
@@ -789,9 +834,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Prototype/Prototype-Prefix.pch";
 				INFOPLIST_FILE = "Prototype/Prototype-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "美食玩家_alpha";
+				PRODUCT_NAME = "美食玩家_debug";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -803,7 +848,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Prototype/Prototype-Prefix.pch";
 				INFOPLIST_FILE = "Prototype/Prototype-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "美食玩家";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -821,7 +866,7 @@
 				48EA6D7114998A85008AE765 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		48EA6D7214998A85008AE765 /* Build configuration list for PBXNativeTarget "Prototype" */ = {
 			isa = XCConfigurationList;
@@ -830,7 +875,7 @@
 				48EA6D7414998A85008AE765 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 

@@ -9,8 +9,7 @@
 #import "Util.h"
 #import "UIImage+Scale.h"
 
-const static CGFloat MAX_IMAGE_WIDTH = 640.0;
-const static CGFloat MAX_IMAGE_HEIGHT = 960.0;
+const static CGFloat MAX_IMAGE_RESOLUTION = 960.0;
 
 @interface ImageManager ()
 {
@@ -78,7 +77,7 @@ DEFINE_SINGLETON(ImageManager);
 	{
 		NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
 		
-		UIImage *resizedImage = [image reduceToSize:CGSizeMake(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)];
+		UIImage *resizedImage = [image reduceToResolution:MAX_IMAGE_RESOLUTION];
 		
 		NSData *imageData = UIImageJPEGRepresentation(resizedImage, (CGFloat)0.8);
 		

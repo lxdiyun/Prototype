@@ -13,6 +13,8 @@
 #import "ProfileMananger.h"
 #import "FoodCommentMananger.h"
 #import "FoodManager.h"
+#import "ConversationListManager.h"
+#import "ConversationManager.h"
 #import "Util.h"
 
 typedef enum MSWJ_OBJECT_ENUM
@@ -22,6 +24,8 @@ typedef enum MSWJ_OBJECT_ENUM
 	PROFILE_MANAGER = 0x2,
 	FOOD_COMMENT_MANAGER = 0x3,
 	FOOD_MANAGER = 0x4,
+//	CONVERSEATION_LIST_MANAGER = 0x5,
+//	CONVERSEATION_MANAGER = 0x6,
 	MSWJ_OBJECT_QUANTITY
 } MSWJ_OBJECT;
 
@@ -131,6 +135,9 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 + (void) resetUserInfo
 {
 	[EventManager reset];
+	[ConversationListManager reset];
+	[ConversationManager reset];
+
 	[self saveAll];
 }
 
