@@ -82,7 +82,6 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[super dealloc];
 }
 
-
 + (id) getInstnace
 {
 	LOG(@"Error should use the subclass method");
@@ -169,6 +168,46 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	}
 	
 	return [[[self getInstnace] objectKeyArrayDict] valueForKey:listID]; 
+}
+
+
+- (uint32_t) getNewestKeyWithlistID:(NSString *)listID
+{
+	uint32_t objectKey = 0;
+	
+	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
+	
+	if (0 < keyArray.count)
+	{
+		objectKey = [[keyArray objectAtIndex:0] integerValue];
+	}
+	
+	return objectKey;
+}
+
+- (uint32_t) getOldestKeyWithlistID:(NSString *)listID
+{
+	uint32_t objectKey = 0;
+	
+	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
+	
+	if (0 < keyArray.count)
+	{
+		objectKey = [[keyArray lastObject] integerValue];
+	}
+	
+	return objectKey;
+}
+
+
++ (uint32_t) getOldestKeyForList:(NSString *)listID
+{
+	return [[self getInstnace] getOldestKeyWithlistID:listID];
+}
+
++ (uint32_t) getNewestKeyForList:(NSString *)listID
+{
+	return [[self getInstnace] getNewestKeyWithlistID:listID];
 }
 
 #pragma mark - object in list
@@ -490,35 +529,6 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[params setValue:[NSNumber numberWithInteger:count] forKey:@"count"];
 	[params setValue:[NSNumber numberWithBool:forward] forKey:@"forwarding"];
 }
-
-- (uint32_t) getNewestKeyWithlistID:(NSString *)listID
-{
-	uint32_t objectKey = 0;
-	
-	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
-	
-	if (0 < keyArray.count)
-	{
-		objectKey = [[keyArray objectAtIndex:0] integerValue];
-	}
-	
-	return objectKey;
-}
-
-- (uint32_t) getOldestKeyWithlistID:(NSString *)listID
-{
-	uint32_t objectKey = 0;
-	
-	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
-	
-	if (0 < keyArray.count)
-	{
-		objectKey = [[keyArray lastObject] integerValue];
-	}
-	
-	return objectKey;
-}
-
 
 - (void) sendRequestNewerWithCount:(uint32_t)count withListID:(NSString *)listID
 {

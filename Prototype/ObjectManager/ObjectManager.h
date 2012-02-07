@@ -45,6 +45,7 @@
 + (void) bindStringID:(NSString *)ID withHandler:(SEL)handler andTarget:(id)target;
 + (void) bindNumberID:(NSNumber *)ID withHandler:(SEL)handler andTarget:(id)target;
 // request get object
++ (void) requestObjectWithStringID:(NSString *)ID andHandler:(SEL)handler andTarget:(id)target;
 + (void) requestObjectWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target;
 + (void) requestObjectWithNumberIDArray:(NSArray *)numberIDArray;
 

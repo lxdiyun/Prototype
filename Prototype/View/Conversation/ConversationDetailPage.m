@@ -11,17 +11,27 @@
 #import "ConversationManager.h"
 #import "DetailCell.h"
 #import "TextInputer.h"
+#import "ProfileMananger.h"
+#import "Util.h"
 
 const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
+const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 
 @interface  ConversationDetailPage  ()  <TextInputerDeletgate>
 {
 	NSString *_targetUserID;
 	TextInputer *_inputer;
 	UINavigationController *_navco;
+	BOOL _canUpdateOlder;
 }
 @property (strong) TextInputer *inputer;
 @property (strong, nonatomic) UINavigationController *navco;
+@property (assign) BOOL canUpdateOlder;
+
+- (void) updateNewerConversation;
+- (void) updateOlderConversation;
+- (void) refreshTableView;
+- (void) updateTitle;
 @end
 
 @implementation ConversationDetailPage
@@ -29,13 +39,14 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 @synthesize targetUserID = _targetUserID;
 @synthesize inputer = _inputer;
 @synthesize navco = _navco;
+@synthesize canUpdateOlder = _canUpdateOlder;
 
 - (id) initWithStyle:(UITableViewStyle)style
 {
 	self = [super initWithStyle:style];
 	if (self) 
 	{
-		// Custom initialization
+		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	}
 	return self;
 }
@@ -73,16 +84,23 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 	self.navco = nil;
 }
 
+- (void) resetCanUpdateOlder
+{
+	self.canUpdateOlder = YES;
+}
+
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
+	[self updateTitle];
+	self.canUpdateOlder = NO;
+	
+	[self performSelector:@selector(resetCanUpdateOlder) withObject:nil afterDelay:2.0];
+	
 	if (nil != self.targetUserID)
 	{
-		[ConversationManager requestNewerWithListID:self.targetUserID 
-						   andCount:CONVERSATION_DETAIL_REFRESH_WINDOW 
-						withHandler:@selector(reloadData) 
-						  andTarget:self.tableView];
+		[self updateNewerConversation];
 	}
 	
 	[self.tableView reloadData];
@@ -113,7 +131,6 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-	// Return the number of sections.
 	return 1;
 }
 
@@ -121,6 +138,7 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 {
 	if (nil != self.targetUserID)
 	{
+		LOG(@"count = %d", [[ConversationManager keyArrayForList:self.targetUserID] count]);
 		return [[ConversationManager keyArrayForList:self.targetUserID] count];
 	}
 	
@@ -138,8 +156,8 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
 	
-	NSString *conversationID = [[ConversationManager keyArrayForList:self.targetUserID] objectAtIndex:indexPath.row];
-	
+	NSInteger maxCellIndex = [[ConversationManager keyArrayForList:self.targetUserID] count] - 1;
+	NSString *conversationID = [[ConversationManager keyArrayForList:self.targetUserID] objectAtIndex:maxCellIndex - indexPath.row];
 	NSDictionary *messageDict = [ConversationManager getObject:conversationID inList:self.targetUserID];
 	
 	cell.conversationDict = messageDict;
@@ -149,6 +167,16 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 
 #pragma mark - Table view delegate
 
+- (void) tableView:(UITableView *)tableView 
+   willDisplayCell:(UITableViewCell *)cell 
+ forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (indexPath.row <= ROW_TO_MORE_CONVERSATION)
+	{
+		[self updateOlderConversation];
+	}
+}
+
 - (NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	return nil;
@@ -156,7 +184,9 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSString *conversationID = [[ConversationManager keyArrayForList:self.targetUserID] objectAtIndex:indexPath.row];
+	NSInteger maxCellIndex = [[ConversationManager keyArrayForList:self.targetUserID] count] - 1;
+
+	NSString *conversationID = [[ConversationManager keyArrayForList:self.targetUserID] objectAtIndex:maxCellIndex - indexPath.row];
 	
 	NSDictionary *conversation = [ConversationManager getObject:conversationID inList:self.targetUserID];
 	
@@ -186,14 +216,94 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-- (void)newMessageHandler:(id)result
+- (void) newMessageHandler:(id)result
 {
 	[ConversationManager requestNewerWithListID:self.targetUserID 
 					   andCount:CONVERSATION_DETAIL_REFRESH_WINDOW 
-					withHandler:@selector(reloadData) 
-					  andTarget:self.tableView];
-	[self.tableView reloadData];
+					withHandler:@selector(refreshTableView) 
+					  andTarget:self];
+	[self refreshTableView];	
+}
+
+- (void) updateNewerConversation
+{
+	[ConversationManager requestNewerWithListID:self.targetUserID 
+					   andCount:CONVERSATION_DETAIL_REFRESH_WINDOW 
+					withHandler:@selector(updateNewerConversationHandler) 
+					  andTarget:self];
+}
+
+- (void) updateNewerConversationHandler
+{
+	[self refreshTableView];
+}
+
+- (void) updateOlderConversationHandler
+{
+	static uint32_t lastOldestID = 0;
+	uint32_t currentOldestID = [ConversationManager getOldestKeyForList:self.targetUserID];
+
+	if (lastOldestID == currentOldestID)
+	{
+		self.canUpdateOlder = NO;
+	}
+	else
+	{
+		lastOldestID = currentOldestID;
+	}
 	
+	[self.tableView reloadData];
+}
+
+- (void) updateOlderConversation
+{
+	if (self.canUpdateOlder)
+	{
+
+		[ConversationManager requestOlderWithListID:self.targetUserID 
+						   andCount:CONVERSATION_DETAIL_REFRESH_WINDOW 
+						withHandler:@selector(updateOlderConversationHandler) 
+						  andTarget:self];
+	}
+}
+
+- (void) refreshTableView
+{
+	@autoreleasepool 
+	{
+		[self.tableView reloadData];
+		
+		NSInteger maxCellIndex = [[ConversationManager keyArrayForList:self.targetUserID] count] - 1;
+		
+		if ( 0 <= maxCellIndex && [ConversationManager hasNewMessageForUser:self.targetUserID])
+		{
+			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:maxCellIndex inSection:0] 
+					      atScrollPosition:UITableViewScrollPositionBottom 
+						      animated:YES];
+			
+			[ConversationManager setHasNewMessage:NO forUser:self.targetUserID];
+		}
+	}
+}
+
+- (void) updateTitle
+{
+	if (nil != self.targetUserID)
+	{
+		NSDictionary *targetUserProfile = [ProfileMananger getObjectWithStringID:self.targetUserID];
+		
+		if (nil != targetUserProfile)
+		{
+			NSString *title = [[NSString alloc] initWithFormat:@"与%@的对话", [targetUserProfile valueForKey:@"nick"]];
+			self.title = title;
+			
+			[title release];
+		}
+		else
+		{
+			[ProfileMananger requestObjectWithStringID:self.targetUserID andHandler:@selector(updateTitle) andTarget:self];
+		}
+	}
 }
 
 #pragma mark - TextInputerDeletgate
@@ -201,10 +311,10 @@ const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 - (void) textDoneWithTextInputer:(TextInputer *)inputer
 {
 	[self dismissModalViewControllerAnimated:YES];
-	[ConversationManager createConversation:inputer.text.text 
-					forList:self.targetUserID 
-				    withHandler:@selector(newMessageHandler:) 
-				      andTarget:self];
+	[ConversationManager senMessage:inputer.text.text 
+				 toUser:self.targetUserID 
+			    withHandler:@selector(newMessageHandler:) 
+			      andTarget:self];
 }
 
 - (void) cancelWithTextInputer:(TextInputer *)inputer

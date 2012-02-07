@@ -14,8 +14,10 @@
 @interface CommentManager ()
 {
 	NSString *_createCommentString;
+	
 }
 @property (strong) NSString *createCommentString;
+
 
 @end
 
@@ -31,9 +33,11 @@
 	return nil;
 }
 
+
 - (void) dealloc
 {
 	self.createCommentString = nil;
+
 }
 
 #pragma mark - class interface

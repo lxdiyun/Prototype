@@ -10,9 +10,10 @@
 
 @interface ConversationManager : ListObjectManager
 
-+ (void) createConversation:(NSString *)message 
-		    forList:(NSString *)listID 
-		withHandler:(SEL)handler 
-		  andTarget:target;
-
++ (void) senMessage:(NSString *)message 
+	     toUser:(NSString *)listID 
+	withHandler:(SEL)handler 
+	  andTarget:target;
++ (BOOL) hasNewMessageForUser:(NSString *)userID;
++ (void) setHasNewMessage:(BOOL)flag forUser:(NSString *)userID;
 @end

@@ -26,6 +26,10 @@ typedef enum MESSAGE_TYPE_ENUM
 // key array
 - (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward;
 + (NSArray *) keyArrayForList:(NSString *)listID;
+- (uint32_t) getNewestKeyWithlistID:(NSString *)listID;
+- (uint32_t) getOldestKeyWithlistID:(NSString *)listID;
++ (uint32_t) getOldestKeyForList:(NSString *)listID;
++ (uint32_t) getNewestKeyForList:(NSString *)listID;
 
 // object in list
 + (id) getObject:(NSString *)objectID inList:(NSString *)listID;

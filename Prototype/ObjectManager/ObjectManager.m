@@ -371,6 +371,22 @@
 	[self bindStringID:[ID stringValue] withHandler:handler andTarget:target];
 }
 
++ (void) sendObjectRequest:(NSDictionary *)request withStringID:(NSString *)ID
+{
+	if (!CHECK_STRING(ID))
+	{
+		return;
+	}
+	
+	if (NO == [self isUpdatingObjectStringID:ID])
+	{
+		[self markUpdatingStringID:ID];
+		[request setValue:ID  forKey:@"params"];
+		
+		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, [self getInstnace], @selector(handlerForSingleResult:), NORMAL_PRIORITY);
+	}
+}
+
 + (void) sendObjectRequest:(NSDictionary *)request withNumberID:(NSNumber *)ID
 {
 	if (!CHECK_NUMBER(ID))
@@ -424,6 +440,24 @@
 {
 	LOG(@"Error should use the subclass method");
 	return nil;
+}
+
++ (void) requestObjectWithStringID:(NSString *)ID andHandler:(SEL)handler andTarget:(id)target
+{
+	if (CHECK_STRING(ID))
+	{
+		// bind handler
+		[self bindStringID:ID withHandler:handler andTarget:target];	
+		
+		// then send message
+		NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+		
+		[request setValue:[[self getInstnace] getMethod] forKey:@"method"];
+		
+		[self sendObjectRequest:request withStringID:ID];
+		
+		[request release]; 
+	}
 }
 
 + (void) requestObjectWithNumberID:(NSNumber *)ID andHandler:(SEL)handler andTarget:(id)target
