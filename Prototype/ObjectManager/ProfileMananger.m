@@ -26,14 +26,13 @@ DEFINE_SINGLETON(ProfileMananger);
 #pragma mark - message
 
 #pragma mark - overwrite super class method
+
 #pragma mark - get method handler overwrite
 
 - (void) checkAndPerformResponderWithID:(NSString *)ID
 {
 	@autoreleasepool 
 	{
-		[super checkAndPerformResponderWithID:ID];
-		
 		NSNumber *avatarID = [[self.objectDict valueForKey:ID] valueForKey:@"avatar"];
 		
 		if (CHECK_NUMBER(avatarID))
@@ -47,6 +46,8 @@ DEFINE_SINGLETON(ProfileMananger);
 		{
 			LOG(@"Error can't get avator ID for user: %@", ID);
 		}
+		
+		[super checkAndPerformResponderWithID:ID];
 	}
 }
 
@@ -54,8 +55,6 @@ DEFINE_SINGLETON(ProfileMananger);
 {
 	@autoreleasepool 
 	{
-		[super checkAndPerformResponderWithStringIDArray:IDArray];
-		
 		NSMutableSet *newPicSet = [[[NSMutableSet alloc] init] autorelease];
 
 		for (NSString *ID in IDArray)
@@ -77,6 +76,8 @@ DEFINE_SINGLETON(ProfileMananger);
 		
 		// cache avator info
 		[ImageManager requestObjectWithNumberIDArray:[newPicSet allObjects]];
+		
+		[super checkAndPerformResponderWithStringIDArray:IDArray];
 	}
 }
 

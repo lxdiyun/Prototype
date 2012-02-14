@@ -427,7 +427,7 @@
 		{
 			[request setValue:[checkedSet allObjects] forKey:@"params"];
 
-			SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, [self getInstnace], @selector(handlerForArrayResult:), NORMAL_PRIORITY);;
+			SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, [self getInstnace], @selector(handlerForArrayResult:), NORMAL_PRIORITY);
 		}
 		
 		[checkedSet release];

@@ -16,17 +16,18 @@ static inline double radians (double degrees) {return degrees * M_PI / 180;}
 
 @implementation UIImage (Scale)
 
-- (UIImage *) reduceToResolution:(int)resolution 
+- (UIImage *) reduceToResolution:(CGFloat)resolution 
 {
 	CGFloat width = self.size.width;
 	CGFloat height = self.size.height;
 	CGRect bounds = CGRectMake(0, 0, width, height);
 	
+	LOG(@"s = %f %f, t = %f", width, height, resolution);
+	
 	//if already at the minimum resolution, return the orginal image, otherwise scale
 	if (width <= resolution && height <= resolution) 
 	{
 		return self;
-		
 	} 
 	else 
 	{

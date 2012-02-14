@@ -21,6 +21,7 @@
 #import "Message.h"
 
 const static CGFloat FONT_SIZE = 15.0;
+const static CGFloat AVATOR_CELL_HEIGTH = 88.0;
 
 typedef enum USER_INFO_SECTION_ENUM
 {
@@ -184,7 +185,7 @@ DEFINE_SINGLETON(UserInfoPage);
 		{
 			AvatorCell *cell = [[AvatorCell alloc] initWithStyle:UITableViewCellStyleValue2 
 							      reuseIdentifier:USER_AVATOR_TITLE];
-			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44 * PROPORTION());
+			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, AVATOR_CELL_HEIGTH * PROPORTION());
 			[cell redraw];
 			cell.textLabel.textColor = [Color grey2Color];
 			cell.textLabel.font = [UIFont systemFontOfSize:13.0 * PROPORTION()];
@@ -271,12 +272,14 @@ DEFINE_SINGLETON(UserInfoPage);
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	UITableViewCell *cell;
+	
 	switch (indexPath.section) 
 	{
 	case USER_DETAIL:
 		{
 			NSString *cellType = USER_DETAIL_TITLE[indexPath.row];
-			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellType];
+			cell = [tableView dequeueReusableCellWithIdentifier:cellType];
 			
 			if (nil == cell)
 			{
@@ -298,19 +301,17 @@ DEFINE_SINGLETON(UserInfoPage);
 				
 				[cell.contentView addSubview:_userDetailTextView[indexPath.row]];
 			}
-
-			return cell;
 		}
 			break;
 		case USER_AVATOR:
 		{
-			return self.avatorCell;
+			cell = self.avatorCell;
 		}
 			break;
 		case USER_INTRO:
 		{
 			NSString *CellIdentifier = @"UserIntro";
-			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 			
 			if (nil == cell) 
 			{
@@ -326,15 +327,22 @@ DEFINE_SINGLETON(UserInfoPage);
 				
 				[cell.contentView addSubview:self.introduceView];
 			}
-			
-			
-			
-			return cell;
 		}
 			break;
 	default:
-		return nil;
+		cell = nil;
 	}
+	
+	if (self.editable)
+	{
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	}
+	else
+	{
+		cell.accessoryType = UITableViewCellAccessoryNone;
+	}
+	
+	return cell;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  
@@ -356,8 +364,13 @@ DEFINE_SINGLETON(UserInfoPage);
 			self.introduceView.text = descString;
 			
 			return frame.size.height;
-			break;
 		}
+			break;
+			
+	case USER_AVATOR:
+			return AVATOR_CELL_HEIGTH;
+			
+			break;
 		
 	default:
 			return 44 * PROPORTION();
@@ -556,7 +569,8 @@ DEFINE_SINGLETON(UserInfoPage);
 	
 	self.navigationItem.leftBarButtonItem = self.cancelButton;
 	self.navigationItem.rightBarButtonItem = self.saveButton;
-	self.avatorCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+	[self.tableView reloadData];
 	
 	[self updateSaveButton];
 }
@@ -567,7 +581,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	self.introduceView.editable = NO;
 	self.introduceView.userInteractionEnabled = NO;
 	
-	self.navigationItem.leftBarButtonItem = nil;
+	self.navigationItem.leftBarButtonItem = self.logoutButton;
 	self.navigationItem.rightBarButtonItem = self.editButton;
 	self.avatorCell.accessoryType = UITableViewCellAccessoryNone;
 	[self.avatorCell hideProgressBar];
@@ -631,7 +645,6 @@ DEFINE_SINGLETON(UserInfoPage);
 
 	self.navigationItem.leftBarButtonItem = self.logoutButton;
 	self.navigationItem.rightBarButtonItem = self.editButton;
-	self.avatorCell.accessoryType = UITableViewCellAccessoryNone;
 }
 
 - (void) logoutUser:(id)sender

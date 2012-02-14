@@ -10,13 +10,14 @@
 
 #import "Util.h"
 #import "ProfileMananger.h"
+#import "Message.h"
 
 static NSString *gs_fakeListID = nil;
 
 @interface ConversationListManager () 
 {
 }
-
+- (void) bindDaemonResponder;
 @end
 
 @implementation ConversationListManager
@@ -40,10 +41,12 @@ DEFINE_SINGLETON(ConversationListManager);
 			{
 				gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
 			}
+			
+			[self bindDaemonResponder];
 		}
 		
 	}
-	
+
 	return self;
 }
 
@@ -192,6 +195,25 @@ DEFINE_SINGLETON(ConversationListManager);
 		
 		[self.objectKeyArrayDict setValue:keyArray forKey:listID];
 	}
+}
+
+#pragma mark - daemon
+
+- (void) bindDaemonResponder
+{
+	MessageResponder *responder = [[MessageResponder alloc] init];
+	
+	responder.handler = @selector(daemonMessageHandler:);
+	responder.target = self;
+	
+	ADD_MESSAGE_RESPONDER(responder, CONVERSATION_DAEMON);
+	
+	[responder release];
+}
+
+- (void) daemonMessageHandler:(NSDictionary *)message
+{
+	LOG(@"Received daemon conversation message: %@", message);
 }
 
 @end

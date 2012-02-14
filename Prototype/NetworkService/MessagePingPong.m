@@ -24,19 +24,22 @@ static CFRunLoopTimerRef gs_ping_timer = NULL;
 
 static void request_ping(CFRunLoopTimerRef timer, void *info)
 {
-	CLOG(@"request ping");
-	
-	static NSData *s_data;
-	
-	if (nil == s_data) 
+	@autoreleasepool 
 	{
-		uint32_t pingMessage = CFSwapInt32HostToBig(PING_PONG_MSG << HEADER_LENGTH_BITS);
-		s_data = [[NSData alloc] initWithBytes:(void *)&pingMessage length:HEADER_SIZE];
+		CLOG(@"request ping");
+		
+		static NSData *s_data;
+		
+		if (nil == s_data) 
+		{
+			uint32_t pingMessage = CFSwapInt32HostToBig(PING_PONG_MSG << HEADER_LENGTH_BITS);
+			s_data = [[NSData alloc] initWithBytes:(void *)&pingMessage length:HEADER_SIZE];
+		}
+		
+		send_buffer_with_id_priority(s_data, [NSString stringWithFormat:@"%u", PING_MESSAGE_RESEVERED], HIGHEST_PRIORITY);
+		
+		[NetworkService requestSendMessage];
 	}
-
-	send_buffer_with_id_priority(s_data, RESEVERED_MESSAGE_ID, HIGHEST_PRIORITY);
-	
-	[NetworkService requestSendMessage];
 }
 
 

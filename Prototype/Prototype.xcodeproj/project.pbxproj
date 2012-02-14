@@ -17,6 +17,7 @@
 		4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */; };
 		485D47EF14DF7D0200E6AE41 /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 485D47ED14DF7D0200E6AE41 /* green.png */; };
 		485D47F014DF7D0200E6AE41 /* grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 485D47EE14DF7D0200E6AE41 /* grey.png */; };
+		485D480214E0D96700E6AE41 /* WebPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 485D480114E0D96700E6AE41 /* WebPage.m */; };
 		48635FA414D791260008CD6A /* LoginPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48635FA314D791260008CD6A /* LoginPage.m */; };
 		487C95F814BA88C20075FFCD /* ProfileMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95F714BA88C20075FFCD /* ProfileMananger.m */; };
 		487C95FC14BAD1DD0075FFCD /* CommentManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 487C95FB14BAD1DD0075FFCD /* CommentManager.m */; };
@@ -47,7 +48,6 @@
 		48B76A7B14B9D3C600FD8646 /* EventManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B76A7814B9D3C500FD8646 /* EventManager.m */; };
 		48B76A7C14B9D3C600FD8646 /* ImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B76A7A14B9D3C600FD8646 /* ImageManager.m */; };
 		48B76A8414B9E51B00FD8646 /* LoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B76A8314B9E51B00FD8646 /* LoginManager.m */; };
-		48B9ED3E14AED60500046C26 /* HomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B9ED3D14AED60500046C26 /* HomePage.m */; };
 		48B9ED4414AEE67700046C26 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B9ED4214AEE67700046C26 /* JSONKit.m */; };
 		48C21BE014CC17940025807F /* CreateFoodImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C21BDD14CC17940025807F /* CreateFoodImage.m */; };
 		48C21BE114CC17940025807F /* CreateFoodPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C21BDF14CC17940025807F /* CreateFoodPage.m */; };
@@ -123,6 +123,8 @@
 		4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateFoodFourCount.m; sourceTree = "<group>"; };
 		485D47ED14DF7D0200E6AE41 /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green.png; sourceTree = "<group>"; };
 		485D47EE14DF7D0200E6AE41 /* grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey.png; sourceTree = "<group>"; };
+		485D480014E0D96700E6AE41 /* WebPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPage.h; sourceTree = "<group>"; };
+		485D480114E0D96700E6AE41 /* WebPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebPage.m; sourceTree = "<group>"; };
 		48635FA214D791260008CD6A /* LoginPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginPage.h; sourceTree = "<group>"; };
 		48635FA314D791260008CD6A /* LoginPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginPage.m; sourceTree = "<group>"; };
 		487C95F614BA88C20075FFCD /* ProfileMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileMananger.h; sourceTree = "<group>"; };
@@ -179,8 +181,6 @@
 		48B76A7A14B9D3C600FD8646 /* ImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageManager.m; sourceTree = "<group>"; };
 		48B76A8214B9E51B00FD8646 /* LoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginManager.h; sourceTree = "<group>"; };
 		48B76A8314B9E51B00FD8646 /* LoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginManager.m; sourceTree = "<group>"; };
-		48B9ED3C14AED60400046C26 /* HomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HomePage.h; path = View/HomePage.h; sourceTree = "<group>"; };
-		48B9ED3D14AED60500046C26 /* HomePage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HomePage.m; path = View/HomePage.m; sourceTree = "<group>"; };
 		48B9ED4114AEE67700046C26 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		48B9ED4214AEE67700046C26 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		48C21BDC14CC17940025807F /* CreateFoodImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateFoodImage.h; sourceTree = "<group>"; };
@@ -299,6 +299,16 @@
 				4832408814A9B9BC0084584F /* EventCell.m */,
 			);
 			name = Event;
+			sourceTree = "<group>";
+		};
+		485D47FE14E0D95000E6AE41 /* Webpage */ = {
+			isa = PBXGroup;
+			children = (
+				485D480014E0D96700E6AE41 /* WebPage.h */,
+				485D480114E0D96700E6AE41 /* WebPage.m */,
+			);
+			name = Webpage;
+			path = View/Webpage;
 			sourceTree = "<group>";
 		};
 		48635FA014D7910C0008CD6A /* Login */ = {
@@ -574,6 +584,7 @@
 		48EA6D7514998AC3008AE765 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				485D47FE14E0D95000E6AE41 /* Webpage */,
 				4891277114DBB15B003E7FEB /* Conversation */,
 				48635FA014D7910C0008CD6A /* Login */,
 				48C21BDB14CC17940025807F /* ShareNewEvent */,
@@ -581,8 +592,6 @@
 				48917C2D14A8686E00C72AE9 /* Food */,
 				4820461514A44E83001120C1 /* Event */,
 				48EA6D7614998AD4008AE765 /* UserInformation */,
-				48B9ED3C14AED60400046C26 /* HomePage.h */,
-				48B9ED3D14AED60500046C26 /* HomePage.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -727,7 +736,6 @@
 				48CE912914AD9D0B00B1E9D3 /* UIButton+WebCache.m in Sources */,
 				48CE912A14AD9D0B00B1E9D3 /* UIImageView+WebCache.m in Sources */,
 				48CE913F14AD9DD100B1E9D3 /* EGORefreshTableHeaderView.m in Sources */,
-				48B9ED3E14AED60500046C26 /* HomePage.m in Sources */,
 				48B9ED4414AEE67700046C26 /* JSONKit.m in Sources */,
 				48B76A7114B8760700FD8646 /* ObjectManager.m in Sources */,
 				48B76A7B14B9D3C600FD8646 /* EventManager.m in Sources */,
@@ -764,6 +772,7 @@
 				481D4AF314DBD19800979A20 /* ConversationManager.m in Sources */,
 				481D4AF714DBD39600979A20 /* ConversationDetailPage.m in Sources */,
 				481D4AFA14DBDBE500979A20 /* DetailCell.m in Sources */,
+				485D480214E0D96700E6AE41 /* WebPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

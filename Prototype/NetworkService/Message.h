@@ -25,6 +25,18 @@ enum RESERVED_MESSAGE_TYPE
 	MAX_RESERVED_MSG
 };
 
+// reserved message ID for PING message or Normal Message daemon
+// Please note that message use these ID to send will be not add 
+// into pending message queue. So that the user must make sure 
+// that the buffer for the message won't be release before network
+// service send it.
+typedef enum RESEVERED_MESSAGE_ID_ENUM
+{
+	PING_MESSAGE_RESEVERED = 0x1,
+	CONVERSATION_DAEMON = 0x2,
+	RESERVED_MESSAGE_MAX
+} RESEVERED_MESSAGE_ID;
+
 typedef enum MESSAGE_PRIORITY_ENUM
 {
 	HIGHEST_PRIORITY = 0x0,		// For ping and login messages

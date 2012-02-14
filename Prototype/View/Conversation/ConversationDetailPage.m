@@ -96,8 +96,6 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 	[self updateTitle];
 	self.canUpdateOlder = NO;
 	
-	[self performSelector:@selector(resetCanUpdateOlder) withObject:nil afterDelay:2.0];
-	
 	if (nil != self.targetUserID)
 	{
 		[self updateNewerConversation];
@@ -138,7 +136,6 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 {
 	if (nil != self.targetUserID)
 	{
-		LOG(@"count = %d", [[ConversationManager keyArrayForList:self.targetUserID] count]);
 		return [[ConversationManager keyArrayForList:self.targetUserID] count];
 	}
 	
@@ -234,8 +231,10 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 }
 
 - (void) updateNewerConversationHandler
-{
+{	
 	[self refreshTableView];
+	
+	[self performSelector:@selector(resetCanUpdateOlder) withObject:nil afterDelay:8.0];
 }
 
 - (void) updateOlderConversationHandler

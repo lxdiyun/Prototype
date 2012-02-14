@@ -10,6 +10,6 @@
 
 @interface UIImage (Scale)
 
-- (UIImage *) reduceToResolution:(int)resolution;
+- (UIImage *) reduceToResolution:(CGFloat)resolution;
 
 @end

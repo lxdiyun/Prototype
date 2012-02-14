@@ -52,41 +52,52 @@ static void error_handler(NSDictionary *errorMessage)
 
 void json_message_handler(NSData *buffer_data)
 {
-	uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)buffer_data.bytes);
-	uint32_t messageLength  = header & HEADER_LENGTH_MASK;
-	NSString *jsonString = [[NSString alloc] initWithBytes:(buffer_data.bytes + HEADER_SIZE) 
-							length:messageLength 
-						      encoding:NSASCIIStringEncoding];	
-	
-	NSDictionary *messageDict = [jsonString objectFromJSONString];
-	
-	[jsonString release];
-	
-	NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
-	MessageResponder *responder = [gs_handler_dict valueForKey:ID];
-	NSString *error = [messageDict valueForKey:@"error"];
-
-	if (nil != error)
+	@autoreleasepool
 	{
-		error_handler(messageDict);
-	}
+		uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)buffer_data.bytes);
+		uint32_t messageLength  = header & HEADER_LENGTH_MASK;
+		NSString *jsonString = [[NSString alloc] initWithBytes:(buffer_data.bytes + HEADER_SIZE) 
+								length:messageLength 
+							      encoding:NSASCIIStringEncoding];	
 
-	// TODO: Remove log
-	// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
-	
-	if (nil != ID)
-	{
-		STOP_NETWORK_INDICATOR();
-		CONFIRM_MESSAGE(ID);
-		
-		if (nil != responder)
+		NSDictionary *messageDict = [jsonString objectFromJSONString];
+
+		[jsonString release];
+
+		NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
+		MessageResponder *responder = [gs_handler_dict valueForKey:ID];
+		NSString *error = [messageDict valueForKey:@"error"];
+
+		if (nil != error)
 		{
-			[responder retain];
-			[gs_handler_dict setValue:nil forKey:ID];
-			
-			[responder performWithObject:messageDict];
-			
-			[responder release];
+			error_handler(messageDict);
+		}
+
+		// TODO: Remove log
+		// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
+
+		if (nil != ID)
+		{
+			NSInteger IDNumber = [ID integerValue];
+
+			if (RESERVED_MESSAGE_MAX < IDNumber)
+			{
+				STOP_NETWORK_INDICATOR();
+				CONFIRM_MESSAGE(ID);
+			}
+
+			if (nil != responder)
+			{
+				[responder retain];
+
+				if (RESERVED_MESSAGE_MAX < IDNumber)
+				{
+					[gs_handler_dict setValue:nil forKey:ID];
+				}
+				[responder performWithObject:messageDict];
+
+				[responder release];
+			}
 		}
 	}
 }

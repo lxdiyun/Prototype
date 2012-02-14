@@ -52,12 +52,12 @@ static void send_data_with_priority_and_responder(NSData *message,
 
 	// then send
 	NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
-	
+
 	send_buffer_with_id_priority(message, IDString, priority);
-	
+
 	// request send
 	[NetworkService requestSendMessage];
-	
+
 	[IDString release];
 }
 
@@ -70,7 +70,7 @@ static void add_pending_message(NSArray *IDAndBuffer, MESSAGE_PRIORITY priority)
 
 	NSString *ID = [IDAndBuffer objectAtIndex:0]; 
 
-	if (RESEVERED_MESSAGE_ID != ID)
+	if (RESERVED_MESSAGE_MAX < [ID integerValue])
 	{
 		NSMutableArray *bufferArray = [gs_pending_messages[priority] valueForKey:ID];
 
@@ -84,7 +84,7 @@ static void add_pending_message(NSArray *IDAndBuffer, MESSAGE_PRIORITY priority)
 		}
 
 		[bufferArray addObject:IDAndBuffer];
-		
+
 		// update upload progress
 		if (priority == BINARY_PRIORITY)
 		{
@@ -97,20 +97,20 @@ static void add_pending_message(NSArray *IDAndBuffer, MESSAGE_PRIORITY priority)
 
 uint32_t GET_MSG_ID(void)
 {
-	const static uint32_t INIT_ID = 0x10;
+	const static uint32_t INIT_ID = RESERVED_MESSAGE_MAX;
 	const static uint32_t MAX_ID = 0xFFFF;
 	const static NSString *lock = @"GET_MSG_ID";
 	static uint32_t s_id_count = INIT_ID;
-	
+
 	@synchronized(lock) 
 	{
 		uint32_t returnID = ++s_id_count;
-		
+
 		if (MAX_ID <= s_id_count)
 		{
 			s_id_count = INIT_ID;
 		}
-		
+
 		return returnID;
 	}
 }
@@ -129,11 +129,11 @@ void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(NSDictionary *messageDict,
 		MessageResponder *responder = [[[MessageResponder alloc] init] autorelease];
 		responder.target = target;
 		responder.handler = handler;
-		
+
 		[dictWithID setValue:IDNumber forKey:@"id"];
-		
+
 		convert_msg_dictonary_to_data(dictWithID, data);
-		
+
 		send_data_with_priority_and_responder(data, priority, responder, ID);
 	}
 }
@@ -164,7 +164,7 @@ NSData * POP_BUFFER(void)
 			popBuffer = [IDAndBuffer objectAtIndex:1];
 
 			add_pending_message(IDAndBuffer, priority);
-			
+
 			[gs_buffer_array[priority] removeObjectAtIndex:0];
 
 			break;
@@ -177,9 +177,11 @@ NSData * POP_BUFFER(void)
 		// CLOG(@"%@", popBuffer);
 		if ((4 < popBuffer.length) && !(*(uint8_t *)(popBuffer.bytes) & (BINARY_MSG << 6)))
 		{
-			NSString *msgString = [[NSString alloc] initWithData:popBuffer encoding:NSUTF8StringEncoding];
-			NSString *msgWithoutHeader = [msgString substringFromIndex:4];
-			CLOG(@"%@", msgWithoutHeader);
+			NSString *msgString = [[NSString alloc] initWithBytes:popBuffer.bytes + 4 
+								       length:popBuffer.length - 4 
+								     encoding:NSUTF8StringEncoding];
+
+			CLOG(@"%@", msgString);
 
 			[msgString release];
 		}
@@ -198,7 +200,7 @@ void CONFIRM_MESSAGE(NSString *ID)
 	for (int i = 0; i < PRIORITY_TYPE_MAX; ++i)
 	{
 		[gs_pending_messages[i] setValue:nil forKey:ID];
-		
+
 		if (BINARY_PRIORITY == i)
 		{
 			clean_progress(ID);
@@ -209,13 +211,13 @@ void CONFIRM_MESSAGE(NSString *ID)
 BOOL ROLLBACK_PENDING_MEESAGE(MESSAGE_PRIORITY priority, NSString *ID)
 {
 	BOOL findTheMessages = NO;
-	
+
 	NSMutableArray *IDAndBufferArray = [gs_pending_messages[priority] valueForKey:ID];
-	
+
 	if (nil != IDAndBufferArray)
 	{
 		findTheMessages = YES;
-		
+
 		// roll back the message buffer in reversed buffer
 		for (int i = [IDAndBufferArray count] - 1; i >= 0; --i)
 		{

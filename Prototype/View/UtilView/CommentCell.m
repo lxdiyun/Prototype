@@ -15,8 +15,8 @@
 const static CGFloat AVATOR_SIZE = 44;
 const static CGFloat FONT_SIZE = 15.0;
 const static CGFloat PADING1 = 13.0; // padding from left cell border
-const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
-const static CGFloat PADING3 = 15.0; // padding from top virtical boder
+const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right border
+const static CGFloat PADING3 = 15.0; // padding from top virtical border
 const static CGFloat PADING4 = 9.0; // padding between element virtical and bottom border
 
 @interface CommentCell () 

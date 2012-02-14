@@ -14,8 +14,8 @@
 
 const static CGFloat AVATOR_SIZE = 30;
 const static CGFloat FONT_SIZE = 15.0;
-const static CGFloat PADING1 = 10.0; // padding from left cell border
-const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
+const static CGFloat PADING1 = 12.0; // padding from left cell border
+const static CGFloat PADING2 = 12.0; // padding between element horizontal and from right boder
 const static CGFloat PADING3 = 5.0; // padding from top virtical boder
 const static CGFloat PADING4 = 8.0; // padding between element virtical and bottom border
 
@@ -51,9 +51,6 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 	NSMutableString *messageString = [[objectDict valueForKey:@"msg"] mutableCopy];
 
 	CGSize size = CGSizeMake(width, FONT_SIZE * PROPORTION());
-	
-	// add one row for nick and date
-	// [messageString appendString:@"\n123"];
 	
 	if ((nil != messageString) && (0 < messageString.length))
 	{
@@ -159,14 +156,12 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 		{
 			[self.bubble removeFromSuperview];
 		}
-		
-		NSString *createTime  = @"";
+
 		NSString *message = @"";
 		NSMutableString *fullMessage = [[[NSMutableString alloc] init] autorelease];
 		
 		if (nil != self.conversationDict)
 		{
-			createTime = [self.conversationDict valueForKey:@"created_on"];
 			message = [self.conversationDict valueForKey:@"msg"];
 		}
 
@@ -205,9 +200,14 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 				       topCapHeight:15];
 		}
 		
-		Y = [[self class] cellHeightForConversation:self.conversationDict 
-					       forCellWidth:self.frame.size.width] 
-		- PADING4 * PROPORTION() - bestSize.height;
+		if (bestSize.height > AVATOR_SIZE)
+		{
+			Y = PADING3;
+		}
+		else
+		{
+			Y = (PADING3 + AVATOR_SIZE) * PROPORTION() - bestSize.height;
+		}
 		
 		self.message = [[[UILabel alloc] 
 				 initWithFrame:CGRectMake(X,

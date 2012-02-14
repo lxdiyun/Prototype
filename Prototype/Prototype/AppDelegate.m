@@ -14,6 +14,7 @@
 #import "Util.h"
 #import "ObjectSaver.h"
 #import "ConversationPage.h"
+#import "WebPage.h"
 
 typedef enum MSWJ_PAGE_ENUM
 {
@@ -21,12 +22,13 @@ typedef enum MSWJ_PAGE_ENUM
 	NOTICE_PAGE = 0x1,
 	SHARE_PAGE = 0x2,
 	CONVERSATION_PAGE = 0x3,
-	PERSONAL_SETTING_PAGE = 0x4,
+	WEB_PAGE = 0x4,
+	PERSONAL_SETTING_PAGE = 0x5,
 	MSWJ_PAGE_QUANTITY
 } MSWJ_PAGE;
 
-static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"通知", @"分享美食", @"私信", @"个人设置", };
-static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"Notice.png", @"Share.png", @"PrivateMessage.png", @"More.png"};
+static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"通知", @"分享美食", @"私信", @"Web", @"个人设置", };
+static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"Notice.png", @"Share.png", @"PrivateMessage.png", @"More.png", @"More.png"};
 static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 
 static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 static UIViewController *gs_currentViewController;
@@ -52,6 +54,7 @@ static UIViewController *gs_currentViewController;
 	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [UIViewController class];
 	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
 	MSWJ_PAGE_CLASS[CONVERSATION_PAGE] = [ConversationPage class];
+	MSWJ_PAGE_CLASS[WEB_PAGE] = [WebPage class];
 	MSWJ_PAGE_CLASS[PERSONAL_SETTING_PAGE] = [UserInfoPage class];
 }
 
@@ -110,6 +113,8 @@ static UIViewController *gs_currentViewController;
 	
 	[tabBarController setViewControllers:tabBarViewControllers animated:NO];
 	tabBarController.delegate = self;
+	tabBarController.moreNavigationController.navigationBar.barStyle = UIBarStyleBlack;
+	tabBarController.customizableViewControllers = nil;
 	
 	self.tabco = tabBarController;
 	

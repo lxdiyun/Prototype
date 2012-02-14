@@ -45,10 +45,10 @@ static CGFloat gs_food_image_size = 0;
 	[self redrawImageV];
 }
 
-
 - (void) dealloc 
 {
 	self.foodImage = nil;
 	[super dealloc];
 }
+
 @end
