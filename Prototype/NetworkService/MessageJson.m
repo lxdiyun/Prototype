@@ -74,7 +74,7 @@ void json_message_handler(NSData *buffer_data)
 		}
 
 		// TODO: Remove log
-		// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
+		CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 
 		if (nil != ID)
 		{

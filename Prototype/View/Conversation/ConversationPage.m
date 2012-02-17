@@ -29,13 +29,20 @@ const static uint32_t CONVERSATION_REFRESH_WINDOW = 21;
 
 @synthesize detailPage = _detailPage;
 
+#pragma mark - singleton
+
+DEFINE_SINGLETON(ConversationPage);
+
+#pragma mark - life circle
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
 	self = [super initWithStyle:style];
 
 	if (self) 
 	{
-		// Custom initialization
+		// init ConserSationListManager
+		[ConversationListManager class];
 	}
 	return self;
 }
@@ -148,6 +155,42 @@ const static uint32_t CONVERSATION_REFRESH_WINDOW = 21;
 		
 		[self.navigationController pushViewController:self.detailPage animated:YES];
 	}
+}
+
+#pragma mark - class interface
+
+static NSInteger gs_total_new_message = 0;
+
++ (void) updateBage
+{
+	if (gs_total_new_message > 0)
+	{
+		@autoreleasepool 
+		{
+			NSString *newMessageBadge = [NSString stringWithFormat:@"%d", gs_total_new_message];
+			[[[[self getInstnace] navigationController] tabBarItem] setBadgeValue:newMessageBadge];
+		}
+		
+	}
+	else
+	{
+		[[[[self getInstnace] navigationController] tabBarItem] setBadgeValue:nil];
+		gs_total_new_message = 0;
+	}
+}
+
++ (void) addNewMessageBadge:(NSInteger)newMessageCount;
+{
+	gs_total_new_message += newMessageCount;
+	
+	[self updateBage];
+}
+
++ (void) subNewMessageBadge:(NSInteger)newMessageReadedCount
+{
+	gs_total_new_message -= newMessageReadedCount;
+	
+	[self updateBage];
 }
 
 @end

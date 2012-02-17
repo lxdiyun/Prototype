@@ -89,8 +89,6 @@ NSInteger ID_SORTER(id ID1, id ID2, void *context);
 // low ID => hight ID
 NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context);
 
-// Network Message
-uint32_t SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler);
 
 // Network Indicator
 void START_NETWORK_INDICATOR(void);

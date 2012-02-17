@@ -10,5 +10,5 @@
 @interface ImageManager : ObjectManager
 + (NSNumber *) getImageSizeWithNumberID:(NSNumber *)ID;
 + (void) setImageSize:(NSNumber *)size withNumberID:(NSNumber *)ID;
-+ (uint32_t) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target;
++ (NSInteger) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target;
 @end

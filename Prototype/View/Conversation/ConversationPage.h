@@ -10,4 +10,7 @@
 
 @interface ConversationPage : UITableViewController
 
++ (void) addNewMessageBadge:(NSInteger)newMessageCount;
++ (void) subNewMessageBadge:(NSInteger)newMessageReadedCount;
+
 @end

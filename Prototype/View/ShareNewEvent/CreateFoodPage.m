@@ -459,7 +459,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 	}
 }
 
-- (void) resetImageWithUploadFileID:(uint32_t)fileID;
+- (void) resetImageWithUploadFileID:(NSInteger)fileID;
 {
 	if (nil != gs_create_food_image_header)
 	{

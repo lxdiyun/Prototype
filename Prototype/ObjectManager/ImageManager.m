@@ -71,7 +71,7 @@ DEFINE_SINGLETON(ImageManager);
 
 #pragma mark - create image
 
-+ (uint32_t) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target
++ (NSInteger) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target
 {
 	@autoreleasepool 
 	{
@@ -87,7 +87,7 @@ DEFINE_SINGLETON(ImageManager);
 		
 		[[self getInstnace ] setCreateParams: params];
 		
-		uint32_t messageID = [self createObjectWithHandler:handler andTarget:target];
+		NSInteger messageID = [self createObjectWithHandler:handler andTarget:target];
 		UPLOAD_FILE(imageData, messageID);
 		
 		return messageID;

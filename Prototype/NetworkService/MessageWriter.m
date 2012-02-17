@@ -43,7 +43,7 @@ void send_buffer_with_id_priority(NSData *buffer,
 static void send_data_with_priority_and_responder(NSData *message, 
 						  MESSAGE_PRIORITY priority,
 						  MessageResponder *responder, 
-						  uint32_t ID)
+						  NSInteger ID)
 {
 	START_NETWORK_INDICATOR();
 
@@ -95,7 +95,7 @@ static void add_pending_message(NSArray *IDAndBuffer, MESSAGE_PRIORITY priority)
 
 #pragma mark - write meesage interface
 
-uint32_t GET_MSG_ID(void)
+NSInteger GET_MSG_ID(void)
 {
 	const static uint32_t INIT_ID = RESERVED_MESSAGE_MAX;
 	const static uint32_t MAX_ID = 0xFFFF;
@@ -119,7 +119,7 @@ void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(NSDictionary *messageDict,
 						   id target, 
 						   SEL handler, 
 						   MESSAGE_PRIORITY priority,
-						   uint32_t ID)
+						   NSInteger ID)
 {
 	@autoreleasepool 
 	{
@@ -138,12 +138,12 @@ void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(NSDictionary *messageDict,
 	}
 }
 
-uint32_t SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
+NSInteger SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
 						id target, 
 						SEL handler, 
 						MESSAGE_PRIORITY priority)
 {
-	uint32_t ID = GET_MSG_ID();
+	NSInteger ID = GET_MSG_ID();
 	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(messageDict, 
 						      target, 
 						      handler, 

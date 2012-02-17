@@ -57,7 +57,7 @@ void HANDLE_MESSAGE(NSData * buffer_data)
 	}
 }
 
-void ADD_MESSAGE_RESPONDER(MessageResponder *responder, uint32_t ID)
+void ADD_MESSAGE_RESPONDER(MessageResponder *responder, NSInteger ID)
 {
 	if ((nil != responder.target) && (nil != responder.handler))
 	{
@@ -66,7 +66,7 @@ void ADD_MESSAGE_RESPONDER(MessageResponder *responder, uint32_t ID)
 			gs_handler_dict = [[NSMutableDictionary alloc] init];
 		}
 		
-		NSString *IDString = [[NSString alloc] initWithFormat:@"%u", ID];
+		NSString *IDString = [[NSString alloc] initWithFormat:@"%d", ID];
 		
 		[gs_handler_dict setValue:responder forKey:IDString];
 		

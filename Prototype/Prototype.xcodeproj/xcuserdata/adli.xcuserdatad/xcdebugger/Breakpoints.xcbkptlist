@@ -79,11 +79,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Util/Util.m"
-         timestampString = "349521187.108208"
+         timestampString = "351074008.596594"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "109"
-         endingLineNumber = "109"
+         startingLineNumber = "104"
+         endingLineNumber = "104"
          landmarkName = "CHECK_NUMBER()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -93,11 +93,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Util/Util.m"
-         timestampString = "349521187.108208"
+         timestampString = "351074008.596594"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "96"
-         endingLineNumber = "96"
+         startingLineNumber = "91"
+         endingLineNumber = "91"
          landmarkName = "PROPORTION()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -465,11 +465,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Util/Util.m"
-         timestampString = "349691801.974651"
+         timestampString = "351074008.596594"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "121"
-         endingLineNumber = "121"
+         startingLineNumber = "116"
+         endingLineNumber = "116"
          landmarkName = "CHECK_STRING()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -591,11 +591,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "View/Conversation/ConversationDetailPage.m"
-         timestampString = "350289182.044375"
+         timestampString = "351163636.721714"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "251"
-         endingLineNumber = "251"
+         startingLineNumber = "252"
+         endingLineNumber = "252"
          landmarkName = "-updateOlderConversationHandler"
          landmarkType = "5">
       </FileBreakpoint>
@@ -667,6 +667,20 @@
          startingLineNumber = "430"
          endingLineNumber = "430"
          landmarkName = "+sendObjectArrayRequest:withNumberIDArray:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "View/Conversation/ConversationPage.m"
+         timestampString = "351164573.402481"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "170"
+         endingLineNumber = "170"
+         landmarkName = "+updateBage"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

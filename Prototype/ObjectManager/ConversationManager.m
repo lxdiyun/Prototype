@@ -13,17 +13,17 @@
 @interface ConversationManager () 
 {
 	NSString *_message;
-	NSMutableDictionary *_hasNewMessageDict;
+	NSMutableDictionary *_messageNewCountDict;
 	
 }
 @property (strong) NSString *message;
-@property (strong) NSMutableDictionary *hasNewMesssageDict;
+@property (strong) NSMutableDictionary *messageNewCountDict;
 @end
 
 @implementation ConversationManager
 
 @synthesize message = _message;
-@synthesize hasNewMesssageDict = _hasNewMessageDict;
+@synthesize messageNewCountDict = _messageNewCountDict;
 
 #pragma mark - singleton
 
@@ -35,7 +35,7 @@ DEFINE_SINGLETON(ConversationManager);
 {
 	@autoreleasepool 
 	{
-		self.hasNewMesssageDict = [[[NSMutableDictionary alloc] init] autorelease];
+		self.messageNewCountDict = [[[NSMutableDictionary alloc] init] autorelease];
 	}
 }
 
@@ -54,7 +54,7 @@ DEFINE_SINGLETON(ConversationManager);
 - (void) dealloc
 {
 	self.message = nil;
-	self.hasNewMesssageDict = nil;
+	self.messageNewCountDict = nil;
 
 	[super dealloc];
 }
@@ -71,26 +71,26 @@ DEFINE_SINGLETON(ConversationManager);
 	[self requestCreateWithListID:listID withHandler:handler andTarget:target];
 }
 
-+ (void) setHasNewMessage:(BOOL)flag forUser:(NSString *)userID
++ (void) setHasNewMessageCount:(NSInteger)count forUser:(NSString *)userID
 {
 	@autoreleasepool 
 	{
-		[[[[self class] getInstnace] hasNewMesssageDict] setValue:[NSNumber numberWithBool:flag] 
-								   forKey:userID];
+		[[[[self class] getInstnace] messageNewCountDict] setValue:[NSNumber numberWithInteger:count] 
+								    forKey:userID];
 	}
 }
 
-+ (BOOL) hasNewMessageForUser:(NSString *)userID
++ (NSInteger) newMessageCountForUser:(NSString *)userID
 {
-	NSNumber *hasNewMessage = [[[[self class] getInstnace] hasNewMesssageDict] 
-			       valueForKey:userID];
+	NSNumber *newMessageCount = [[[[self class] getInstnace] messageNewCountDict] 
+				     valueForKey:userID];
 	
-	if (nil == hasNewMessage)
+	if (nil == newMessageCount)
 	{
-		return YES;
+		return 0;
 	}
 	
-	return [hasNewMessage boolValue];
+	return [newMessageCount integerValue];
 }
 
 #pragma mark - overwrite save and restore
@@ -112,15 +112,29 @@ DEFINE_SINGLETON(ConversationManager);
 		       forward:(BOOL)forward
 {
 	uint32_t currentNewestID  = [self getNewestKeyWithlistID:listID];
+	uint32_t currentIDCount = [[[self objectKeyArrayDict] valueForKey:listID] count];
 	uint32_t updatedNewestID;
+	uint32_t updatedIDCount;
 	
 	[super updateKeyArrayForList:listID withResult:result forward:forward];
 	
 	updatedNewestID = [self getNewestKeyWithlistID:listID];
+	updatedIDCount = [[[self objectKeyArrayDict] valueForKey:listID] count];
 	
 	if (currentNewestID != updatedNewestID)
 	{
-		[[self class] setHasNewMessage:YES forUser:listID];
+		NSInteger newMessageCount = updatedIDCount - currentIDCount;
+		
+		LOG(@"new message count = %d", newMessageCount);
+
+		if (newMessageCount > 0)
+		{
+			[[self class] setHasNewMessageCount:newMessageCount forUser:listID];
+		}
+		else
+		{
+			[[self class] setHasNewMessageCount:0 forUser:listID];
+		}
 	}
 }
 

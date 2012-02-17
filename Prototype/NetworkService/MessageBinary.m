@@ -76,7 +76,7 @@ static void generate_binary_message(NSMutableData *input_data,
  * | data                          |
  * | ...                           |
  */
-void UPLOAD_FILE(NSData *file, uint32_t file_ID)
+void UPLOAD_FILE(NSData *file, NSInteger file_ID)
 {
 	if (nil == file)
 	{

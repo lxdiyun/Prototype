@@ -13,6 +13,7 @@
 #import "TextInputer.h"
 #import "ProfileMananger.h"
 #import "Util.h"
+#import "ConversationPage.h"
 
 const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
@@ -274,13 +275,18 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 		
 		NSInteger maxCellIndex = [[ConversationManager keyArrayForList:self.targetUserID] count] - 1;
 		
-		if ( 0 <= maxCellIndex && [ConversationManager hasNewMessageForUser:self.targetUserID])
+		NSInteger newMessageCount  = [ConversationManager newMessageCountForUser:self.targetUserID];
+		
+		LOG(@"new message count = %d", newMessageCount);
+		
+		if ( 0 <= maxCellIndex && (0 < newMessageCount))
 		{
 			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:maxCellIndex inSection:0] 
 					      atScrollPosition:UITableViewScrollPositionBottom 
 						      animated:YES];
 			
-			[ConversationManager setHasNewMessage:NO forUser:self.targetUserID];
+			[ConversationPage subNewMessageBadge:newMessageCount];
+			[ConversationManager setHasNewMessageCount:0 forUser:self.targetUserID];
 		}
 	}
 }

@@ -11,6 +11,7 @@
 #import "Util.h"
 #import "ProfileMananger.h"
 #import "Message.h"
+#import "ConversationPage.h"
 
 static NSString *gs_fakeListID = nil;
 
@@ -214,6 +215,18 @@ DEFINE_SINGLETON(ConversationListManager);
 - (void) daemonMessageHandler:(NSDictionary *)message
 {
 	LOG(@"Received daemon conversation message: %@", message);
+	
+	NSString *method = [message valueForKey:@"method"];
+	
+	if ([method isEqualToString:@"msg.push"])
+	{
+		NSDictionary *params  = [message valueForKey:@"params"];
+		NSInteger newMessageCount = [[params valueForKey:@"new_msg_count"] integerValue];
+		
+		[ConversationPage addNewMessageBadge:newMessageCount];
+	}
+	
+	
 }
 
 @end

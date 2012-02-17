@@ -61,9 +61,9 @@
 {
 	@autoreleasepool 
 	{
-		uint32_t fileID = [ImageManager createImage:selector.selectedImage 
-						withHandler:@selector(imageUploadCompleted:)
-						  andTarget:self.createFood];
+		NSInteger fileID = [ImageManager createImage:selector.selectedImage 
+						 withHandler:@selector(imageUploadCompleted:)
+						   andTarget:self.createFood];
 		
 		[self.createFood resetImageWithUploadFileID:fileID];
 		

@@ -53,11 +53,6 @@ NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context)
 		return NSOrderedSame;
 }
 
-uint32_t SEND_MSG_AND_BIND_HANDLER(NSDictionary *messageDict, id target, SEL handler)
-{
-	return SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(messageDict, target, handler, NORMAL_PRIORITY);
-}
-
 void START_NETWORK_INDICATOR(void)
 {
 	[[SDNetworkActivityIndicator sharedActivityIndicator] startActivity];

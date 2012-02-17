@@ -679,7 +679,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	self.avatorCell.avatorImageV.picID = nil;
 	[self.avatorCell showProgressBar];
 
-	uint32_t uploadID = [ImageManager createImage:selector.selectedImage 
+	NSInteger uploadID = [ImageManager createImage:selector.selectedImage 
 					  withHandler:@selector(uploadImageHandler:) 
 					    andTarget:self];
 	NSString *uploadIDString = [[NSString alloc] initWithFormat:@"%u", uploadID];

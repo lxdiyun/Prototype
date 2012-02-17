@@ -565,7 +565,7 @@
 	return nil;
 }
 
-+ (uint32_t) createObjectWithHandler:(SEL)handler andTarget:(id)target
++ (NSInteger) createObjectWithHandler:(SEL)handler andTarget:(id)target
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	
@@ -573,7 +573,7 @@
 
 	[request setValue:[[self getInstnace] createParams] forKey:@"params"];
 	
-	uint32_t ID = GET_MSG_ID();
+	NSInteger ID = GET_MSG_ID();
 	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];
 	
 	// bind the handler first
@@ -668,7 +668,7 @@
 	return nil;
 }
 
-+ (uint32_t) updateObjectWithhandler:(SEL)handler andTarget:(id)target
++ (NSInteger) updateObjectWithhandler:(SEL)handler andTarget:(id)target
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	
@@ -676,7 +676,7 @@
 	
 	[request setValue:[[self getInstnace] updateParams] forKey:@"params"];	
 	
-	uint32_t ID = GET_MSG_ID();
+	NSInteger ID = GET_MSG_ID();
 	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];
 	
 	// bind the handler first

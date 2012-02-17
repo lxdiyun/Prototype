@@ -14,6 +14,6 @@
 	     toUser:(NSString *)listID 
 	withHandler:(SEL)handler 
 	  andTarget:target;
-+ (BOOL) hasNewMessageForUser:(NSString *)userID;
-+ (void) setHasNewMessage:(BOOL)flag forUser:(NSString *)userID;
++ (void) setHasNewMessageCount:(NSInteger)count forUser:(NSString *)userID;
++ (NSInteger) newMessageCountForUser:(NSString *)userID;
 @end

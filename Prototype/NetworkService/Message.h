@@ -32,9 +32,9 @@ enum RESERVED_MESSAGE_TYPE
 // service send it.
 typedef enum RESEVERED_MESSAGE_ID_ENUM
 {
-	PING_MESSAGE_RESEVERED = 0x1,
-	CONVERSATION_DAEMON = 0x2,
-	RESERVED_MESSAGE_MAX
+	CONVERSATION_DAEMON = -1,
+	PING_MESSAGE_RESEVERED = 0x0,
+	RESERVED_MESSAGE_MAX = 0x1
 } RESEVERED_MESSAGE_ID;
 
 typedef enum MESSAGE_PRIORITY_ENUM
@@ -54,16 +54,16 @@ typedef enum MESSAGE_PRIORITY_ENUM
 @end
 
 // Message Writer
-uint32_t GET_MSG_ID(void);
+NSInteger GET_MSG_ID(void);
 void SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(NSDictionary *messageDict, 
 						   id target, 
 						   SEL handler, 
 						   MESSAGE_PRIORITY priority,
-						   uint32_t ID);
-uint32_t SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
-					    id target, 
-					    SEL handler, 
-					    MESSAGE_PRIORITY priority);
+						   NSInteger ID);
+NSInteger SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(NSDictionary *messageDict, 
+						 id target, 
+						 SEL handler, 
+						 MESSAGE_PRIORITY priority);
 void CONFIRM_MESSAGE(NSString *ID);
 NSData * POP_BUFFER(void);
 void ROLLBACK_ALL_PENDING_MESSAGE(void);
@@ -71,7 +71,7 @@ BOOL ROLLBACK_PENDING_MEESAGE(MESSAGE_PRIORITY priority, NSString *ID);
 
 // Message Reader
 void HANDLE_MESSAGE(NSData * bufferData);
-void ADD_MESSAGE_RESPONDER(MessageResponder *responder, uint32_t ID);
+void ADD_MESSAGE_RESPONDER(MessageResponder *responder, NSInteger ID);
 void CLEAR_MESSAGE_HANDLER(void);
 
 // PING PONG Message
@@ -79,7 +79,7 @@ void START_PING(void);
 void STOP_PING(void);
 
 // Binary Message
-void UPLOAD_FILE(NSData *file, uint32_t file_ID);
+void UPLOAD_FILE(NSData *file, NSInteger file_ID);
 void BIND_PROGRESS_VIEW_WITH_FILE_ID(UIProgressView *progressView, 
 				     NSString *IDString);
 
