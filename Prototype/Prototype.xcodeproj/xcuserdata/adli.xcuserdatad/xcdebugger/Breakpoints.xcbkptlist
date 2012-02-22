@@ -282,20 +282,6 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "350213792.70001"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "489"
-         endingLineNumber = "489"
-         landmarkName = "-getMethodHandler:withListID:forward:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
          filePath = "View/UtilView/TextInputer.m"
          timestampString = "349589364.386905"
          startingColumnNumber = "9223372036854775807"
@@ -492,20 +478,6 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "350213792.70001"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "549"
-         endingLineNumber = "549"
-         landmarkName = "-sendRequestNewerWithCount:withListID:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
          filePath = "Prototype/AppDelegate.m"
          timestampString = "350291654.789448"
          startingColumnNumber = "9223372036854775807"
@@ -577,11 +549,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ConversationManager.m"
-         timestampString = "350213792.70001"
+         timestampString = "351506378.474133"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "104"
-         endingLineNumber = "104"
+         startingLineNumber = "118"
+         endingLineNumber = "118"
          landmarkName = "+reset"
          landmarkType = "5">
       </FileBreakpoint>
@@ -591,11 +563,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "View/Conversation/ConversationDetailPage.m"
-         timestampString = "351163636.721714"
+         timestampString = "351506378.474133"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "252"
-         endingLineNumber = "252"
+         startingLineNumber = "283"
+         endingLineNumber = "283"
          landmarkName = "-updateOlderConversationHandler"
          landmarkType = "5">
       </FileBreakpoint>
@@ -675,12 +647,12 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "View/Conversation/ConversationPage.m"
-         timestampString = "351164573.402481"
+         timestampString = "351500504.937001"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "170"
-         endingLineNumber = "170"
-         landmarkName = "+updateBage"
+         startingLineNumber = "168"
+         endingLineNumber = "168"
+         landmarkName = "+updateBage:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

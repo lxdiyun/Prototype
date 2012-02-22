@@ -12,6 +12,7 @@
 #import "ProfileMananger.h"
 #import "Message.h"
 #import "ConversationPage.h"
+#import "ConversationDetailPage.h"
 
 static NSString *gs_fakeListID = nil;
 
@@ -96,12 +97,27 @@ DEFINE_SINGLETON(ConversationListManager);
 	return [self lastUpdatedDateForList:gs_fakeListID];
 }
 
-+ (NSDictionary *) getObjectWithStringID:(NSString *)objectID
++ (NSDictionary *) getConversationWithUser:(NSString *)userID
 {
-	return [self getObject:objectID inList:gs_fakeListID];
+	return [self getObject:userID inList:gs_fakeListID];
 }
 
 #pragma mark - overwrite handler
+
++ (void) updateUnreadMessage
+{
+	NSArray *keyArray = [self keyArray];
+	NSInteger totalUnreadMessage = 0;
+	
+	for (NSString *key in keyArray)
+	{
+		NSDictionary *conversation = [self getConversationWithUser:key];
+		
+		totalUnreadMessage += [[conversation valueForKey:@"unread_count"] integerValue];
+	}
+	
+	[ConversationPage updateBage:totalUnreadMessage];
+}
 
 - (void) getMethodHandler:(id)dict withListID:(NSString *)ID forward:(BOOL)forward
 {
@@ -130,6 +146,9 @@ DEFINE_SINGLETON(ConversationListManager);
 	
 	// cacahe the new user info
 	[ProfileMananger requestObjectWithNumberIDArray:[newUserSet allObjects]];
+	
+	// update unread message
+	[[self class ] updateUnreadMessage];
 	
 	[newUserSet release];
 	[messageDict release];
@@ -213,20 +232,20 @@ DEFINE_SINGLETON(ConversationListManager);
 }
 
 - (void) daemonMessageHandler:(NSDictionary *)message
-{
-	LOG(@"Received daemon conversation message: %@", message);
-	
+{	
 	NSString *method = [message valueForKey:@"method"];
 	
 	if ([method isEqualToString:@"msg.push"])
 	{
 		NSDictionary *params  = [message valueForKey:@"params"];
-		NSInteger newMessageCount = [[params valueForKey:@"new_msg_count"] integerValue];
+		NSString *userID = [[[params valueForKey:@"msg"] valueForKey:@"sender"] stringValue];
 		
-		[ConversationPage addNewMessageBadge:newMessageCount];
+		if (![ConversationDetailPage newPushMessageForUser:userID])
+		{
+			[ConversationPage updateConversationList];
+		}
 	}
-	
-	
 }
+
 
 @end

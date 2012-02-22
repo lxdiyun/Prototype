@@ -154,7 +154,7 @@ DEFINE_SINGLETON(NetworkService);
 	switch (streamEvent) 
 	{
 		case NSStreamEventOpenCompleted:
-			// LOG(@"Stream opened");
+			LOG(@"Stream opened");
 			if (theStream == self.outputStream)
 			{
 				[LoginManager request];
@@ -179,6 +179,7 @@ DEFINE_SINGLETON(NetworkService);
 			
 		case NSStreamEventEndEncountered:
 			LOG(@"Error No buffer left to read!");
+			[self connectionRest];
 			break;
 			
 		default:

@@ -157,15 +157,18 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 			[self.bubble removeFromSuperview];
 		}
 
-		NSString *message = @"";
-		NSMutableString *fullMessage = [[[NSMutableString alloc] init] autorelease];
+		NSString *fullMessage;
 		
 		if (nil != self.conversationDict)
 		{
-			message = [self.conversationDict valueForKey:@"msg"];
+			fullMessage = [self.conversationDict valueForKey:@"msg"];
 		}
-
-		[fullMessage appendString:message];
+		
+		if ((nil == fullMessage) || [fullMessage isEqualToString:@""])
+		{
+			// at least one character is need for display
+			fullMessage = @" ";
+		}
 		
 		UIFont *font = [UIFont systemFontOfSize:FONT_SIZE * PROPORTION()];
 		CGFloat X;

@@ -14,5 +14,5 @@
 + (NSArray *) keyArray;
 + (BOOL) isNewerUpdating;
 + (NSDate *) lastUpdatedDate;
-+ (NSDictionary *) getObjectWithStringID:(NSString *)objectID;
++ (NSDictionary *) getConversationWithUser:(NSString *)userID;
 @end

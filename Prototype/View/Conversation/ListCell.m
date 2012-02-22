@@ -95,7 +95,6 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 		NSNumber *avatarID = [self.userProfile valueForKey:@"avatar"];
 		
 		self.avatorImageV.picID = avatarID;
-		
 	}
 }
 
@@ -125,6 +124,7 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 	
 	NSString *nick = @"";
 	NSString *createTime  = @"";
+	NSInteger unreadMessageCount;
 	if (nil != self.userProfile)
 	{
 		nick = [self.userProfile valueForKey:@"nick"];
@@ -133,9 +133,19 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 	if (nil != self.conversationListDict)
 	{
 		createTime = [self.conversationListDict valueForKey:@"created_on"];
+		unreadMessageCount = [[self.conversationListDict valueForKey:@"unread_count"] integerValue];
 	}
 	
-	self.userAndDate.text = [NSString stringWithFormat:@"%@  %@", nick, createTime];
+	if (0 < unreadMessageCount)
+	{
+		self.userAndDate.text = [NSString stringWithFormat:@"%@(%d)  %@", nick, unreadMessageCount, createTime];
+	}
+	else
+	{
+		self.userAndDate.text = [NSString stringWithFormat:@"%@ %@", nick, createTime];
+	}
+	
+	
 	
 	[self.contentView addSubview:self.userAndDate];
 }
@@ -165,9 +175,7 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 	self.message.backgroundColor = [UIColor clearColor];
 	self.message.adjustsFontSizeToFitWidth = NO;
 	self.message.lineBreakMode = UILineBreakModeWordWrap;
-	
 
-	
 	if (nil != self.conversationListDict)
 	{
 		self.message.text = [self.conversationListDict valueForKey:@"msg"];

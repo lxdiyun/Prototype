@@ -14,6 +14,6 @@
 	     toUser:(NSString *)listID 
 	withHandler:(SEL)handler 
 	  andTarget:target;
-+ (void) setHasNewMessageCount:(NSInteger)count forUser:(NSString *)userID;
-+ (NSInteger) newMessageCountForUser:(NSString *)userID;
++ (void) cleanUnreadMessageCountForUser:(NSString *)userID;
++ (BOOL) hasUnreadMessageforUser:(NSString *)userID;
 @end

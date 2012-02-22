@@ -73,7 +73,7 @@ DEFINE_SINGLETON(ConversationPage);
 {
 	[super viewWillAppear:animated];
 	
-	[ConversationListManager requestNewerCount:CONVERSATION_REFRESH_WINDOW withHandler:@selector(reloadData) andTarget:self.tableView];
+	[[self class ] updateConversationList];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -122,7 +122,7 @@ DEFINE_SINGLETON(ConversationPage);
 	}
 	
 	NSString *conversationID = [[ConversationListManager keyArray] objectAtIndex:indexPath.row];
-	NSDictionary *conversation = [ConversationListManager getObjectWithStringID:conversationID];
+	NSDictionary *conversation = [ConversationListManager getConversationWithUser:conversationID];
 	
 	if (nil != conversation)
 	{
@@ -137,7 +137,7 @@ DEFINE_SINGLETON(ConversationPage);
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSString *conversationID = [[ConversationListManager keyArray] objectAtIndex:indexPath.row];
-	NSDictionary *conversation = [ConversationListManager getObjectWithStringID:conversationID];
+	NSDictionary *conversation = [ConversationListManager getConversationWithUser:conversationID];
 	NSNumber *targetUserID = [conversation valueForKey:@"target"];
 	
 	if(nil != targetUserID)
@@ -159,15 +159,13 @@ DEFINE_SINGLETON(ConversationPage);
 
 #pragma mark - class interface
 
-static NSInteger gs_total_new_message = 0;
-
-+ (void) updateBage
++ (void) updateBage:(NSInteger)unreadMessageCount
 {
-	if (gs_total_new_message > 0)
+	if (unreadMessageCount > 0)
 	{
 		@autoreleasepool 
 		{
-			NSString *newMessageBadge = [NSString stringWithFormat:@"%d", gs_total_new_message];
+			NSString *newMessageBadge = [NSString stringWithFormat:@"%d", unreadMessageCount];
 			[[[[self getInstnace] navigationController] tabBarItem] setBadgeValue:newMessageBadge];
 		}
 		
@@ -175,22 +173,14 @@ static NSInteger gs_total_new_message = 0;
 	else
 	{
 		[[[[self getInstnace] navigationController] tabBarItem] setBadgeValue:nil];
-		gs_total_new_message = 0;
 	}
 }
 
-+ (void) addNewMessageBadge:(NSInteger)newMessageCount;
++ (void) updateConversationList
 {
-	gs_total_new_message += newMessageCount;
-	
-	[self updateBage];
-}
-
-+ (void) subNewMessageBadge:(NSInteger)newMessageReadedCount
-{
-	gs_total_new_message -= newMessageReadedCount;
-	
-	[self updateBage];
+	[ConversationListManager requestNewerCount:CONVERSATION_REFRESH_WINDOW 
+				       withHandler:@selector(reloadData) 
+					 andTarget:[[self getInstnace] tableView]];
 }
 
 @end

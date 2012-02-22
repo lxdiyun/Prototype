@@ -24,10 +24,12 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 	TextInputer *_inputer;
 	UINavigationController *_navco;
 	BOOL _canUpdateOlder;
+	BOOL _appear;
 }
 @property (strong) TextInputer *inputer;
 @property (strong, nonatomic) UINavigationController *navco;
 @property (assign) BOOL canUpdateOlder;
+@property (assign) BOOL appear;
 
 - (void) updateNewerConversation;
 - (void) updateOlderConversation;
@@ -41,6 +43,13 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 @synthesize inputer = _inputer;
 @synthesize navco = _navco;
 @synthesize canUpdateOlder = _canUpdateOlder;
+@synthesize appear = _appear;
+
+#pragma mark - singleton
+
+DEFINE_SINGLETON(ConversationDetailPage);
+
+#pragma mark - life circle
 
 - (id) initWithStyle:(UITableViewStyle)style
 {
@@ -108,6 +117,8 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 - (void) viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
+	
+	self.appear = YES;
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -118,6 +129,8 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 - (void) viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
+	
+	self.appear = NO;
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -231,17 +244,35 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 					  andTarget:self];
 }
 
+- (void) checkUnreadMesssage
+{
+	NSInteger oldestKey = [ConversationManager oldestKeyForList:self.targetUserID];
+	NSString *oldestID = [[NSString alloc] initWithFormat:@"%d", oldestKey]; 
+	NSDictionary *oldestConversation = [ConversationManager getObject:oldestID  inList:self.targetUserID];
+	BOOL unreadFlag = [[oldestConversation valueForKey:@"is_read"] boolValue];
+	
+	if (unreadFlag)
+	{
+		// may has unread messages, request for them
+		[self updateOlderConversation];
+	}
+	
+	[oldestID release];
+}
+
 - (void) updateNewerConversationHandler
 {	
+	[self checkUnreadMesssage];
+
 	[self refreshTableView];
-	
+
 	[self performSelector:@selector(resetCanUpdateOlder) withObject:nil afterDelay:8.0];
 }
 
 - (void) updateOlderConversationHandler
 {
 	static uint32_t lastOldestID = 0;
-	uint32_t currentOldestID = [ConversationManager getOldestKeyForList:self.targetUserID];
+	uint32_t currentOldestID = [ConversationManager oldestKeyForList:self.targetUserID];
 
 	if (lastOldestID == currentOldestID)
 	{
@@ -251,6 +282,8 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 	{
 		lastOldestID = currentOldestID;
 	}
+	
+	[self checkUnreadMesssage];
 	
 	[self.tableView reloadData];
 }
@@ -275,18 +308,15 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 		
 		NSInteger maxCellIndex = [[ConversationManager keyArrayForList:self.targetUserID] count] - 1;
 		
-		NSInteger newMessageCount  = [ConversationManager newMessageCountForUser:self.targetUserID];
+		BOOL hasUnreadMesasage  = [ConversationManager hasUnreadMessageforUser:self.targetUserID];
 		
-		LOG(@"new message count = %d", newMessageCount);
-		
-		if ( 0 <= maxCellIndex && (0 < newMessageCount))
+		if (hasUnreadMesasage)
 		{
 			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:maxCellIndex inSection:0] 
 					      atScrollPosition:UITableViewScrollPositionBottom 
 						      animated:YES];
-			
-			[ConversationPage subNewMessageBadge:newMessageCount];
-			[ConversationManager setHasNewMessageCount:0 forUser:self.targetUserID];
+			[ConversationPage updateConversationList];
+			[ConversationManager cleanUnreadMessageCountForUser:self.targetUserID];
 		}
 	}
 }
@@ -325,6 +355,25 @@ const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
 - (void) cancelWithTextInputer:(TextInputer *)inputer
 {
 	[self dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark - class interface
+
+- (BOOL) newPushMessageForUser:(NSString *)userID
+{	
+	if ([self.targetUserID isEqualToString:userID] && self.appear)
+	{
+		[self updateNewerConversation];
+		
+		return YES;
+	}
+	
+	return NO;
+}
+
++ (BOOL) newPushMessageForUser:(NSString *)userID
+{
+	return [[self getInstnace] newPushMessageForUser:userID];
 }
 
 @end

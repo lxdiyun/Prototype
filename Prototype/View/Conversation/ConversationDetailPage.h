@@ -12,4 +12,6 @@
 
 @property (strong) NSString *targetUserID;
 
++ (BOOL) newPushMessageForUser:(NSString *)userID;
+
 @end

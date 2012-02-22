@@ -247,7 +247,7 @@
 		48E50D7C14C291B60091627F /* MessageJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageJson.m; sourceTree = "<group>"; };
 		48E8ADF214D0F32A00B9882C /* TagSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagSelector.h; sourceTree = "<group>"; };
 		48E8ADF314D0F32A00B9882C /* TagSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagSelector.m; sourceTree = "<group>"; };
-		48EA6D5514998A84008AE765 /* 美食玩家_debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "美食玩家_debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		48EA6D5514998A84008AE765 /* 美食玩家D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "美食玩家D.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		48EA6D5914998A84008AE765 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		48EA6D5B14998A84008AE765 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		48EA6D5D14998A84008AE765 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -542,7 +542,7 @@
 		48EA6D5614998A84008AE765 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				48EA6D5514998A84008AE765 /* 美食玩家_debug.app */,
+				48EA6D5514998A84008AE765 /* 美食玩家D.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -640,7 +640,7 @@
 			);
 			name = Prototype;
 			productName = Prototype;
-			productReference = 48EA6D5514998A84008AE765 /* 美食玩家_debug.app */;
+			productReference = 48EA6D5514998A84008AE765 /* 美食玩家D.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -814,7 +814,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "美食玩家_debug";
+				PRODUCT_NAME = "美食玩家D";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -853,7 +853,7 @@
 				INFOPLIST_FILE = "Prototype/Prototype-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "美食玩家_debug";
+				PRODUCT_NAME = "美食玩家D";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

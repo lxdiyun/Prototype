@@ -171,9 +171,9 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 
-- (uint32_t) getNewestKeyWithlistID:(NSString *)listID
+- (NSInteger) newestKeyWithlistID:(NSString *)listID
 {
-	uint32_t objectKey = 0;
+	NSInteger objectKey = 0;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
@@ -185,9 +185,9 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	return objectKey;
 }
 
-- (uint32_t) getOldestKeyWithlistID:(NSString *)listID
+- (NSInteger) oldestKeyWithlistID:(NSString *)listID
 {
-	uint32_t objectKey = 0;
+	NSInteger objectKey = 0;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
@@ -200,14 +200,14 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 
-+ (uint32_t) getOldestKeyForList:(NSString *)listID
++ (NSInteger) oldestKeyForList:(NSString *)listID
 {
-	return [[self getInstnace] getOldestKeyWithlistID:listID];
+	return [[self getInstnace] oldestKeyWithlistID:listID];
 }
 
-+ (uint32_t) getNewestKeyForList:(NSString *)listID
++ (NSInteger) newestKeyForList:(NSString *)listID
 {
-	return [[self getInstnace] getNewestKeyWithlistID:listID];
+	return [[self getInstnace] newestKeyWithlistID:listID];
 }
 
 #pragma mark - object in list
@@ -534,7 +534,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t newestKey = [self getNewestKeyWithlistID:listID];
+	uint32_t newestKey = [self newestKeyWithlistID:listID];
 	
 	// this will call the sub class method
 	[request setValue:[self getMethod] forKey:@"method"];
@@ -574,7 +574,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t oldestKey = [self getOldestKeyWithlistID:listID];
+	uint32_t oldestKey = [self oldestKeyWithlistID:listID];
 	
 	// this will call the sub class method
 	[request setValue:[self getMethod] forKey:@"method"];
@@ -648,7 +648,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		return;	
 	}
 	
-	if (0 >= [[self getInstnace] getOldestKeyWithlistID:listID])
+	if (0 >= [[self getInstnace] oldestKeyWithlistID:listID])
 	{
 		[self requestNewerWithListID:listID andCount:count withHandler:handler andTarget:target];
 		return;

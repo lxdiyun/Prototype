@@ -9,21 +9,22 @@
 #import "ConversationManager.h"
 
 #import "Util.h"
+#import "Message.h"
 
 @interface ConversationManager () 
 {
 	NSString *_message;
-	NSMutableDictionary *_messageNewCountDict;
-	
+	NSMutableDictionary *_unreadMessageFlags;
 }
+
 @property (strong) NSString *message;
-@property (strong) NSMutableDictionary *messageNewCountDict;
+@property (strong) NSMutableDictionary *unreadMessageFlags;
 @end
 
 @implementation ConversationManager
 
 @synthesize message = _message;
-@synthesize messageNewCountDict = _messageNewCountDict;
+@synthesize unreadMessageFlags = _unreadMessageFlags;
 
 #pragma mark - singleton
 
@@ -35,7 +36,7 @@ DEFINE_SINGLETON(ConversationManager);
 {
 	@autoreleasepool 
 	{
-		self.messageNewCountDict = [[[NSMutableDictionary alloc] init] autorelease];
+		self.unreadMessageFlags = [[[NSMutableDictionary alloc] init] autorelease];
 	}
 }
 
@@ -54,7 +55,7 @@ DEFINE_SINGLETON(ConversationManager);
 - (void) dealloc
 {
 	self.message = nil;
-	self.messageNewCountDict = nil;
+	self.unreadMessageFlags = nil;
 
 	[super dealloc];
 }
@@ -71,18 +72,31 @@ DEFINE_SINGLETON(ConversationManager);
 	[self requestCreateWithListID:listID withHandler:handler andTarget:target];
 }
 
-+ (void) setHasNewMessageCount:(NSInteger)count forUser:(NSString *)userID
++ (void) cleanUnreadMessageCountForUser:(NSString *)userID
 {
 	@autoreleasepool 
 	{
-		[[[[self class] getInstnace] messageNewCountDict] setValue:[NSNumber numberWithInteger:count] 
+		[[[[self class] getInstnace] unreadMessageFlags] setValue:[NSNumber numberWithBool:NO] 
 								    forKey:userID];
 	}
+	
+}
+
++ (BOOL) hasUnreadMessageforUser:(NSString *)userID
+{
+	NSNumber *hasUnreadMessage = [[[[self class] getInstnace] unreadMessageFlags] 
+				     valueForKey:userID];
+	if (nil == hasUnreadMessage)
+	{
+		return 0;
+	}
+	
+	return [hasUnreadMessage boolValue];
 }
 
 + (NSInteger) newMessageCountForUser:(NSString *)userID
 {
-	NSNumber *newMessageCount = [[[[self class] getInstnace] messageNewCountDict] 
+	NSNumber *newMessageCount = [[[[self class] getInstnace] unreadMessageFlags] 
 				     valueForKey:userID];
 	
 	if (nil == newMessageCount)
@@ -111,33 +125,21 @@ DEFINE_SINGLETON(ConversationManager);
 		    withResult:(NSArray *)result 
 		       forward:(BOOL)forward
 {
-	uint32_t currentNewestID  = [self getNewestKeyWithlistID:listID];
-	uint32_t currentIDCount = [[[self objectKeyArrayDict] valueForKey:listID] count];
-	uint32_t updatedNewestID;
-	uint32_t updatedIDCount;
-	
-	[super updateKeyArrayForList:listID withResult:result forward:forward];
-	
-	updatedNewestID = [self getNewestKeyWithlistID:listID];
-	updatedIDCount = [[[self objectKeyArrayDict] valueForKey:listID] count];
-	
-	if (currentNewestID != updatedNewestID)
+	@autoreleasepool 
 	{
-		NSInteger newMessageCount = updatedIDCount - currentIDCount;
+		NSInteger currentNewestKey = [[self class] newestKeyForList:listID];
 		
-		LOG(@"new message count = %d", newMessageCount);
+		[super updateKeyArrayForList:listID withResult:result forward:forward];
+		
+		NSInteger updatedNewestKey = [[self class] newestKeyForList:listID];
 
-		if (newMessageCount > 0)
+			
+		if (currentNewestKey != updatedNewestKey)
 		{
-			[[self class] setHasNewMessageCount:newMessageCount forUser:listID];
-		}
-		else
-		{
-			[[self class] setHasNewMessageCount:0 forUser:listID];
+			[self.unreadMessageFlags setValue:[NSNumber numberWithBool:YES] forKey:listID];
 		}
 	}
 }
-
 
 #pragma mark - overwrite get method
 
