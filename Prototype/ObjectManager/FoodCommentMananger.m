@@ -18,9 +18,19 @@ DEFINE_SINGLETON(FoodCommentMananger);
 #pragma mark - overwrite super class method
 #pragma mark - overwrite requsest get method
 
-- (NSString *) getObjectType;
+- (id) init
 {
-	return @"food";
+	self = [super init];
+	
+	if (nil != self)
+	{
+		@autoreleasepool 
+		{
+			self.objectTypeString = @"food";
+		}
+	}
+	
+	return self;
 }
 
 @end

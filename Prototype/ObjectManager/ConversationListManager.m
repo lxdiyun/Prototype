@@ -44,6 +44,8 @@ DEFINE_SINGLETON(ConversationListManager);
 				gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
 			}
 			
+			self.getMethodString = @"msg.get_conversation_list";
+			
 			[self bindDaemonResponder];
 		}
 		
@@ -154,17 +156,6 @@ DEFINE_SINGLETON(ConversationListManager);
 	[messageDict release];
 }
 
-#pragma mark - overwrite requsest get method
-
-- (NSString *) getMethod
-{
-	return @"msg.get_conversation_list";
-}
-
-- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
-{
-	// do nothing
-}
 
 #pragma mark - overwrite  key array
 

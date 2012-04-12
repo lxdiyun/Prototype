@@ -105,6 +105,7 @@ BOOL CHECK_NUMBER(NSNumber *object)
 	}
 }
 
+// alert
 BOOL CHECK_STRING(NSString *object)
 {
 	if ((nil != object) && [object isKindOfClass:[NSString class]])
@@ -116,6 +117,18 @@ BOOL CHECK_STRING(NSString *object)
 		CLOG(@"Error object is not an STRING: %@", object);
 		return NO;
 	}
+}
+
+void SHOW_ALERT_TEXT(NSString *title, NSString *message)
+{
+	UIAlertView *alert = [[UIAlertView alloc]  init];
+	
+	alert.title = title;
+	alert.message = message;
+	[alert addButtonWithTitle:@"OK"];
+
+	[alert show];
+	[alert release]; 
 }
 
 @implementation Color

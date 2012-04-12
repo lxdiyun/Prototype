@@ -50,12 +50,12 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 {
 	NSMutableString *messageString = [[objectDict valueForKey:@"msg"] mutableCopy];
 
-	CGSize size = CGSizeMake(width, FONT_SIZE * PROPORTION());
+	CGSize size = CGSizeMake(width, FONT_SIZE);
 	
 	if ((nil != messageString) && (0 < messageString.length))
 	{
 		CGSize constrained = CGSizeMake(width, CGFLOAT_MAX);
-		size = [messageString sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE * PROPORTION()] constrainedToSize:constrained lineBreakMode:UILineBreakModeWordWrap];
+		size = [messageString sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constrained lineBreakMode:UILineBreakModeWordWrap];
 	}
 	
 	[messageString release];
@@ -65,11 +65,11 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 
 + (CGFloat) cellHeightForConversation:(NSDictionary *)objectDict forCellWidth:(CGFloat)width
 {
-	width = width - ((PADING1 + AVATOR_SIZE + 2 * PADING2) * PROPORTION());
+	width = width - ((PADING1 + AVATOR_SIZE + 2 * PADING2));
 	CGFloat messageHeight = [self getConversationSizeFor:objectDict forCommentWidth:width].height;
 	CGFloat minmumHeight = MAX(messageHeight, AVATOR_SIZE);
 	
-	return minmumHeight + (PADING3 + PADING4) * PROPORTION();
+	return minmumHeight + (PADING3 + PADING4);
 }
 
 # pragma mark - life circle
@@ -113,23 +113,23 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 	CGFloat X;
 	CGFloat Y = [[self class] cellHeightForConversation:self.conversationDict 
 					       forCellWidth:self.frame.size.width] 
-	- (PADING4 / 2 + AVATOR_SIZE) * PROPORTION();
+	- (PADING4 / 2 + AVATOR_SIZE);
 	
 	NSNumber * userID = [self.conversationDict valueForKey:@"sender"];
 	
 	if ([userID isEqualToNumber:GET_USER_ID()])
 	{
-		X = self.contentView.frame.size.width - (PADING2 + AVATOR_SIZE) * PROPORTION();
+		X = self.contentView.frame.size.width * PROPORTION() - (PADING2 + AVATOR_SIZE);
 	}
 	else
 	{
-		X = PADING1 * PROPORTION();
+		X = PADING1;
 	}
 	
 	self.avatorImageV = [[[ImageV alloc] initWithFrame:CGRectMake(X, 
 								      Y, 
-								      AVATOR_SIZE * PROPORTION(), 
-								      AVATOR_SIZE * PROPORTION())] 
+								      AVATOR_SIZE, 
+								      AVATOR_SIZE)] 
 			     autorelease];
 	
 	[self.contentView addSubview:self.avatorImageV];
@@ -157,7 +157,7 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 			[self.bubble removeFromSuperview];
 		}
 
-		NSString *fullMessage;
+		NSString *fullMessage = nil;
 		
 		if (nil != self.conversationDict)
 		{
@@ -170,7 +170,7 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 			fullMessage = @" ";
 		}
 		
-		UIFont *font = [UIFont systemFontOfSize:FONT_SIZE * PROPORTION()];
+		UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
 		CGFloat X;
 		CGFloat Y;
 		CGFloat maxWidth;
@@ -181,19 +181,19 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 		
 		if ([userID isEqualToNumber:GET_USER_ID()])
 		{
-			maxWidth = self.contentView.frame.size.width - ((2 * PADING2 + AVATOR_SIZE + PADING1) * PROPORTION());
+			maxWidth = self.contentView.frame.size.width - ((2 * PADING2 + AVATOR_SIZE + PADING1));
 			bestSize = [fullMessage sizeWithFont:font 
 					   constrainedToSize:CGSizeMake(maxWidth, CGFLOAT_MAX)
 					       lineBreakMode:UILineBreakModeWordWrap];
-			X = self.frame.size.width - ((2 * PADING2 + AVATOR_SIZE) * PROPORTION()) - bestSize.width;
+			X = self.frame.size.width * PROPORTION() - ((2 * PADING2 + AVATOR_SIZE)) - bestSize.width;
 			
 			bubbleImage = [[UIImage imageNamed:@"green.png"] stretchableImageWithLeftCapWidth:24 
 											     topCapHeight:15];
 		}
 		else
 		{
-			X = (PADING1 + AVATOR_SIZE + PADING2) * PROPORTION();
-			maxWidth = self.contentView.frame.size.width - (X + PADING2 * PROPORTION());		
+			X = (PADING1 + AVATOR_SIZE + PADING2);
+			maxWidth = self.contentView.frame.size.width - (X + PADING2);		
 			bestSize = [fullMessage sizeWithFont:font 
 					   constrainedToSize:CGSizeMake(maxWidth, CGFLOAT_MAX)
 					       lineBreakMode:UILineBreakModeWordWrap];
@@ -209,7 +209,7 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 		}
 		else
 		{
-			Y = (PADING3 + AVATOR_SIZE) * PROPORTION() - bestSize.height;
+			Y = (PADING3 + AVATOR_SIZE) - bestSize.height;
 		}
 		
 		self.message = [[[UILabel alloc] 
@@ -226,10 +226,10 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 		self.message.lineBreakMode = UILineBreakModeWordWrap;
 		self.message.text = fullMessage;
 		
-		bubbleView.frame = CGRectMake(X - PADING1 * PROPORTION(), 
-					      Y - PADING3 * PROPORTION(), 
-					      bestSize.width + (PADING1 + PADING2) * PROPORTION(), 
-					      bestSize.height + (PADING3 + PADING4) * PROPORTION());
+		bubbleView.frame = CGRectMake(X - PADING1, 
+					      Y - PADING3, 
+					      bestSize.width + (PADING1 + PADING2), 
+					      bestSize.height + (PADING3 + PADING4));
 		bubbleView.image = bubbleImage;
 		bubbleView.highlighted = YES;
 		self.bubble = bubbleView;

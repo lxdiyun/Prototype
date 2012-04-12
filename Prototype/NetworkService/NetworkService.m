@@ -12,21 +12,29 @@
 #import "LoginManager.h"
 #import "Message.h"
 
-@interface NetworkService () <NSStreamDelegate>
+const static NSUInteger NETWORK_TRY_RECONNECT_TIMES = 2;
+const static NSTimeInterval NETWORK_RECONNCECT_INTERVAL = 5; // seconds
+
+@interface NetworkService () <NSStreamDelegate, UIAlertViewDelegate>
 {
 	NSInputStream *_inputStream;
 	NSOutputStream *_outputStream;
+	UIAlertView *_alertView;
 	
 	BOOL _isWriting;
 	BOOL _outputStreamRest;
 	BOOL _inputStreamRest;
+	NSUInteger _reconnectedTimes;
 }
 
 @property (strong) NSInputStream *inputStream;
 @property (strong) NSOutputStream *outputStream;
+@property (strong) UIAlertView *alertView;
 @property (assign) BOOL isWriting;
 @property (assign) BOOL outputStreamRest;
 @property (assign) BOOL inputStreamRest;
+@property (assign) NSUInteger reconnectedTimes;
+
 
 // connection
 - (void) connect;
@@ -39,15 +47,21 @@
 // read
 - (void) readMessage;
 
+// alter
+- (void) showAlter;
+
 @end
 
 @implementation NetworkService
 
 @synthesize inputStream = _inputStream;
 @synthesize outputStream = _outputStream;
+@synthesize alertView = _alertView;
 @synthesize isWriting = _isWriting;
 @synthesize outputStreamRest = _outputStreamRest;
 @synthesize inputStreamRest = _inputStreamRest;
+@synthesize reconnectedTimes = _reconnectedTimes;
+
 
 #pragma mark - singleton
 
@@ -64,6 +78,7 @@ DEFINE_SINGLETON(NetworkService);
 		// init data
 		{
 			self.isWriting = NO;
+			self.reconnectedTimes = 0;
 		}
 		
 		[self connect];
@@ -80,8 +95,40 @@ DEFINE_SINGLETON(NetworkService);
 	// release object
 	self.inputStream = nil;
 	self.outputStream = nil;
+	self.alertView = nil;
 	
 	[super dealloc];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void) showAlter
+{
+	@autoreleasepool 
+	{
+		if (nil == self.alertView)
+		{
+			UIAlertView *alert = [[[UIAlertView alloc]  init] autorelease];
+			alert.delegate = self;
+			alert.title = @"网络异常";
+			alert.message = @"连接服务器失败";
+			[alert addButtonWithTitle:@"离线模式"];
+			[alert addButtonWithTitle:@"重试连接"];
+			self.alertView = alert;
+		}
+		[self.alertView show];
+	}
+}
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (1 == buttonIndex)
+	{
+		self.reconnectedTimes = 0;
+		[self connect];
+	}
+	
+	
 }
 
 #pragma mark - private connection method
@@ -94,10 +141,10 @@ DEFINE_SINGLETON(NetworkService);
 	CFWriteStreamRef writeStream;
 	// TODO: replace the network host address
 	CFStreamCreatePairWithSocketToHost(NULL, 
-					   (CFStringRef)@"175.156.203.104", 
+					   (CFStringRef)@"alpha.meishiwanjia.com", 
 					   4040, 
-					   //					   (CFStringRef)@"192.168.2.107",
-					   //					   8080,
+//					   (CFStringRef)@"192.168.2.113",
+//					   8080,
 					   &readStream, 
 					   &writeStream);
 	self.inputStream = (NSInputStream *)readStream;
@@ -142,11 +189,29 @@ DEFINE_SINGLETON(NetworkService);
 	
 	STOP_PING();
 	ROLLBACK_ALL_PENDING_MESSAGE();
+
+	++self.reconnectedTimes;
 	
-	[self connect];
+	LOG(@"reconnect time = %u", self.reconnectedTimes);
+	
+	if (NETWORK_TRY_RECONNECT_TIMES == self.reconnectedTimes)
+	{
+		[self showAlter];
+	}
+	else
+	{
+		// since we have two streams, we will receive reset twice, 
+		// only connect once is needed
+		if (1 == self.reconnectedTimes % 2)
+		{
+			[self performSelector:@selector(connect) 
+				   withObject:nil 
+				   afterDelay:NETWORK_RECONNCECT_INTERVAL];
+		}
+	}
 }
 
-#pragma mark - NSstream delegate
+#pragma mark - NSStream delegate
 
 - (void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent 
 {
@@ -155,6 +220,11 @@ DEFINE_SINGLETON(NetworkService);
 	{
 		case NSStreamEventOpenCompleted:
 			LOG(@"Stream opened");
+			if ([self.alertView isVisible])
+			{
+				[self.alertView dismissWithClickedButtonIndex:0 animated:YES];
+			}
+			self.reconnectedTimes = 0;
 			if (theStream == self.outputStream)
 			{
 				[LoginManager request];

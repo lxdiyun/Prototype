@@ -82,10 +82,10 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 		[self.avatorImageV removeFromSuperview];
 	}
 	
-	self.avatorImageV = [[[ImageV alloc] initWithFrame:CGRectMake(PADING1 * PROPORTION(), 
-								      PADING3 * PROPORTION(), 
-								      AVATOR_SIZE * PROPORTION(), 
-								      AVATOR_SIZE * PROPORTION())] 
+	self.avatorImageV = [[[ImageV alloc] initWithFrame:CGRectMake(PADING1 , 
+								      PADING3, 
+								      AVATOR_SIZE, 
+								      AVATOR_SIZE)] 
 			     autorelease];
 	
 	[self.contentView addSubview:self.avatorImageV];
@@ -105,18 +105,18 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 		[self.userAndDate removeFromSuperview];
 	}
 	
-	UIFont *font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+	UIFont *font = [UIFont boldSystemFontOfSize:FONT_SIZE];
 	
 	CGFloat X = 2 * PADING1 + AVATOR_SIZE;
 	CGFloat Y = PADING3;
-	CGFloat width = self.contentView.frame.size.width - ((X + PADING2) * PROPORTION());
+	CGFloat width = self.contentView.frame.size.width - ((X + PADING2));
 	CGFloat height = FONT_SIZE;
 	
 	self.userAndDate = [[[UILabel alloc] init] autorelease];
-	self.userAndDate.frame = CGRectMake(X * PROPORTION(),
-					    Y * PROPORTION(),
+	self.userAndDate.frame = CGRectMake(X,
+					    Y,
 					    width,
-					    height * PROPORTION());
+					    height);
 	
 	self.userAndDate.font = font;
 	self.userAndDate.adjustsFontSizeToFitWidth = YES;
@@ -124,7 +124,8 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 	
 	NSString *nick = @"";
 	NSString *createTime  = @"";
-	NSInteger unreadMessageCount;
+	NSInteger unreadMessageCount = 0;
+
 	if (nil != self.userProfile)
 	{
 		nick = [self.userProfile valueForKey:@"nick"];
@@ -157,15 +158,15 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 		[self.message removeFromSuperview];
 	}
 	
-	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE * PROPORTION()];
+	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
 	CGFloat X = 2 * PADING1 + AVATOR_SIZE;
 	CGFloat Y = PADING3 + FONT_SIZE + PADING4;
-	CGFloat width = self.contentView.frame.size.width - ((X + PADING2) * PROPORTION());
+	CGFloat width = self.contentView.frame.size.width - ((X + PADING2));
 	CGFloat height = self.contentView.frame.size.height - Y;
 	
 	self.message = [[[UILabel alloc] 
-			 initWithFrame:CGRectMake(X * PROPORTION(),
-						  Y * PROPORTION(),
+			 initWithFrame:CGRectMake(X,
+						  Y,
 						  width,
 						  height)] 
 			autorelease];

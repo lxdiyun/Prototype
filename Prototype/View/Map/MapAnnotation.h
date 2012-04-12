@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface MapAnnotation : NSObject
+#import <MapKit/MapKit.h>
+
+@interface MapAnnotation : NSObject <MKAnnotation>
+
+@property (strong,nonatomic) NSDictionary *placeObject;
 
 @end

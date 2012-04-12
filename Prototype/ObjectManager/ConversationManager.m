@@ -13,17 +13,14 @@
 
 @interface ConversationManager () 
 {
-	NSString *_message;
 	NSMutableDictionary *_unreadMessageFlags;
 }
 
-@property (strong) NSString *message;
 @property (strong) NSMutableDictionary *unreadMessageFlags;
 @end
 
 @implementation ConversationManager
 
-@synthesize message = _message;
 @synthesize unreadMessageFlags = _unreadMessageFlags;
 
 #pragma mark - singleton
@@ -47,6 +44,9 @@ DEFINE_SINGLETON(ConversationManager);
 	if (nil != self)
 	{
 		[self reset];
+		
+		self.getMethodString = @"msg.get_conversation";
+		self.createMethodString = @"msg.send";
 	}
 	
 	return self;
@@ -54,7 +54,6 @@ DEFINE_SINGLETON(ConversationManager);
 
 - (void) dealloc
 {
-	self.message = nil;
 	self.unreadMessageFlags = nil;
 
 	[super dealloc];
@@ -67,9 +66,15 @@ DEFINE_SINGLETON(ConversationManager);
 	withHandler:(SEL)handler 
 	  andTarget:target
 {
-	[[self getInstnace] setMessage:message];
-	
-	[self requestCreateWithListID:listID withHandler:handler andTarget:target];
+	@autoreleasepool 
+	{
+		NSMutableDictionary *newConversation = [[[NSMutableDictionary alloc] init] autorelease];
+		
+		[newConversation setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"user_id"];
+		[newConversation setValue:message forKey:@"msg"];
+		
+		[self requestCreateWithObject:newConversation inList:listID withHandler:handler andTarget:target];
+	}
 }
 
 + (void) cleanUnreadMessageCountForUser:(NSString *)userID
@@ -143,32 +148,11 @@ DEFINE_SINGLETON(ConversationManager);
 
 #pragma mark - overwrite get method
 
-- (NSString *) getMethod
-{
-	return @"msg.get_conversation";
-}
-
-- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
+- (void) configGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
 {
 	@autoreleasepool 
 	{
 		[params setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"user_id"];
-	}
-}
-
-#pragma mark - overwrite create method
-
-- (NSString *) createMethod
-{
-	return @"msg.send";
-}
-
-- (void) setCreateMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
-{
-	@autoreleasepool 
-	{
-		[params setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"user_id"];
-		[params setValue:self.message forKey:@"msg"];
 	}
 }
 

@@ -26,9 +26,14 @@ DEFINE_SINGLETON(EventManager);
 	
 	if (nil != self) 
 	{
-		if (nil == gs_fakeListID)
+		@autoreleasepool 
 		{
-			gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
+			if (nil == gs_fakeListID)
+			{
+				gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
+			}
+			
+			self.getMethodString = @"event.get";
 		}
 	}
 	
@@ -135,18 +140,6 @@ DEFINE_SINGLETON(EventManager);
 	[newUserSet release];
 	[newPicSet release];
 	[messageDict release];
-}
-
-#pragma mark - overwrite requsest get method
-
-- (NSString *) getMethod
-{
-	return @"event.get";
-}
-
-- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
-{
-	// do nothing
 }
 
 @end

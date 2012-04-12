@@ -8,121 +8,183 @@
 
 #import "FoodMapListPage.h"
 
+#import "FoodMapListManager.h"
+#import "Util.h"
+#import "MapViewPage.h"
+#import "LoginManager.h"
+
+const static uint32_t MAP_LIST_REFRESH_WINDOW = 21;
+const static uint32_t ROW_TO_MORE_MAP_LIST_FROM_BOTTOM = 8;
+
 @interface FoodMapListPage ()
+{
+	NSString *_loginUserID;
+	MapViewPage *_mapView;
+}
+
+@property (strong) NSString *loginUserID;
+@property (strong) MapViewPage *mapView;
 
 @end
 
 @implementation FoodMapListPage
 
-- (id)initWithStyle:(UITableViewStyle)style
+@synthesize loginUserID = _loginUserID;
+@synthesize mapView = _mapView;
+
+- (id) initWithStyle:(UITableViewStyle)style
 {
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+	self = [super initWithStyle:style];
+
+	if (self) 
+	{
+		// Custom initialization
+	}
+	return self;
 }
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
-    [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	[super viewDidLoad];
 }
 
-- (void)viewDidUnload
+- (void) viewDidUnload
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+	self.loginUserID = nil;
+	self.mapView = nil;
+
+	[super viewDidUnload];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (void) requestFoodNewerMapList
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	self.loginUserID = [GET_USER_ID() stringValue];
+	
+	if (nil != self.loginUserID)
+	{
+		[FoodMapListManager requestNewerWithListID:self.loginUserID 
+						  andCount:MAP_LIST_REFRESH_WINDOW 
+					       withHandler:@selector(reloadData) 
+						 andTarget:self.tableView];
+	}
+	else 
+	{
+		[LoginManager requestWithHandler:@selector(requestFoodNewerMapList) andTarget:self];
+	}
+}
+
+- (void) requestFoodOlderMapList
+{
+	self.loginUserID = [GET_USER_ID() stringValue];
+	
+	if (nil != self.loginUserID)
+	{
+		[FoodMapListManager requestOlderWithListID:self.loginUserID 
+						  andCount:MAP_LIST_REFRESH_WINDOW 
+					       withHandler:@selector(reloadData) 
+						 andTarget:self.tableView];
+	}
+	else 
+	{
+		[LoginManager requestWithHandler:@selector(requestFoodOlderMapList) andTarget:self];
+	}
+}
+
+- (void) requestMiddleMapList:(NSString *)mapID
+{
+	self.loginUserID = [GET_USER_ID() stringValue];
+	
+	if (nil != self.loginUserID)
+	{
+		[FoodMapListManager requestMiddle:mapID 
+					 inListID:self.loginUserID 
+					 andCount:MAP_LIST_REFRESH_WINDOW 
+				      withHandler:nil 
+					andTarget:nil];
+	}
+	else 
+	{
+		return;
+	}
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+	[self requestFoodNewerMapList];
+}
+
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+	return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
+
+	return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
+	if (nil != self.loginUserID)
+	{
+		return [[FoodMapListManager keyArrayForList:self.loginUserID] count];
+	}
+	else {
+		return 0;
+	}
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    
-    // Configure the cell...
-    
-    return cell;
-}
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
+	static NSString *CellIdentifier = @"Cell";
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	
+	if (cell == nil) 
+	{
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	}
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
+	@autoreleasepool 
+	{
+		NSArray *keyArray = [FoodMapListManager keyArrayForList:self.loginUserID];
+		NSString *mapkey = [keyArray objectAtIndex:indexPath.row];
+		NSDictionary *foodMap = [FoodMapListManager getObject:mapkey inList:self.loginUserID];
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
+		cell.textLabel.text = [foodMap valueForKey:@"title"];
+		cell.detailTextLabel.text = [foodMap valueForKey:@"intro"];
+	}
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+	return cell;
 }
-*/
 
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+	@autoreleasepool
+	{
+		if (nil == self.mapView)
+		{
+			self.mapView = [[[MapViewPage alloc] init] autorelease];
+		}
+
+		NSArray *keyArray = [FoodMapListManager keyArrayForList:self.loginUserID];
+		NSString *mapkey = [keyArray objectAtIndex:indexPath.row];
+		NSDictionary *foodMap = [FoodMapListManager getObject:mapkey inList:self.loginUserID];
+
+		self.mapView.mapObject = foodMap;
+		
+		[self requestMiddleMapList:[[foodMap valueForKey:@"id"] stringValue]];
+
+		[self.navigationController pushViewController:self.mapView animated:YES];
+	}
 }
 
 @end

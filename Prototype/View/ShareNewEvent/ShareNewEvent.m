@@ -91,7 +91,6 @@
 		
 		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:2.0];
 	}
-
 }
 
 #pragma mark - interface

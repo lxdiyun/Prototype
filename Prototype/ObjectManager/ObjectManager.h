@@ -66,5 +66,7 @@
 - (NSString *) getMethod;
 // create method
 - (NSString *) createMethod;
+// update method
+- (NSString *) updateMethod;
 
 @end

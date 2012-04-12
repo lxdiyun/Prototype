@@ -130,7 +130,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 
 		self.imagePickerController.sourceType = sourceType;
 		self.imagePickerController.delegate = self;
-
+		
 		[self.delegate showModalView:self.imagePickerController];
 	}
 }

@@ -13,17 +13,15 @@
 
 @interface CommentManager ()
 {
-	NSString *_createCommentString;
-	
+
 }
-@property (strong) NSString *createCommentString;
 
 
 @end
 
 @implementation CommentManager
 
-@synthesize createCommentString = _createCommentString;
+@synthesize objectTypeString;
 
 #pragma mark - life circle
 
@@ -33,27 +31,48 @@
 	return nil;
 }
 
+- (id) init
+{
+	self = [super init];
+
+	if (nil != self)
+	{
+		@autoreleasepool 
+		{
+			self.createMethodString = @"comment.create";
+			self.getMethodString = @"comment.get";
+			self.objectTypeString = nil;
+		}
+	}
+	
+	return self;
+}
+
 
 - (void) dealloc
 {
-	self.createCommentString = nil;
-
+	self.objectTypeString = nil;
+	
+	[super dealloc];
 }
 
 #pragma mark - class interface
 + (void) createComment:(NSString *)text forList:(NSString *)listID withHandler:(SEL)handler andTarget:target
 {
-	[[self getInstnace] setCreateCommentString:text];
-
-	[self requestCreateWithListID:listID withHandler:handler andTarget:target];
+	@autoreleasepool 
+	{
+		
+		
+		NSMutableDictionary *newComment = [[[NSMutableDictionary alloc] init] autorelease];
+		
+		[newComment setValue:text forKey:@"msg"];
+		[newComment setValue:[NSNumber numberWithInt:[listID intValue]]  forKey:@"obj_id"];
+		[newComment setValue:[[self getInstnace] objectTypeString] forKey:@"obj_type"];
+		
+		[self requestCreateWithObject:newComment inList:listID withHandler:handler andTarget:target];
+	}
 }
 
-#pragma mark - method that must be overwrite by subclass
-- (NSString *) getObjectType;
-{
-	LOG(@"Error should use the subclass method");
-	return nil;
-}
 
 #pragma mark - overwrite super class method
 #pragma mark - overwrite handler
@@ -92,36 +111,14 @@
 
 #pragma mark - overwrite super classs get method
 
-- (NSString *) getMethod
-{
-	return @"comment.get";
-}
-
-- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
+- (void) configGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
 {
 	@autoreleasepool 
 	{
-		[params setValue:[self getObjectType] forKey:@"obj_type"];
+		[params setValue:self.objectTypeString forKey:@"obj_type"];
 		[params setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"obj_id"];
 	}
 	
-}
-
-#pragma mark - overwrite super classs create method
-
-- (NSString *) createMethod
-{
-	return @"comment.create";
-}
-
-- (void) setCreateMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
-{
-	@autoreleasepool 
-	{
-		[params setValue:[self getObjectType] forKey:@"obj_type"];
-		[params setValue:[NSNumber numberWithInt:[listID intValue]] forKey:@"obj_id"];
-		[params setValue:self.createCommentString forKey:@"msg"];
-	}
 }
 
 @end

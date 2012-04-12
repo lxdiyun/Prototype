@@ -48,6 +48,12 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 @synthesize lastUpdatedDateDict = _lastUpdatedDateDict;
 @synthesize messageDict = _messageDict;
 
+// C.R.U.D
+@synthesize createMethodString;
+@synthesize getMethodString;
+@synthesize updateMethodString;
+@synthesize deleteMethodString;
+
 #pragma mark - life circle
 
 - (id) init
@@ -64,6 +70,11 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 			self.objectKeyArrayDict = [[[NSMutableDictionary alloc] init] autorelease];
 			self.lastUpdatedDateDict = [[[NSMutableDictionary alloc] init] autorelease];
 			self.messageDict = [[[NSMutableDictionary alloc] init] autorelease];
+			
+			self.createMethodString = nil;
+			self.getMethodString = nil;
+			self.updateMethodString = nil;
+			self.deleteMethodString = nil;
 		}
 	}
 	
@@ -78,6 +89,11 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	self.objectKeyArrayDict = nil;
 	self.lastUpdatedDateDict = nil;
 	self.messageDict = nil;
+	
+	self.createMethodString = nil;
+	self.getMethodString = nil;
+	self.updateMethodString = nil;
+	self.deleteMethodString = nil;
 	
 	[super dealloc];
 }
@@ -308,7 +324,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 #pragma mark - update time
 
-+ (NSDate *)lastUpdatedDateForList:(NSString *)listID
++ (NSDate *) lastUpdatedDateForList:(NSString *)listID
 {
 	if (!CHECK_STRING(listID))
 	{
@@ -424,11 +440,15 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 			[self getMethodHandler:dict withListID:ID forward:NO];
 		}
 			break;
+		case REQUEST_MIDDLE:
 		case REQUEST_OLDER:
 			[self getMethodHandler:dict withListID:ID forward:YES];
 			break;
 		case LIST_OBJECT_CREATE:
 			[self createMethodHanlder:dict withListID:ID];
+			break;
+		case LIST_OBJECT_UPDATE:
+			[self updateMethodHandler:dict withListID:ID];
 		default:
 			break;
 	}
@@ -509,15 +529,10 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 #pragma mark - get method interface
 
-- (NSString *) getMethod
+- (void) configGetMethodParams:(NSMutableDictionary *)params 
+			  forList:(NSString *)listID
 {
-	LOG(@"Error should use the subclass method");
-	return nil;
-}
-
-- (void) setGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
-{
-	LOG(@"Error should use the subclass method");
+	// default do nothing
 }
 
 - (void ) setParms:(NSMutableDictionary*)params 
@@ -537,8 +552,8 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	uint32_t newestKey = [self newestKeyWithlistID:listID];
 	
 	// this will call the sub class method
-	[request setValue:[self getMethod] forKey:@"method"];
-	[self setGetMethodParams:params forList:listID];
+	[request setValue:self.getMethodString forKey:@"method"];
+	[self configGetMethodParams:params forList:listID];
 	
 	if (0 < newestKey)
 	{
@@ -549,13 +564,53 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		[self setParms:params withCursor:-1 count:count forward:YES];
 	}
 	
-	[request setValue:params forKey:@"params"];
+	if (0 < params.count)
+	{
+		[request setValue:params forKey:@"params"];
+	}
 	
 	uint32_t messageID = GET_MSG_ID();
 	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
 	
 	// bind the handler
 	[self bindMessageID:messageIDString withListID:[listID intValue] withType:REQUEST_NEWER];
+	
+	// then send
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
+						      self, 
+						      @selector(messageDispatcher:), 
+						      NORMAL_PRIORITY,
+						      messageID);
+	
+	
+	[messageIDString release];
+	[params release];
+	[request release];
+}
+
+- (void) sendRequestMiddle:(NSString *)objectID 
+		     withCount:(uint32_t)count 
+		withListID:(NSString *)listID
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	
+	// this will call the sub class method
+	[request setValue:self.getMethodString forKey:@"method"];
+	[self configGetMethodParams:params forList:listID];
+	
+	[self setParms:params withCursor:[objectID intValue] count:count forward:YES];
+	
+	if (0 < params.count)
+	{
+		[request setValue:params forKey:@"params"];
+	}
+	
+	uint32_t messageID = GET_MSG_ID();
+	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
+	
+	// bind the handler
+	[self bindMessageID:messageIDString withListID:[listID intValue] withType:REQUEST_MIDDLE];
 	
 	// then send
 	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
@@ -577,22 +632,22 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	uint32_t oldestKey = [self oldestKeyWithlistID:listID];
 	
 	// this will call the sub class method
-	[request setValue:[self getMethod] forKey:@"method"];
-	[self setGetMethodParams:params forList:listID];
+	[request setValue:self.getMethodString forKey:@"method"];
+	[self configGetMethodParams:params forList:listID];
 	
 	if (0 < oldestKey)
 	{
 		[self setParms:params withCursor:oldestKey count:count forward:YES];
-		[request setValue:params forKey:@"params"];
-		
-		
 	}
 	else
 	{
 		[self setParms:params withCursor:-1 count:count forward:YES];
 	}
 	
-	[request setValue:params forKey:@"params"];
+	if (0 < params.count)
+	{
+		[request setValue:params forKey:@"params"];
+	}
 	
 	uint32_t messageID = GET_MSG_ID();
 	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
@@ -666,7 +721,35 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[[self getInstnace] sendRequestOlderWithCount:count withListID:listID];
 }
 
-#pragma mark create method handler
++ (void) requestMiddle:(NSString *)objectID
+	      inListID:(NSString *)listID 
+	      andCount:(uint32_t)count 
+	   withHandler:(SEL)handler 
+	     andTarget:(id)target
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	if (!CHECK_STRING(objectID))
+	{
+		return;
+	}
+	
+	if (NO == [self requestUpdateWith:REQUEST_MIDDLE withListID:listID])
+	{
+		return;
+	}
+	
+	// bind target
+	[[self getInstnace] bindMessageType:REQUEST_MIDDLE withListID:listID withHandler:handler andTarget:target ];
+	
+	// then send request
+	[[self getInstnace] sendRequestMiddle:objectID withCount:count withListID:listID];
+}
+
+#pragma mark create method - handler
 
 - (void) createMethodHanlder:(id)result withListID:(NSString *)listID;
 {
@@ -693,28 +776,28 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[resultArray release];
 }
 
-#pragma mark - create method
+#pragma mark - create method - request
 
-- (NSString *) createMethod
+- (void) configCreateMethodParams:(NSMutableDictionary *)params 
+			forObject:(NSDictionary *)object
+			   inList:(NSString *)listID
 {
-	LOG(@"Error should use the subclass method");
-	return nil;
-}
-- (void) setCreateMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID
-{
-	LOG(@"Error should use the subclass method");
+	[params addEntriesFromDictionary:object];
 }
 
-- (void) sendRequestCreateWithListID:(NSString *)listID
+- (void) sendRequestCreateForObject:(NSDictionary *)newObject inList:(NSString *)listID
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
 	
 	// this will call the sub class method
-	[request setValue:[self createMethod] forKey:@"method"];
-	[self setCreateMethodParams:params forList:listID];
+	[request setValue:self.createMethodString forKey:@"method"];
+	[self configCreateMethodParams:params forObject:newObject inList:listID];
 	
-	[request setValue:params forKey:@"params"];
+	if (0 < params.count)
+	{
+		[request setValue:params forKey:@"params"];
+	}
 	
 	uint32_t messageID = GET_MSG_ID();
 	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
@@ -735,7 +818,8 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[request release];
 }
 
-+ (void) requestCreateWithListID:(NSString *)listID 
++ (void) requestCreateWithObject:(NSDictionary *)newobject
+			  inList:(NSString *)listID 
 		     withHandler:(SEL)handler 
 		       andTarget:(id)target
 {
@@ -751,7 +835,97 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 				  andTarget:target];
 	
 	// then send request
-	[[self getInstnace] sendRequestCreateWithListID:listID];
+	[[self getInstnace] sendRequestCreateForObject:newobject inList:listID];
+}
+
+#pragma mark update method - handler
+
+- (void) updateMethodHandler:(id)result withListID:(NSString *)listID;
+{
+	NSDictionary *messageDict = [(NSDictionary*)result retain];
+	NSMutableArray *resultArray = [[NSMutableArray alloc] init];
+	NSDictionary *listDict = [self.objectDict valueForKey:listID];
+	
+	if (nil == listDict)
+	{
+		listDict = [[NSMutableDictionary alloc] init];
+		[self.objectDict setValue:listDict forKey:listID];
+		[listDict autorelease];
+	}
+	
+	NSDictionary *object = [messageDict objectForKey:@"result"];
+	
+	[listDict setValue:object forKey:[[object valueForKey:@"id"] stringValue]];
+	[resultArray insertObject:object atIndex:0];
+	
+	// update object key array
+	[self updateKeyArrayForList:listID withResult:resultArray forward:NO];
+	
+	[messageDict release];
+	[resultArray release];
+}
+
+#pragma mark - update method - request
+
+- (void) configUpdateParams:(NSMutableDictionary *)params 
+		  forObject:(NSDictionary *)object
+		     inList:(NSString *)listID;
+{
+	[params addEntriesFromDictionary:object];
+}
+
+- (void) sendRequestUpdateForObject:(NSDictionary *)object 
+			     inList:(NSString *)listID
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	
+	// this will call the sub class method
+	[request setValue:self.updateMethodString forKey:@"method"];
+	[self configUpdateParams:params forObject:object inList:listID];
+	
+	if (0 < params.count)
+	{
+		[request setValue:params forKey:@"params"];
+	}
+	
+	uint32_t messageID = GET_MSG_ID();
+	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
+	
+	// bind the handler
+	[self bindMessageID:messageIDString withListID:[listID intValue] withType:LIST_OBJECT_CREATE];
+	
+	// then send
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
+						      self, 
+						      @selector(messageDispatcher:), 
+						      NORMAL_PRIORITY,
+						      messageID);
+	
+	
+	[messageIDString release];
+	[params release];
+	[request release];
+}
+
++ (void) requestUpdateWithObject:(NSDictionary *)object 
+			  inList:(NSString *)listID
+		     withHandler:(SEL)handler
+		       andTarget:(id)target
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	// bind target
+	[[self getInstnace] bindMessageType:LIST_OBJECT_CREATE 
+				 withListID:listID 
+				withHandler:handler 
+				  andTarget:target];
+	
+	// then send request
+	[[self getInstnace] sendRequestUpdateForObject:object inList:listID];
 }
 
 @end

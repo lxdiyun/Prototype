@@ -1,5 +1,5 @@
 //
-//  MapManager.h
+//  FoodMapListManager.h
 //  Prototype
 //
 //  Created by Adrian Lee on 3/26/12.
@@ -8,6 +8,10 @@
 
 #import "ListObjectManager.h"
 
-@interface MapManager : ListObjectManager
+@interface FoodMapListManager : ListObjectManager
+
++ (void) updateFoodMap:(NSDictionary *)foodMap 
+	   withHandler:(SEL)handler 
+	     andTarget:target;
 
 @end

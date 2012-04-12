@@ -10,4 +10,6 @@
 
 @interface MapViewPage : UIViewController
 
+@property (strong) NSDictionary *mapObject;
+
 @end

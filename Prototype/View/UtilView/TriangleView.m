@@ -45,8 +45,6 @@
 	
 	CGContextSetFillColorWithColor(ctx, [self.color CGColor]);
 	CGContextFillPath(ctx);
-
-
 }
 
 @end

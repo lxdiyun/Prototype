@@ -1,13 +1,15 @@
-//
-//  MKMapView+ZoomLevel.h
-//  Prototype
-//
-//  Created by Adrian Lee on 3/29/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
+// MKMapView+ZoomLevel.h
+#import <MapKit/MapKit.h>
 
-#import <Foundation/Foundation.h>
+@interface MKMapView (ZoomLevel)
 
-@interface MKMapView_ZoomLevel : NSObject
+- (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
+    zoomLevel:(NSUInteger)zoomLevel
+    animated:(BOOL)animated;
+
+-(MKCoordinateRegion)coordinateRegionWithMapView:(MKMapView *)mapView
+                                centerCoordinate:(CLLocationCoordinate2D)centerCoordinate
+								andZoomLevel:(NSUInteger)zoomLevel;
+- (NSUInteger) zoomLevel;
 
 @end

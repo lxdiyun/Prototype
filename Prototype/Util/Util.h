@@ -102,6 +102,9 @@ CGFloat PROPORTION(void);
 BOOL CHECK_NUMBER(NSNumber *object);
 BOOL CHECK_STRING(NSString *object);
 
+// alert
+void SHOW_ALERT_TEXT(NSString *title, NSString *message);
+
 @interface Color : NSObject 
 
 + (UIColor *) whiteColor;

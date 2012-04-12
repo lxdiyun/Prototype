@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		481671D215204112001217AE /* FoodMapListManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 481671D115204112001217AE /* FoodMapListManager.m */; };
+		481671D61522F99E001217AE /* FoodMapListPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 481671D51522F99E001217AE /* FoodMapListPage.m */; };
+		481671D915230FCC001217AE /* PlaceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 481671D815230FCC001217AE /* PlaceManager.m */; };
+		481671DC15244789001217AE /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 481671DB15244789001217AE /* MKMapView+ZoomLevel.m */; };
+		481671EB152462FD001217AE /* MapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 481671EA152462FD001217AE /* MapAnnotation.m */; };
 		481D4AF314DBD19800979A20 /* ConversationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF214DBD19800979A20 /* ConversationManager.m */; };
 		481D4AF714DBD39600979A20 /* ConversationDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF614DBD39600979A20 /* ConversationDetailPage.m */; };
 		481D4AFA14DBDBE500979A20 /* DetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF914DBDBE500979A20 /* DetailCell.m */; };
@@ -15,6 +20,8 @@
 		4832407C14A9A4150084584F /* AvatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatorCell.m */; };
 		4832408914A9B9BC0084584F /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832408814A9B9BC0084584F /* EventCell.m */; };
 		4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */; };
+		48333C45151309AE003475BE /* MapViewPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48333C44151309AE003475BE /* MapViewPage.m */; };
+		48333C4A15130D48003475BE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48333C4915130D48003475BE /* MapKit.framework */; };
 		485D47EF14DF7D0200E6AE41 /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 485D47ED14DF7D0200E6AE41 /* green.png */; };
 		485D47F014DF7D0200E6AE41 /* grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 485D47EE14DF7D0200E6AE41 /* grey.png */; };
 		485D480214E0D96700E6AE41 /* WebPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 485D480114E0D96700E6AE41 /* WebPage.m */; };
@@ -30,6 +37,13 @@
 		48917C2B14A8682300C72AE9 /* FoodPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C2914A8682300C72AE9 /* FoodPage.m */; };
 		48917C3314A86E0800C72AE9 /* FoodImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48917C3114A86E0800C72AE9 /* FoodImageCell.m */; };
 		489313571499D124004A4250 /* UserInfoPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 489313551499D124004A4250 /* UserInfoPage.m */; };
+		4898B9DE1526AABD004DA280 /* LogoutPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4898B9DD1526AABD004DA280 /* LogoutPage.m */; };
+		4898B9FE1526EDE7004DA280 /* FoodMap.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898B9F81526EDE7004DA280 /* FoodMap.png */; };
+		4898B9FF1526EDE7004DA280 /* FoodMap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898B9F91526EDE7004DA280 /* FoodMap@2x.png */; };
+		4898BA081526EE81004DA280 /* Logout.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898BA041526EE81004DA280 /* Logout.png */; };
+		4898BA091526EE81004DA280 /* Logout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898BA051526EE81004DA280 /* Logout@2x.png */; };
+		4898BA0A1526EE81004DA280 /* UserInfo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898BA061526EE81004DA280 /* UserInfo.png */; };
+		4898BA0B1526EE81004DA280 /* UserInfo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898BA071526EE81004DA280 /* UserInfo@2x.png */; };
 		48A4548B14BD336300E8FA58 /* FoodCommentMananger.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A4548A14BD336300E8FA58 /* FoodCommentMananger.m */; };
 		48AE48F314BED7C1002DA60D /* FoodTagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AE48F214BED7C1002DA60D /* FoodTagCell.m */; };
 		48AE48F614BEDAB3002DA60D /* FourCountView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AE48F514BEDAB3002DA60D /* FourCountView.m */; };
@@ -105,6 +119,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		481671D015204112001217AE /* FoodMapListManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodMapListManager.h; sourceTree = "<group>"; };
+		481671D115204112001217AE /* FoodMapListManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodMapListManager.m; sourceTree = "<group>"; };
+		481671D41522F99E001217AE /* FoodMapListPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FoodMapListPage.h; path = View/Map/FoodMapListPage.h; sourceTree = "<group>"; };
+		481671D51522F99E001217AE /* FoodMapListPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FoodMapListPage.m; path = View/Map/FoodMapListPage.m; sourceTree = "<group>"; };
+		481671D715230FCB001217AE /* PlaceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceManager.h; sourceTree = "<group>"; };
+		481671D815230FCC001217AE /* PlaceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceManager.m; sourceTree = "<group>"; };
+		481671DA15244752001217AE /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MKMapView+ZoomLevel.h"; path = "Util/MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
+		481671DB15244789001217AE /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "MKMapView+ZoomLevel.m"; path = "Util/MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
+		481671E9152462FD001217AE /* MapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapAnnotation.h; path = View/Map/MapAnnotation.h; sourceTree = "<group>"; };
+		481671EA152462FD001217AE /* MapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapAnnotation.m; path = View/Map/MapAnnotation.m; sourceTree = "<group>"; };
 		481D4AF114DBD19800979A20 /* ConversationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationManager.h; sourceTree = "<group>"; };
 		481D4AF214DBD19800979A20 /* ConversationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationManager.m; sourceTree = "<group>"; };
 		481D4AF514DBD39600979A20 /* ConversationDetailPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationDetailPage.h; sourceTree = "<group>"; };
@@ -121,6 +145,9 @@
 		4832408814A9B9BC0084584F /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventCell.m; path = View/Event/EventCell.m; sourceTree = "<group>"; };
 		4832B28B14CD16DA0021F5AB /* CreateFoodFourCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateFoodFourCount.h; sourceTree = "<group>"; };
 		4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateFoodFourCount.m; sourceTree = "<group>"; };
+		48333C43151309AE003475BE /* MapViewPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapViewPage.h; path = View/Map/MapViewPage.h; sourceTree = "<group>"; };
+		48333C44151309AE003475BE /* MapViewPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapViewPage.m; path = View/Map/MapViewPage.m; sourceTree = "<group>"; };
+		48333C4915130D48003475BE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		485D47ED14DF7D0200E6AE41 /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green.png; sourceTree = "<group>"; };
 		485D47EE14DF7D0200E6AE41 /* grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey.png; sourceTree = "<group>"; };
 		485D480014E0D96700E6AE41 /* WebPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPage.h; sourceTree = "<group>"; };
@@ -148,6 +175,14 @@
 		48917C3114A86E0800C72AE9 /* FoodImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FoodImageCell.m; path = View/Food/FoodImageCell.m; sourceTree = "<group>"; };
 		489313541499D124004A4250 /* UserInfoPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserInfoPage.h; path = View/UserInformation/UserInfoPage.h; sourceTree = "<group>"; };
 		489313551499D124004A4250 /* UserInfoPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserInfoPage.m; path = View/UserInformation/UserInfoPage.m; sourceTree = "<group>"; };
+		4898B9DC1526AABD004DA280 /* LogoutPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogoutPage.h; sourceTree = "<group>"; };
+		4898B9DD1526AABD004DA280 /* LogoutPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogoutPage.m; sourceTree = "<group>"; };
+		4898B9F81526EDE7004DA280 /* FoodMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FoodMap.png; sourceTree = "<group>"; };
+		4898B9F91526EDE7004DA280 /* FoodMap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FoodMap@2x.png"; sourceTree = "<group>"; };
+		4898BA041526EE81004DA280 /* Logout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Logout.png; sourceTree = "<group>"; };
+		4898BA051526EE81004DA280 /* Logout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Logout@2x.png"; sourceTree = "<group>"; };
+		4898BA061526EE81004DA280 /* UserInfo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UserInfo.png; sourceTree = "<group>"; };
+		4898BA071526EE81004DA280 /* UserInfo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserInfo@2x.png"; sourceTree = "<group>"; };
 		48A4548914BD336300E8FA58 /* FoodCommentMananger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodCommentMananger.h; sourceTree = "<group>"; };
 		48A4548A14BD336300E8FA58 /* FoodCommentMananger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodCommentMananger.m; sourceTree = "<group>"; };
 		48AE48F114BED7C1002DA60D /* FoodTagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FoodTagCell.h; path = View/Food/FoodTagCell.h; sourceTree = "<group>"; };
@@ -270,6 +305,7 @@
 			files = (
 				48CE914514ADA0A700B1E9D3 /* QuartzCore.framework in Frameworks */,
 				48EA6D5A14998A84008AE765 /* UIKit.framework in Frameworks */,
+				48333C4A15130D48003475BE /* MapKit.framework in Frameworks */,
 				48EA6D5C14998A84008AE765 /* Foundation.framework in Frameworks */,
 				48EA6D5E14998A84008AE765 /* CoreGraphics.framework in Frameworks */,
 				48EA6D6014998A84008AE765 /* CoreData.framework in Frameworks */,
@@ -286,6 +322,8 @@
 				4820460614A41D7C001120C1 /* Util.m */,
 				48B0D0A614C5135A00517100 /* UIImage+Scale.h */,
 				48B0D0A714C5135A00517100 /* UIImage+Scale.m */,
+				481671DA15244752001217AE /* MKMapView+ZoomLevel.h */,
+				481671DB15244789001217AE /* MKMapView+ZoomLevel.m */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -299,6 +337,19 @@
 				4832408814A9B9BC0084584F /* EventCell.m */,
 			);
 			name = Event;
+			sourceTree = "<group>";
+		};
+		48333C4115130960003475BE /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				48333C43151309AE003475BE /* MapViewPage.h */,
+				48333C44151309AE003475BE /* MapViewPage.m */,
+				481671D41522F99E001217AE /* FoodMapListPage.h */,
+				481671D51522F99E001217AE /* FoodMapListPage.m */,
+				481671E9152462FD001217AE /* MapAnnotation.h */,
+				481671EA152462FD001217AE /* MapAnnotation.m */,
+			);
+			name = Map;
 			sourceTree = "<group>";
 		};
 		485D47FE14E0D95000E6AE41 /* Webpage */ = {
@@ -316,6 +367,8 @@
 			children = (
 				48635FA214D791260008CD6A /* LoginPage.h */,
 				48635FA314D791260008CD6A /* LoginPage.m */,
+				4898B9DC1526AABD004DA280 /* LogoutPage.h */,
+				4898B9DD1526AABD004DA280 /* LogoutPage.m */,
 			);
 			name = Login;
 			path = View/Login;
@@ -403,6 +456,10 @@
 				4891276E14DB838B003E7FEB /* ConversationListManager.m */,
 				481D4AF114DBD19800979A20 /* ConversationManager.h */,
 				481D4AF214DBD19800979A20 /* ConversationManager.m */,
+				481671D015204112001217AE /* FoodMapListManager.h */,
+				481671D115204112001217AE /* FoodMapListManager.m */,
+				481671D715230FCB001217AE /* PlaceManager.h */,
+				481671D815230FCC001217AE /* PlaceManager.m */,
 			);
 			path = ObjectManager;
 			sourceTree = "<group>";
@@ -509,6 +566,12 @@
 		48E2E1C914C7B44600223175 /* IconForTab */ = {
 			isa = PBXGroup;
 			children = (
+				4898BA041526EE81004DA280 /* Logout.png */,
+				4898BA051526EE81004DA280 /* Logout@2x.png */,
+				4898BA061526EE81004DA280 /* UserInfo.png */,
+				4898BA071526EE81004DA280 /* UserInfo@2x.png */,
+				4898B9F81526EDE7004DA280 /* FoodMap.png */,
+				4898B9F91526EDE7004DA280 /* FoodMap@2x.png */,
 				48E2E1CA14C7B44600223175 /* HomePage.png */,
 				48E2E1CB14C7B44600223175 /* HomePage@2x.png */,
 				48E2E1CC14C7B44600223175 /* More.png */,
@@ -550,6 +613,7 @@
 		48EA6D5814998A84008AE765 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				48333C4915130D48003475BE /* MapKit.framework */,
 				48CE914414ADA0A700B1E9D3 /* QuartzCore.framework */,
 				48EA6D5914998A84008AE765 /* UIKit.framework */,
 				48EA6D5B14998A84008AE765 /* Foundation.framework */,
@@ -584,6 +648,7 @@
 		48EA6D7514998AC3008AE765 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				48333C4115130960003475BE /* Map */,
 				485D47FE14E0D95000E6AE41 /* Webpage */,
 				4891277114DBB15B003E7FEB /* Conversation */,
 				48635FA014D7910C0008CD6A /* Login */,
@@ -649,7 +714,7 @@
 		48EA6D4C14998A84008AE765 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = 48EA6D4F14998A84008AE765 /* Build configuration list for PBXProject "Prototype" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -704,6 +769,12 @@
 				48C21BE814CC571B0025807F /* Icon@2x.png in Resources */,
 				485D47EF14DF7D0200E6AE41 /* green.png in Resources */,
 				485D47F014DF7D0200E6AE41 /* grey.png in Resources */,
+				4898B9FE1526EDE7004DA280 /* FoodMap.png in Resources */,
+				4898B9FF1526EDE7004DA280 /* FoodMap@2x.png in Resources */,
+				4898BA081526EE81004DA280 /* Logout.png in Resources */,
+				4898BA091526EE81004DA280 /* Logout@2x.png in Resources */,
+				4898BA0A1526EE81004DA280 /* UserInfo.png in Resources */,
+				4898BA0B1526EE81004DA280 /* UserInfo@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -773,6 +844,13 @@
 				481D4AF714DBD39600979A20 /* ConversationDetailPage.m in Sources */,
 				481D4AFA14DBDBE500979A20 /* DetailCell.m in Sources */,
 				485D480214E0D96700E6AE41 /* WebPage.m in Sources */,
+				48333C45151309AE003475BE /* MapViewPage.m in Sources */,
+				481671D215204112001217AE /* FoodMapListManager.m in Sources */,
+				481671D61522F99E001217AE /* FoodMapListPage.m in Sources */,
+				481671D915230FCC001217AE /* PlaceManager.m in Sources */,
+				481671DC15244789001217AE /* MKMapView+ZoomLevel.m in Sources */,
+				481671EB152462FD001217AE /* MapAnnotation.m in Sources */,
+				4898B9DE1526AABD004DA280 /* LogoutPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -808,6 +886,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -831,6 +910,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -850,8 +930,9 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Prototype/Prototype-Prefix.pch";
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "Prototype/Prototype-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "美食玩家D";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -864,8 +945,9 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Prototype/Prototype-Prefix.pch";
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "Prototype/Prototype-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "美食玩家";
 				TARGETED_DEVICE_FAMILY = 1;

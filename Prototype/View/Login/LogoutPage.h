@@ -10,4 +10,7 @@
 
 @interface LogoutPage : UIViewController
 
+- (void) logout;
+- (void) confirmLogout;
+
 @end

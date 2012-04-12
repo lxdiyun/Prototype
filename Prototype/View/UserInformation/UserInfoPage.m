@@ -51,7 +51,6 @@ static NSString *USER_INTRO_TITLE = @"个人介绍";
 	UIBarButtonItem *_cancelButton;
 	UIBarButtonItem *_saveButton;
 	UIBarButtonItem *_editButton;
-	UIBarButtonItem *_logoutButton;
 	TextInputer *_textInputer;
 }
 
@@ -62,7 +61,6 @@ static NSString *USER_INTRO_TITLE = @"个人介绍";
 @property (strong) UIBarButtonItem *cancelButton;
 @property (strong) UIBarButtonItem *saveButton;
 @property (strong) UIBarButtonItem *editButton;
-@property (strong) UIBarButtonItem *logoutButton;
 @property (strong) TextInputer *textInputer;
 
 - (void) initViewDisplay;
@@ -79,7 +77,6 @@ static NSString *USER_INTRO_TITLE = @"个人介绍";
 @synthesize cancelButton = _cancelButton;
 @synthesize saveButton = _sendButton;
 @synthesize editButton = _editButton;
-@synthesize logoutButton = _logoutButton;
 @synthesize textInputer = _textInputer;
 
 #pragma mark - singleton
@@ -117,7 +114,7 @@ DEFINE_SINGLETON(UserInfoPage);
 		_userDetailTextView[i] = nil;
 	}
 	
-	self.logoutButton = nil;
+
 	self.editButton = nil;
 	self.saveButton = nil;
 	self.cancelButton = nil;
@@ -157,17 +154,6 @@ DEFINE_SINGLETON(UserInfoPage);
 		
 		self.navigationItem.rightBarButtonItem = self.editButton;
 		
-		if (nil == self.logoutButton)
-		{
-			self.logoutButton = [[[UIBarButtonItem alloc] initWithTitle:@"注销" 
-									      style:UIBarButtonItemStylePlain 
-									     target:self 
-									     action:@selector(logoutUser:)]
-					      autorelease];
-		}
-		
-		self.navigationItem.leftBarButtonItem = self.logoutButton;
-		
 		for (int i = 0; i < USER_DETAIL_MAX; ++i)
 		{
 			
@@ -188,7 +174,7 @@ DEFINE_SINGLETON(UserInfoPage);
 			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, AVATOR_CELL_HEIGTH * PROPORTION());
 			[cell redraw];
 			cell.textLabel.textColor = [Color grey2Color];
-			cell.textLabel.font = [UIFont systemFontOfSize:13.0 * PROPORTION()];
+			cell.textLabel.font = [UIFont systemFontOfSize:13.0];
 			cell.textLabel.text = USER_AVATOR_TITLE;
 			
 			self.avatorCell =  cell;
@@ -286,14 +272,14 @@ DEFINE_SINGLETON(UserInfoPage);
 				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 
 							       reuseIdentifier:cellType] autorelease];
 				cell.textLabel.textColor = [Color grey2Color];
-				cell.textLabel.font = [UIFont systemFontOfSize:13.0 * PROPORTION()];
+				cell.textLabel.font = [UIFont systemFontOfSize:13.0];
 				cell.textLabel.text = USER_DETAIL_TITLE[indexPath.row];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				
 				CGFloat X = 75.0;
 				CGFloat Y = 0.0;
-				CGFloat width = (cell.contentView.frame.size.width - X - 28.0) * PROPORTION();
-				CGFloat height = 44 * PROPORTION();
+				CGFloat width = (cell.contentView.frame.size.width) - (X + 28.0);
+				CGFloat height = 44.0;
 				CGRect frame = CGRectMake(X, Y, width, height);
 				_userDetailTextView[indexPath.row].frame = frame;
 				_userDetailTextView[indexPath.row].center = CGPointMake(_userDetailTextView[indexPath.row].center.x, 
@@ -368,12 +354,12 @@ DEFINE_SINGLETON(UserInfoPage);
 			break;
 			
 	case USER_AVATOR:
-			return AVATOR_CELL_HEIGTH;
+			return AVATOR_CELL_HEIGTH * PROPORTION();
 			
 			break;
 		
 	default:
-			return 44 * PROPORTION();
+			return 44;
 
 	}
 	
@@ -581,7 +567,6 @@ DEFINE_SINGLETON(UserInfoPage);
 	self.introduceView.editable = NO;
 	self.introduceView.userInteractionEnabled = NO;
 	
-	self.navigationItem.leftBarButtonItem = self.logoutButton;
 	self.navigationItem.rightBarButtonItem = self.editButton;
 	self.avatorCell.accessoryType = UITableViewCellAccessoryNone;
 	[self.avatorCell hideProgressBar];
@@ -643,13 +628,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	
 	[self sendUserInfo];
 
-	self.navigationItem.leftBarButtonItem = self.logoutButton;
 	self.navigationItem.rightBarButtonItem = self.editButton;
-}
-
-- (void) logoutUser:(id)sender
-{
-	[LoginManager logoutCurrentUser];
 }
 
 #pragma mark - PhototSelectorDelegate

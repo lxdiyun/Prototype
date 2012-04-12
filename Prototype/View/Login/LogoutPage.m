@@ -7,37 +7,75 @@
 //
 
 #import "LogoutPage.h"
+#import "LoginManager.h"
 
-@interface LogoutPage ()
+@interface LogoutPage () <UIAlertViewDelegate>
+{
+	UIAlertView *_alert;
+}
+
+@property (strong) UIAlertView *alert;
 
 @end
 
 @implementation LogoutPage
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+@synthesize alert = _alert;
+
+- (void) viewWillAppear:(BOOL)animated
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+	[super viewWillAppear:animated];
+	
+	[self confirmLogout];
 }
 
-- (void)viewDidLoad
+- (void) viewDidAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
+	[super viewDidAppear:animated];
 }
 
-- (void)viewDidUnload
+- (void) dealloc
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
+	self.alert = nil;
+	[super dealloc];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (void) confirmLogout
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	if (nil == self.alert)
+	{
+		@autoreleasepool 
+		{
+			UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+			
+			alert.title = @"确认注销";
+			alert.message = @"主销后将清空本地缓存";
+			
+			[alert addButtonWithTitle:@"取消"];
+			[alert addButtonWithTitle:@"好滴"];
+			alert.delegate = self;
+			self.alert = alert;
+		}
+	}
+
+	[self.alert show];	
+}
+
+- (void) logout
+{
+	[LoginManager logoutCurrentUser];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void) alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+	if (1 == buttonIndex)
+	{
+		[self logout];
+	}
+	
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

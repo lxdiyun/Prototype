@@ -177,16 +177,16 @@ static NSString *FIELD_TITLE[LOGIN_FIELD_MAX] = {@"邮箱：", @"密码："};
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FIELD_TITLE[indexPath.row]];
 	if (cell == nil) 
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FIELD_TITLE[indexPath.row]] autorelease];
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:FIELD_TITLE[indexPath.row]] autorelease];
 		cell.textLabel.text = FIELD_TITLE[indexPath.row];
 		cell.textLabel.textColor = [Color grey2Color];
-		cell.textLabel.font = [UIFont systemFontOfSize:13.0 * PROPORTION()];
+		cell.textLabel.font = [UIFont systemFontOfSize:13.0];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		
-		CGFloat X = 50.0;
+		CGFloat X = 75.0;
 		CGFloat Y = 0.0;
-		CGFloat width = (cell.contentView.frame.size.width - X) * PROPORTION();
-		CGFloat height = 44 * PROPORTION();
+		CGFloat width = cell.contentView.frame.size.width - X;
+		CGFloat height = 44;
 		CGRect frame = CGRectMake(X, Y, width, height);
 		_loginFieldText[indexPath.row].frame = frame;
 		_loginFieldText[indexPath.row].center = CGPointMake(_loginFieldText[indexPath.row].center.x, 

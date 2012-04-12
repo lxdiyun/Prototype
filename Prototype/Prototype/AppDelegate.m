@@ -15,6 +15,8 @@
 #import "ObjectSaver.h"
 #import "ConversationPage.h"
 #import "WebPage.h"
+#import "FoodMapListPage.h"
+#import "LogoutPage.h"
 
 typedef enum MSWJ_PAGE_ENUM
 {
@@ -24,15 +26,15 @@ typedef enum MSWJ_PAGE_ENUM
 	CONVERSATION_PAGE = 0x3,
 	WEB_PAGE = 0x4,
 	PERSONAL_SETTING_PAGE = 0x5,
+	LOGOUT_PAGE = 0x6,
 	MSWJ_PAGE_QUANTITY
 } MSWJ_PAGE;
 
-static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"通知", @"分享美食", @"私信", @"Web", @"个人设置", };
-static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"Notice.png", @"Share.png", @"PrivateMessage.png", @"More.png", @"More.png"};
+static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"私信", @"Web", @"个人设置",@"注销"};
+static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"PrivateMessage.png", @"More.png", @"UserInfo.png", @"Logout.png"};
 static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 
 static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 static UIViewController *gs_currentViewController;
-
 
 @interface AppDelegate () <UITabBarControllerDelegate>
 {
@@ -51,11 +53,12 @@ static UIViewController *gs_currentViewController;
 - (void) setupPageClass
 {
 	MSWJ_PAGE_CLASS[HOME_PAGE] = [EventPage class];
-	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [UIViewController class];
+	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [FoodMapListPage class];
 	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
 	MSWJ_PAGE_CLASS[CONVERSATION_PAGE] = [ConversationPage class];
 	MSWJ_PAGE_CLASS[WEB_PAGE] = [WebPage class];
 	MSWJ_PAGE_CLASS[PERSONAL_SETTING_PAGE] = [UserInfoPage class];
+	MSWJ_PAGE_CLASS[LOGOUT_PAGE] = [LogoutPage class];
 }
 
 - (void) initPageClass
@@ -122,7 +125,6 @@ static UIViewController *gs_currentViewController;
 
 	[self.window addSubview:self.tabco.view];
 
-	//[tabBarController release];
 	[tabBarViewControllers release];
 	
 	// restore cache
@@ -176,6 +178,13 @@ static UIViewController *gs_currentViewController;
 		sharer.delegate = self.tabco;
 
 		[sharer start];
+		
+		return NO;
+	} 
+	else if ([tabBarController.viewControllers objectAtIndex:LOGOUT_PAGE] == viewController)
+	{
+		LogoutPage *logoutPage = (LogoutPage *)MSWJ_PAGE_INSTANCE[LOGOUT_PAGE];
+		[logoutPage confirmLogout];
 		
 		return NO;
 	}
