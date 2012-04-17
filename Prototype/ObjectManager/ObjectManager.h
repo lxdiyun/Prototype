@@ -39,6 +39,8 @@
 
 // get method
 // internal handler
+- (void) handlerForSingleResult:(id)result;
+- (void) handlerForArrayResult:(id)result;
 - (void) checkAndPerformResponderWithID:(NSString *)ID;
 - (void) checkAndPerformResponderWithStringIDArray:(NSArray *)IDArray;
 // bind object handler

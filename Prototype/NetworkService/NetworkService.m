@@ -12,7 +12,7 @@
 #import "LoginManager.h"
 #import "Message.h"
 
-const static NSUInteger NETWORK_TRY_RECONNECT_TIMES = 2;
+const static NSUInteger NETWORK_TRY_RECONNECT_TIMES = 3;
 const static NSTimeInterval NETWORK_RECONNCECT_INTERVAL = 5; // seconds
 
 @interface NetworkService () <NSStreamDelegate, UIAlertViewDelegate>

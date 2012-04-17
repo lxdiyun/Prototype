@@ -8,11 +8,9 @@
 
 #import "SDWebImageDownloader.h"
 
-#ifdef ENABLE_SDWEBIMAGE_DECODER
 #import "SDWebImageDecoder.h"
 @interface SDWebImageDownloader (ImageDecoder) <SDWebImageDecoderDelegate>
 @end
-#endif
 
 NSString *const SDWebImageDownloadStartNotification = @"SDWebImageDownloadStartNotification";
 NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNotification";
@@ -43,7 +41,13 @@ NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNot
     // To use it, just add #import "SDNetworkActivityIndicator.h" in addition to the SDWebImage import
     if (NSClassFromString(@"SDNetworkActivityIndicator"))
     {
+        
         id activityIndicator = [NSClassFromString(@"SDNetworkActivityIndicator") performSelector:NSSelectorFromString(@"sharedActivityIndicator")];
+
+        // Remove observer in case it was previously added.
+        [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator name:SDWebImageDownloadStartNotification object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:activityIndicator name:SDWebImageDownloadStopNotification object:nil];
+
         [[NSNotificationCenter defaultCenter] addObserver:activityIndicator
                                                  selector:NSSelectorFromString(@"startActivity")
                                                      name:SDWebImageDownloadStartNotification object:nil];
@@ -52,7 +56,7 @@ NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNot
                                                      name:SDWebImageDownloadStopNotification object:nil];
     }
 
-    SDWebImageDownloader *downloader = [[[SDWebImageDownloader alloc] init] autorelease];
+    SDWebImageDownloader *downloader = SDWIReturnAutoreleased([[SDWebImageDownloader alloc] init]);
     downloader.url = url;
     downloader.delegate = delegate;
     downloader.userInfo = userInfo;
@@ -70,7 +74,7 @@ NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNot
 {
     // In order to prevent from potential duplicate caching (NSURLCache + SDImageCache) we disable the cache for image requests
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
-    self.connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO] autorelease];
+    self.connection = SDWIReturnAutoreleased([[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO]);
 
     // If not in low priority mode, ensure we aren't blocked by UI manipulations (default runloop mode for NSURLConnection is NSEventTrackingRunLoopMode)
     if (!lowPriority)
@@ -78,7 +82,7 @@ NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNot
         [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
     }
     [connection start];
-    [request release];
+    SDWIRelease(request);
 
     if (connection)
     {
@@ -106,6 +110,28 @@ NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNot
 
 #pragma mark NSURLConnection (delegate)
 
+- (void)connection:(NSURLConnection *)aConnection didReceiveResponse:(NSURLResponse *)response
+{
+    if ([((NSHTTPURLResponse *)response) statusCode] >= 400)
+    {
+        [aConnection cancel];
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:SDWebImageDownloadStopNotification object:nil];
+
+        if ([delegate respondsToSelector:@selector(imageDownloader:didFailWithError:)])
+        {
+            NSError *error = [[NSError alloc] initWithDomain:NSURLErrorDomain
+                                                        code:[((NSHTTPURLResponse *)response) statusCode]
+                                                    userInfo:nil];
+            [delegate performSelector:@selector(imageDownloader:didFailWithError:) withObject:self withObject:error];
+            SDWIRelease(error);
+        }
+
+        self.connection = nil;
+        self.imageData = nil;
+    }
+}
+
 - (void)connection:(NSURLConnection *)aConnection didReceiveData:(NSData *)data
 {
     [imageData appendData:data];
@@ -125,14 +151,8 @@ NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNot
 
     if ([delegate respondsToSelector:@selector(imageDownloader:didFinishWithImage:)])
     {
-        UIImage *image = [[UIImage alloc] initWithData:imageData];
-
-#ifdef ENABLE_SDWEBIMAGE_DECODER
+        UIImage *image = SDScaledImageForPath(url.absoluteString, imageData);
         [[SDWebImageDecoder sharedImageDecoder] decodeImage:image withDelegate:self userInfo:nil];
-#else
-        [delegate performSelector:@selector(imageDownloader:didFinishWithImage:) withObject:self withObject:image];
-#endif
-        [image release];
     }
 }
 
@@ -151,23 +171,21 @@ NSString *const SDWebImageDownloadStopNotification = @"SDWebImageDownloadStopNot
 
 #pragma mark SDWebImageDecoderDelegate
 
-#ifdef ENABLE_SDWEBIMAGE_DECODER
 - (void)imageDecoder:(SDWebImageDecoder *)decoder didFinishDecodingImage:(UIImage *)image userInfo:(NSDictionary *)userInfo
 {
     [delegate performSelector:@selector(imageDownloader:didFinishWithImage:) withObject:self withObject:image];
 }
-#endif
 
 #pragma mark NSObject
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [url release], url = nil;
-    [connection release], connection = nil;
-    [imageData release], imageData = nil;
-    [userInfo release], userInfo = nil;
-    [super dealloc];
+    SDWISafeRelease(url);
+    SDWISafeRelease(connection);
+    SDWISafeRelease(imageData);
+    SDWISafeRelease(userInfo);
+    SDWISuperDealoc;
 }
 
 

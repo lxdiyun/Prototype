@@ -37,6 +37,7 @@
 - (void) dealloc
 {
 	self.alert = nil;
+
 	[super dealloc];
 }
 

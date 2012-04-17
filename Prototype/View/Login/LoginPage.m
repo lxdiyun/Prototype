@@ -74,7 +74,7 @@ static NSString *FIELD_TITLE[LOGIN_FIELD_MAX] = {@"邮箱：", @"密码："};
 		if (nil == _loginFieldText[i])
 		{
 			_loginFieldText[i] = [[UITextField alloc] init];
-			_loginFieldText[i].font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+			_loginFieldText[i].font = [UIFont boldSystemFontOfSize:FONT_SIZE];
 			_loginFieldText[i].delegate = self;
 			_loginFieldText[i].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 			if (ACCOUNT == i)

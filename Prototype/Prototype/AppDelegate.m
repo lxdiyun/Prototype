@@ -18,18 +18,6 @@
 #import "FoodMapListPage.h"
 #import "LogoutPage.h"
 
-typedef enum MSWJ_PAGE_ENUM
-{
-	HOME_PAGE = 0x0,
-	NOTICE_PAGE = 0x1,
-	SHARE_PAGE = 0x2,
-	CONVERSATION_PAGE = 0x3,
-	WEB_PAGE = 0x4,
-	PERSONAL_SETTING_PAGE = 0x5,
-	LOGOUT_PAGE = 0x6,
-	MSWJ_PAGE_QUANTITY
-} MSWJ_PAGE;
-
 static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"私信", @"Web", @"个人设置",@"注销"};
 static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"PrivateMessage.png", @"More.png", @"UserInfo.png", @"Logout.png"};
 static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 

@@ -241,7 +241,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 							       reuseIdentifier:FOOD_DETAIL_TITLE[indexPath.row]] 
 							       autorelease];
 				cell.textLabel.textColor = [Color grey2Color];
-				cell.textLabel.font = [UIFont systemFontOfSize:13.0 * PROPORTION()];
+				cell.textLabel.font = [UIFont systemFontOfSize:13.0];
 				cell.textLabel.text = FOOD_DETAIL_TITLE[indexPath.row];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
@@ -249,14 +249,14 @@ static BOOL gs_need_scroll_to_begin = NO;
 				{
 					CGFloat X = 75.0;
 					CGFloat Y = 0.0;
-					CGFloat width = (cell.contentView.frame.size.width - X - 28.0) * PROPORTION();
-					CGFloat height = 44 * PROPORTION();
+					CGFloat width = cell.contentView.frame.size.width * PROPORTION() - X - 28.0;
+					CGFloat height = 44;
 					gs_food_detail_text_view[indexPath.row] = [[UITextField alloc] initWithFrame:CGRectMake(X, 
 																Y, 
 																width, 
 																height)];
 					gs_food_detail_text_view[indexPath.row].center = CGPointMake(gs_food_detail_text_view[indexPath.row].center.x, cell.center.y);
-					gs_food_detail_text_view[indexPath.row].font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+					gs_food_detail_text_view[indexPath.row].font = [UIFont boldSystemFontOfSize:FONT_SIZE];
 					gs_food_detail_text_view[indexPath.row].delegate = self;
 					gs_food_detail_text_view[indexPath.row].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 					gs_food_detail_text_view[indexPath.row].returnKeyType = UIReturnKeyNext;
@@ -301,10 +301,10 @@ static BOOL gs_need_scroll_to_begin = NO;
 					gs_food_desc_text_view = [[UITextView alloc] initWithFrame:CGRectMake(0.0, 
 													      0.0, 
 													      cell.contentView.frame.size.width, 
-													      88 * PROPORTION())];
+													      88)];
 					gs_food_desc_text_view.scrollEnabled = NO;
 					gs_food_desc_text_view.backgroundColor = [UIColor clearColor];
-					gs_food_desc_text_view.font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+					gs_food_desc_text_view.font = [UIFont boldSystemFontOfSize:FONT_SIZE];
 					gs_food_desc_text_view.delegate = self;
 				}
 
@@ -361,7 +361,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 					initWithFrame:CGRectMake(0.0, 
 								 0.0, 
 								 self.view.frame.size.width, 
-								 44 * PROPORTION())];
+								 44)];
 				gs_create_food_fout_count_header.delegate = self;
 			}
 
@@ -382,10 +382,10 @@ static BOOL gs_need_scroll_to_begin = NO;
 		return self.view.frame.size.width;
 		break;
 	case FOOD_FOUR_COUNT:
-		return 44.0 * PROPORTION();
+		return 44.0;
 		break;
 	case FOOD_DESC:
-		return 28.0 * PROPORTION();
+		return 28.0;
 		break;
 	default:
 		return 0;

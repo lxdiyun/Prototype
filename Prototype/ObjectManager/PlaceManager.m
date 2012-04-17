@@ -9,6 +9,7 @@
 #import "PlaceManager.h"
 
 #import "Util.h"
+#import "FoodManager.h"
 
 @implementation PlaceManager
 
@@ -20,6 +21,32 @@ DEFINE_SINGLETON(PlaceManager);
 - (NSString *) getMethod
 {
 	return @"place.get";
+}
+
+- (void) handlerForSingleResult:(id)result;
+{
+	NSArray *foods = [result valueForKey:@"foods"];
+	
+	if (0 < [foods count])
+	{
+		[FoodManager requestObjectWithNumberIDArray:foods];
+	}
+	
+}
+
+- (void) handlerForArrayResult:(id)result
+{
+	[super handlerForArrayResult:result];
+	
+	for (NSDictionary *object in [result objectForKey:@"result"]) 
+	{
+		NSArray *foods = [object valueForKey:@"foods"];
+		
+		if (0 < [foods count])
+		{
+			[FoodManager requestObjectWithNumberIDArray:foods];
+		}
+	}
 }
 
 #pragma mark - overwrite create method

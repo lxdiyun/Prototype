@@ -10,6 +10,7 @@
 
 #import "Util.h"
 #import "LoginManager.h"
+#import "PlaceManager.h"
 
 @interface FoodMapListManager ()
 {
@@ -71,6 +72,18 @@ DEFINE_SINGLETON(FoodMapListManager);
 	}
 }
 
-#pragma 
+- (void) getMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward
+{
+	[super getMethodHandler:result withListID:listID forward:forward];
+	
+	NSDictionary *messageDict = [(NSDictionary*)result retain];
+	
+	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
+	{
+		[PlaceManager requestObjectWithNumberIDArray:[object valueForKey:@"places"]];
+	}
+	
+	[messageDict release];
+}
 
 @end

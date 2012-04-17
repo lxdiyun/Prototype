@@ -85,7 +85,7 @@ DEFINE_SINGLETON(FoodManager);
 		for (NSString *ID in IDArray)
 		{
 			NSDictionary *object = [self.objectDict valueForKey:ID];
-			NSNumber *picID = [[object valueForKey:@"obj"] valueForKey:@"pic"];
+			NSNumber *picID = [object valueForKey:@"pic"];
 			if (CHECK_NUMBER(picID))
 			{
 				if (nil == [ImageManager getObjectWithNumberID:picID])
@@ -98,7 +98,7 @@ DEFINE_SINGLETON(FoodManager);
 				LOG(@"Error failed to get picID from \n:%@", object);
 			}
 			
-			NSNumber *userID = [[object valueForKey:@"obj"] objectForKey:@"user"];
+			NSNumber *userID = [object objectForKey:@"user"];
 			
 			if (CHECK_NUMBER(userID))
 			{

@@ -8,8 +8,11 @@
 
 #import "Util.h"
 
+#import <MapKit/MapKit.h>
+
 #import "SDNetworkActivityIndicator.h"
 #import "Message.h"
+
 
 static NSNumber *gs_login_user_id = nil;
 
@@ -53,6 +56,31 @@ NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context)
 		return NSOrderedSame;
 }
 
+
+static CLLocationDistance distance_between_coordinate(CLLocationCoordinate2D c1, CLLocationCoordinate2D c2)
+{
+	CLLocationDistance x = c1.longitude - c2.longitude;
+	CLLocationDistance y = (c1.latitude - c2.latitude) * 2;
+
+	return x * x + y * y;
+}
+
+NSInteger MAP_ANNOTATION_VIEW_SORTER(id view1, id view2, void *context)
+{
+	CLLocationCoordinate2D c1  = [[view1 annotation] coordinate];
+	CLLocationCoordinate2D c2  = [[view2 annotation] coordinate];
+	CLLocationCoordinate2D topLeft  = {90, -180};
+	CLLocationDistance d1 = distance_between_coordinate(topLeft, c1);
+	CLLocationDistance d2 = distance_between_coordinate(topLeft, c2);
+	
+	if (d1 < d2) 
+	{
+		return NSOrderedAscending;
+	}
+
+	return NSOrderedDescending;
+}
+
 void START_NETWORK_INDICATOR(void)
 {
 	[[SDNetworkActivityIndicator sharedActivityIndicator] startActivity];
@@ -89,6 +117,18 @@ CGFloat PROPORTION(void)
 	}
 	
 	return s_proportion;
+}
+
+NSInteger DEVICE_TYPE(void)
+{
+	static NSInteger s_device_type = -1;
+	
+	if (-1 == s_device_type)
+	{
+		s_device_type = UI_USER_INTERFACE_IDIOM();
+	}
+
+	return s_device_type;
 }
 
 // check and error handling;
@@ -191,6 +231,11 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 + (UIColor *) blackColorAlpha
 {
 	return [UIColor colorWithRed:0x0/255.0 green:0x0/255.0 blue:0x0/255.0 alpha:0.5];
+}
+
++ (UIColor *) lightyellowColor 
+{
+	return [UIColor colorWithRed:0xEF/255.0 green:0xDD/255.0 blue:0xAC/255.0 alpha:1.0];
 }
 
 @end

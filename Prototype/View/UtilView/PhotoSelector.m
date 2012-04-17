@@ -9,6 +9,7 @@
 #import "PhotoSelector.h"
 
 #import "Util.h"
+#import "AppDelegate.h"
 
 typedef enum PHOTO_SELECT_ACTION_ENUM
 {
@@ -25,8 +26,10 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	NSObject<PhototSelectorDelegate> *_delegate;
 	UIImagePickerControllerSourceType _actionArray[MAX_PHOTO_SELECT_ACTION];
 	NSInteger _actionMaxIndex;
+	UIPopoverController *_popoverController;
 }
 @property (strong) UIImagePickerController *imagePickerController;
+@property (strong) UIPopoverController *popoverController;
 @end
 
 @implementation PhotoSelector
@@ -35,6 +38,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 @synthesize imagePickerController = _imagePickerController;
 @synthesize selectedImage = _selectedImage;
 @synthesize delegate = _delegate;
+@synthesize popoverController = _popoverController;
 
 #pragma mark - class life circle
 
@@ -92,13 +96,14 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	self.imagePickerController = nil;
 	self.selectedImage = nil;
 	self.delegate = nil;
+	self.popoverController = nil;
 
 	[super dealloc];
 }
 
 #pragma mark - View lifecycle
 
-- (void)viewDidUnload
+- (void) viewDidUnload
 {
 	self.actionSheet = nil;
 	self.imagePickerController = nil;
@@ -131,7 +136,15 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 		self.imagePickerController.sourceType = sourceType;
 		self.imagePickerController.delegate = self;
 		
-		[self.delegate showModalView:self.imagePickerController];
+		if ((UIUserInterfaceIdiomPad == DEVICE_TYPE())
+		    && (UIImagePickerControllerSourceTypePhotoLibrary == sourceType))
+		{
+			LOG(@"don't know where to show the image picker in ipad");
+		}
+		else 
+		{
+			[self.delegate showModalView:self.imagePickerController];
+		}
 	}
 }
 

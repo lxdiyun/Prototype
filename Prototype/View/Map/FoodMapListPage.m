@@ -134,7 +134,10 @@ const static uint32_t ROW_TO_MORE_MAP_LIST_FROM_BOTTOM = 8;
 	{
 		return [[FoodMapListManager keyArrayForList:self.loginUserID] count];
 	}
-	else {
+	else 
+	{
+		[LoginManager requestWithHandler:@selector(reloadData) andTarget:self];
+
 		return 0;
 	}
 }

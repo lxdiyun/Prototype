@@ -79,6 +79,9 @@ ARC_SINGLETON \
 
 #import <Foundation/Foundation.h>
 
+// const variable
+const static CGFloat TAB_BAR_HEIGHT = 49;
+
 // login user id
 NSNumber * GET_USER_ID(void);
 void SET_USER_ID(NSNumber *ID);
@@ -88,6 +91,8 @@ void SET_USER_ID(NSNumber *ID);
 NSInteger ID_SORTER(id ID1, id ID2, void *context);
 // low ID => hight ID
 NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context);
+// map annotation view from left top to right bottom 
+NSInteger MAP_ANNOTATION_VIEW_SORTER(id view1, id view2, void *context);
 
 
 // Network Indicator
@@ -97,6 +102,7 @@ void STOP_NETWORK_INDICATOR(void);
 // view
 CGFloat SCALE(void);
 CGFloat PROPORTION(void);
+NSInteger DEVICE_TYPE(void);
 
 // check and error handling;
 BOOL CHECK_NUMBER(NSNumber *object);
@@ -119,6 +125,7 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message);
 + (UIColor *) specailColor;
 + (UIColor *) valuedColor;
 + (UIColor *) healthyColor;
++ (UIColor *) lightyellowColor;
 
 @end
 

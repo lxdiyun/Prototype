@@ -95,10 +95,10 @@ const static CGFloat SINGLE_LABEL_WIDTH = 25.0;
 	CGFloat X = 0;
 	CGFloat width = 0;
 	CGFloat height = self.frame.size.height;
-	uint32_t tasty = [[self.foodDict valueForKey:@"like_tasty_count"] unsignedIntValue];
-	uint32_t specail = [[self.foodDict valueForKey:@"like_special_count"] unsignedIntValue]; 
-	uint32_t valued = [[self.foodDict valueForKey:@"like_valued_count"] unsignedIntValue];
-	uint32_t healthy = [[self.foodDict valueForKey:@"like_healthy_count"] unsignedIntValue];
+	uint32_t tasty = [[self.foodDict valueForKey:@"like_tasty"] unsignedIntValue];
+	uint32_t specail = [[self.foodDict valueForKey:@"like_special"] unsignedIntValue]; 
+	uint32_t valued = [[self.foodDict valueForKey:@"like_valued"] unsignedIntValue];
+	uint32_t healthy = [[self.foodDict valueForKey:@"like_healthy"] unsignedIntValue];
 	CGFloat totalValue = tasty + specail + valued + healthy;
 	CGFloat totalWidth = self.frame.size.width;
 	
