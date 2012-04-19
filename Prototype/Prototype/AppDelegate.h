@@ -25,5 +25,6 @@ typedef enum MSWJ_PAGE_ENUM
 @property (strong, nonatomic) UIWindow *window;
 
 + (UIViewController *) currentViewController;
++ (void) resetAllPage;
 
 @end

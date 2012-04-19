@@ -9,6 +9,7 @@
 #import "MapViewPage.h"
 
 #import <MapKit/MapKit.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "MKMapView+ZoomLevel.h"
 #import "Util.h"
@@ -19,6 +20,7 @@
 #import "MapAnnotationView.h"
 
 static CGFloat PLACE_DETAIL_HEIGHT = 265.0;
+static CGFloat HIDE_PLACE_DETAIL_Y = 1289.0;
 
 typedef enum MAP_MENU_ENUM
 {
@@ -194,6 +196,61 @@ typedef enum MAP_MENU_ENUM
 
 #pragma mark - life circle
 
+- (void) back
+{
+	[self forcceRemoveDetailPage];
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) setupButtons
+{
+	// left bar buttons
+	UIView *leftButtonView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 81, 30)] autorelease];
+	leftButtonView.clipsToBounds = YES;
+	UIBarButtonItem *leftButtons = [[[UIBarButtonItem alloc] initWithCustomView:leftButtonView] autorelease];
+	// back
+	UIButton *backButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
+	[backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];
+	[backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateSelected];
+	[backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+	[leftButtonView addSubview:backButton];
+	
+	
+	// refresh
+	UIButton *refreshButton = [[[UIButton alloc] initWithFrame:CGRectMake(41, 0, 40, 30)] autorelease];
+	[refreshButton setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
+	[refreshButton setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateSelected];
+	[refreshButton addTarget:self action:@selector(reloadMapObject) forControlEvents:UIControlEventTouchUpInside];
+	[leftButtonView addSubview:refreshButton];
+	
+	// right bar buttons
+	UIView *rightButtonsView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 81, 30)] autorelease];
+	rightButtonsView.layer.cornerRadius = 5.0;
+	rightButtonsView.clipsToBounds = YES;
+	UIBarButtonItem *rightButtons = [[[UIBarButtonItem alloc] initWithCustomView:rightButtonsView] autorelease];
+	
+	// route
+	UIButton *routeButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
+	[routeButton setImage:[UIImage imageNamed:@"route.png"] forState:UIControlStateNormal];
+	[routeButton setImage:[UIImage imageNamed:@"route.png"] forState:UIControlStateSelected];
+	[routeButton addTarget:self action:@selector(focousUserLoaction) forControlEvents:UIControlEventTouchUpInside];
+	//routeButton.backgroundColor = [Color grey3Color];
+	[rightButtonsView addSubview:routeButton];
+	
+	// show all places
+	UIButton *showAllButton = [[[UIButton alloc] initWithFrame:CGRectMake(41, 0, 40, 30)] autorelease];
+	[showAllButton setImage:[UIImage imageNamed:@"showAllPlace.png"] forState:UIControlStateNormal];
+	[showAllButton setImage:[UIImage imageNamed:@"showAllPlace.png"] forState:UIControlStateSelected];
+	[showAllButton addTarget:self action:@selector(showAllPlaces) forControlEvents:UIControlEventTouchUpInside];
+	//showAllButton.backgroundColor = [Color grey3Color];
+	[rightButtonsView addSubview:showAllButton];
+	
+	// set all buttons
+	self.navigationItem.hidesBackButton = YES;
+	self.navigationItem.rightBarButtonItem = rightButtons;
+	self.navigationItem.leftBarButtonItem = leftButtons;
+}
+
 - (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
 	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -207,32 +264,8 @@ typedef enum MAP_MENU_ENUM
 			self.mapView = [[[MKMapView alloc] init] autorelease];
 			self.view = self.mapView;
 			self.mapView.delegate = self;
-
-			UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backArrow.png"] 
-										 style:UIBarButtonItemStylePlain 
-										target:self.navigationController 
-										action:@selector(popViewControllerAnimated:)];
-
-			UIBarButtonItem *route = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"route.png"] 
-										  style:UIBarButtonItemStylePlain 
-										 target:self
-										 action:@selector(focousUserLoaction)];
-
-			UIBarButtonItem *showAllPlaces = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"showAllPlace.png"] 
-											  style:UIBarButtonItemStylePlain 
-											 target:self
-											 action:@selector(showAllPlaces)];
-
-			UIBarButtonItem *refresh = [[[UIBarButtonItem alloc] 
-				initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-						     target:self
-						     action:@selector(reloadMapObject)] 
-						     autorelease];
-
-
-			self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects:showAllPlaces,route, nil];
-
-			self.navigationItem.leftBarButtonItems = [[NSArray alloc] initWithObjects:back, refresh, nil];
+			
+			[self setupButtons];
 		}
 	}
 
@@ -253,7 +286,7 @@ typedef enum MAP_MENU_ENUM
 
 	[self saveMapObject];
 
-	[self removePlaceDetailPage];
+	[self forcceRemoveDetailPage];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -440,8 +473,14 @@ typedef enum MAP_MENU_ENUM
 			placeFrame.size.height = PLACE_DETAIL_HEIGHT;
 			placeFrame.size.width = self.view.frame.size.width;
 			self.placeDetailPage.view.frame = placeFrame;
+		}
+		
+		if (self.navigationController.tabBarController.view 
+		    != [self.placeDetailPage.view superview])
+		{
 			[self.navigationController.tabBarController.view addSubview:self.placeDetailPage.view];
 		}
+
 
 		{
 			[UIView beginAnimations:nil context:NULL];
@@ -459,6 +498,18 @@ typedef enum MAP_MENU_ENUM
 	}
 }
 
+- (void) forcceRemoveDetailPage
+{
+	CGPoint placeDetailPageCenter  = self.placeDetailPage.view.center;
+	placeDetailPageCenter.y = HIDE_PLACE_DETAIL_Y;
+	
+	self.placeDetailPage.view.center = placeDetailPageCenter;
+	
+	[self.placeDetailPage.view removeFromSuperview];
+	
+	self.selectedPlace = NO;
+}
+
 - (void) removePlaceDetailPage
 {
 	if (YES == self.selectedPlace)
@@ -467,7 +518,7 @@ typedef enum MAP_MENU_ENUM
 		[UIView setAnimationDuration:0.2];
 
 		CGPoint placeDetailPageCenter  = self.placeDetailPage.view.center;
-		placeDetailPageCenter.y = self.navigationController.tabBarController.view.frame.size.height + PLACE_DETAIL_HEIGHT;
+		placeDetailPageCenter.y = HIDE_PLACE_DETAIL_Y;
 
 		self.placeDetailPage.view.center = placeDetailPageCenter;
 

@@ -220,7 +220,12 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 
 + (UIColor *) grey3Color
 {
-	return [UIColor colorWithRed:0xAA/255.0 green:0xAA/255.0 blue:0xAA/255.0 alpha:1.0];
+	return [UIColor colorWithRed:0x4D/255.0 green:0x4D/255.0 blue:0x4D/255.0 alpha:1.0];
+}
+
++ (UIColor *) darkgreyColor
+{
+	return [UIColor colorWithRed:0x32/255.0 green:0x32/255.0 blue:0x32/255.0 alpha:1.0];
 }
 
 + (UIColor *) brownColor

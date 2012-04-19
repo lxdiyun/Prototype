@@ -22,6 +22,8 @@
 		4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */; };
 		48333C45151309AE003475BE /* MapViewPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48333C44151309AE003475BE /* MapViewPage.m */; };
 		48333C4A15130D48003475BE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48333C4915130D48003475BE /* MapKit.framework */; };
+		48343308153FB4E70007876F /* refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 48343306153FB4E70007876F /* refresh.png */; };
+		48343309153FB4E70007876F /* refresh@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 48343307153FB4E70007876F /* refresh@2x.png */; };
 		485D47EF14DF7D0200E6AE41 /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 485D47ED14DF7D0200E6AE41 /* green.png */; };
 		485D47F014DF7D0200E6AE41 /* grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 485D47EE14DF7D0200E6AE41 /* grey.png */; };
 		485D480214E0D96700E6AE41 /* WebPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 485D480114E0D96700E6AE41 /* WebPage.m */; };
@@ -169,6 +171,8 @@
 		48333C43151309AE003475BE /* MapViewPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapViewPage.h; path = View/Map/MapViewPage.h; sourceTree = "<group>"; };
 		48333C44151309AE003475BE /* MapViewPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapViewPage.m; path = View/Map/MapViewPage.m; sourceTree = "<group>"; };
 		48333C4915130D48003475BE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		48343306153FB4E70007876F /* refresh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh.png; sourceTree = "<group>"; };
+		48343307153FB4E70007876F /* refresh@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "refresh@2x.png"; sourceTree = "<group>"; };
 		485D47ED14DF7D0200E6AE41 /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green.png; sourceTree = "<group>"; };
 		485D47EE14DF7D0200E6AE41 /* grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grey.png; sourceTree = "<group>"; };
 		485D480014E0D96700E6AE41 /* WebPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPage.h; sourceTree = "<group>"; };
@@ -589,6 +593,8 @@
 		48CE912B14AD9DBE00B1E9D3 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				48343306153FB4E70007876F /* refresh.png */,
+				48343307153FB4E70007876F /* refresh@2x.png */,
 				48A81326153D54E000F3DF8F /* backArrow.png */,
 				48A81327153D54E000F3DF8F /* backArrow@2x.png */,
 				48A81328153D54E000F3DF8F /* route.png */,
@@ -864,6 +870,8 @@
 				48A8132F153D54E000F3DF8F /* route@2x.png in Resources */,
 				48A81330153D54E000F3DF8F /* showAllPlace.png in Resources */,
 				48A81331153D54E000F3DF8F /* showAllPlace@2x.png in Resources */,
+				48343308153FB4E70007876F /* refresh.png in Resources */,
+				48343309153FB4E70007876F /* refresh@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

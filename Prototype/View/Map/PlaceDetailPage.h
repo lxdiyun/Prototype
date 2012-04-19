@@ -17,5 +17,6 @@
 @interface PlaceDetailPage : UIViewController
 @property (assign) id<PlaceDetailDelegate> delegate;
 @property (retain, nonatomic) IBOutlet UITableView *foodDetailView;
+@property (retain, nonatomic) IBOutlet UIPageControl *pageControl;
 @property (strong, nonatomic) NSDictionary *placeObject;
 @end

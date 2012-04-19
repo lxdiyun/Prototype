@@ -119,6 +119,7 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message);
 + (UIColor *) grey1Color;
 + (UIColor *) grey2Color;
 + (UIColor *) grey3Color;
++ (UIColor *) darkgreyColor;
 + (UIColor *) brownColor;
 + (UIColor *) blackColorAlpha;
 + (UIColor *) tastyColor;

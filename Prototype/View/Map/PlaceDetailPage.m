@@ -31,6 +31,7 @@
 
 @implementation PlaceDetailPage
 @synthesize foodDetailView;
+@synthesize pageControl;
 @synthesize delegate;
 @synthesize titleView = _titleView;
 @synthesize detailController = _detailController;
@@ -55,8 +56,14 @@
 			self.foodDetailView.delegate = self.detailController;
 			self.foodDetailView.dataSource = self.detailController;
 			self.detailController.view = self.foodDetailView;
+			self.pageControl.frame = CGRectMake(0, self.view.frame.size.height - 18, self.view.frame.size.width, 18);
 			
-			self.foodIndex = 0;
+			
+			// shadow
+			[self.view.layer setShadowColor:[UIColor blackColor].CGColor];
+			[self.view.layer setShadowOpacity:0.5];
+			[self.view.layer setShadowRadius:10];
+			[self.view.layer setShadowOffset:CGSizeMake(0.0, -6.0)];
 			
 			// handle gesture
 			UISwipeGestureRecognizer *down = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown)] autorelease];
@@ -73,9 +80,13 @@
 			[right setDirection:(UISwipeGestureRecognizerDirectionRight)];
 			
 			[self.view addGestureRecognizer:right];
+			
+			UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)] autorelease];
+			
+			[self.view addGestureRecognizer:tap];
  		} 
 	}
-
+	
 	return self;
 }
 
@@ -88,6 +99,7 @@
 	
 	[foodDetailView release];
 	
+	[pageControl release];
 	[super dealloc];
 }
 
@@ -106,6 +118,7 @@
 	
 	[self setFoodDetailView:nil];
 	
+	[self setPageControl:nil];
 	[super viewDidUnload];
 }
 
@@ -116,6 +129,18 @@
 
 #pragma mark - gesture hanlder
 
+- (void) tap:(UITapGestureRecognizer *)recognizer
+{
+	if (self.titleView.view.alpha <= 0.1)
+	{
+		[self showTitleAndPageControl];
+	}
+	else 
+	{
+		[self hideTitleAndPageControl];
+	}
+}
+
 - (void) swipeDown
 {
 	[self.delegate placeDetailPagePullDown];
@@ -123,20 +148,11 @@
 
 - (void) swipeLeft
 {
-	NSInteger newIndex = 0;
+	NSInteger newIndex = self.foodIndex;
 	
-	if (0 < self.foodIndex)
+	if ([[self.placeObject valueForKey:@"foods"] count] > (self.foodIndex + 1)) 
 	{
-		newIndex = self.foodIndex - 1;
-	}
-	else
-	{
-		NSInteger maxIndex = [[self.placeObject valueForKey:@"foods"] count] - 1;
-
-		if (0 < maxIndex)
-		{
-			newIndex = maxIndex;
-		}
+		newIndex = self.foodIndex + 1;
 	}
 	
 	if (self.foodIndex != newIndex)
@@ -150,13 +166,9 @@
 {
 	NSInteger newIndex = 0;
 	
-	if ([[self.placeObject valueForKey:@"foods"] count] > (self.foodIndex + 1)) 
+	if (0 < self.foodIndex)
 	{
-		newIndex = self.foodIndex + 1;
-	}
-	else 
-	{
-		newIndex = 0;
+		newIndex = self.foodIndex - 1;
 	}
 	
 	if (self.foodIndex != newIndex)
@@ -175,7 +187,8 @@
 	CATransition* transition = [CATransition animation];
 	transition.type = kCATransitionPush;
 	transition.subtype = transitionSubtype;
-	[self.view.layer addAnimation:transition forKey:@"push-transition"];
+	[self.titleView.view.layer addAnimation:transition forKey:@"push-transition"];
+	[self.foodDetailView.layer addAnimation:transition forKey:@"push-transition"];
 }
 
 - (void) updateFood
@@ -192,6 +205,8 @@
 		{
 			self.titleView.foodObject = foodObject;
 			self.detailController.foodObject = foodObject;
+			[self.pageControl setCurrentPage:self.foodIndex];
+			[self showTitleAndPageControlInstanly];
 		}
 		else 
 		{
@@ -210,7 +225,42 @@
 		
 		self.foodIndex = 0;
 		[self updateFood];
+		
+		NSArray *foodsIDArray = [self.placeObject valueForKey:@"foods"];
+		[self.pageControl setNumberOfPages:[foodsIDArray count]];
 	}
+}
+
+#pragma mark - hide or show title and pageControl
+
+- (void) hideTitleAndPageControl
+{
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:0.5];
+	[UIView setAnimationCurve: UIViewAnimationCurveEaseInOut];
+	
+	[self.titleView.view setAlpha:0.0];
+	[self.pageControl setAlpha:0.0];
+	
+	[UIView commitAnimations];
+}
+
+- (void) showTitleAndPageControlInstanly
+{
+	
+	[self.titleView.view setAlpha:1.0];
+	[self.pageControl setAlpha:1.0];
+}
+
+- (void) showTitleAndPageControl
+{
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:0.5];
+	[UIView setAnimationCurve: UIViewAnimationCurveEaseInOut];
+	
+	[self showTitleAndPageControlInstanly];
+	
+	[UIView commitAnimations];
 }
 
 @end

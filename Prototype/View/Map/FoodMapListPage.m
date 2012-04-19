@@ -32,6 +32,10 @@ const static uint32_t ROW_TO_MORE_MAP_LIST_FROM_BOTTOM = 8;
 @synthesize loginUserID = _loginUserID;
 @synthesize mapView = _mapView;
 
+#pragma mark - singleton
+
+DEFINE_SINGLETON(FoodMapListPage);
+
 - (id) initWithStyle:(UITableViewStyle)style
 {
 	self = [super initWithStyle:style];
@@ -136,7 +140,7 @@ const static uint32_t ROW_TO_MORE_MAP_LIST_FROM_BOTTOM = 8;
 	}
 	else 
 	{
-		[LoginManager requestWithHandler:@selector(reloadData) andTarget:self];
+		[LoginManager requestWithHandler:@selector(requestFoodNewerMapList) andTarget:self];
 
 		return 0;
 	}
@@ -188,6 +192,13 @@ const static uint32_t ROW_TO_MORE_MAP_LIST_FROM_BOTTOM = 8;
 
 		[self.navigationController pushViewController:self.mapView animated:YES];
 	}
+}
+
+#pragma mark - class interface
+
++ (void) reloadData
+{
+	[[[self getInstnace] tableView] reloadData];
 }
 
 @end

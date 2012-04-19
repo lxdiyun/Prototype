@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "EventPage.h"
 #import "UserInfoPage.h"
 #import "ShareNewEvent.h"
@@ -37,6 +39,13 @@ static UIViewController *gs_currentViewController;
 @synthesize tabco = _tabco;
 
 #pragma mark - life circle
+
+- (void) customNavgivationBar:(UINavigationBar *)bar
+{
+	bar.barStyle = UIBarStyleBlack;
+	bar.translucent = YES;
+	bar.tintColor = [Color darkgreyColor];
+}
 
 - (void) setupPageClass
 {
@@ -96,15 +105,15 @@ static UIViewController *gs_currentViewController;
 	for (int i = 0; i < MSWJ_PAGE_QUANTITY; ++i)
 	{
 		UINavigationController *navco = [[UINavigationController alloc] initWithRootViewController:MSWJ_PAGE_INSTANCE[i]];
+		[self customNavgivationBar:navco.navigationBar];
 		[tabBarViewControllers addObject:navco];
-		navco.navigationBar.barStyle = UIBarStyleBlack;
 		navco.tabBarItem.image = [UIImage imageNamed:MSWJ_ICON[i]];
 		[navco release];
 	}
 	
 	[tabBarController setViewControllers:tabBarViewControllers animated:NO];
 	tabBarController.delegate = self;
-	tabBarController.moreNavigationController.navigationBar.barStyle = UIBarStyleBlack;
+	[self customNavgivationBar:tabBarController.moreNavigationController.navigationBar];
 	tabBarController.customizableViewControllers = nil;
 	
 	self.tabco = tabBarController;
@@ -187,6 +196,19 @@ static UIViewController *gs_currentViewController;
 + (UIViewController *) currentViewController
 {
 	return gs_currentViewController;
+}
+
++ (void) resetAllPage
+{
+	for (int i = 0; i < MSWJ_PAGE_QUANTITY; ++i)
+	{
+		[MSWJ_PAGE_INSTANCE[i].navigationController popToRootViewControllerAnimated:NO];
+	}
+	
+	[EventPage requestUpdate];
+	[EventPage reloadData];
+	[UserInfoPage reloadData];
+	[FoodMapListPage reloadData];
 }
 
 @end

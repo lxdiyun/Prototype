@@ -11,13 +11,15 @@
 #import "Util.h"
 #import "ImageManager.h"
 
-@interface ImageV ()
+@interface ImageV () <SDWebImageManagerDelegate>
 {
 	NSDictionary *_picDict;
 	NSNumber *_picID;
+	UIActivityIndicatorView *_indicator;
 }
 
 @property (strong, nonatomic) NSDictionary *picDict;
+@property (strong) UIActivityIndicatorView *indicator;
 
 @end
 
@@ -26,6 +28,7 @@
 #pragma mark - synthesize
 @synthesize picDict = _picDict;
 @synthesize picID = _picID;
+@synthesize indicator = _indicator;
 
 - (void) setPicDict:(NSDictionary *)picDict
 {
@@ -77,12 +80,14 @@
 				[size release];
 				
 				[ImageManager setImageSize:[NSNumber numberWithUnsignedInt:real_size] withNumberID:self.picID];
+				
+				[self startIndicator];
 			} 
 		}
 		
 		if ((nil == preImageUrlString) && (nil == imageUrlString))
 		{
-				[self setImage: nil];
+			[self setImage: nil];
 		}
 		
 		// set the image to the allready cached image
@@ -111,8 +116,6 @@
 {
 	if (CHECK_NUMBER(self.picID))
 	{
-
-		
 		NSDictionary *picDict = [ImageManager getObjectWithNumberID:self.picID];
 		
 		if (nil != picDict)
@@ -153,6 +156,44 @@
 	self.picID = nil;
 	
 	[super dealloc];
+}
+
+#pragma mark - SDWebImageManagerDelegate
+
+- (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
+{
+	[super webImageManager:imageManager didFinishWithImage:image];
+	
+	[self stopIndicator];
+}
+
+#pragma mark - indicator
+- (void) startIndicator
+{
+	if (nil == self.indicator)
+	{
+		UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] init];
+		[self addSubview:indicator];
+		[indicator setHidden:YES];
+		
+		self.indicator = indicator;
+		
+		[indicator release];
+	}
+	
+	if ([self.indicator isHidden])
+	{
+		CGPoint center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
+		self.indicator.center = center;
+		[self.indicator startAnimating];
+		[self.indicator setHidden:NO];
+	}
+}
+
+- (void) stopIndicator
+{
+	[self.indicator stopAnimating];
+	[self.indicator setHidden:YES];
 }
 
 @end

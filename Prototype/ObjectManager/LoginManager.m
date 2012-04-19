@@ -13,6 +13,7 @@
 #import "ObjectSaver.h"
 #import "UserInfoPage.h"
 #import "EventPage.h"
+#import "FoodMapListPage.h"
 
 static NSString *gs_fakeLoginStringID;
 static UINavigationController *gs_login_page_nvc;
@@ -121,10 +122,6 @@ DEFINE_SINGLETON(LoginManager);
 	{
 		SET_USER_ID(loginUserID);
 		
-		[EventPage requestUpdate];
-		[EventPage reloadData];
-		[UserInfoPage reloadData];
-		
 		if ([[AppDelegate currentViewController] modalViewController] == gs_login_page_nvc)
 		{
 			[[AppDelegate currentViewController] dismissModalViewControllerAnimated:YES];
@@ -190,6 +187,32 @@ DEFINE_SINGLETON(LoginManager);
 		[gs_login_page reloadData];
 		
 		[[AppDelegate currentViewController] presentModalViewController:gs_login_page_nvc animated:YES];
+	}
+	
+	[AppDelegate resetAllPage];
+}
+
+#pragma mark - save and restore
++ (void) saveTo:(NSMutableDictionary *)dict
+{
+	NSNumber *loginUserID = GET_USER_ID();
+	if (nil != loginUserID)
+	{
+		[dict setObject: loginUserID
+			 forKey:[self description]];
+	}
+}
+
++ (void) restoreFrom:(NSDictionary *)dict
+{
+	@autoreleasepool 
+	{
+		NSNumber *loginUserID = [dict objectForKey:[self description]];
+		
+		if (nil != loginUserID)
+		{
+			SET_USER_ID(loginUserID);
+		}
 	}
 }
 

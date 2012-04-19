@@ -10,4 +10,6 @@
 
 @interface FoodMapListPage : UITableViewController
 
++ (void) reloadData;
+
 @end

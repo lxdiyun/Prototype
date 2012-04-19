@@ -14,7 +14,7 @@ const static CGFloat FONT_SIZE = 15.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
 const static CGFloat PADING3 = 15.0; // padding from top virtical boder
-const static CGFloat PADING4 = 10.0; // padding between element virtical and bottom border
+const static CGFloat PADING4 = 28.0; // padding between element virtical and bottom border
 static CGFloat LABEL_WIDTH = 300;
 
 @interface FoodDescCell ()
