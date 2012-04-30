@@ -81,6 +81,7 @@ ARC_SINGLETON \
 
 // const variable
 const static CGFloat TAB_BAR_HEIGHT = 49;
+const static CGFloat STATUS_BAR_HEIGHT = 20;
 
 // login user id
 NSNumber * GET_USER_ID(void);
@@ -129,5 +130,22 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message);
 + (UIColor *) lightyellowColor;
 
 @end
+
+// custom nagivation bar
+// for iOS < 5.0
+@implementation UINavigationBar (UINavigationBarCategory)
+- (void)drawRect:(CGRect)rect 
+{
+	UIColor *color = [Color darkgreyColor];
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextSetFillColor(context, CGColorGetComponents( [color CGColor]));
+	CGContextFillRect(context, rect);
+}
+@end
+// for ios > 5.0
+void CONFIG_NAGIVATION_BAR(UINavigationBar *bar);
+
+UIButton * SETUP_BACK_BUTTON(id target, SEL action);
+UIBarButtonItem * SETUP_BACK_BAR_BUTTON(id target, SEL action);
 
 #endif

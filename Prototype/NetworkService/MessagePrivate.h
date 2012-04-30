@@ -22,13 +22,13 @@ uint32_t pending_message_count(MESSAGE_PRIORITY priority, NSString *ID);
 
 // json message
 void convert_dictonary_to_json_data(NSDictionary *input_dict, NSMutableData * output_data);
-void json_message_handler(NSData *buffer_data);
+void json_message_handler(NSData *message_data);
 
 // ping pong message
-void pong_message_handler(NSData *buffer_data);
+void pong_message_handler(NSData *message_data);
 
 // binary message 
-void binary_message_handler(NSData *buffer_data);
+void binary_message_handler(NSData *message_data);
 void update_upload_progress(NSString *IDString);
 void clean_progress(NSString *IDString);
 

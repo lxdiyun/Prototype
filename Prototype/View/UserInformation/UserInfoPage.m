@@ -568,6 +568,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	self.introduceView.userInteractionEnabled = NO;
 	
 	self.navigationItem.rightBarButtonItem = self.editButton;
+	self.navigationItem.leftBarButtonItem = nil;
 	self.avatorCell.accessoryType = UITableViewCellAccessoryNone;
 	[self.avatorCell hideProgressBar];
 	

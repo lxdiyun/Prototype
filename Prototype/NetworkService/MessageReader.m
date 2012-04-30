@@ -41,14 +41,16 @@ void CLEAR_MESSAGE_HANDLER(void)
 void HANDLE_MESSAGE(NSData * buffer_data)
 {
 	uint32_t header = CFSwapInt32HostToBig(*(uint32_t *)buffer_data.bytes);
-
 	uint32_t messageType = (header >> HEADER_LENGTH_BITS);
+	uint32_t messageLength  = header & HEADER_LENGTH_MASK;
 	
 	if (MAX_RESERVED_MSG > messageType)
 	{
 		@autoreleasepool 
 		{
-			gs_reserve_messgae_hanlder[messageType](buffer_data);
+			NSData *messageData = [NSData dataWithBytes:buffer_data.bytes + HEADER_SIZE 
+							      length:messageLength];
+			gs_reserve_messgae_hanlder[messageType](messageData);
 		}
 	}
 	else

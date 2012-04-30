@@ -111,10 +111,7 @@ CGFloat PROPORTION(void)
 {
 	static CGFloat s_proportion = 0;
 	
-	if (0.1 >= s_proportion)
-	{
-		s_proportion = [UIScreen mainScreen].applicationFrame.size.width / 320;
-	}
+	s_proportion = [UIScreen mainScreen].applicationFrame.size.width / 320.0;
 	
 	return s_proportion;
 }
@@ -244,3 +241,30 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 }
 
 @end
+
+void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
+{
+	bar.barStyle = UIBarStyleBlack;
+	
+	if([bar respondsToSelector:@selector(setBackgroundImage:forBarMetrics:)] ) 
+	{
+		//iOS 5 new UINavigationBar custom background
+		[bar setBackgroundImage:[UIImage imageNamed:@"DarkGrey.png"] forBarMetrics: UIBarMetricsDefault];
+	} 
+}
+
+UIButton * SETUP_BACK_BUTTON(id target, SEL action)
+{
+	UIButton *backButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 28)] autorelease];
+	[backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];
+	[backButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+	
+	return backButton;
+}
+
+UIBarButtonItem * SETUP_BACK_BAR_BUTTON(id target, SEL action)
+{
+	UIBarButtonItem *backItem = [[[UIBarButtonItem alloc] initWithCustomView:SETUP_BACK_BUTTON(target, action)] autorelease];
+	
+	return backItem;
+}

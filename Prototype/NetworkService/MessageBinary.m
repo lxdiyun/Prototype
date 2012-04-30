@@ -144,10 +144,10 @@ void UPLOAD_FILE(NSData *file, NSInteger file_ID)
 
 #pragma mark - binary message handler
 
-void binary_message_handler(NSData *buffer_data)
+void binary_message_handler(NSData *message_data)
 {
 	// TODO handle binary message reply
-	CLOG(@"receive binary mesage:%@", buffer_data);
+	CLOG(@"receive binary mesage:%@", message_data);
 }
 
 # pragma mark - upload progress

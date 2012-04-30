@@ -26,5 +26,6 @@ typedef enum MSWJ_PAGE_ENUM
 
 + (UIViewController *) currentViewController;
 + (void) resetAllPage;
++ (void) showPage:(MSWJ_PAGE)page;
 
 @end

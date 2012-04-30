@@ -19,8 +19,12 @@
 #import "PlaceDetailPage.h"
 #import "MapAnnotationView.h"
 
-static CGFloat PLACE_DETAIL_HEIGHT = 265.0;
-static CGFloat HIDE_PLACE_DETAIL_Y = 1289.0;
+static CGFloat CONST_PLACE_DETAIL_HEIGHT = 265.0;
+
+// caluate accroding to the view size when the view show
+static CGFloat PLACE_DETAIL_HEIGHT;
+static CGFloat HIDE_PLACE_DETAIL_Y = 1500.0;
+static CGFloat SHOW_PLACE_DETAIL_Y;
 
 typedef enum MAP_MENU_ENUM
 {
@@ -209,17 +213,13 @@ typedef enum MAP_MENU_ENUM
 	leftButtonView.clipsToBounds = YES;
 	UIBarButtonItem *leftButtons = [[[UIBarButtonItem alloc] initWithCustomView:leftButtonView] autorelease];
 	// back
-	UIButton *backButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
-	[backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];
-	[backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateSelected];
-	[backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+	UIButton *backButton = SETUP_BACK_BUTTON(self, @selector(back));
 	[leftButtonView addSubview:backButton];
 	
 	
 	// refresh
 	UIButton *refreshButton = [[[UIButton alloc] initWithFrame:CGRectMake(41, 0, 40, 30)] autorelease];
 	[refreshButton setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
-	[refreshButton setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateSelected];
 	[refreshButton addTarget:self action:@selector(reloadMapObject) forControlEvents:UIControlEventTouchUpInside];
 	[leftButtonView addSubview:refreshButton];
 	
@@ -232,17 +232,15 @@ typedef enum MAP_MENU_ENUM
 	// route
 	UIButton *routeButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
 	[routeButton setImage:[UIImage imageNamed:@"route.png"] forState:UIControlStateNormal];
-	[routeButton setImage:[UIImage imageNamed:@"route.png"] forState:UIControlStateSelected];
 	[routeButton addTarget:self action:@selector(focousUserLoaction) forControlEvents:UIControlEventTouchUpInside];
-	//routeButton.backgroundColor = [Color grey3Color];
+	routeButton.backgroundColor = [Color grey3Color];
 	[rightButtonsView addSubview:routeButton];
 	
 	// show all places
 	UIButton *showAllButton = [[[UIButton alloc] initWithFrame:CGRectMake(41, 0, 40, 30)] autorelease];
 	[showAllButton setImage:[UIImage imageNamed:@"showAllPlace.png"] forState:UIControlStateNormal];
-	[showAllButton setImage:[UIImage imageNamed:@"showAllPlace.png"] forState:UIControlStateSelected];
 	[showAllButton addTarget:self action:@selector(showAllPlaces) forControlEvents:UIControlEventTouchUpInside];
-	//showAllButton.backgroundColor = [Color grey3Color];
+	showAllButton.backgroundColor = [Color grey3Color];
 	[rightButtonsView addSubview:showAllButton];
 	
 	// set all buttons
@@ -259,8 +257,6 @@ typedef enum MAP_MENU_ENUM
 	{
 		@autoreleasepool 
 		{
-			PLACE_DETAIL_HEIGHT = PLACE_DETAIL_HEIGHT * PROPORTION();
-
 			self.mapView = [[[MKMapView alloc] init] autorelease];
 			self.view = self.mapView;
 			self.mapView.delegate = self;
@@ -274,6 +270,11 @@ typedef enum MAP_MENU_ENUM
 
 - (void) viewWillAppear:(BOOL)animated
 {
+	PLACE_DETAIL_HEIGHT = CONST_PLACE_DETAIL_HEIGHT * PROPORTION();
+	SHOW_PLACE_DETAIL_Y = [[UIScreen mainScreen] applicationFrame].size.height 
+	- (PLACE_DETAIL_HEIGHT / 2) 
+	+ STATUS_BAR_HEIGHT;
+
 	[super viewWillAppear:animated];
 
 	self.focousUser = NO;
@@ -469,32 +470,27 @@ typedef enum MAP_MENU_ENUM
 		if (self.navigationController.tabBarController.view != self.placeDetailPage.view.superview)
 		{
 			CGRect placeFrame = self.navigationController.tabBarController.view.frame;
-			placeFrame.origin.y = placeFrame.size.height;
+			placeFrame.origin.y = HIDE_PLACE_DETAIL_Y;
 			placeFrame.size.height = PLACE_DETAIL_HEIGHT;
 			placeFrame.size.width = self.view.frame.size.width;
 			self.placeDetailPage.view.frame = placeFrame;
-		}
-		
-		if (self.navigationController.tabBarController.view 
-		    != [self.placeDetailPage.view superview])
-		{
+
 			[self.navigationController.tabBarController.view addSubview:self.placeDetailPage.view];
 		}
 
 
-		{
-			[UIView beginAnimations:nil context:NULL];
-			[UIView setAnimationDuration:0.2];  
-
-			CGPoint placeDetailPageCenter  = self.placeDetailPage.view.center;
-			placeDetailPageCenter.y = self.navigationController.tabBarController.view.frame.size.height - PLACE_DETAIL_HEIGHT / 2;
-
-			self.placeDetailPage.view.center = placeDetailPageCenter;
-
-			[self performSelector:@selector(resizeSmallAndShowSelectedPlaces) withObject:nil afterDelay:0.5];
-
-			[UIView commitAnimations];
-		}
+		// show the view
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationDuration:0.2];  
+		
+		CGPoint placeDetailPageCenter  = self.placeDetailPage.view.center;
+		placeDetailPageCenter.y = SHOW_PLACE_DETAIL_Y;
+		
+		self.placeDetailPage.view.center = placeDetailPageCenter;
+		
+		[self performSelector:@selector(resizeSmallAndShowSelectedPlaces) withObject:nil afterDelay:0.5];
+		
+		[UIView commitAnimations];
 	}
 }
 
@@ -618,25 +614,20 @@ typedef enum MAP_MENU_ENUM
 	region = [self.mapView regionThatFits:region];
 	[self.mapView setRegion:region animated:YES];
 }
-- (void) updateUserLocation:(MKUserLocation *) userLocation
+- (void) updateUserLocation:(MKUserLocation *)userLocation
 {
 	CLLocationAccuracy accuracy = userLocation.location.horizontalAccuracy;
 
 	if (accuracy > 0 ) 
 	{
-		if(nil != userLocation)
+		MKMapPoint userPoint = MKMapPointForCoordinate(userLocation.location.coordinate);
+		MKMapRect currentRect = [self.mapView visibleMapRect];
+		
+		self.focousUser = NO;
+		
+		if (!MKMapRectContainsPoint(currentRect, userPoint))
 		{
-			MKMapPoint userPoint = MKMapPointForCoordinate(userLocation.location.coordinate);
-			MKMapRect currentRect = [self.mapView visibleMapRect];
-			
-			if (!MKMapRectContainsPoint(currentRect, userPoint))
-			{
-				[self.mapView setCenterCoordinate:userLocation.location.coordinate animated:YES];
-			}
-		}
-		else 
-		{
-			[self performSelector:@selector(focousUserLoaction) withObject:nil afterDelay:1.0];
+			[self.mapView setCenterCoordinate:userLocation.location.coordinate animated:YES];
 		}
 	}
 }

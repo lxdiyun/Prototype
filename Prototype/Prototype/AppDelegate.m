@@ -40,13 +40,6 @@ static UIViewController *gs_currentViewController;
 
 #pragma mark - life circle
 
-- (void) customNavgivationBar:(UINavigationBar *)bar
-{
-	bar.barStyle = UIBarStyleBlack;
-	bar.translucent = YES;
-	bar.tintColor = [Color darkgreyColor];
-}
-
 - (void) setupPageClass
 {
 	MSWJ_PAGE_CLASS[HOME_PAGE] = [EventPage class];
@@ -105,15 +98,16 @@ static UIViewController *gs_currentViewController;
 	for (int i = 0; i < MSWJ_PAGE_QUANTITY; ++i)
 	{
 		UINavigationController *navco = [[UINavigationController alloc] initWithRootViewController:MSWJ_PAGE_INSTANCE[i]];
-		[self customNavgivationBar:navco.navigationBar];
+		CONFIG_NAGIVATION_BAR(navco.navigationBar);
 		[tabBarViewControllers addObject:navco];
 		navco.tabBarItem.image = [UIImage imageNamed:MSWJ_ICON[i]];
+
 		[navco release];
 	}
 	
 	[tabBarController setViewControllers:tabBarViewControllers animated:NO];
 	tabBarController.delegate = self;
-	[self customNavgivationBar:tabBarController.moreNavigationController.navigationBar];
+	CONFIG_NAGIVATION_BAR(tabBarController.moreNavigationController.navigationBar);
 	tabBarController.customizableViewControllers = nil;
 	
 	self.tabco = tabBarController;
@@ -209,6 +203,17 @@ static UIViewController *gs_currentViewController;
 	[EventPage reloadData];
 	[UserInfoPage reloadData];
 	[FoodMapListPage reloadData];
+}
+
++ (void) showPage:(MSWJ_PAGE)page
+{
+	if ((HOME_PAGE <= page) && (page <= MSWJ_PAGE_QUANTITY))
+	{
+		if ([gs_currentViewController isKindOfClass:[UITabBarController class]])
+		{
+			[(UITabBarController *)gs_currentViewController setSelectedIndex:page];
+		}
+	}
 }
 
 @end

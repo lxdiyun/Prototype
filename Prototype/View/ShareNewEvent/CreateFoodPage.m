@@ -39,7 +39,7 @@ typedef enum NEW_FOOD_DETAIL_ENUM
 	NEW_FOOD_DETAIL_MAX
 } NEW_FOOD_DETAIL;
 
-static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"名字：", @"城市：", @"所在地：", @"类型："};
+static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"美食名称：", @"城市：", @"所在地：", @"类型："};
 
 static UITextField *gs_food_detail_text_view[NEW_FOOD_DETAIL_MAX] = {nil};
 static UITextView *gs_food_desc_text_view = nil;

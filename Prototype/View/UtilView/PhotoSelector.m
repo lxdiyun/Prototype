@@ -69,7 +69,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 				++_actionMaxIndex;
 			}
 			
-			[self.actionSheet addButtonWithTitle:@"本地上传"];
+			[self.actionSheet addButtonWithTitle:@"本地相册"];
 			_actionArray[_actionMaxIndex] = UIImagePickerControllerSourceTypePhotoLibrary;
 			++_actionMaxIndex;
 			

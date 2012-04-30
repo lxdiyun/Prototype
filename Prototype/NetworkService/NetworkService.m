@@ -150,6 +150,9 @@ DEFINE_SINGLETON(NetworkService);
 	self.inputStream = (NSInputStream *)readStream;
 	self.outputStream = (NSOutputStream *)writeStream;
 	
+	CFRelease(readStream);
+	CFRelease(writeStream);
+	
 	[self.inputStream setDelegate:self];
 	[self.outputStream setDelegate:self];
 	

@@ -77,10 +77,10 @@
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Release">
+      buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "AppStore"
       customArchiveName = "meishiwanjia_distribute"
       revealArchiveInOrganizer = "NO">
    </ArchiveAction>

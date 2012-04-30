@@ -50,31 +50,39 @@ static void error_handler(NSDictionary *errorMessage)
 	}
 }
 
-void json_message_handler(NSData *buffer_data)
+void json_message_handler(NSData *message_data)
 {
 	@autoreleasepool
 	{
-		uint32_t header = CFSwapInt32BigToHost(*(uint32_t *)buffer_data.bytes);
-		uint32_t messageLength  = header & HEADER_LENGTH_MASK;
-		NSString *jsonString = [[NSString alloc] initWithBytes:(buffer_data.bytes + HEADER_SIZE) 
-								length:messageLength 
-							      encoding:NSASCIIStringEncoding];	
+		static JSONDecoder *decoder = nil;
+		NSError *error = nil;
+		
+		if (nil == decoder)
+		{
+			decoder = [[JSONDecoder alloc] init];
+		}
 
-		NSDictionary *messageDict = [jsonString objectFromJSONString];
-
-		[jsonString release];
+		NSDictionary *messageDict = [decoder objectWithData:message_data 
+							      error:&error];
+		
+		if (nil != error)
+		{
+			CLOG(@"Error:json parser failed:%@", error);
+			
+			return;
+		}
 
 		NSString *ID = [[messageDict objectForKey:@"id"] stringValue];
 		MessageResponder *responder = [gs_handler_dict valueForKey:ID];
-		NSString *error = [messageDict valueForKey:@"error"];
+		NSString *errorMessage = [messageDict valueForKey:@"error"];
 
-		if (nil != error)
+		if (nil != errorMessage)
 		{
 			error_handler(messageDict);
 		}
 
 		// TODO: Remove log
-		// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
+		CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 
 		if (nil != ID)
 		{

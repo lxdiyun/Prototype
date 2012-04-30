@@ -52,8 +52,8 @@
 			alert.title = @"确认注销";
 			alert.message = @"主销后将清空本地缓存";
 			
-			[alert addButtonWithTitle:@"取消"];
-			[alert addButtonWithTitle:@"好滴"];
+			[alert addButtonWithTitle:@"Cancel"];
+			[alert addButtonWithTitle:@"OK"];
 			alert.delegate = self;
 			self.alert = alert;
 		}

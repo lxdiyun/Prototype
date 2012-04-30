@@ -78,7 +78,7 @@ void STOP_PING(void)
 
 #pragma mark - pong handler
 
-void pong_message_handler(NSData *bufferData)
+void pong_message_handler(NSData *message_data)
 {
 	CLOG(@"Receive pong message!");
 	
