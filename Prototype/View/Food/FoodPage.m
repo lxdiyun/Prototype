@@ -8,51 +8,52 @@
 
 #import "FoodPage.h"
 
-#import "EGORefreshTableHeaderView.h"
-
-#import "FoodTagCell.h"
+#import "FoodUserCell.h"
 #import "FoodImageCell.h"
 #import "FoodCommentMananger.h"
 #import "CommentCell.h"
 #import "DescriptionCell.h"
 #import "Util.h"
 #import "TextInputer.h"
+#import "TitleVC.h"
 
 const static uint32_t COMMENT_REFRESH_WINDOW = 8;
 const static uint32_t ROW_TO_MORE_COMMENT_FROM_BOTTOM = 2;
 
 typedef enum FOOD_PAGE_SECTION_ENUM
 {
-	FOOD_TAG = 0x0,
+	FOOD_USER = 0x0,
 	FOOD_PIC = 0x1,
 	FOOD_DESC = 0x2,
 	FOOD_COMMENT = 0x3,
 	FOOD_SECTION_MAX
 } FOOD_PAGE_SECTION;
 
-@interface FoodPage () <UIScrollViewDelegate, EGORefreshTableHeaderDelegate, TextInputerDeletgate>
+@interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate>
 {
 	NSDictionary *_foodDict;
 	NSString *_foodID;
-	EGORefreshTableHeaderView *_refreshHeaderView;
 	TextInputer *_inputer;
 	UINavigationController *_navco;
-	
+	TitleVC *_titleView;
+	FoodUserCell *_foodUser;
 }
 
 @property (strong) NSString *foodID;
-@property (strong) EGORefreshTableHeaderView *refreshHeaderView;
 @property (strong, nonatomic) TextInputer *inputer;
 @property (strong, nonatomic) UINavigationController *navco;
+@property (strong, nonatomic) TitleVC *titleView;
+@property (strong, nonatomic) FoodUserCell *foodUser;
 @end
 
 @implementation FoodPage
 
 @synthesize foodDict = _foodDict;
 @synthesize foodID = _foodID;
-@synthesize refreshHeaderView = _refreshHeaderView;
 @synthesize inputer = _inputer;
 @synthesize navco = _navco;
+@synthesize titleView = _titleView;
+@synthesize foodUser = _foodUser;
 
 #pragma mark - util
 static int32_t s_lastCommentArrayCount = -1;
@@ -81,7 +82,6 @@ static int32_t s_lastCommentArrayCount = -1;
 - (void) requestNewerCommentHandler:(id)result
 {	
 	[self refreshTableView:nil];
-	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
 - (void) requestNewerComment
@@ -107,7 +107,6 @@ static int32_t s_lastCommentArrayCount = -1;
 	self = [super initWithStyle:style];
 	if (self) 
 	{
-		// Custom initialization
 	}
 	return self;
 }
@@ -120,33 +119,35 @@ static int32_t s_lastCommentArrayCount = -1;
 	// Release any cached data, images, etc that aren't in use.
 }
 
+- (void) dealloc
+{
+	self.foodDict = nil;
+	self.foodID = nil;
+	self.inputer = nil;
+	self.navco = nil;
+	self.titleView = nil;
+	self.foodUser = nil;
+	
+	[super dealloc];
+}
+
 #pragma mark - View lifecycle
 
 - (void) setupView
 {
 	@autoreleasepool 
 	{
-		// init header
-		if (nil == self.refreshHeaderView) 
-		{
-			
-			EGORefreshTableHeaderView *view = [[[EGORefreshTableHeaderView alloc] 
-							    initWithFrame:CGRectMake(0.0f, 
-										     0.0f - self.tableView.bounds.size.height, 
-										     self.tableView.frame.size.width,
-										     self.tableView.bounds.size.height)] autorelease];
-			
-			view.delegate = self;
-			[self.tableView addSubview:view];
-			
-			self.refreshHeaderView = view;
-		}
 		
-		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
-							   initWithImage:[UIImage imageNamed:@"comIcon.png"] 
-							   style:UIBarButtonItemStylePlain 
-							   target:self 
-							   action:@selector(inputComment:)] autorelease];
+		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self.navigationController, 
+									      @selector(popViewControllerAnimated:));
+		
+		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"comIcon.png"], 
+									  self, 
+									  @selector(inputComment:));
+		
+		self.titleView = [[[TitleVC alloc] init] autorelease];
+		
+		self.navigationItem.titleView = self.titleView.view;
 	}
 }
 
@@ -166,14 +167,17 @@ static int32_t s_lastCommentArrayCount = -1;
 	
 	self.foodDict = nil;
 	self.foodID = nil;
-	self.refreshHeaderView = nil;
 	self.inputer = nil;
 	self.navco = nil;
+	self.titleView = nil;
+	self.foodUser = nil;
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {	
-	self.title = [self.foodDict valueForKey:@"name"];
+	self.titleView.name.text = [self.foodDict valueForKey:@"name"];
+	self.titleView.placeName.text = [NSString stringWithFormat:@"@%@", 
+					 [self.foodDict valueForKey:@"place_name"]];
 	self.foodID = [[self.foodDict valueForKey:@"id"] stringValue];
 	[self forceRefreshTableView];
 	
@@ -228,25 +232,25 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	switch (indexPath.section) 
 	{
-		case FOOD_TAG:
+		case FOOD_USER:
 		{
-			static NSString *tagCellIdentifier = @"foodTagCell";
+			static NSString *userCellIndentifier = @"FoodUserCell";
 			
-			FoodTagCell *cell = [tableView dequeueReusableCellWithIdentifier:tagCellIdentifier];
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:userCellIndentifier];
 			
-			if (cell == nil) 
+			if (nil == self.foodUser)
 			{
-				cell = [[[FoodTagCell alloc] 
-					 initWithStyle:UITableViewCellStyleDefault 
-					 reuseIdentifier:tagCellIdentifier] 
-					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 30.0 * PROPORTION());
+				self.foodUser = [[[FoodUserCell alloc] init] autorelease];
 			}
 			
-			if (nil  != self.foodDict)
+			if (nil == cell)
 			{
-				cell.foodDict = self.foodDict;
+				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:userCellIndentifier] autorelease];
+				[cell.contentView addSubview:self.foodUser.view];
 			}
+			
+			self.foodUser.food = self.foodDict;
+			
 			return cell;
 		}
 			break;
@@ -326,11 +330,11 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	switch (indexPath.section) 
 	{
-		case FOOD_TAG:
-			return 30 * PROPORTION();
+		case FOOD_USER:
+			return 44;
 			break;
 		case FOOD_PIC:
-			return self.view.frame.size.width;
+			return 320;
 			break;
 		case FOOD_DESC:
 		{
@@ -390,38 +394,12 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) scrollViewDidScroll:(UIScrollView *)view
 {	
-	[self.refreshHeaderView egoRefreshScrollViewDidScroll:view];
+	
 }
 
 - (void) scrollViewDidEndDragging:(UIScrollView *)view willDecelerate:(BOOL)decelerate
 {
-	[self.refreshHeaderView egoRefreshScrollViewDidEndDragging:view];
-}
-
-#pragma mark - EGORefreshTableHeaderDelegate Methods
-
-- (void) egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
-{
-	[self requestNewerComment];
-}
-
-- (BOOL) egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
-{
-	return [FoodCommentMananger isUpdatingWithType:REQUEST_NEWER withListID:self.foodID]; 
-}
-
-- (NSDate*) egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-	NSDate *updatedDate = [FoodCommentMananger lastUpdatedDateForList:self.foodID];
 	
-	if (nil != updatedDate)
-	{
-		return updatedDate;
-	}
-	else
-	{
-		return [NSDate date];
-	}
 }
 
 #pragma mark - NewComment handler

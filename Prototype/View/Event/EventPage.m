@@ -78,12 +78,6 @@ DEFINE_SINGLETON(EventPage);
 	
 	self.view.backgroundColor = [Color brownColor];
 	
-	// init back button for view will will be pushed
-	self.navigationItem.backBarButtonItem = [[[UIBarButtonItem alloc] init] 
-						 autorelease];
-	self.navigationItem.backBarButtonItem.style = UIBarButtonItemStyleBordered;
-	self.navigationItem.backBarButtonItem.image = [UIImage imageNamed:@"backArrow.png"];
-	
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.leftColumn indexPathForSelectedRow];
 	[self.leftColumn deselectRowAtIndexPath:tableSelection animated:YES];

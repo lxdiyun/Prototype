@@ -9,10 +9,10 @@
 #import "Util.h"
 
 #import <MapKit/MapKit.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "SDNetworkActivityIndicator.h"
 #import "Message.h"
-
 
 static NSNumber *gs_login_user_id = nil;
 
@@ -253,18 +253,50 @@ void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
 	} 
 }
 
-UIButton * SETUP_BACK_BUTTON(id target, SEL action)
+static UIButton * create_button(UIImage *image,id target, SEL action)
 {
-	UIButton *backButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 28)] autorelease];
-	[backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];
-	[backButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+	UIButton *button = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
+	[button setImage:image forState:UIControlStateNormal];
+	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 	
-	return backButton;
+	return button;
+}
+
+static UIBarButtonItem * create_bar_button(UIImage *image,id target, SEL action)
+{
+	UIBarButtonItem *item = [[[UIBarButtonItem alloc] initWithCustomView:SETUP_BUTTON(image, target, action)] autorelease];
+	
+	return item;
+}
+
+UIButton * SETUP_BUTTON(UIImage *image,id target, SEL action)
+{
+	UIButton *button = create_button(image, target, action);
+	
+	button.backgroundColor = [Color grey3Color];
+	
+	return button;
+}
+
+UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action)
+{
+	UIButton *button = SETUP_BUTTON(image, target, action);
+	
+	button.layer.cornerRadius = 5.0;
+
+	return [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
+}
+
+UIButton * SETUP_BACK_BUTTON(id target, SEL action)
+{	
+	UIButton *button = create_button([UIImage imageNamed:@"backArrow.png"], target, action);
+	
+	button.backgroundColor = [UIColor clearColor];
+	
+	return button;
 }
 
 UIBarButtonItem * SETUP_BACK_BAR_BUTTON(id target, SEL action)
 {
-	UIBarButtonItem *backItem = [[[UIBarButtonItem alloc] initWithCustomView:SETUP_BACK_BUTTON(target, action)] autorelease];
-	
-	return backItem;
+	return [[[UIBarButtonItem alloc] initWithCustomView:SETUP_BACK_BUTTON(target, action)] autorelease];
 }

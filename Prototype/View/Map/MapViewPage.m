@@ -214,13 +214,15 @@ typedef enum MAP_MENU_ENUM
 	UIBarButtonItem *leftButtons = [[[UIBarButtonItem alloc] initWithCustomView:leftButtonView] autorelease];
 	// back
 	UIButton *backButton = SETUP_BACK_BUTTON(self, @selector(back));
+	backButton.frame = CGRectMake(0, 0, 40, 30);
 	[leftButtonView addSubview:backButton];
 	
-	
 	// refresh
-	UIButton *refreshButton = [[[UIButton alloc] initWithFrame:CGRectMake(41, 0, 40, 30)] autorelease];
-	[refreshButton setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
-	[refreshButton addTarget:self action:@selector(reloadMapObject) forControlEvents:UIControlEventTouchUpInside];
+	UIButton *refreshButton = SETUP_BUTTON([UIImage imageNamed:@"refresh.png"], 
+					       self, 
+					       @selector(reloadMapObject));
+	refreshButton.backgroundColor = [UIColor clearColor];
+	refreshButton.frame = CGRectMake(41, 0, 40, 30);	
 	[leftButtonView addSubview:refreshButton];
 	
 	// right bar buttons
@@ -230,16 +232,18 @@ typedef enum MAP_MENU_ENUM
 	UIBarButtonItem *rightButtons = [[[UIBarButtonItem alloc] initWithCustomView:rightButtonsView] autorelease];
 	
 	// route
-	UIButton *routeButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
-	[routeButton setImage:[UIImage imageNamed:@"route.png"] forState:UIControlStateNormal];
-	[routeButton addTarget:self action:@selector(focousUserLoaction) forControlEvents:UIControlEventTouchUpInside];
+	UIButton *routeButton = SETUP_BUTTON([UIImage imageNamed:@"route.png"], 
+					     self, 
+					     @selector(focousUserLoaction));
+	routeButton.frame = CGRectMake(0, 0, 40, 30);
 	routeButton.backgroundColor = [Color grey3Color];
 	[rightButtonsView addSubview:routeButton];
 	
 	// show all places
-	UIButton *showAllButton = [[[UIButton alloc] initWithFrame:CGRectMake(41, 0, 40, 30)] autorelease];
-	[showAllButton setImage:[UIImage imageNamed:@"showAllPlace.png"] forState:UIControlStateNormal];
-	[showAllButton addTarget:self action:@selector(showAllPlaces) forControlEvents:UIControlEventTouchUpInside];
+	UIButton *showAllButton = SETUP_BUTTON([UIImage imageNamed:@"showAllPlace.png"], 
+					       self, 
+					       @selector(showAllPlaces));
+	showAllButton.frame = CGRectMake(41, 0, 40, 30);
 	showAllButton.backgroundColor = [Color grey3Color];
 	[rightButtonsView addSubview:showAllButton];
 	

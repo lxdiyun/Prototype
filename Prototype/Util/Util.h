@@ -145,7 +145,10 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message);
 // for ios > 5.0
 void CONFIG_NAGIVATION_BAR(UINavigationBar *bar);
 
+// custom button style
 UIButton * SETUP_BACK_BUTTON(id target, SEL action);
 UIBarButtonItem * SETUP_BACK_BAR_BUTTON(id target, SEL action);
+UIButton * SETUP_BUTTON(UIImage *image,id target, SEL action);
+UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action);
 
 #endif
