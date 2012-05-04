@@ -81,7 +81,7 @@ void json_message_handler(NSData *message_data)
 			error_handler(messageDict);
 		}
 
-		// TODO: Remove log
+		// TODO: Remove comment to log
 		CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 
 		if (nil != ID)
@@ -90,7 +90,6 @@ void json_message_handler(NSData *message_data)
 
 			if (RESERVED_MESSAGE_MAX < IDNumber)
 			{
-				STOP_NETWORK_INDICATOR();
 				CONFIRM_MESSAGE(ID);
 			}
 

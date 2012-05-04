@@ -40,6 +40,7 @@ const static NSTimeInterval NETWORK_RECONNCECT_INTERVAL = 5; // seconds
 - (void) connect;
 - (void) closeStream;
 - (void) connectionRest;
+- (void) streamOpened:(NSStream *)theStream;
 
 // write
 - (void) writeMessage;
@@ -131,7 +132,7 @@ DEFINE_SINGLETON(NetworkService);
 	
 }
 
-#pragma mark - private connection method
+#pragma mark - connection
 
 - (void) connect 
 {
@@ -164,6 +165,8 @@ DEFINE_SINGLETON(NetworkService);
 				     forMode:NSRunLoopCommonModes];
 	[self.inputStream open];
 	[self.outputStream open];
+	
+	START_NETWORK_INDICATOR();
 }
 
 - (void) closeStream
@@ -185,17 +188,26 @@ DEFINE_SINGLETON(NetworkService);
 	}
 }
 
-- (void) connectionRest
-{	
+- (void) resetNetworkStatus
+{
 	self.inputStreamRest = YES;
 	self.outputStreamRest = YES;
 	
 	STOP_PING();
 	ROLLBACK_ALL_PENDING_MESSAGE();
+	STOP_ALL_NETWORK_INDICATOR();
+	
+	++self.reconnectedTimes;
+}
+
+- (void) connectionRest
+{	
+	[self closeStream];
+	[self resetNetworkStatus];
 
 	++self.reconnectedTimes;
 	
-	LOG(@"reconnect time = %u", self.reconnectedTimes);
+	LOG(@"Error: network reconnected, time = %u", self.reconnectedTimes);
 	
 	if (NETWORK_TRY_RECONNECT_TIMES == self.reconnectedTimes)
 	{
@@ -214,24 +226,31 @@ DEFINE_SINGLETON(NetworkService);
 	}
 }
 
+- (void) streamOpened:(NSStream *)theStream
+{
+	if ([self.alertView isVisible])
+	{
+		[self.alertView dismissWithClickedButtonIndex:0 animated:YES];
+	}
+	self.reconnectedTimes = 0;
+
+	if (theStream == self.outputStream)
+	{
+		STOP_NETWORK_INDICATOR();
+		[LoginManager request];
+	}
+}
+
 #pragma mark - NSStream delegate
 
 - (void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent 
 {
-	// TODO remove log
+	// TODO remove comment to log
 	switch (streamEvent) 
 	{
 		case NSStreamEventOpenCompleted:
 			LOG(@"Stream opened");
-			if ([self.alertView isVisible])
-			{
-				[self.alertView dismissWithClickedButtonIndex:0 animated:YES];
-			}
-			self.reconnectedTimes = 0;
-			if (theStream == self.outputStream)
-			{
-				[LoginManager request];
-			}
+			[self streamOpened:theStream];
 			break;
 			
 		case NSStreamEventHasBytesAvailable:
@@ -241,7 +260,7 @@ DEFINE_SINGLETON(NetworkService);
 			
 		case NSStreamEventHasSpaceAvailable:
 			// LOG(@"Ouput stream is ready");			
-			// only 0.001 sencond per time to write. will not block the ui event
+			// only 1000 time per time to write. will not block the ui event
 			[self performSelector:@selector(writeMessage) withObject:nil afterDelay:0.001];
 			break;
 			
@@ -336,11 +355,8 @@ DEFINE_SINGLETON(NetworkService);
 		self.inputStreamRest = NO;
 	}
 	
-	START_NETWORK_INDICATOR();
-	
 	int actuallyReaded = [self.inputStream read:s_buffer + s_offset
 					  maxLength:sizeof(s_buffer) - s_offset];
-	STOP_NETWORK_INDICATOR();
 	
 	if ( 0 > actuallyReaded)
 	{
@@ -398,7 +414,7 @@ DEFINE_SINGLETON(NetworkService);
 	}
 }
 
-#pragma mark class interface
+#pragma mark - class interface
 
 - (void) requestSendMessage
 {
@@ -416,7 +432,8 @@ DEFINE_SINGLETON(NetworkService);
 + (void) reconnect
 {
 	[[self getInstnace] closeStream];
-	[[self getInstnace] connectionRest];
+	[[self getInstnace] resetNetworkStatus];
+	[[self getInstnace] connect];
 }
 
 + (void) stop

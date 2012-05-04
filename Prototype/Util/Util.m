@@ -83,12 +83,17 @@ NSInteger MAP_ANNOTATION_VIEW_SORTER(id view1, id view2, void *context)
 
 void START_NETWORK_INDICATOR(void)
 {
-	[[SDNetworkActivityIndicator sharedActivityIndicator] startActivity];
+	[[SDNetworkActivityIndicator sharedActivityIndicator] startActivity];	
 }
 
 void STOP_NETWORK_INDICATOR(void)
 {
 	[[SDNetworkActivityIndicator sharedActivityIndicator] stopActivity];
+}
+
+void STOP_ALL_NETWORK_INDICATOR(void)
+{
+	[[SDNetworkActivityIndicator sharedActivityIndicator] stopAllActivity];
 }
 
 CGFloat SCALE(void)

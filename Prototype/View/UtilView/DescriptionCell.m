@@ -15,13 +15,11 @@
 #import "ProfileMananger.h"
 #import "TriangleView.h"
 
-const static CGFloat AVATOR_SIZE = 50;
 const static CGFloat FONT_SIZE = 15.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
-const static CGFloat PADING3 =  15.0; // padding from top virtical boder
-const static CGFloat PADING4 = 9.0; // padding between element virtical and bottom border
-const static CGFloat IMAGE_BORDER = 3.0;
+const static CGFloat PADING3 =  10.0; // padding from top virtical boder
+const static CGFloat PADING4 = 15.0; // padding between element virtical and bottom border
 const static CGFloat TRIANGLE_HEIGHT = 10.0;
 const static CGFloat TRIANGLE_WIDTH = 20.0;
 
@@ -29,17 +27,12 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 {
 @private
 	NSDictionary *_objectDict;
-	NSDictionary *_userProfileDict;
-	UILabel *_userAndDate;
 	UILabel *_description;
-	ImageV *_avatorImageV;
 	TriangleView *_triangle;
 }
 
-@property (strong, nonatomic) UILabel *userAndDate;
-@property (strong, nonatomic) NSDictionary *userProfile;
+
 @property (strong, nonatomic) UILabel *description;
-@property (strong, nonatomic) ImageV *avatorImageV;
 @property (strong, nonatomic) TriangleView *triangle;
 @end
 
@@ -47,10 +40,7 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 @implementation DescriptionCell
 
 @synthesize objectDict = _objectDict;
-@synthesize userProfile = _userProfileDict;
-@synthesize userAndDate = _userAndDate;
 @synthesize description = _comment;
-@synthesize avatorImageV = avatorImageV;
 @synthesize triangle = _triangle;
 
 # pragma mark - class method
@@ -58,12 +48,14 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 + (CGFloat) getDescriptionHeightFor:(NSDictionary *)commentDict forDescWidth:(CGFloat)width
 {
 	NSString *descString = [commentDict valueForKey:@"desc"];
-	CGFloat descHeight = FONT_SIZE * PROPORTION();
+	CGFloat descHeight = FONT_SIZE;
 	
 	if ((nil != descString) &&  (0 < descString.length))
 	{
 		CGSize constrained = CGSizeMake(width, 9999.0);
-		descHeight = [descString sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE * PROPORTION()] constrainedToSize:constrained lineBreakMode:UILineBreakModeWordWrap].height;
+		descHeight = [descString sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] 
+				    constrainedToSize:constrained 
+					lineBreakMode:UILineBreakModeWordWrap].height;
 	}
 	
 	return  descHeight;
@@ -71,10 +63,18 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 
 + (CGFloat) cellHeightForObject:(NSDictionary *)objectDict forCellWidth:(CGFloat)width
 {
-	width = width - ((PADING1 * 2 + AVATOR_SIZE + PADING2) * PROPORTION());
+	width = width - (PADING1 + PADING2);
+
 	CGFloat descHeight = [self getDescriptionHeightFor:objectDict forDescWidth:width];
 	
-	return descHeight + (FONT_SIZE + PADING4 + PADING3 * 2) * PROPORTION();
+	if (0 < [[objectDict valueForKey:@"comment_count"] intValue])
+	{
+		return descHeight + PADING4 + PADING3 + TRIANGLE_HEIGHT;
+	}
+	else 
+	{
+		return descHeight + PADING4 + PADING3;
+	}
 }
 
 #pragma mark - life circle
@@ -100,9 +100,7 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 - (void) dealloc
 {
 	self.objectDict = nil;
-	self.userAndDate = nil;
 	self.description = nil;
-	self.avatorImageV = nil;
 	self.triangle = nil;
 	
 	[super dealloc];
@@ -114,87 +112,26 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 	if (nil != self.triangle)
 	{
 		[self.triangle removeFromSuperview];
+		self.triangle = nil;
 	}
 	
-	CGFloat X = self.contentView.frame.size.width / PROPORTION() - TRIANGLE_WIDTH - PADING2;
-	CGFloat Y = fromHeight + (PADING3 * PROPORTION()) - (TRIANGLE_HEIGHT * PROPORTION());
-	CGRect rect = CGRectMake(X * PROPORTION(), 
-				 Y, 
-				 TRIANGLE_WIDTH * PROPORTION(), 
-				 TRIANGLE_HEIGHT * PROPORTION());
-	
-	self.triangle = [[[TriangleView alloc] initWithFrame:rect 
-						    andColor:[Color orangeColor]] 
-			 autorelease];
-	
-	[self.contentView addSubview:self.triangle];
-}
-
-- (void) redrawImageV
-{
-	if (nil != self.avatorImageV)
+	if (0 < [[self.objectDict valueForKey:@"comment_count"] intValue])
 	{
-		[self.avatorImageV removeFromSuperview];
-	}
-	
-	self.avatorImageV = [[[ImageV alloc] initWithFrame:CGRectMake(PADING1 * PROPORTION(), 
-								      PADING3 * PROPORTION(), 
-								      AVATOR_SIZE * PROPORTION(), 
-								      AVATOR_SIZE * PROPORTION())] 
-			     autorelease];
-	
-	[self.avatorImageV.layer setBorderColor:[[Color blackColorAlpha] CGColor]];
-	[self.avatorImageV.layer setBorderWidth: IMAGE_BORDER * PROPORTION()];
-	
-	[self.contentView addSubview:self.avatorImageV];
-	
-	if (nil != self.userProfile)
-	{
-		self.avatorImageV.picID = [self.userProfile valueForKey:@"avatar"];
+		CGFloat X = self.contentView.frame.size.width - TRIANGLE_WIDTH - PADING2;
+		CGFloat Y = fromHeight;
+		CGRect rect = CGRectMake(X, 
+					 Y, 
+					 TRIANGLE_WIDTH, 
+					 TRIANGLE_HEIGHT);
+		
+		self.triangle = [[[TriangleView alloc] initWithFrame:rect 
+							    andColor:[Color orangeColor]] 
+				 autorelease];
+		
+		[self.contentView addSubview:self.triangle];
 	}
 }
 
-- (void) redrawUserAndDate
-{
-	if (nil != self.userAndDate)
-	{
-		[self.userAndDate removeFromSuperview];
-	}
-	
-	UIFont *font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
-	
-	CGFloat X = PADING1 + AVATOR_SIZE + PADING2;
-	CGFloat Y = PADING3;
-	CGFloat width = self.contentView.frame.size.width - ((X + PADING2) * PROPORTION());
-	CGFloat height = FONT_SIZE;
-	
-	self.userAndDate = [[[UILabel alloc] init] autorelease];
-	self.userAndDate.frame = CGRectMake(X * PROPORTION(),
-					    Y * PROPORTION(),
-					    width,
-					    height * PROPORTION());
-	
-	self.userAndDate.font = font;
-	self.userAndDate.adjustsFontSizeToFitWidth = YES;
-	self.userAndDate.backgroundColor = [UIColor clearColor];
-	self.userAndDate.textColor = [Color grey2Color];
-	
-	NSString *nick = @"";
-	NSString *createTime  = @"";
-	if (nil != self.userProfile)
-	{
-		nick = [self.userProfile valueForKey:@"nick"];
-	}
-	
-	if (nil != self.objectDict)
-	{
-		createTime = [self.objectDict valueForKey:@"created_on"];
-	}
-	
-	self.userAndDate.text = [NSString stringWithFormat:@"%@  %@", nick, createTime];
-	
-	[self.contentView addSubview:self.userAndDate];
-}
 
 - (void) redrawDescription
 {
@@ -203,15 +140,15 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 		[self.description removeFromSuperview];
 	}
 	
-	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE * PROPORTION()];
-	CGFloat X = PADING1 + AVATOR_SIZE + PADING2;
-	CGFloat Y = (FONT_SIZE + PADING3 + PADING4) * PROPORTION();
-	CGFloat width = self.contentView.frame.size.width - ((X + PADING1) * PROPORTION());
+	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
+	CGFloat X = PADING1;
+	CGFloat Y = PADING3;
+	CGFloat width = self.contentView.frame.size.width - (X + PADING2);
 	CGFloat height = [[self class] getDescriptionHeightFor:self.objectDict
 						  forDescWidth:width];
 	
 	self.description = [[[UILabel alloc] 
-			 initWithFrame:CGRectMake(X * PROPORTION(),
+			 initWithFrame:CGRectMake(X,
 						  Y,
 						  width,
 						  height)] 
@@ -229,33 +166,10 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 	
 	[self.contentView addSubview:self.description];
 	
-	[self redrawTriangleFrom:(Y + height)];
+	[self redrawTriangleFrom:(Y + height + PADING4)];
 }
 
 #pragma mark - message
-
-- (void) requestUserProfile
-{
-	NSNumber * userID = [self.objectDict valueForKey:@"user"];
-	
-	if (nil != userID)
-	{
-		NSDictionary * userProfile = [ProfileMananger getObjectWithNumberID:userID];
-		
-		if (nil != userProfile)
-		{
-			self.userProfile = userProfile;
-			[self redrawUserAndDate];
-			[self redrawImageV];
-		}
-		else
-		{
-			[ProfileMananger requestObjectWithNumberID:userID 
-							andHandler:@selector(requestUserProfile) 
-							 andTarget:self];
-		}
-	}
-}
 
 - (void) setObjectDict:(NSDictionary *)objectDict
 {
@@ -271,10 +185,6 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 	@autoreleasepool 
 	{
 		[self redrawDescription];
-		
-		[self redrawUserAndDate];
-	
-		[self requestUserProfile];
 	}
 }
 

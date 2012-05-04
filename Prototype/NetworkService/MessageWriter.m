@@ -45,8 +45,6 @@ static void send_data_with_priority_and_responder(NSData *message,
 						  MessageResponder *responder, 
 						  NSInteger ID)
 {
-	START_NETWORK_INDICATOR();
-
 	// add handler first
 	ADD_MESSAGE_RESPONDER(responder, ID);
 
@@ -76,6 +74,8 @@ static void add_pending_message(NSArray *IDAndBuffer, MESSAGE_PRIORITY priority)
 
 		if (nil == bufferArray)
 		{
+			START_NETWORK_INDICATOR();
+			
 			bufferArray = [[NSMutableArray alloc] init];
 
 			[gs_pending_messages[priority] setValue:bufferArray forKey:ID];
@@ -171,9 +171,10 @@ NSData * POP_BUFFER(void)
 		}
 	}
 
+#ifdef DEBUG
 	if (nil != popBuffer)
 	{
-		// TODO remove log
+		// TODO remove comment to log
 		// CLOG(@"%@", popBuffer);
 		if ((4 < popBuffer.length) && !(*(uint8_t *)(popBuffer.bytes) & (BINARY_MSG << 6)))
 		{
@@ -186,6 +187,7 @@ NSData * POP_BUFFER(void)
 			[msgString release];
 		}
 	}
+#endif
 
 	return popBuffer;
 }
@@ -199,7 +201,12 @@ void CONFIRM_MESSAGE(NSString *ID)
 
 	for (int i = 0; i < PRIORITY_TYPE_MAX; ++i)
 	{
-		[gs_pending_messages[i] setValue:nil forKey:ID];
+		if (nil != [gs_pending_messages[i] valueForKey:ID])
+		{
+			STOP_NETWORK_INDICATOR();
+
+			[gs_pending_messages[i] setValue:nil forKey:ID];
+		}
 
 		if (BINARY_PRIORITY == i)
 		{

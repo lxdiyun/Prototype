@@ -25,13 +25,14 @@ static void (* const gs_reserve_messgae_hanlder[MAX_RESERVED_MSG]) (NSData *buff
 
 void CLEAR_MESSAGE_HANDLER(void)
 {
+	STOP_ALL_NETWORK_INDICATOR();
+
 	for (NSString *ID in [gs_handler_dict allKeys])
 	{
 		MessageResponder *responder = [gs_handler_dict valueForKey:ID];
 		
 		[responder performWithObject:nil];
 		
-		STOP_NETWORK_INDICATOR();
 		CONFIRM_MESSAGE(ID);
 		
 		[gs_handler_dict setValue:nil forKey:ID];

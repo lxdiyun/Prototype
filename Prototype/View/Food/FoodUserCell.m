@@ -10,8 +10,8 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-#import "FourCountView.h"
 #import "Util.h"
+#import "ProfileMananger.h"
 
 @interface FoodUserCell ()
 {
@@ -32,7 +32,7 @@
 @synthesize ate;
 @synthesize location;
 
-- (void) setFoodDict:(NSDictionary *)food
+- (void) setFood:(NSDictionary *)food
 {
 	if (_food == food)
 	{
@@ -47,6 +47,9 @@
 	{
 		@autoreleasepool
 		{
+			[self requestUserProfile];
+			
+			self.date.text = [self.food valueForKey:@"created_on"];
 		}
 	}
 }
@@ -94,4 +97,29 @@
 	[self setUsername:nil];
 	[super viewDidUnload];
 }
+
+#pragma mark - message
+
+- (void) requestUserProfile
+{
+	NSNumber * userID = [self.food valueForKey:@"user"];
+	
+	if (nil != userID)
+	{
+		NSDictionary * userProfile = [ProfileMananger getObjectWithNumberID:userID];
+		
+		if (nil != userProfile)
+		{
+			self.username.text = [userProfile valueForKey:@"nick"];
+			self.avatar.picID = [userProfile valueForKey:@"avatar"];
+		}
+		else
+		{
+			[ProfileMananger requestObjectWithNumberID:userID 
+							andHandler:@selector(requestUserProfile) 
+							 andTarget:self];
+		}
+	}
+}
+
 @end

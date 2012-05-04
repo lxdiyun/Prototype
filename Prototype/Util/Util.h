@@ -99,6 +99,7 @@ NSInteger MAP_ANNOTATION_VIEW_SORTER(id view1, id view2, void *context);
 // Network Indicator
 void START_NETWORK_INDICATOR(void);
 void STOP_NETWORK_INDICATOR(void);
+void STOP_ALL_NETWORK_INDICATOR(void);
 
 // view
 CGFloat SCALE(void);

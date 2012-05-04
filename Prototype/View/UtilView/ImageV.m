@@ -30,6 +30,29 @@
 @synthesize picID = _picID;
 @synthesize indicator = _indicator;
 
+#pragma mark - life cicle
+
+- (id) initWithFrame:(CGRect)frame
+{
+	self = [super initWithFrame:frame];
+	
+	if (nil != self)
+	{
+	}
+	
+	return self;
+}
+
+- (void) dealloc
+{
+	self.picDict = nil;
+	self.picID = nil;
+	
+	[super dealloc];
+}
+
+#pragma mark - picture infomation
+
 - (void) setPicDict:(NSDictionary *)picDict
 {
 	@autoreleasepool 
@@ -147,15 +170,6 @@
 	{
 		[self requsetPic];
 	}
-}
-
-
-- (void) dealloc
-{
-	self.picDict = nil;
-	self.picID = nil;
-	
-	[super dealloc];
 }
 
 #pragma mark - SDWebImageManagerDelegate

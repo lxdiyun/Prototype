@@ -16,9 +16,11 @@
 #import "Util.h"
 #import "TextInputer.h"
 #import "TitleVC.h"
+#import "FoodTagCell.h"
 
-const static uint32_t COMMENT_REFRESH_WINDOW = 8;
-const static uint32_t ROW_TO_MORE_COMMENT_FROM_BOTTOM = 2;
+const static uint32_t COMMENT_REFRESH_WINDOW = 5;
+const static CGFloat IMAGE_SIZE = 320.0;
+const static CGFloat FONT_SIZE = 15.0;
 
 typedef enum FOOD_PAGE_SECTION_ENUM
 {
@@ -26,12 +28,14 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	FOOD_PIC = 0x1,
 	FOOD_DESC = 0x2,
 	FOOD_COMMENT = 0x3,
+	FOOD_MORE = 0x4,
+	FOOD_TAG = 0x5,
 	FOOD_SECTION_MAX
 } FOOD_PAGE_SECTION;
 
 @interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate>
 {
-	NSDictionary *_foodDict;
+	NSDictionary *_foodObject;
 	NSString *_foodID;
 	TextInputer *_inputer;
 	UINavigationController *_navco;
@@ -48,7 +52,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 @implementation FoodPage
 
-@synthesize foodDict = _foodDict;
+@synthesize foodObject = _foodObject;
 @synthesize foodID = _foodID;
 @synthesize inputer = _inputer;
 @synthesize navco = _navco;
@@ -58,37 +62,43 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 #pragma mark - util
 static int32_t s_lastCommentArrayCount = -1;
 
-- (void) refreshTableView:(id)result
+- (void) refreshCommentSection
 {
 	int32_t commentArrayCount = [[FoodCommentMananger keyArrayForList:self.foodID] count];
-
+	static NSMutableIndexSet *commentSectionSet = nil;
+	
+	if (nil == commentSectionSet)
+	{
+		commentSectionSet = [[NSMutableIndexSet alloc] init];
+		[commentSectionSet addIndex:FOOD_COMMENT];
+		[commentSectionSet addIndex:FOOD_MORE];
+	}
+	
 	if (s_lastCommentArrayCount < commentArrayCount) 
 	{
-		[self.tableView reloadData];
+		[self.tableView reloadSections:commentSectionSet withRowAnimation:UITableViewRowAnimationFade];
 		
 		s_lastCommentArrayCount = commentArrayCount;
 	}
 }
 
+
 - (void) forceRefreshTableView
-{
-	s_lastCommentArrayCount = -1;
+{	
+	int32_t commentArrayCount = [[FoodCommentMananger keyArrayForList:self.foodID] count];
 	
-	[self refreshTableView:nil];
+	[self.tableView reloadData];
+	
+	s_lastCommentArrayCount = commentArrayCount;
 }
 
 #pragma mark message
-
-- (void) requestNewerCommentHandler:(id)result
-{	
-	[self refreshTableView:nil];
-}
 
 - (void) requestNewerComment
 {	
 	[FoodCommentMananger requestNewerWithListID:self.foodID 
 					   andCount:COMMENT_REFRESH_WINDOW 
-					withHandler:@selector(requestNewerCommentHandler:) 
+					withHandler:@selector(refreshCommentSection) 
 					  andTarget:self];
 }
 
@@ -96,7 +106,7 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	[FoodCommentMananger requestOlderWithListID:self.foodID 
 					   andCount:COMMENT_REFRESH_WINDOW 
-					withHandler:@selector(refreshTableView:) 
+					withHandler:@selector(refreshCommentSection) 
 					  andTarget:self];
 }
 
@@ -121,7 +131,7 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) dealloc
 {
-	self.foodDict = nil;
+	self.foodObject = nil;
 	self.foodID = nil;
 	self.inputer = nil;
 	self.navco = nil;
@@ -137,7 +147,6 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	@autoreleasepool 
 	{
-		
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self.navigationController, 
 									      @selector(popViewControllerAnimated:));
 		
@@ -165,7 +174,7 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	[super viewDidUnload];
 	
-	self.foodDict = nil;
+	self.foodObject = nil;
 	self.foodID = nil;
 	self.inputer = nil;
 	self.navco = nil;
@@ -175,10 +184,10 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) viewWillAppear:(BOOL)animated
 {	
-	self.titleView.name.text = [self.foodDict valueForKey:@"name"];
+	self.titleView.name.text = [self.foodObject valueForKey:@"name"];
 	self.titleView.placeName.text = [NSString stringWithFormat:@"@%@", 
-					 [self.foodDict valueForKey:@"place_name"]];
-	self.foodID = [[self.foodDict valueForKey:@"id"] stringValue];
+					 [self.foodObject valueForKey:@"place_name"]];
+	self.foodID = [[self.foodObject valueForKey:@"id"] stringValue];
 	[self forceRefreshTableView];
 	
 	[super viewWillAppear:animated];
@@ -222,6 +231,32 @@ static int32_t s_lastCommentArrayCount = -1;
 		case FOOD_COMMENT:
 			return [[FoodCommentMananger keyArrayForList:self.foodID] count];
 			break;
+		case FOOD_MORE:
+		{
+			NSInteger loadedComment =  [[FoodCommentMananger keyArrayForList:self.foodID] count];
+			NSInteger totalComment = [[self.foodObject valueForKey:@"comment_count"] intValue];
+			
+			if (loadedComment < totalComment)
+			{
+				return 1;
+			}
+			else 
+			{
+				return 0;
+			}
+		}
+			break;
+			
+		case FOOD_TAG:
+			if (1 < [[self.foodObject valueForKey:@"tags"] count])
+			{
+				return 1;
+			}
+			else 
+			{
+				return 0;
+			}
+			break;
 		default:
 			return 1;
 			break;
@@ -238,6 +273,8 @@ static int32_t s_lastCommentArrayCount = -1;
 			
 			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:userCellIndentifier];
 			
+			
+			
 			if (nil == self.foodUser)
 			{
 				self.foodUser = [[[FoodUserCell alloc] init] autorelease];
@@ -245,11 +282,14 @@ static int32_t s_lastCommentArrayCount = -1;
 			
 			if (nil == cell)
 			{
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:userCellIndentifier] autorelease];
+				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+							       reuseIdentifier:userCellIndentifier] 
+					autorelease];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 				[cell.contentView addSubview:self.foodUser.view];
 			}
 			
-			self.foodUser.food = self.foodDict;
+			self.foodUser.food = self.foodObject;
 			
 			return cell;
 		}
@@ -265,18 +305,22 @@ static int32_t s_lastCommentArrayCount = -1;
 					 initWithStyle:UITableViewCellStyleDefault 
 					 reuseIdentifier:imageCellIdentifier] 
 					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.width);
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				cell.frame = CGRectMake(0.0, 0.0, IMAGE_SIZE, IMAGE_SIZE);
 				
 				[cell redraw];
 			}
 			
-			NSNumber *picID = [self.foodDict valueForKey:@"pic"];
+			cell.score.foodObject = self.foodObject;
+			
+			NSNumber *picID = [self.foodObject valueForKey:@"pic"];
 			
 			if (nil  != picID)
 			{
 				cell.foodImage.picID = picID;
 			}
-				return cell;
+			
+			return cell;
 		}
 			break;
 		case FOOD_DESC:
@@ -290,10 +334,11 @@ static int32_t s_lastCommentArrayCount = -1;
 					 initWithStyle:UITableViewCellStyleDefault 
 					 reuseIdentifier:descCellIdentifier] 
 					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0 * PROPORTION());
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 40.0);
 			}
 			
-			cell.objectDict = self.foodDict;
+			cell.objectDict = self.foodObject;
 			
 			return cell;
 		}
@@ -302,7 +347,7 @@ static int32_t s_lastCommentArrayCount = -1;
 		case FOOD_COMMENT:
 		{
 			static NSString *commentCellIdentifier = @"commentCell";
-			CommentCell *cell = [tableView dequeueReusableCellWithIdentifier:commentCellIdentifier];;
+			CommentCell *cell = [tableView dequeueReusableCellWithIdentifier:commentCellIdentifier];
 			
 			if (cell == nil) 
 			{
@@ -310,7 +355,8 @@ static int32_t s_lastCommentArrayCount = -1;
 					 initWithStyle:UITableViewCellStyleDefault 
 					 reuseIdentifier:commentCellIdentifier] 
 					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0 * PROPORTION());
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0);
 			}
 			
 			NSArray * keyArray = [FoodCommentMananger keyArrayForList:self.foodID];
@@ -319,6 +365,64 @@ static int32_t s_lastCommentArrayCount = -1;
 			return cell;
 		}
 			break;
+		case FOOD_MORE:
+		{
+			static NSString *moreCellIdentifier = @"moreCommentCell";
+			
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:moreCellIdentifier];
+			
+			if (nil == cell)
+			{
+				cell = [[[UITableViewCell  alloc] initWithStyle:UITableViewCellStyleDefault 
+								reuseIdentifier:moreCellIdentifier] autorelease];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				
+				CGRect buttonFrame = cell.contentView.frame;
+				buttonFrame.origin.x = 0;
+				buttonFrame.origin.y = 0;
+				UIButton *moreComment = [[UIButton alloc] initWithFrame:buttonFrame];
+				
+				moreComment.titleLabel.font = [UIFont systemFontOfSize:FONT_SIZE];
+				[moreComment setTitle:@"更多评论" forState:UIControlStateNormal];
+				[moreComment setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+				[moreComment setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+				[moreComment setBackgroundColor:[Color lightyellowColor]];
+				[moreComment addTarget:self 
+						action:@selector(requestOlderComment) 
+				      forControlEvents:UIControlEventTouchUpInside];
+				
+				[cell.contentView addSubview:moreComment];
+				
+				[moreComment release];
+			}
+			
+			return cell;
+		}
+			break;
+		case FOOD_TAG:
+		{
+			static NSString *tagCellIdentifier = @"foodTagCell";
+			
+			FoodTagCell *cell = [tableView dequeueReusableCellWithIdentifier:tagCellIdentifier];
+			
+			if (cell == nil) 
+			{
+				cell = [[[FoodTagCell alloc] 
+					 initWithStyle:UITableViewCellStyleDefault 
+					 reuseIdentifier:tagCellIdentifier] 
+					autorelease];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0);
+			}
+			
+			if (nil  != self.foodObject)
+			{
+				cell.foodObject = self.foodObject;
+			}
+			return cell;
+		}
+			break;
+
 			
 		default:
 			return nil;
@@ -331,14 +435,14 @@ static int32_t s_lastCommentArrayCount = -1;
 	switch (indexPath.section) 
 	{
 		case FOOD_USER:
-			return 44;
+			return 47.0;
 			break;
 		case FOOD_PIC:
-			return 320;
+			return IMAGE_SIZE;
 			break;
 		case FOOD_DESC:
 		{
-			return [DescriptionCell cellHeightForObject:self.foodDict forCellWidth:self.view.frame.size.width];
+			return [DescriptionCell cellHeightForObject:self.foodObject forCellWidth:self.view.frame.size.width];
 		}
 			break;
 		case FOOD_COMMENT:
@@ -349,8 +453,10 @@ static int32_t s_lastCommentArrayCount = -1;
 			return [CommentCell cellHeightForComment:comment forCellWidth:self.view.frame.size.width];
 		}
 			break;
+		case FOOD_TAG:
+			return 40.0;
 		default:
-			return 60 * PROPORTION();
+			return 44.0;
 	}
 	
 }
@@ -364,30 +470,12 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	// Navigation logic may go here. Create and push another view controller.
-	/*
-	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-	 // ...
-	 // Pass the selected object to the new view controller.
-	 [self.navigationController pushViewController:detailViewController animated:YES];
-	 [detailViewController release];
-	 */
 }
 
 - (void) tableView:(UITableView *)tableView 
    willDisplayCell:(UITableViewCell *)cell 
  forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (indexPath.section == FOOD_COMMENT)
-	{
-		uint32_t row = indexPath.row;
-		uint32_t commentCount = [[FoodCommentMananger keyArrayForList:self.foodID] count];
-		
-		if (((commentCount - ROW_TO_MORE_COMMENT_FROM_BOTTOM) <= row) && (commentCount > 0))
-		{
-			[self requestOlderComment];
-		}
-	}
 }
 
 #pragma mark - UIScrollViewDelegate Methods
@@ -407,7 +495,7 @@ static int32_t s_lastCommentArrayCount = -1;
 - (void) newCommentHandler:(id)result
 {
 	[self requestNewerComment];
-	[self refreshTableView:nil];
+	[self refreshCommentSection];
 }
 
 #pragma mark - textInputerDelegate
