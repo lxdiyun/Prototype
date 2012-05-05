@@ -10,7 +10,7 @@
 
 #import "ImageV.h"
 
-@interface FoodUserCell : UIViewController
+@interface FoodInfo : UIViewController
 
 @property (retain, nonatomic) NSDictionary *food;
 
@@ -21,6 +21,14 @@
 @property (retain, nonatomic) IBOutlet UIButton *target;
 @property (retain, nonatomic) IBOutlet UIButton *ate;
 @property (retain, nonatomic) IBOutlet UIButton *location;
+@property (retain, nonatomic) IBOutlet ImageV *image;
+@property (retain, nonatomic) IBOutlet UILabel *tag1Text;
+@property (retain, nonatomic) IBOutlet UILabel *tag1;
+@property (retain, nonatomic) IBOutlet UILabel *tag2Text;
+@property (retain, nonatomic) IBOutlet UILabel *tag2;
+@property (retain, nonatomic) IBOutlet UILabel *tag3Text;
+@property (retain, nonatomic) IBOutlet UILabel *tag3;
+@property (retain, nonatomic) IBOutlet UILabel *score;
 
 
 @end

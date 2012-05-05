@@ -197,7 +197,7 @@
 	
 	if ([self.indicator isHidden])
 	{
-		CGPoint center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
+		CGPoint center = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
 		self.indicator.center = center;
 		[self.indicator startAnimating];
 		[self.indicator setHidden:NO];

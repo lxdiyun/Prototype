@@ -50,7 +50,7 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 {
 	NSString *commentString = [commentDict valueForKey:@"msg"];
 	CGFloat commentHeight = FONT_SIZE;
-
+	
 	if ((nil != commentString) && (0 < commentString.length))
 	{
 		CGSize constrained = CGSizeMake(width, 9999.0);
@@ -75,19 +75,20 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 
 - (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) 
-    {
-        // Initialization code
-    }
-    return self;
+	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+	
+	if (nil != self) 
+	{
+		self.selectionStyle = UITableViewCellSelectionStyleNone;
+	}
+	return self;
 }
 
 - (void) setSelected:(BOOL)selected animated:(BOOL)animated
 {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+	[super setSelected:selected animated:animated];
+	
+	// Configure the view for the selected state
 }
 
 - (void) dealloc
@@ -113,16 +114,16 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 								      PADING3, 
 								      AVATOR_SIZE, 
 								      AVATOR_SIZE)] 
-			  autorelease];
+			     autorelease];
 	
 	[self.contentView addSubview:self.avatorImageV];
 	
 	if (nil != self.userProfile)
 	{
 		NSNumber *avatarID = [self.userProfile valueForKey:@"avatar"];
-
-			self.avatorImageV.picID = avatarID;
-
+		
+		self.avatorImageV.picID = avatarID;
+		
 	}
 }
 
@@ -183,11 +184,11 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 					   forCommentWidth:width];	
 	
 	self.comment = [[[UILabel alloc] 
-		      initWithFrame:CGRectMake(X,
-					       Y,
-					       width,
-					       height)] 
-		     autorelease];
+			 initWithFrame:CGRectMake(X,
+						  Y,
+						  width,
+						  height)] 
+			autorelease];
 	
 	self.comment.numberOfLines = 0;
 	self.comment.font = font;
@@ -199,7 +200,7 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 	{
 		self.comment.text = [self.commentDict valueForKey:@"msg"];
 	}
-
+	
 	[self.contentView addSubview:self.comment];
 }
 

@@ -196,8 +196,6 @@ DEFINE_SINGLETON(NetworkService);
 	STOP_PING();
 	ROLLBACK_ALL_PENDING_MESSAGE();
 	STOP_ALL_NETWORK_INDICATOR();
-	
-	++self.reconnectedTimes;
 }
 
 - (void) connectionRest
@@ -213,17 +211,10 @@ DEFINE_SINGLETON(NetworkService);
 	{
 		[self showAlter];
 	}
-	else
-	{
-		// since we have two streams, we will receive reset twice, 
-		// only connect once is needed
-		if (1 == self.reconnectedTimes % 2)
-		{
-			[self performSelector:@selector(connect) 
-				   withObject:nil 
-				   afterDelay:NETWORK_RECONNCECT_INTERVAL];
-		}
-	}
+
+	[self performSelector:@selector(connect) 
+		   withObject:nil 
+		   afterDelay:NETWORK_RECONNCECT_INTERVAL];
 }
 
 - (void) streamOpened:(NSStream *)theStream
@@ -232,6 +223,7 @@ DEFINE_SINGLETON(NetworkService);
 	{
 		[self.alertView dismissWithClickedButtonIndex:0 animated:YES];
 	}
+	
 	self.reconnectedTimes = 0;
 
 	if (theStream == self.outputStream)

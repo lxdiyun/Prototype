@@ -9,11 +9,9 @@
 #import <UIKit/UIKit.h>
 
 #import "ImageV.h"
-#import "FoodScore.h"
 
 @interface FoodImageCell : UITableViewCell
 
 - (void) redraw;
 @property (strong, nonatomic) ImageV *foodImage;
-@property (strong, nonatomic) FoodScore *score;
 @end

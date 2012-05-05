@@ -79,7 +79,8 @@ const static CGFloat IMAGE_SIZE = 320;
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-	switch (indexPath.row) {
+	switch (indexPath.row) 
+	{
 		case 0:
 		{
 			static NSString *imageCellIdentifier = @"FoodImageCell";

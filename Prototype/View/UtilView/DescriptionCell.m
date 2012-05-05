@@ -20,8 +20,6 @@ const static CGFloat PADING1 = 10.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
 const static CGFloat PADING3 =  10.0; // padding from top virtical boder
 const static CGFloat PADING4 = 15.0; // padding between element virtical and bottom border
-const static CGFloat TRIANGLE_HEIGHT = 10.0;
-const static CGFloat TRIANGLE_WIDTH = 20.0;
 
 @interface DescriptionCell () 
 {
@@ -45,17 +43,16 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 
 # pragma mark - class method
 
-+ (CGFloat) getDescriptionHeightFor:(NSDictionary *)commentDict forDescWidth:(CGFloat)width
++ (CGFloat) getHeightFor:(NSString *)description forWidth:(CGFloat)width
 {
-	NSString *descString = [commentDict valueForKey:@"desc"];
-	CGFloat descHeight = FONT_SIZE;
+	CGFloat descHeight = 0;
 	
-	if ((nil != descString) &&  (0 < descString.length))
+	if ((nil != description) &&  (0 < description.length))
 	{
 		CGSize constrained = CGSizeMake(width, 9999.0);
-		descHeight = [descString sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] 
-				    constrainedToSize:constrained 
-					lineBreakMode:UILineBreakModeWordWrap].height;
+		descHeight = [description sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] 
+				     constrainedToSize:constrained 
+					 lineBreakMode:UILineBreakModeWordWrap].height;
 	}
 	
 	return  descHeight;
@@ -63,18 +60,18 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 
 + (CGFloat) cellHeightForObject:(NSDictionary *)objectDict forCellWidth:(CGFloat)width
 {
+	NSString *description = [objectDict valueForKey:@"desc"];
+	
 	width = width - (PADING1 + PADING2);
 
-	CGFloat descHeight = [self getDescriptionHeightFor:objectDict forDescWidth:width];
+	CGFloat cellHeight = [self getHeightFor:description forWidth:width];
 	
-	if (0 < [[objectDict valueForKey:@"comment_count"] intValue])
+	if (0 < cellHeight)
 	{
-		return descHeight + PADING4 + PADING3 + TRIANGLE_HEIGHT;
+		cellHeight += PADING4 + PADING3;
 	}
-	else 
-	{
-		return descHeight + PADING4 + PADING3;
-	}
+	
+	return cellHeight;
 }
 
 #pragma mark - life circle
@@ -86,6 +83,7 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 	if (self) 
 	{
 		self.contentView.backgroundColor = [Color whiteColor];
+		self.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
 	return self;
 }
@@ -107,66 +105,44 @@ const static CGFloat TRIANGLE_WIDTH = 20.0;
 }
 
 #pragma mark - draw cell
-- (void) redrawTriangleFrom:(CGFloat)fromHeight
-{
-	if (nil != self.triangle)
-	{
-		[self.triangle removeFromSuperview];
-		self.triangle = nil;
-	}
-	
-	if (0 < [[self.objectDict valueForKey:@"comment_count"] intValue])
-	{
-		CGFloat X = self.contentView.frame.size.width - TRIANGLE_WIDTH - PADING2;
-		CGFloat Y = fromHeight;
-		CGRect rect = CGRectMake(X, 
-					 Y, 
-					 TRIANGLE_WIDTH, 
-					 TRIANGLE_HEIGHT);
-		
-		self.triangle = [[[TriangleView alloc] initWithFrame:rect 
-							    andColor:[Color orangeColor]] 
-				 autorelease];
-		
-		[self.contentView addSubview:self.triangle];
-	}
-}
-
 
 - (void) redrawDescription
 {
 	if (nil != self.description)
 	{
 		[self.description removeFromSuperview];
+		self.description = nil;
 	}
 	
-	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
-	CGFloat X = PADING1;
-	CGFloat Y = PADING3;
-	CGFloat width = self.contentView.frame.size.width - (X + PADING2);
-	CGFloat height = [[self class] getDescriptionHeightFor:self.objectDict
-						  forDescWidth:width];
+	NSString *description = [self.objectDict valueForKey:@"desc"];
 	
-	self.description = [[[UILabel alloc] 
-			 initWithFrame:CGRectMake(X,
-						  Y,
-						  width,
-						  height)] 
-			autorelease];
-	
-	self.description.numberOfLines = 0;
-	self.description.font = font;
-	self.description.backgroundColor = [UIColor clearColor];
-	self.description.lineBreakMode = UILineBreakModeWordWrap;
-	
-	if (nil != self.objectDict)
+	if ((nil != description) &&  (0 < description.length))
 	{
-		self.description.text = [self.objectDict valueForKey:@"desc"];
+		UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
+		CGFloat X = PADING1;
+		CGFloat Y = PADING3;
+		CGFloat width = self.contentView.frame.size.width - (X + PADING2);
+		CGFloat height = [[self class] getHeightFor:description forWidth:width];
+		
+		self.description = [[[UILabel alloc] 
+				     initWithFrame:CGRectMake(X,
+							      Y,
+							      width,
+							      height)] 
+				    autorelease];
+		
+		self.description.numberOfLines = 0;
+		self.description.font = font;
+		self.description.backgroundColor = [UIColor clearColor];
+		self.description.lineBreakMode = UILineBreakModeWordWrap;
+		
+		if (nil != self.objectDict)
+		{
+			self.description.text = [self.objectDict valueForKey:@"desc"];
+		}
+		
+		[self.contentView addSubview:self.description];
 	}
-	
-	[self.contentView addSubview:self.description];
-	
-	[self redrawTriangleFrom:(Y + height + PADING4)];
 }
 
 #pragma mark - message

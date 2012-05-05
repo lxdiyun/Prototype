@@ -27,7 +27,7 @@ void SET_USER_ID(NSNumber *ID)
 	{
 		return;
 	}
-	
+
 	[gs_login_user_id release];
 	gs_login_user_id = [ID retain];
 }
@@ -72,7 +72,7 @@ NSInteger MAP_ANNOTATION_VIEW_SORTER(id view1, id view2, void *context)
 	CLLocationCoordinate2D topLeft  = {90, -180};
 	CLLocationDistance d1 = distance_between_coordinate(topLeft, c1);
 	CLLocationDistance d2 = distance_between_coordinate(topLeft, c2);
-	
+
 	if (d1 < d2) 
 	{
 		return NSOrderedAscending;
@@ -108,23 +108,23 @@ CGFloat SCALE(void)
 	{
 		sclae = 1.0;
 	}
-	
+
 	return sclae;
 }
 
 CGFloat PROPORTION(void)
 {
 	static CGFloat s_proportion = 0;
-	
+
 	s_proportion = [UIScreen mainScreen].applicationFrame.size.width / 320.0;
-	
+
 	return s_proportion;
 }
 
 NSInteger DEVICE_TYPE(void)
 {
 	static NSInteger s_device_type = -1;
-	
+
 	if (-1 == s_device_type)
 	{
 		s_device_type = UI_USER_INTERFACE_IDIOM();
@@ -164,7 +164,7 @@ BOOL CHECK_STRING(NSString *object)
 void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 {
 	UIAlertView *alert = [[UIAlertView alloc]  init];
-	
+
 	alert.title = title;
 	alert.message = message;
 	[alert addButtonWithTitle:@"OK"];
@@ -177,72 +177,170 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 
 + (UIColor *) tastyColor
 {
-	return [UIColor colorWithRed:0x21/255.0 green:0xA6/255.0 blue:0xCE/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x21/255.0 green:0xA6/255.0 blue:0xCE/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) specailColor
 {
-	return [UIColor colorWithRed:0xDD/255.0 green:0x4B/255.0 blue:0x39/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xDD/255.0 green:0x4B/255.0 blue:0x39/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) valuedColor
 {
-	return [UIColor colorWithRed:0xFB/255.0 green:0xB0/255.0 blue:0x3B/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xFB/255.0 green:0xB0/255.0 blue:0x3B/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) healthyColor
 {
-	return [UIColor colorWithRed:0x6A/255.0 green:0xC6/255.0 blue:0x00/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x6A/255.0 green:0xC6/255.0 blue:0x00/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) whiteColor 
 {
-	return [UIColor colorWithRed:0xFF/255.0 green:0xFF/255.0 blue:0xFF/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xFF/255.0 green:0xFF/255.0 blue:0xFF/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) milkColor
 {
-	return [UIColor colorWithRed:0xE6/255.0 green:0xE6/255.0 blue:0xE6/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xE6/255.0 green:0xE6/255.0 blue:0xE6/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) orangeColor
 {
-	return [UIColor colorWithRed:0xD3/255.0 green:0x8E/255.0 blue:0x33/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xD3/255.0 green:0x8E/255.0 blue:0x33/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) grey1Color
 {
-	return [UIColor colorWithRed:0xEE/255.0 green:0xEE/255.0 blue:0xEE/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xEE/255.0 green:0xEE/255.0 blue:0xEE/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) grey2Color
 {
-	return [UIColor colorWithRed:0x66/255.0 green:0x66/255.0 blue:0x66/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+
+		color = [[UIColor alloc] initWithRed:0x66/255.0 green:0x66/255.0 blue:0x66/255.0 alpha:1.0];
+	}
+	return color;
 }
 
 + (UIColor *) grey3Color
 {
-	return [UIColor colorWithRed:0x4D/255.0 green:0x4D/255.0 blue:0x4D/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x4D/255.0 green:0x4D/255.0 blue:0x4D/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) darkgreyColor
 {
-	return [UIColor colorWithRed:0x32/255.0 green:0x32/255.0 blue:0x32/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x32/255.0 green:0x32/255.0 blue:0x32/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) brownColor
 {
-	return [UIColor colorWithRed:0x40/255.0 green:0x24/255.0 blue:0x1A/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x40/255.0 green:0x24/255.0 blue:0x1A/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 + (UIColor *) blackColorAlpha
 {
-	return [UIColor colorWithRed:0x0/255.0 green:0x0/255.0 blue:0x0/255.0 alpha:0.5];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x0/255.0 green:0x0/255.0 blue:0x0/255.0 alpha:0.5];
+	}
+
+	return color;
 }
 
 + (UIColor *) lightyellowColor 
 {
-	return [UIColor colorWithRed:0xEF/255.0 green:0xDD/255.0 blue:0xAC/255.0 alpha:1.0];
+	static UIColor *color = nil;
+
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xEF/255.0 green:0xDD/255.0 blue:0xAC/255.0 alpha:1.0];
+	}
+
+	return color;
 }
 
 @end
@@ -250,7 +348,7 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
 {
 	bar.barStyle = UIBarStyleBlack;
-	
+
 	if([bar respondsToSelector:@selector(setBackgroundImage:forBarMetrics:)] ) 
 	{
 		//iOS 5 new UINavigationBar custom background
@@ -263,30 +361,30 @@ static UIButton * create_button(UIImage *image,id target, SEL action)
 	UIButton *button = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
 	[button setImage:image forState:UIControlStateNormal];
 	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
-	
+
 	return button;
 }
 
 static UIBarButtonItem * create_bar_button(UIImage *image,id target, SEL action)
 {
 	UIBarButtonItem *item = [[[UIBarButtonItem alloc] initWithCustomView:SETUP_BUTTON(image, target, action)] autorelease];
-	
+
 	return item;
 }
 
 UIButton * SETUP_BUTTON(UIImage *image,id target, SEL action)
 {
 	UIButton *button = create_button(image, target, action);
-	
+
 	button.backgroundColor = [Color grey3Color];
-	
+
 	return button;
 }
 
 UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action)
 {
 	UIButton *button = SETUP_BUTTON(image, target, action);
-	
+
 	button.layer.cornerRadius = 5.0;
 
 	return [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
@@ -295,9 +393,9 @@ UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action)
 UIButton * SETUP_BACK_BUTTON(id target, SEL action)
 {	
 	UIButton *button = create_button([UIImage imageNamed:@"backArrow.png"], target, action);
-	
+
 	button.backgroundColor = [UIColor clearColor];
-	
+
 	return button;
 }
 

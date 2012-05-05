@@ -117,9 +117,11 @@ const static CGFloat ICON_SIZE = 20.0;
 - (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+
 	if (self) 
 	{
 		self.contentView.backgroundColor = [Color grey1Color];
+		self.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
 	
 	return self;

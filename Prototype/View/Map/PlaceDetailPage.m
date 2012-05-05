@@ -11,32 +11,44 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "Util.h"
-#import "FoodTitleView.h"
 #import "FoodDetailController.h"
 #import "FoodManager.h"
 
+const static NSInteger MAX_TAG_QANTITY = 3;
+
 @interface PlaceDetailPage ()
 {
-	FoodTitleView *_titleView;
 	FoodDetailController *_detailController;
+	NSDictionary *_foodObject;
 	NSInteger _foodIndex;
 	NSDictionary *_placeObject;
+	NSInteger _tagMaxIndex;
 }
 
-@property (strong) FoodTitleView *titleView;
 @property (strong) FoodDetailController *detailController;
 @property (assign) NSInteger foodIndex;
+@property (strong) NSDictionary *foodObject;
 
 @end
 
 @implementation PlaceDetailPage
 @synthesize foodDetailView;
 @synthesize pageControl;
+@synthesize name;
+@synthesize score;
+@synthesize tag3;
+@synthesize tag3Text;
+@synthesize tag2;
+@synthesize tag2Text;
+@synthesize tag1;
+@synthesize tag1Text;
+@synthesize titleView;
 @synthesize delegate;
-@synthesize titleView = _titleView;
 @synthesize detailController = _detailController;
 @synthesize foodIndex = _foodIndex;
 @synthesize placeObject = _placeObject;
+@synthesize foodObject = _foodObject;
+
 
 #pragma mark - life circle
 
@@ -45,46 +57,6 @@
 	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
 	if (self) 
 	{
-		@autoreleasepool 
-		{
-			// initilizate gui
-			self.titleView = [[[FoodTitleView alloc] init] autorelease];
-			[self.view addSubview:self.titleView.view];
-			
-			self.detailController = [[[FoodDetailController alloc] init] autorelease];
-			
-			self.foodDetailView.delegate = self.detailController;
-			self.foodDetailView.dataSource = self.detailController;
-			self.detailController.view = self.foodDetailView;
-			self.pageControl.frame = CGRectMake(0, self.view.frame.size.height - 18, self.view.frame.size.width, 18);
-			
-			
-			// shadow
-			[self.view.layer setShadowColor:[UIColor blackColor].CGColor];
-			[self.view.layer setShadowOpacity:0.5];
-			[self.view.layer setShadowRadius:10];
-			[self.view.layer setShadowOffset:CGSizeMake(0.0, -6.0)];
-			
-			// handle gesture
-			UISwipeGestureRecognizer *down = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown)] autorelease];
-			[down setDirection:(UISwipeGestureRecognizerDirectionDown)];
-			
-			[self.view addGestureRecognizer:down];
-			
-			UISwipeGestureRecognizer *left = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)] autorelease];
-			[left setDirection:(UISwipeGestureRecognizerDirectionLeft)];
-			
-			[self.view addGestureRecognizer:left];
-			
-			UISwipeGestureRecognizer *right = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)] autorelease];
-			[right setDirection:(UISwipeGestureRecognizerDirectionRight)];
-			
-			[self.view addGestureRecognizer:right];
-			
-			UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)] autorelease];
-			
-			[self.view addGestureRecognizer:tap];
- 		} 
 	}
 	
 	return self;
@@ -96,17 +68,73 @@
 	self.detailController = nil;
 	self.delegate = nil;
 	self.placeObject = nil;
+	self.foodObject = nil;
+	[name release];
+	[score release];
+	[tag3 release];
+	[tag3Text release];
+	[tag2 release];
+	[tag2Text release];
+	[tag1 release];
+	[tag1Text release];
 	
 	[foodDetailView release];
 	
 	[pageControl release];
+	[titleView release];
 	[super dealloc];
+}
+
+- (void) setupView
+{
+	@autoreleasepool 
+	{
+		// initilizate gui
+		_tagMaxIndex = 0;
+		
+		self.detailController = [[[FoodDetailController alloc] init] autorelease];
+		
+		self.foodDetailView.delegate = self.detailController;
+		self.foodDetailView.dataSource = self.detailController;
+		self.detailController.view = self.foodDetailView;
+		self.pageControl.frame = CGRectMake(0, self.view.frame.size.height - 18, self.view.frame.size.width, 18);
+		
+		
+		// shadow
+		[self.view.layer setShadowColor:[UIColor blackColor].CGColor];
+		[self.view.layer setShadowOpacity:0.5];
+		[self.view.layer setShadowRadius:10];
+		[self.view.layer setShadowOffset:CGSizeMake(0.0, -6.0)];
+		
+		// handle gesture
+		UISwipeGestureRecognizer *down = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown)] autorelease];
+		[down setDirection:(UISwipeGestureRecognizerDirectionDown)];
+		
+		[self.view addGestureRecognizer:down];
+		
+		UISwipeGestureRecognizer *left = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)] autorelease];
+		[left setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+		
+		[self.view addGestureRecognizer:left];
+		
+		UISwipeGestureRecognizer *right = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)] autorelease];
+		[right setDirection:(UISwipeGestureRecognizerDirectionRight)];
+		
+		[self.view addGestureRecognizer:right];
+		
+		UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)] autorelease];
+		
+		[self.view addGestureRecognizer:tap];
+	} 
 }
 
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-	// Do any additional setup after loading the view from its nib.
+	
+	[self setupView];
+	
+	[self updatePlace];
 }
 
 - (void) viewDidUnload
@@ -115,10 +143,20 @@
 	self.detailController = nil;
 	self.delegate = nil;
 	self.placeObject = nil;
+	self.foodObject = nil;
 	
 	[self setFoodDetailView:nil];
-	
+	[self setName:nil];
+	[self setScore:nil];
+	[self setTag3:nil];
+	[self setTag3Text:nil];
+	[self setTag2:nil];
+	[self setTag2Text:nil];
+	[self setTag1:nil];
+	[self setTag1Text:nil];	
 	[self setPageControl:nil];
+
+	[self setTitleView:nil];
 	[super viewDidUnload];
 }
 
@@ -131,7 +169,7 @@
 
 - (void) tap:(UITapGestureRecognizer *)recognizer
 {
-	if (self.titleView.view.alpha <= 0.1)
+	if (self.titleView.alpha <= 0.1)
 	{
 		[self showTitleAndPageControl];
 	}
@@ -187,8 +225,133 @@
 	CATransition* transition = [CATransition animation];
 	transition.type = kCATransitionPush;
 	transition.subtype = transitionSubtype;
-	[self.titleView.view.layer addAnimation:transition forKey:@"push-transition"];
+	[self.titleView.layer addAnimation:transition forKey:@"push-transition"];
 	[self.foodDetailView.layer addAnimation:transition forKey:@"push-transition"];
+}
+
+- (void) setTag:(NSInteger)tagIndex withColor:(UIColor *)color andText:(NSString *)text
+{
+	switch (tagIndex) 
+	{
+		case 0:
+		{
+			self.tag1.backgroundColor = color;
+			self.tag1Text.text = text;
+		}
+			break;
+		case 1:
+		{
+			self.tag2.backgroundColor = color;
+			self.tag2Text.text = text;
+		}
+			break;
+		case 2:
+		{
+			self.tag3.backgroundColor = color;
+			self.tag3Text.text = text;
+		}
+			break;
+			
+		default:
+			break;
+	}
+}
+
+- (void) cleanNotUsedTag
+{
+	for (int i = _tagMaxIndex; i < MAX_TAG_QANTITY; ++i) 
+	{
+		[self setTag:i withColor:[UIColor clearColor] andText:@""];
+	}
+	
+	_tagMaxIndex = 0;
+}
+
+- (void) addTagwithColor:(UIColor *)color andText:(NSString *)text
+{
+	[self setTag:_tagMaxIndex withColor:color andText:text];
+	++_tagMaxIndex;
+}
+
+- (void) updateSpecial
+{
+	BOOL flag = [[self.foodObject valueForKey:@"like_special"] boolValue];
+	
+	if (flag)
+	{
+		[self addTagwithColor:[Color specailColor] andText:@"特色"];
+	}
+}
+
+- (void) updateValued
+{
+	BOOL flag = [[self.foodObject valueForKey:@"like_valued"] boolValue];
+	
+	if (flag)
+	{
+		[self addTagwithColor:[Color valuedColor] andText:@"超值"];
+	}
+}
+
+- (void) updateHealth
+{
+	BOOL flag = [[self.foodObject valueForKey:@"like_healthy"] boolValue];
+	
+	if (flag)
+	{
+		[self addTagwithColor:[Color healthyColor] andText:@"健康"];
+	}
+}
+
+- (void) updateScore
+{
+	double scoreValue = [[self.foodObject valueForKey:@"taste_score"] doubleValue];
+	
+	if (scoreValue >= 10.0)
+	{
+		self.score.text = [NSString stringWithFormat:@"%d", (NSInteger)scoreValue];
+	}
+	else if (0 < ((NSInteger)(scoreValue * 10) % 10)) // if score has decimal
+	{
+		self.score.text = [NSString stringWithFormat:@"%.1f", scoreValue];	
+	}
+	else if (0 < scoreValue)
+	{
+		self.score.text = [NSString stringWithFormat:@" %d ", (NSInteger)scoreValue];
+	}
+	else 
+	{
+		self.score.text =@"－";
+	}
+	
+}
+
+- (void) updateName
+{
+	NSString *foodName = [self.foodObject valueForKey:@"name"];
+	
+	if (nil != name)
+	{
+		self.name.text = foodName;
+	}
+	else 
+	{
+		self.name.text = @"";
+	}
+}
+
+- (void) updateFoodTitle
+{
+	@autoreleasepool 
+	{
+		[self updateName];
+		[self updateScore];
+		_tagMaxIndex = 0;
+		[self updateHealth];
+		[self updateValued];
+		[self updateSpecial];
+		[self cleanNotUsedTag];
+	}
 }
 
 - (void) updateFood
@@ -203,16 +366,28 @@
 		
 		if (nil != foodObject)
 		{
-			self.titleView.foodObject = foodObject;
+			self.foodObject = foodObject;
+			[self updateFoodTitle];
 			self.detailController.foodObject = foodObject;
 			[self.pageControl setCurrentPage:self.foodIndex];
 			[self showTitleAndPageControlInstanly];
 		}
 		else 
 		{
-			[FoodManager requestObjectWithNumberID:foodID andHandler:@selector(updateFood) andTarget:self];
+			[FoodManager requestObjectWithNumberID:foodID 
+						    andHandler:@selector(updateFood) 
+						     andTarget:self];
 		}
 	}
+}
+
+- (void) updatePlace
+{
+	NSArray *foodsIDArray = [self.placeObject valueForKey:@"foods"];
+	[self.pageControl setNumberOfPages:[foodsIDArray count]];
+
+	self.foodIndex = 0;
+	[self updateFood];
 }
 
 - (void) setPlaceObject:(NSDictionary *)placeObject
@@ -223,11 +398,7 @@
 		
 		_placeObject = [placeObject retain];
 		
-		self.foodIndex = 0;
-		[self updateFood];
-		
-		NSArray *foodsIDArray = [self.placeObject valueForKey:@"foods"];
-		[self.pageControl setNumberOfPages:[foodsIDArray count]];
+		[self updatePlace];
 	}
 }
 
@@ -239,7 +410,7 @@
 	[UIView setAnimationDuration:0.5];
 	[UIView setAnimationCurve: UIViewAnimationCurveEaseInOut];
 	
-	[self.titleView.view setAlpha:0.0];
+	[self.titleView setAlpha:0.0];
 	[self.pageControl setAlpha:0.0];
 	
 	[UIView commitAnimations];
@@ -248,7 +419,7 @@
 - (void) showTitleAndPageControlInstanly
 {
 	
-	[self.titleView.view setAlpha:1.0];
+	[self.titleView setAlpha:1.0];
 	[self.pageControl setAlpha:1.0];
 }
 

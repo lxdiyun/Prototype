@@ -44,6 +44,7 @@ typedef enum MAP_MENU_ENUM
 	UINavigationController *_placeNavco;
 	BOOL _selectedPlace;
 	UIActionSheet *_menu;
+	UIButton *_refreshButton;
 }
 
 @property (strong) MKMapView *mapView;
@@ -53,6 +54,7 @@ typedef enum MAP_MENU_ENUM
 @property (strong) UINavigationController *placeNavco;
 @property (assign) BOOL selectedPlace;
 @property (strong) UIActionSheet *menu;
+@property (strong, nonatomic) UIButton *refreshButton;
 
 - (void) showPlaces:(NSArray *)annotations;
 - (void) showPlaceDetailPage;
@@ -70,6 +72,7 @@ typedef enum MAP_MENU_ENUM
 @synthesize placeNavco = _placeNavco;
 @synthesize selectedPlace = _selectedPlace;
 @synthesize menu = _menu;
+@synthesize refreshButton = _refreshButton;
 
 #pragma mark - map location and annotations
 
@@ -185,8 +188,11 @@ typedef enum MAP_MENU_ENUM
 	
 	[self removePlaceDetailPage];
 	[self.mapView removeAnnotations:self.mapView.annotations];
-
-	self.mapObject = [FoodMapListManager getObject:mapID inList:loginUserID];
+	
+	if (nil != mapID)
+	{
+		self.mapObject = [FoodMapListManager getObject:mapID inList:loginUserID];
+	}
 
 	if (nil != self.mapObject)
 	{
@@ -198,7 +204,7 @@ typedef enum MAP_MENU_ENUM
 	}
 }
 
-#pragma mark - life circle
+#pragma mark - GUI buttons
 
 - (void) back
 {
@@ -222,7 +228,8 @@ typedef enum MAP_MENU_ENUM
 					       self, 
 					       @selector(reloadMapObject));
 	refreshButton.backgroundColor = [UIColor clearColor];
-	refreshButton.frame = CGRectMake(41, 0, 40, 30);	
+	refreshButton.frame = CGRectMake(41, 0, 40, 30);
+	self.refreshButton = refreshButton;
 	[leftButtonView addSubview:refreshButton];
 	
 	// right bar buttons
@@ -253,6 +260,20 @@ typedef enum MAP_MENU_ENUM
 	self.navigationItem.leftBarButtonItem = leftButtons;
 }
 
+- (void) updateButtons
+{
+	if (nil != [self.mapObject valueForKey:@"id"])
+	{
+		self.refreshButton.hidden = NO;
+	}
+	else 
+	{
+		self.refreshButton.hidden = YES;
+	}
+}
+
+#pragma mark - life circle
+
 - (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
 	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -272,14 +293,29 @@ typedef enum MAP_MENU_ENUM
 	return self;
 }
 
+- (void) dealloc
+{
+	self.mapView = nil;
+	self.mapObject = nil;
+	self.unAddedPlacesIDArray = nil;
+	self.placeDetailPage = nil;
+	self.placeNavco = nil;
+	self.menu = nil;
+	self.refreshButton = nil;
+
+	[super dealloc];
+}
+
 - (void) viewWillAppear:(BOOL)animated
 {
 	PLACE_DETAIL_HEIGHT = CONST_PLACE_DETAIL_HEIGHT * PROPORTION();
 	SHOW_PLACE_DETAIL_Y = [[UIScreen mainScreen] applicationFrame].size.height 
-	- (PLACE_DETAIL_HEIGHT / 2) 
-	+ STATUS_BAR_HEIGHT;
+	- (PLACE_DETAIL_HEIGHT / 2) + STATUS_BAR_HEIGHT;
 
 	[super viewWillAppear:animated];
+	
+	[self updateButtons];
+	
 
 	self.focousUser = NO;
 	self.mapView.showsUserLocation = NO;
@@ -318,6 +354,7 @@ typedef enum MAP_MENU_ENUM
 	self.placeDetailPage = nil;
 	self.placeNavco = nil;
 	self.menu = nil;
+	self.refreshButton = nil;
 
 	[super viewDidUnload];
 }

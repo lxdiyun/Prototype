@@ -361,7 +361,7 @@ DEFINE_SINGLETON(EventPage);
 
 - (void) requestNewerEventHandler:(id)result
 {	
-	[self refreshTableView:nil];
+	[self refreshTableViewWithAnimationAndResult:result];
 	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.leftColumn];
 }
 
@@ -380,6 +380,15 @@ DEFINE_SINGLETON(EventPage);
 }
 
 #pragma mark - util
+
+- (void) refreshTableViewWithAnimationAndResult:(id)result
+{
+	[self.leftColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+	[self.rightColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+
+	self.leftColumn.bounces = YES;
+	self.rightColumn.bounces = YES;
+}
 
 - (void) refreshTableView:(id)result
 {
