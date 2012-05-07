@@ -96,6 +96,20 @@ DEFINE_SINGLETON(ImageManager);
 
 #pragma mark - overwrite super class method
 
+#pragma mark - overwrite get and set
+
++ (NSDictionary *) getObjectWithStringID:(NSString *)ID
+{
+	if (CHECK_STRING(ID))
+	{		
+		return [[[self getInstnace] objectDict] valueForKey:ID];
+	}
+	else
+	{
+		return nil;
+	}
+}
+
 #pragma mark - overwrite save and restore
 
 + (void) saveTo:(NSMutableDictionary *)dict

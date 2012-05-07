@@ -92,7 +92,7 @@ const static CGFloat FONT_SIZE = 15.0;
 		
 		
 		self.text = [[[UITextView alloc] init] autorelease];
-		self.text.font = [UIFont systemFontOfSize:FONT_SIZE * PROPORTION()];
+		self.text.font = [UIFont systemFontOfSize:FONT_SIZE];
 		self.text.scrollEnabled = YES;
 		self.text.scrollsToTop = YES;
 		self.text.delegate = self;

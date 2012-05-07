@@ -16,8 +16,8 @@ const static CGFloat AVATOR_SIZE = 30;
 const static CGFloat FONT_SIZE = 12.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right border
-const static CGFloat PADING3 = 10.0; // padding from top virtical border
-const static CGFloat PADING4 = 5.0; // padding between element virtical and bottom border
+const static CGFloat PADING3 = 5.0; // padding from top virtical border and padding between element virtical
+const static CGFloat PADING4 = 10.0; //  bottom border
 
 @interface CommentCell ()
 {
@@ -54,10 +54,10 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 	if ((nil != commentString) && (0 < commentString.length))
 	{
 		CGSize constrained = CGSizeMake(width, 9999.0);
-		// remove 3.0 pixcel of padding
+		// remove 1.0 pixcel of padding
 		commentHeight = [commentString sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] 
 					  constrainedToSize:constrained 
-					      lineBreakMode:UILineBreakModeWordWrap].height - 3.0;
+					      lineBreakMode:UILineBreakModeWordWrap].height - 1.0;
 	}
 	
 	return  commentHeight;
@@ -68,7 +68,7 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 	width = width - (PADING1 * 2 + AVATOR_SIZE + PADING2);
 	CGFloat commentHeight = [self getCommentHeightFor:commentDict forCommentWidth:width];
 	
-	return commentHeight + (FONT_SIZE + PADING4 * 2 + PADING3);
+	return commentHeight + (FONT_SIZE + PADING4 + PADING3 * 2);
 }
 
 # pragma mark - life circle
@@ -178,7 +178,7 @@ const static CGFloat PADING4 = 5.0; // padding between element virtical and bott
 	
 	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
 	CGFloat X = PADING1 + AVATOR_SIZE + PADING2;
-	CGFloat Y = PADING3 + FONT_SIZE + PADING4;
+	CGFloat Y = PADING3 + FONT_SIZE + PADING3;
 	CGFloat width = self.contentView.frame.size.width - (X + PADING2);
 	CGFloat height = [[self class] getCommentHeightFor:self.commentDict 
 					   forCommentWidth:width];	

@@ -74,50 +74,68 @@ typedef enum MAP_MENU_ENUM
 @synthesize menu = _menu;
 @synthesize refreshButton = _refreshButton;
 
-#pragma mark - map location and annotations
+#pragma mark - manage map object
 
-- (void) goToLastCenter
+- (void) setMapObject:(NSDictionary *)mapObject
 {
-	CLLocationCoordinate2D center;
-	NSUInteger zoomLevel;
-
-	center.latitude = [[self.mapObject valueForKey:@"lat"] doubleValue];
-	center.longitude = [[self.mapObject valueForKey:@"lng"] doubleValue];
-	zoomLevel = [[self.mapObject valueForKey:@"zoom"] unsignedIntegerValue];
-
-	[self.mapView setCenterCoordinate:center zoomLevel:zoomLevel animated:YES];
-
+	if (_mapObject == mapObject)
+	{
+		return;
+	}
+	
+	_mapObject = [mapObject retain];
+	
+	[self updateGUI];
 }
 
 - (void) saveMapObject
 {
 	@autoreleasepool 
 	{
-		NSMutableDictionary *newFoodMap = [[self.mapObject mutableCopy] autorelease]; 
+		NSMutableDictionary *newFood = [[self.mapObject mutableCopy] autorelease]; 
 		CLLocationCoordinate2D center = self.mapView.centerCoordinate;
 		NSUInteger zoomLevel = self.mapView.zoomLevel;
 
-		[newFoodMap setValue:[NSNumber numberWithDouble:center.latitude] forKey:@"lat"];
-		[newFoodMap setValue:[NSNumber numberWithDouble:center.longitude] forKey:@"lng"];
-		[newFoodMap setValue:[NSNumber numberWithUnsignedInteger: zoomLevel] forKey:@"zoom"];
+		[newFood setValue:[NSNumber numberWithDouble:center.latitude] forKey:@"lat"];
+		[newFood setValue:[NSNumber numberWithDouble:center.longitude] forKey:@"lng"];
+		[newFood setValue:[NSNumber numberWithUnsignedInteger: zoomLevel] forKey:@"zoom"];
 
-		for (NSString *key in newFoodMap.allKeys)
+		for (NSString *key in newFood.allKeys)
 		{
 			if ([key isEqualToString:@"id"])
 			{
 				continue;
 			}
-			else if ([self.mapObject valueForKey:key] == [newFoodMap valueForKey:key]) 
+			else if ([self.mapObject valueForKey:key] == [newFood valueForKey:key]) 
 			{
-				[newFoodMap setValue:nil forKey:key];
+				[newFood setValue:nil forKey:key];
 			}
 		}
 
-		if (1 < newFoodMap.count)
+		if ((1 < newFood.count) && (nil != [newFood valueForKey:@"id"]))
 		{
-			[FoodMapListManager updateFoodMap:newFoodMap withHandler:nil andTarget:nil];
+			[FoodMapListManager updateFoodMap:newFood withHandler:nil andTarget:nil];
 		}
 	}	
+}
+
+- (void) updateMap
+{
+	NSString *mapID = [[self.mapObject valueForKey:@"id"] stringValue];
+	NSString *loginUserID  = [GET_USER_ID() stringValue];
+	NSDictionary *map;
+	
+	if (nil != mapID)
+	{
+		map = [FoodMapListManager getObject:mapID inList:loginUserID];
+	}
+	
+	if (nil != map)
+	{
+		self.mapObject = map;
+	}
+	
+	[self updateButtons];
 }
 
 - (void) reloadMapObject
@@ -136,6 +154,44 @@ typedef enum MAP_MENU_ENUM
 						andTarget:self];
 		}
 	}
+}
+
+#pragma mark - map location and annotations
+
+- (void) updateGUI
+{
+	[self removePlaceDetailPage];
+	[self.mapView removeAnnotations:self.mapView.annotations];
+
+	self.unAddedPlacesIDArray = [self.mapObject valueForKey:@"places"];
+	
+	[self addPlaces];
+	
+	self.title = [self.mapObject valueForKey:@"title"];
+	
+	[self goToLastCenter];
+
+	[self updateButtons];
+}
+
+- (void) goToLastCenter
+{
+	CLLocationCoordinate2D center;
+	NSUInteger zoomLevel;
+	
+	center.latitude = [[self.mapObject valueForKey:@"lat"] doubleValue];
+	center.longitude = [[self.mapObject valueForKey:@"lng"] doubleValue];
+	zoomLevel = [[self.mapObject valueForKey:@"zoom"] unsignedIntegerValue];
+	
+	if (0 != zoomLevel)
+	{
+		[self.mapView setCenterCoordinate:center zoomLevel:zoomLevel animated:YES];
+	}
+	else 
+	{
+		[self showAllPlaces];
+	}
+	
 }
 
 - (void) addPlaces
@@ -178,29 +234,6 @@ typedef enum MAP_MENU_ENUM
 		{
 			self.unAddedPlacesIDArray = nil;
 		}
-	}
-}
-
-- (void) updateMap
-{
-	NSString *mapID = [[self.mapObject valueForKey:@"id"] stringValue];
-	NSString *loginUserID  = [GET_USER_ID() stringValue];
-	
-	[self removePlaceDetailPage];
-	[self.mapView removeAnnotations:self.mapView.annotations];
-	
-	if (nil != mapID)
-	{
-		self.mapObject = [FoodMapListManager getObject:mapID inList:loginUserID];
-	}
-
-	if (nil != self.mapObject)
-	{
-		self.unAddedPlacesIDArray = [self.mapObject valueForKey:@"places"];
-
-		[self addPlaces];
-
-		self.title = [self.mapObject valueForKey:@"title"];
 	}
 }
 
@@ -262,14 +295,14 @@ typedef enum MAP_MENU_ENUM
 
 - (void) updateButtons
 {
-	if (nil != [self.mapObject valueForKey:@"id"])
-	{
-		self.refreshButton.hidden = NO;
-	}
-	else 
-	{
+//	if (nil != [self.mapObject valueForKey:@"id"])
+//	{
+//		self.refreshButton.hidden = NO;
+//	}
+//	else 
+//	{
 		self.refreshButton.hidden = YES;
-	}
+//	}
 }
 
 #pragma mark - life circle
@@ -314,9 +347,6 @@ typedef enum MAP_MENU_ENUM
 
 	[super viewWillAppear:animated];
 	
-	[self updateButtons];
-	
-
 	self.focousUser = NO;
 	self.mapView.showsUserLocation = NO;
 }
@@ -334,9 +364,7 @@ typedef enum MAP_MENU_ENUM
 {
 	[super viewDidAppear:animated];
 
-	[self goToLastCenter];
-
-	[self updateMap];
+	[self updateGUI];
 }
 
 - (void) viewDidLoad

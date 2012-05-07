@@ -12,6 +12,7 @@
 
 #import "Util.h"
 #import "ProfileMananger.h"
+#import "MapViewPage.h"
 
 const static NSInteger MAX_TAG_QANTITY = 3;
 
@@ -19,13 +20,19 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 {
 	NSDictionary *_food;
 	NSInteger _tagMaxIndex;
+	id<FoodInfoDelegate> _delegate;
+	MapViewPage *_map;
 }
+
+@property (strong, nonatomic) MapViewPage *map;
 
 @end
 
 @implementation FoodInfo
 
 @synthesize food = _food;
+@synthesize delegate = _delegate;
+@synthesize map = _map;
 
 @synthesize buttons;
 @synthesize username;
@@ -142,6 +149,36 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 }
 
+- (void) updateTags
+{
+	_tagMaxIndex = 0;
+	[self updateHealth];
+	[self updateValued];
+	[self updateSpecial];
+	[self cleanNotUsedTag];
+}
+
+#pragma mark - GUI buttons
+
+- (void) updateLocationButton
+{
+	if (nil != [self.food valueForKey:@"place"])
+	{
+		self.location.enabled = YES;
+	}
+	else 
+	{
+		self.location.enabled = NO;
+	}
+}
+
+- (void) updateButtons
+{
+	[self updateLocationButton];
+	self.target.selected = YES;
+	self.ate.enabled = NO;
+}
+
 #pragma mark - update info
 
 - (void) setFood:(NSDictionary *)food
@@ -164,11 +201,8 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 			
 			[self requestUserProfile];
 			[self updateScore];
-			_tagMaxIndex = 0;
-			[self updateHealth];
-			[self updateValued];
-			[self updateSpecial];
-			[self cleanNotUsedTag];
+			[self updateTags];
+			[self updateButtons];
 		}
 	}
 }
@@ -188,6 +222,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 - (void) dealloc
 {
 	self.food = nil;
+	self.map = nil;
 	
 	[buttons release];
 	[date release];
@@ -215,6 +250,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 - (void) viewDidUnload 
 {
 	self.food = nil;
+	self.map = nil;
 	
 	[self setButtons:nil];
 	[self setDate:nil];
@@ -258,4 +294,32 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	}
 }
 
+#pragma mark - button action
+
+- (IBAction) showInMap:(id)sender 
+{
+	if (nil == self.map)
+	{
+		MapViewPage *map = [[MapViewPage alloc] init];
+		self.map = map;
+		
+		[map release];
+	}
+	
+	NSMutableDictionary *tempMap = [[NSMutableDictionary alloc] init];
+	NSArray *placeIDArray = [[NSArray alloc] initWithObjects:[self.food valueForKey:@"place"], nil];
+	
+	[tempMap setValue:[self.food valueForKey:@"name"] forKey:@"title"];
+	[tempMap setValue:placeIDArray forKey:@"places"];
+	
+	self.map.mapObject = tempMap;
+
+	if (0 < placeIDArray.count)
+	{
+		[self.delegate showVC:self.map];
+	}
+	
+	[placeIDArray release];
+	[tempMap release];
+}
 @end

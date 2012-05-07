@@ -10,6 +10,8 @@
 
 @interface MapViewPage : UIViewController
 
-@property (strong) NSDictionary *mapObject;
+- (void) showAllPlaces;
+
+@property (strong, nonatomic) NSDictionary *mapObject;
 
 @end

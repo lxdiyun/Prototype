@@ -10,6 +10,6 @@
 
 @interface FoodPage : UITableViewController
 - (void) requestNewerComment;
-@property (strong) NSDictionary *foodObject;
+@property (strong,nonatomic) NSDictionary *foodObject;
 
 @end

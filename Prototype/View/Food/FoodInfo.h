@@ -10,9 +10,16 @@
 
 #import "ImageV.h"
 
+@protocol FoodInfoDelegate
+
+- (void) showVC:(UIViewController *)VC;
+
+@end
+
 @interface FoodInfo : UIViewController
 
 @property (retain, nonatomic) NSDictionary *food;
+@property (assign) id<FoodInfoDelegate> delegate;
 
 @property (retain, nonatomic) IBOutlet UIView *buttons;
 @property (retain, nonatomic) IBOutlet UILabel *username;
@@ -29,6 +36,6 @@
 @property (retain, nonatomic) IBOutlet UILabel *tag3Text;
 @property (retain, nonatomic) IBOutlet UILabel *tag3;
 @property (retain, nonatomic) IBOutlet UILabel *score;
-
+- (IBAction)showInMap:(id)sender;
 
 @end

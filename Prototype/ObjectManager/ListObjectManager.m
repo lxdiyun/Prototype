@@ -235,6 +235,9 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		return nil;	
 	}
 	
+	// refresh object from server
+	[self requestMiddle:objectID inListID:listID andCount:1 withHandler:nil andTarget:nil];
+	
 	return [[[[self getInstnace] objectDict] valueForKey:listID] valueForKey:objectID];
 }
 

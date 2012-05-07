@@ -50,9 +50,9 @@ const CGFloat HEIGHT =  10.0; // triangle heiht
 	CGContextSetFillColorWithColor(ctx, [self.backColor CGColor]);
 	CGContextFillRect(ctx, rect);
 	
-	CGPoint p1 = CGPointMake(CGRectGetMaxX(rect) - PADDING, CGRectGetMaxY(rect)); // bottom right
-	CGPoint p2 = CGPointMake(p1.x - WIDTH / 2 , p1.y - HEIGHT); // top mid
-	CGPoint p3 = CGPointMake(p1.x - WIDTH, p1.y); // bottom left
+	CGPoint p1 = CGPointMake(CGRectGetMaxX(rect) - PADDING, CGRectGetMaxY(rect) - HEIGHT); // top right
+	CGPoint p2 = CGPointMake(p1.x - WIDTH / 2 , p1.y + HEIGHT); // bottom mid
+	CGPoint p3 = CGPointMake(p1.x - WIDTH, p1.y); // top left
 	
 	
 	CGContextBeginPath(ctx);

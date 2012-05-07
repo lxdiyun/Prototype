@@ -10,6 +10,7 @@
 
 #import "ProfileMananger.h"
 #import "ImageManager.h"
+#import "PlaceManager.h"
 #import "Util.h"
 
 @implementation FoodManager
@@ -64,10 +65,27 @@ DEFINE_SINGLETON(FoodManager);
 								andHandler:nil 
 								 andTarget:nil];
 			}
+
 		}
 		else
 		{
 			LOG(@"Error failed to get userID from \n:%@", object);
+		}
+		
+		NSNumber *placeID = [object valueForKey:@"place"];
+		
+		if (CHECK_NUMBER(placeID))
+		{
+			if (nil == [PlaceManager getObjectWithNumberID:placeID])
+			{
+				[PlaceManager requestObjectWithNumberID:placeID 
+							     andHandler:nil 
+							      andTarget:nil];
+			}
+		}
+		else
+		{
+			LOG(@"Error failed to get placeID from \n:%@", object);
 		}
 
 	}
@@ -81,6 +99,7 @@ DEFINE_SINGLETON(FoodManager);
 		
 		NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
 		NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
+		NSMutableSet *newPlaceSet = [[NSMutableSet alloc] init];
 		
 		for (NSString *ID in IDArray)
 		{
@@ -112,6 +131,19 @@ DEFINE_SINGLETON(FoodManager);
 				LOG(@"Error failed to get userID from \n:%@", object);
 			}
 			
+			NSNumber *placeID = [object valueForKey:@"place"];
+			
+			if (CHECK_NUMBER(placeID))
+			{
+				if (nil == [PlaceManager getObjectWithNumberID:placeID])
+				{
+					[newPlaceSet addObject:placeID];
+				}
+			}
+			else
+			{
+				LOG(@"Error failed to get placeID from \n:%@", object);
+			}
 		}
 		
 		// cache the new image info
@@ -120,6 +152,10 @@ DEFINE_SINGLETON(FoodManager);
 		// cacahe the new user info
 		[ProfileMananger requestObjectWithNumberIDArray:[newUserSet allObjects]];
 		
+		// cache the new place info
+		[PlaceManager requestObjectWithNumberIDArray:[newPlaceSet allObjects]];
+		
+		[newPlaceSet release];
 		[newUserSet release];
 		[newPicSet release];
 	}

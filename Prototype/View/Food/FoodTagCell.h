@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface FoodTagCell : UITableViewCell
+
++ (CGFloat) cellHeightForObject:(NSDictionary *)objectDict forCellWidth:(CGFloat)width;
+
 @property (strong, nonatomic) NSDictionary *foodObject;
+
 @end

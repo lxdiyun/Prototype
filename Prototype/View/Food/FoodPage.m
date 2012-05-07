@@ -17,10 +17,11 @@
 #import "TitleVC.h"
 #import "FoodTagCell.h"
 #import "TriangleCell.h"
+#import "FoodManager.h"
 
 const static uint32_t COMMENT_REFRESH_WINDOW = 5;
 const static CGFloat IMAGE_SIZE = 320.0;
-const static CGFloat FONT_SIZE = 15.0;
+const static CGFloat FONT_SIZE = 12.0;
 
 typedef enum FOOD_PAGE_SECTION_ENUM
 {
@@ -32,7 +33,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	FOOD_SECTION_MAX
 } FOOD_PAGE_SECTION;
 
-@interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate>
+@interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate, FoodInfoDelegate>
 {
 	NSDictionary *_foodObject;
 	NSString *_foodID;
@@ -117,6 +118,16 @@ static int32_t s_lastCommentArrayCount = -1;
 	self = [super initWithStyle:style];
 	if (self) 
 	{
+		self.titleView = [[[TitleVC alloc] init] autorelease];
+
+		self.inputer = [[[TextInputer alloc] init] autorelease];
+		self.inputer.delegate = self;
+		self.inputer.title = @"添加评论";
+		[self.inputer redraw];
+
+		self.navco = [[[UINavigationController alloc] initWithRootViewController:self.inputer] autorelease];
+		CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
+
 	}
 	return self;
 }
@@ -141,6 +152,40 @@ static int32_t s_lastCommentArrayCount = -1;
 	[super dealloc];
 }
 
+#pragma mark - food objet
+
+- (void) setFoodObject:(NSDictionary *)foodObject
+{
+	if (_foodObject == foodObject)
+	{
+		return;
+	}
+	
+	[_foodObject release];
+	_foodObject = [foodObject retain];
+	
+	
+	self.foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	self.titleView.object = self.foodObject;
+	[self forceRefreshTableView];
+}
+
+- (void) updateFood
+{
+	NSDictionary *food = [FoodManager getObjectWithStringID:self.foodID];
+	
+	if (nil != food)
+	{
+		self.foodObject = food;
+	}
+	else 
+	{
+		[FoodManager requestObjectWithStringID:self.foodID 
+					    andHandler:@selector(updateFood) 
+					     andTarget:self];
+	}
+}
+
 #pragma mark - View lifecycle
 
 - (void) backToPrevView
@@ -152,14 +197,15 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	@autoreleasepool 
 	{
+		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+		self.view.backgroundColor = [Color orangeColor];
+
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, 
 									      @selector(backToPrevView));
 		
 		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"comIcon.png"], 
 									  self, 
 									  @selector(inputComment:));
-		
-		self.titleView = [[[TitleVC alloc] init] autorelease];
 		
 		self.navigationItem.titleView = self.titleView.view;
 	}
@@ -168,9 +214,6 @@ static int32_t s_lastCommentArrayCount = -1;
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-
-	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-	self.view.backgroundColor = [Color orangeColor];
 	
 	[self setupView];
 }
@@ -189,12 +232,6 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) viewWillAppear:(BOOL)animated
 {	
-	self.titleView.name.text = [self.foodObject valueForKey:@"name"];
-	self.titleView.placeName.text = [NSString stringWithFormat:@"@%@", 
-					 [self.foodObject valueForKey:@"place_name"]];
-	self.foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	[self forceRefreshTableView];
-	
 	[super viewWillAppear:animated];
 }
 
@@ -279,153 +316,174 @@ static int32_t s_lastCommentArrayCount = -1;
 	}
 }
 
+- (UITableViewCell *) getInfoCellFor:(UITableView *)tableView index:(NSIndexPath *)indexPath
+{
+	static NSString *userCellIndentifier = @"FoodUserCell";
+	
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:userCellIndentifier];
+	
+	if (nil == self.foodInfo)
+	{
+		self.foodInfo = [[[FoodInfo alloc] init] autorelease];
+		self.foodInfo.delegate = self;
+	}
+	
+	if (nil == cell)
+	{
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+					       reuseIdentifier:userCellIndentifier] 
+			autorelease];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		[cell.contentView addSubview:self.foodInfo.view];
+	}
+	
+	self.foodInfo.food = self.foodObject;
+	
+	return cell;
+}
+
+- (UITableViewCell *) getDescCellFor:(UITableView *)tableView index:(NSIndexPath *)indexPath
+{
+	static NSString *descCellIdentifier = @"descriptionCell";
+	
+	DescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:descCellIdentifier];
+	if (nil == cell) 
+	{
+		cell = [[[DescriptionCell alloc] 
+			 initWithStyle:UITableViewCellStyleDefault 
+			 reuseIdentifier:descCellIdentifier] 
+			autorelease];
+		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 40.0);
+	}
+	
+	cell.objectDict = self.foodObject;
+	
+	return cell;
+}
+
+- (UITableViewCell *) getCommentCellFor:(UITableView *)tableView index:(NSIndexPath *)indexPath
+{
+	// row 0 for triangle cell 
+	if (1 <= indexPath.row)
+	{
+		static NSString *commentCellIdentifier = @"commentCell";
+		CommentCell *cell = [tableView dequeueReusableCellWithIdentifier:commentCellIdentifier];
+
+		if (nil == cell) 
+		{
+			cell = [[[CommentCell alloc] 
+				initWithStyle:UITableViewCellStyleDefault 
+			      reuseIdentifier:commentCellIdentifier] 
+			      autorelease];
+			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0);
+		}
+
+		NSArray * keyArray = [FoodCommentMananger keyArrayForList:self.foodID];
+		NSString *commentID = [keyArray objectAtIndex:indexPath.row - 1];
+		cell.commentDict = [FoodCommentMananger getObject:commentID inList:self.foodID];
+
+		return cell;
+	}
+	else 
+	{
+		static NSString *triangleCellIndentifier = @"triangleCell";
+		TriangleCell *cell = [tableView dequeueReusableCellWithIdentifier:triangleCellIndentifier];
+
+		if (nil == cell)
+		{
+			cell = [[[TriangleCell alloc] 
+				initWithStyle:UITableViewCellStyleDefault 
+			      reuseIdentifier:triangleCellIndentifier
+				    backColor:[Color orangeColor] 
+				triangleColor:[UIColor whiteColor]
+				] autorelease];
+		}
+
+		return cell;
+	}
+}
+
+- (UITableViewCell *) getMoreCellFor:(UITableView *)tableView index:(NSIndexPath *)indexPath
+{
+	static NSString *moreCellIdentifier = @"moreCommentCell";
+
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:moreCellIdentifier];
+
+	if (nil == cell)
+	{
+		cell = [[[UITableViewCell  alloc] initWithStyle:UITableViewCellStyleDefault 
+						reuseIdentifier:moreCellIdentifier] autorelease];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+		CGRect buttonFrame = CGRectMake(0, 0, self.view.frame.size.width, 40.0);
+		UIButton *moreComment = [[UIButton alloc] initWithFrame:buttonFrame];
+
+		moreComment.titleLabel.font = [UIFont systemFontOfSize:FONT_SIZE];
+		[moreComment setTitle:@"更多评论" forState:UIControlStateNormal];
+		[moreComment setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+		[moreComment setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+		[moreComment setBackgroundColor:[Color lightyellowColor]];
+		[moreComment addTarget:self 
+				action:@selector(requestOlderComment) 
+		      forControlEvents:UIControlEventTouchUpInside];
+
+		[cell.contentView addSubview:moreComment];
+
+		[moreComment release];
+	}
+
+	return cell;
+}
+
+- (UITableViewCell *) getTagCellFor:(UITableView *)tableView index:(NSIndexPath *)indexPath
+{
+	static NSString *tagCellIdentifier = @"foodTagCell";
+
+	FoodTagCell *cell = [tableView dequeueReusableCellWithIdentifier:tagCellIdentifier];
+
+	if (cell == nil) 
+	{
+		cell = [[[FoodTagCell alloc] 
+			initWithStyle:UITableViewCellStyleDefault 
+		      reuseIdentifier:tagCellIdentifier] 
+		      autorelease];
+		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0);
+	}
+
+	if (nil  != self.foodObject)
+	{
+		cell.foodObject = self.foodObject;
+	}
+
+	return cell;
+}
+
+
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	switch (indexPath.section) 
 	{
 		case FOOD_INFO:
-		{
-			static NSString *userCellIndentifier = @"FoodUserCell";
-			
-			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:userCellIndentifier];
-			
-			if (nil == self.foodInfo)
-			{
-				self.foodInfo = [[[FoodInfo alloc] init] autorelease];
-			}
-			
-			if (nil == cell)
-			{
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-							       reuseIdentifier:userCellIndentifier] 
-					autorelease];
-				cell.selectionStyle = UITableViewCellSelectionStyleNone;
-				[cell.contentView addSubview:self.foodInfo.view];
-			}
-			
-			self.foodInfo.food = self.foodObject;
-			
-			return cell;
-		}
+			return [self getInfoCellFor:tableView index:indexPath];
+
 			break;
 		case FOOD_DESC:
-		{
-			static NSString *descCellIdentifier = @"descriptionCell";
-			
-			DescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:descCellIdentifier];
-			if (nil == cell) 
-			{
-				cell = [[[DescriptionCell alloc] 
-					 initWithStyle:UITableViewCellStyleDefault 
-					 reuseIdentifier:descCellIdentifier] 
-					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 40.0);
-			}
-			
-			cell.objectDict = self.foodObject;
-			
-			return cell;
-		}
+			return [self getDescCellFor:tableView index:indexPath];
+
 			break;
 
 		case FOOD_COMMENT:
-		{
-			// row 0 for triangle cell 
-			if (1 <= indexPath.row)
-			{
-				static NSString *commentCellIdentifier = @"commentCell";
-				CommentCell *cell = [tableView dequeueReusableCellWithIdentifier:commentCellIdentifier];
-				
-				if (nil == cell) 
-				{
-					cell = [[[CommentCell alloc] 
-						 initWithStyle:UITableViewCellStyleDefault 
-						 reuseIdentifier:commentCellIdentifier] 
-						autorelease];
-					cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0);
-				}
-				
-				NSArray * keyArray = [FoodCommentMananger keyArrayForList:self.foodID];
-				NSString *commentID = [keyArray objectAtIndex:indexPath.row - 1];
-				cell.commentDict = [FoodCommentMananger getObject:commentID inList:self.foodID];
-				
-				return cell;
-			}
-			else 
-			{
-				static NSString *triangleCellIndentifier = @"triangleCell";
-				TriangleCell *cell = [tableView dequeueReusableCellWithIdentifier:triangleCellIndentifier];
-				
-				if (nil == cell)
-				{
-					cell = [[[TriangleCell alloc] 
-						 initWithStyle:UITableViewCellStyleDefault 
-						 reuseIdentifier:triangleCellIndentifier
-						 backColor:[UIColor whiteColor] 
-						 triangleColor:[Color orangeColor]
-						 ] autorelease];
-				}
-				
-				return cell;
-			}
-		}
+			return [self getCommentCellFor:tableView index:indexPath];
+
 			break;
 		case FOOD_MORE:
-		{
-			static NSString *moreCellIdentifier = @"moreCommentCell";
-			
-			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:moreCellIdentifier];
-			
-			if (nil == cell)
-			{
-				cell = [[[UITableViewCell  alloc] initWithStyle:UITableViewCellStyleDefault 
-								reuseIdentifier:moreCellIdentifier] autorelease];
-				cell.selectionStyle = UITableViewCellSelectionStyleNone;
-				
-				CGRect buttonFrame = CGRectMake(0, 0, self.view.frame.size.width, 44.0);
-				UIButton *moreComment = [[UIButton alloc] initWithFrame:buttonFrame];
-				
-				moreComment.titleLabel.font = [UIFont systemFontOfSize:FONT_SIZE];
-				[moreComment setTitle:@"更多评论" forState:UIControlStateNormal];
-				[moreComment setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-				[moreComment setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
-				[moreComment setBackgroundColor:[Color lightyellowColor]];
-				[moreComment addTarget:self 
-						action:@selector(requestOlderComment) 
-				      forControlEvents:UIControlEventTouchUpInside];
-				
-				[cell.contentView addSubview:moreComment];
-				
-				[moreComment release];
-			}
-			
-			return cell;
-		}
+			return [self getMoreCellFor:tableView index:indexPath];
+
 			break;
 		case FOOD_TAG:
-		{
-			static NSString *tagCellIdentifier = @"foodTagCell";
-			
-			FoodTagCell *cell = [tableView dequeueReusableCellWithIdentifier:tagCellIdentifier];
-			
-			if (cell == nil) 
-			{
-				cell = [[[FoodTagCell alloc] 
-					 initWithStyle:UITableViewCellStyleDefault 
-					 reuseIdentifier:tagCellIdentifier] 
-					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0);
-			}
-			
-			if (nil  != self.foodObject)
-			{
-				cell.foodObject = self.foodObject;
-			}
-			return cell;
-		}
-			break;
+			return [self getTagCellFor:tableView index:indexPath];
 
-			
+			break;
 		default:
 			return nil;
 			break;
@@ -460,8 +518,10 @@ static int32_t s_lastCommentArrayCount = -1;
 			}
 		}
 			break;
-		case FOOD_TAG:
+		case FOOD_MORE:
 			return 40.0;
+		case FOOD_TAG:
+			return [FoodTagCell cellHeightForObject:self.foodObject forCellWidth:self.view.frame.size.width];
 		default:
 			return 44.0;
 	}
@@ -511,20 +571,6 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	@autoreleasepool 
 	{
-		if (nil == self.inputer)
-		{
-			self.inputer = [[[TextInputer alloc] init] autorelease];
-			self.inputer.delegate = self;
-			[self.inputer redraw];
-		}
-		
-		if (nil == self.navco)
-		{
-			self.navco = [[[UINavigationController alloc] initWithRootViewController:self.inputer] autorelease];
-			self.navco.navigationBar.barStyle = UIBarStyleBlack;
-			self.inputer.title = @"添加评论";
-		}
-		
 		[self presentModalViewController:self.navco animated:YES];
 		[self dismissModalViewControllerAnimated:YES];
 	}
@@ -544,5 +590,11 @@ static int32_t s_lastCommentArrayCount = -1;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
+#pragma mark - FoodInfoDelegate
+
+- (void) showVC:(UIViewController *)VC
+{
+	[self.navigationController pushViewController:VC animated:YES];
+}
 
 @end

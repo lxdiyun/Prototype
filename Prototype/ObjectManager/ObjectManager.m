@@ -194,6 +194,9 @@
 {
 	if (CHECK_STRING(ID))
 	{
+		// refresh object from server 
+		[self requestObjectWithStringID:ID andHandler:nil andTarget:nil];
+		
 		return [[[self getInstnace] objectDict] valueForKey:ID];
 	}
 	else
@@ -224,6 +227,8 @@
 	}
 
 	[[[self getInstnace] objectDict] setValue:object forKey:ID];
+	
+	[[self getInstnace] checkAndPerformResponderWithID:ID];
 }
 
 + (void) setObject:(NSDictionary *)object withNumberID:(NSNumber *)ID
@@ -383,7 +388,10 @@
 		[self markUpdatingStringID:ID];
 		[request setValue:ID  forKey:@"params"];
 		
-		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, [self getInstnace], @selector(handlerForSingleResult:), NORMAL_PRIORITY);
+		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
+						       [self getInstnace], 
+						       @selector(handlerForSingleResult:), 
+						       NORMAL_PRIORITY);
 	}
 }
 
@@ -399,7 +407,10 @@
 		[self markUpdatingNumberID:ID];
 		[request setValue:ID  forKey:@"params"];
 
-		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, [self getInstnace], @selector(handlerForSingleResult:), NORMAL_PRIORITY);
+		SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
+						       [self getInstnace], 
+						       @selector(handlerForSingleResult:), 
+						       NORMAL_PRIORITY);
 	}
 }
 

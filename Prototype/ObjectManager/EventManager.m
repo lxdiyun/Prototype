@@ -9,6 +9,7 @@
 #import "Message.h"
 #import "ImageManager.h"
 #import "ProfileMananger.h"
+#import "FoodManager.h"
 
 static NSString *gs_fakeListID = nil;
 
@@ -101,9 +102,11 @@ DEFINE_SINGLETON(EventManager);
 	NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
 	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
 	
-	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
+	for (NSDictionary *result in [messageDict objectForKey:@"result"]) 
 	{
-		NSNumber *picID = [[object valueForKey:@"obj"] valueForKey:@"pic"];
+		NSDictionary *object = [result valueForKey:@"obj"];
+
+		NSNumber *picID = [object valueForKey:@"pic"];
 		if (CHECK_NUMBER(picID))
 		{
 			if (nil == [ImageManager getObjectWithNumberID:picID])
@@ -116,7 +119,7 @@ DEFINE_SINGLETON(EventManager);
 			LOG(@"Error failed to get picID from \n:%@", object);
 		}
 		
-		NSNumber *userID = [[object valueForKey:@"obj"] objectForKey:@"user"];
+		NSNumber *userID = [object valueForKey:@"user"];
 		
 		if (CHECK_NUMBER(userID))
 		{
@@ -128,6 +131,15 @@ DEFINE_SINGLETON(EventManager);
 		else
 		{
 			LOG(@"Error failed to get userID from \n:%@", object);
+		}
+		
+		NSString *objecType = [result valueForKey:@"obj_type"];
+		
+		// save food object
+		if ([objecType isEqualToString:@"food"])
+		{
+			[FoodManager setObject:object
+				  withNumberID:[object valueForKey:@"id"]];
 		}
 	}
 	

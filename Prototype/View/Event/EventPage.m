@@ -26,6 +26,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 	FoodPage *_foodPage;
 	EGORefreshTableHeaderView *_refreshHeaderView;
 	BOOL _pushed;
+	NSUInteger _eventCount;
 }
 
 @property (strong) UIScrollView *scrollColumn;
@@ -34,6 +35,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 @property (strong) FoodPage *foodPage;
 @property (strong) EGORefreshTableHeaderView *refreshHeaderView;
 @property (assign) BOOL pushed;
+@property (assign) NSUInteger eventCount;
 
 // event message
 - (void) requestOlderEvent;
@@ -51,6 +53,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 @synthesize foodPage = _foodPage;
 @synthesize refreshHeaderView = _refreshHeaderView;
 @synthesize pushed = _pushed;
+@synthesize eventCount = _eventCount;
 
 static CGFloat gs_frame_width;
 static CGFloat gs_frame_height;
@@ -257,9 +260,9 @@ DEFINE_SINGLETON(EventPage);
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	// Return the number of rows in the section.
-	uint32_t count = [EventManager keyArray].count;
+	self.eventCount = [EventManager keyArray].count;
 
-	return count / 2 + count % 2;
+	return self.eventCount / 2 + self.eventCount % 2;
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -383,19 +386,26 @@ DEFINE_SINGLETON(EventPage);
 
 - (void) refreshTableViewWithAnimationAndResult:(id)result
 {
-	[self.leftColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-	[self.rightColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-
+	NSUInteger newEventCount = [EventManager keyArray].count;
+	
+	if (self.eventCount != newEventCount)
+	{
+		[self.leftColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+		[self.rightColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+	}
 	self.leftColumn.bounces = YES;
 	self.rightColumn.bounces = YES;
 }
 
 - (void) refreshTableView:(id)result
 {
-
-	[self.leftColumn reloadData];
+	NSUInteger newEventCount = [EventManager keyArray].count;
 	
-	[self.rightColumn reloadData];
+	if (self.eventCount != newEventCount)
+	{
+		[self.leftColumn reloadData];
+		[self.rightColumn reloadData];
+	}
 	
 	self.leftColumn.bounces = YES;
 	self.rightColumn.bounces = YES;

@@ -12,5 +12,6 @@
 
 @property (retain, nonatomic) IBOutlet UILabel *name;
 @property (retain, nonatomic) IBOutlet UILabel *placeName;
+@property (retain, nonatomic) NSDictionary *object;
 
 @end

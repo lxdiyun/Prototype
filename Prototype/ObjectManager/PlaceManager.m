@@ -25,6 +25,8 @@ DEFINE_SINGLETON(PlaceManager);
 
 - (void) handlerForSingleResult:(id)result;
 {
+	[super handlerForSingleResult:result];
+	
 	NSArray *foods = [result valueForKey:@"foods"];
 	
 	if (0 < [foods count])

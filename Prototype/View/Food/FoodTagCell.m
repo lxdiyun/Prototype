@@ -34,6 +34,52 @@ const static CGFloat ICON_SIZE = 20.0;
 @synthesize tagLabel = _tagLabel;
 @synthesize icon = _icon;
 
+#pragma mark - class interface
+
++ (CGFloat) getHeightFor:(NSString *)tags forWidth:(CGFloat)width
+{
+	CGFloat height = 0;
+	
+	if ((nil != tags) && (0 < tags.length))
+	{
+		CGSize constrained = CGSizeMake(width, 9999.0);
+		
+		height = [tags sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] 
+				 constrainedToSize:constrained 
+				     lineBreakMode:UILineBreakModeWordWrap].height;
+	}
+	
+	return  height;
+}
+
++ (CGFloat) cellHeightForObject:(NSDictionary *)objectDict forCellWidth:(CGFloat)width
+{
+	@autoreleasepool 
+	{
+		NSMutableString *tagText = [[[NSMutableString alloc] init] autorelease];
+		
+		for (NSString *tag in [objectDict valueForKey:@"tags"]) 
+		{
+			[tagText appendFormat:@"%@     ", tag];
+		}
+		
+		width -= (2 * PADING1 + PADING2 + ICON_SIZE);
+		
+		CGFloat cellHeight = [self getHeightFor:tagText forWidth:width];
+		
+		if (ICON_SIZE < cellHeight)
+		{
+			cellHeight += PADING3 + ICON_SIZE / 2 - FONT_SIZE / 2 + PADING4;
+		}
+		else 
+		{
+			cellHeight = PADING3 + ICON_SIZE + PADING4;
+		}
+		
+		return cellHeight;
+	}
+}
+
 #pragma mark - draw cell
 
 - (void) redrawIcon
@@ -65,7 +111,6 @@ const static CGFloat ICON_SIZE = 20.0;
 		CGFloat x = (PADING1 + ICON_SIZE + PADING1);
 		CGFloat y = PADING1 + ICON_SIZE / 2 - FONT_SIZE / 2;
 		CGFloat width = self.contentView.frame.size.width - x - PADING2;
-		uint8_t count = 0;
 		NSMutableString *tagText = [[[NSMutableString alloc] init] autorelease];
 		
 		self.tagLabel = [[[UILabel alloc] initWithFrame:CGRectMake(x, 
@@ -76,7 +121,6 @@ const static CGFloat ICON_SIZE = 20.0;
 		
 		for (NSString *tag in [self.foodObject valueForKey:@"tags"]) 
 		{
-			++count;
 			[tagText appendFormat:@"%@     ", tag];
 		}
 
@@ -84,7 +128,9 @@ const static CGFloat ICON_SIZE = 20.0;
 		self.tagLabel.textColor = [Color tastyColor];
 		self.tagLabel.backgroundColor = [UIColor clearColor];
 		self.tagLabel.text = tagText;
-		
+		self.tagLabel.numberOfLines = 0;
+		self.tagLabel.lineBreakMode = UILineBreakModeWordWrap;
+		[self.tagLabel sizeToFit];
 
 		[self.contentView addSubview:self.tagLabel];
 	}

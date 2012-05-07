@@ -9,14 +9,21 @@
 #import "TitleVC.h"
 
 #import "Util.h"
+#import "PlaceManager.h"
 
 @interface TitleVC ()
+{
+	NSDictionary *_object;
+}
 
 @end
 
 @implementation TitleVC
 @synthesize name;
 @synthesize placeName;
+@synthesize object = _object;
+
+#pragma mark - life circle
 
 - (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,16 +37,17 @@
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-	// Do any additional setup after loading the view from its nib.
+	
+	[self updateGUI];
 }
 
 - (void) viewDidUnload
 {
+	self.object = nil;
 	[self setName:nil];
 	[self setPlaceName:nil];
+
 	[super viewDidUnload];
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -47,10 +55,59 @@
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)dealloc 
+- (void) dealloc 
 {
+	self.object = nil;
+	
 	[name release];
 	[placeName release];
+	
 	[super dealloc];
 }
+
+#pragma mark - update object
+
+- (void) updatePlace
+{
+	@autoreleasepool 
+	{
+		NSNumber *placeID = [self.object valueForKey:@"place"];
+		
+		if (nil != placeID) 
+		{
+			NSDictionary *place = [PlaceManager getObjectWithNumberID:placeID];
+			
+			if (nil != place) 
+			{
+				self.placeName.text = [NSString stringWithFormat:@"@%@", [place valueForKey:@"name"]];
+			}
+			else 
+			{
+				[PlaceManager requestObjectWithNumberID:placeID andHandler:@selector(updatePlace) andTarget:self];
+			}
+		}
+
+	}
+}
+
+- (void) updateGUI	
+{
+	self.name.text = [self.object valueForKey:@"name"];
+	
+	[self updatePlace];
+}
+
+-(void) setObject:(NSDictionary *)object
+{
+	if (_object == object)
+	{
+		return;
+	}
+	
+	[_object release];
+	_object = [object retain];
+	
+	[self updateGUI];
+}
+
 @end
