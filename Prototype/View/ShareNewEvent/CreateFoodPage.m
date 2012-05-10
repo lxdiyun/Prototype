@@ -9,24 +9,23 @@
 #import "CreateFoodPage.h"
 
 #import "TextFieldCell.h"
-#import "CreateFoodImage.h"
 #import "Util.h"
 #import "FoodManager.h"
 #import "TextInputer.h"
-#import "CreateFoodFourCount.h"
 #import "ProfileMananger.h"
 #import "LoginManager.h"
 #import "TagSelector.h"
 #import "EventPage.h"
+#import "CreateFoodHeaderVC.h"
 
-const static CGFloat FONT_SIZE = 15.0;
+const static CGFloat  FONT_SIZE = 15.0;
+const static CGFloat STAR_SIZE = 22;
 
 typedef enum NEW_FOOD_SECTION_ENUM
 {
-	FOOD_IMAGE = 0x0,
-	FOOD_FOUR_COUNT = 0x1,
-	FOOD_DETAIL = 0x2,
-	FOOD_DESC = 0x3,
+	FOOD_HEADER = 0x0,
+	FOOD_DETAIL = 0x1,
+	FOOD_DESC = 0x2,
 	NEW_FOOD_SECTION_MAX
 } NEW_FOOD_SECTION;
 
@@ -35,36 +34,44 @@ typedef enum NEW_FOOD_DETAIL_ENUM
 	FOOD_NAME = 0x0,
 	FOOD_CITY = 0x1,
 	FOOD_PLACE = 0x2,
-	FOOD_TAG = 0x3,
-	NEW_FOOD_DETAIL_MAX
+	NEW_FOOD_DETAIL_MAX,
+	// TODO revaluate to show tag
+	FOOD_TAG = 0xFFFF
 } NEW_FOOD_DETAIL;
 
-static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"美食名称：", @"城市：", @"所在地：", @"类型："};
+static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"名字：", @"城市：", @"餐馆："};
 
 static UITextField *gs_food_detail_text_view[NEW_FOOD_DETAIL_MAX] = {nil};
 static UITextView *gs_food_desc_text_view = nil;
 static UILabel *gs_food_detail_star_label[NEW_FOOD_DETAIL_MAX] = {nil};
-static UILabel *gs_food_desc_star_label = nil;
-static CreateFoodImage *gs_create_food_image_header;
-static CreateFoodFourCount *gs_create_food_fout_count_header;
 static TextInputer *gs_food_desc_inputer =  nil;
 static TagSelector *gs_tag_selector = nil;
-static BOOL gs_need_scroll_to_begin = NO;
 
-@interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, CreateFoodFourCountDelegate, TagSelectorDelegate>
+@interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, TagSelectorDelegate>
+{
+	CreateFoodHeaderVC *_header;
+}
 - (void) updateCity;
 - (BOOL) checkParamsReady;
-- (void) scrollToBegin;
+
+@property (retain, nonatomic) CreateFoodHeaderVC *header;
 @end
 
 @implementation CreateFoodPage
 
-- (id)initWithStyle:(UITableViewStyle)style
+@synthesize header = _header;
+
+- (id) initWithStyle:(UITableViewStyle)style
 {
 	self = [super initWithStyle:UITableViewStyleGrouped];
 	if (self) 
 	{
-		self.view.backgroundColor = [Color milkColor];
+		@autoreleasepool 
+		{
+			self.view.backgroundColor = [Color lightyellowColor];
+			self.header = [[[CreateFoodHeaderVC alloc] init] autorelease];
+			self.title = @"分享美食";
+		}
 	}
 	return self;
 }
@@ -75,6 +82,30 @@ static BOOL gs_need_scroll_to_begin = NO;
 	[super didReceiveMemoryWarning];
 
 	// Release any cached data, images, etc that aren't in use.
+}
+
+- (void) dealloc
+{
+	self.header = nil;
+	
+	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
+	{
+		[gs_food_detail_text_view[i] release];
+		gs_food_detail_text_view[i] = nil;
+		[gs_food_detail_star_label[i] release];
+		gs_food_detail_star_label[i] = nil;
+	}
+	
+	[gs_food_desc_text_view release]; 
+	gs_food_desc_text_view = nil;
+	
+	[gs_food_desc_inputer release];
+	gs_food_desc_inputer = nil;
+	
+	[gs_tag_selector release];
+	gs_tag_selector = nil;
+	
+	[super dealloc];
 }
 
 #pragma mark - View lifecycle
@@ -90,27 +121,20 @@ static BOOL gs_need_scroll_to_begin = NO;
 	}
 
 	gs_food_desc_text_view = nil;
-	gs_create_food_image_header = nil;
-	gs_food_desc_inputer = nil;
-	gs_create_food_fout_count_header = nil;
-	gs_food_desc_star_label = nil;
 	gs_tag_selector = nil;
 
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"分享" 
-										  style:UIBarButtonItemStyleDone 
-										 target:self 
-										 action:@selector(createFood:)];
+	self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"分享", self, @selector(createFood:));
 
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" 
-										 style:UIBarButtonItemStylePlain 
-										target:self 
-										action:@selector(cancelCreate:) ]; 
+	self.navigationItem.leftBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"取消", self, @selector(cancelCreate:));
 	self.navigationItem.rightBarButtonItem.enabled = NO;
+	
 }
 
 - (void) viewDidUnload
 {
 	[super viewDidUnload];
+	
+	self.header = nil;
 
 	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 	{
@@ -123,17 +147,8 @@ static BOOL gs_need_scroll_to_begin = NO;
 	[gs_food_desc_text_view release]; 
 	gs_food_desc_text_view = nil;
 
-	[gs_create_food_image_header release];
-	gs_create_food_image_header = nil;
-
 	[gs_food_desc_inputer release];
 	gs_food_desc_inputer = nil;
-
-	[gs_create_food_fout_count_header release];
-	gs_create_food_fout_count_header = nil;
-
-	[gs_food_desc_star_label release];
-	gs_food_desc_star_label = nil;
 
 	[gs_tag_selector release];
 	gs_tag_selector = nil;
@@ -143,23 +158,11 @@ static BOOL gs_need_scroll_to_begin = NO;
 {
 	[super viewWillAppear:animated];
 
-	if ([self checkParamsReady])
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	[self updateShareButton];
 }
 
 - (void) viewDidAppear:(BOOL)animated
 {
-	if (gs_need_scroll_to_begin)
-	{
-		[self scrollToBegin];
-	}
-
 	[self updateCity];
 	[super viewDidAppear:animated];
 }
@@ -184,12 +187,11 @@ static BOOL gs_need_scroll_to_begin = NO;
 
 - (UILabel *) createStarLabel
 {
-
-	UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(5.0, 0.0, FONT_SIZE * PROPORTION(), FONT_SIZE * PROPORTION())] autorelease];
+	UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(28, 15, STAR_SIZE, STAR_SIZE)] autorelease];
 	label.text = @"*";
 	label.backgroundColor = [UIColor clearColor];
 	label.textColor = [UIColor redColor];
-	label.font = [UIFont boldSystemFontOfSize:FONT_SIZE * PROPORTION()];
+	label.font = [UIFont boldSystemFontOfSize:STAR_SIZE];
 
 	return label;
 }
@@ -249,14 +251,14 @@ static BOOL gs_need_scroll_to_begin = NO;
 				{
 					CGFloat X = 75.0;
 					CGFloat Y = 0.0;
-					CGFloat width = cell.contentView.frame.size.width * PROPORTION() - X - 28.0;
+					CGFloat width = cell.contentView.frame.size.width - X - 28.0;
 					CGFloat height = 44;
 					gs_food_detail_text_view[indexPath.row] = [[UITextField alloc] initWithFrame:CGRectMake(X, 
 																Y, 
 																width, 
 																height)];
 					gs_food_detail_text_view[indexPath.row].center = CGPointMake(gs_food_detail_text_view[indexPath.row].center.x, cell.center.y);
-					gs_food_detail_text_view[indexPath.row].font = [UIFont boldSystemFontOfSize:FONT_SIZE];
+					gs_food_detail_text_view[indexPath.row].font = [UIFont systemFontOfSize:FONT_SIZE];
 					gs_food_detail_text_view[indexPath.row].delegate = self;
 					gs_food_detail_text_view[indexPath.row].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 					gs_food_detail_text_view[indexPath.row].returnKeyType = UIReturnKeyNext;
@@ -275,7 +277,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 				[cell.contentView addSubview:gs_food_detail_text_view[indexPath.row]];
 			}
 
-			if (FOOD_CITY == indexPath.row)
+			if (FOOD_PLACE == indexPath.row)
 			{
 				[self updateCity];
 			}
@@ -304,18 +306,11 @@ static BOOL gs_need_scroll_to_begin = NO;
 													      88)];
 					gs_food_desc_text_view.scrollEnabled = NO;
 					gs_food_desc_text_view.backgroundColor = [UIColor clearColor];
-					gs_food_desc_text_view.font = [UIFont boldSystemFontOfSize:FONT_SIZE];
+					gs_food_desc_text_view.font = [UIFont systemFontOfSize:FONT_SIZE];
 					gs_food_desc_text_view.delegate = self;
 				}
 
 				[cell.contentView addSubview:gs_food_desc_text_view];
-
-				if (nil == gs_food_desc_star_label)
-				{
-					gs_food_desc_star_label = [[self createStarLabel] retain];
-				}
-
-				[cell.contentView addSubview:gs_food_desc_star_label];
 			}
 
 			return cell;
@@ -338,39 +333,13 @@ static BOOL gs_need_scroll_to_begin = NO;
 {
 	switch (section) 
 	{
-	case FOOD_IMAGE:
-		{
-			if (nil == gs_create_food_image_header)
-			{
-				gs_create_food_image_header = [[CreateFoodImage alloc] 
-					initWithFrame:CGRectMake(0.0, 
-								 0.0, 
-								 self.view.frame.size.width, 
-								 self.view.frame.size.width)];
-				[gs_create_food_image_header redrawAll];
-			}
-
-			return gs_create_food_image_header;
-		}
-		break;
-	case FOOD_FOUR_COUNT:
-		{
-			if (nil == gs_create_food_fout_count_header)
-			{
-				gs_create_food_fout_count_header = [[CreateFoodFourCount alloc] 
-					initWithFrame:CGRectMake(0.0, 
-								 0.0, 
-								 self.view.frame.size.width, 
-								 44)];
-				gs_create_food_fout_count_header.delegate = self;
-			}
-
-			return gs_create_food_fout_count_header;
-		}
-
-	default:
-		return nil;
-		break;
+		case FOOD_HEADER:
+			return self.header.view;
+			
+			break;
+		default:
+			return nil;
+			break;
 	}
 }
 
@@ -378,18 +347,17 @@ static BOOL gs_need_scroll_to_begin = NO;
 {
 	switch (section) 
 	{
-	case FOOD_IMAGE:
-		return self.view.frame.size.width;
-		break;
-	case FOOD_FOUR_COUNT:
-		return 44.0;
-		break;
-	case FOOD_DESC:
-		return 28.0;
-		break;
-	default:
-		return 0;
-		break;
+		case FOOD_HEADER:
+			return 409.0;
+
+			break;
+		case FOOD_DESC:
+			return 28.0;
+
+			break;
+		default:
+			return 0;
+			break;
 	}
 }
 
@@ -407,7 +375,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 			gs_food_desc_text_view.text = descString;
 
 			frame = gs_food_desc_text_view.frame;
-			frame.size.height = MAX(gs_food_desc_text_view.contentSize.height, 88 * PROPORTION());
+			frame.size.height = MAX(gs_food_desc_text_view.contentSize.height, 88);
 			gs_food_desc_text_view.frame = frame;
 			gs_food_desc_text_view.text = descString;
 
@@ -416,7 +384,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 		break;
 
 	default:
-		return 44 * PROPORTION();
+		return 44;
 		break;
 	}
 }
@@ -434,7 +402,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 		if (nil != loginUserProfile)
 		{
 			gs_food_detail_text_view[FOOD_CITY].text = [loginUserProfile valueForKey:@"city"];
-			[self checkParamsReady];
+			[self updateShareButton];
 		}
 		else
 		{
@@ -452,7 +420,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 {
 	if (nil != gs_food_detail_text_view[FOOD_CITY])
 	{
-		if (0 == gs_food_detail_text_view[FOOD_CITY].text.length)
+		if (0 >= gs_food_detail_text_view[FOOD_CITY].text.length)
 		{
 			[self requestUserCity];
 		}
@@ -461,37 +429,14 @@ static BOOL gs_need_scroll_to_begin = NO;
 
 - (void) resetImageWithUploadFileID:(NSInteger)fileID;
 {
-	if (nil != gs_create_food_image_header)
-	{
-		NSString *IDString = [[NSString alloc] initWithFormat:@"%u", fileID];
-
-		gs_create_food_image_header.uploadFileID = IDString;
-		[gs_create_food_image_header resetProgress];
-
-		[IDString release];
-	}
+	// do nothing since we did not need to display the progress
 }
 
-- (void) needScrollToBegin
-{
-	gs_need_scroll_to_begin = YES;
-}
 
-- (void) scrollToBegin
-{
-	gs_need_scroll_to_begin = NO;
-
-	[gs_food_detail_text_view[FOOD_NAME] becomeFirstResponder];
-}
 
 - (BOOL) checkParamsReady
 {
 	BOOL paramsReady = YES;
-
-	if (nil == gs_create_food_image_header.selectedImage.picID)
-	{
-		paramsReady = NO;
-	}
 
 	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 	{
@@ -510,18 +455,8 @@ static BOOL gs_need_scroll_to_begin = NO;
 			gs_food_detail_star_label[i].textColor = [UIColor clearColor];
 		}
 	}
-
-	if (0 >= gs_food_desc_text_view.text.length)
-	{
-		paramsReady = NO;
-		gs_food_desc_star_label.textColor = [UIColor redColor];
-	}
-	else
-	{
-		gs_food_desc_star_label.textColor = [UIColor clearColor];
-	}
-
-	if (![gs_create_food_fout_count_header isFourCountSelected])
+	
+	if (nil == self.header.image.picID)
 	{
 		paramsReady = NO;
 	}
@@ -547,7 +482,8 @@ static BOOL gs_need_scroll_to_begin = NO;
 
 	if (CHECK_NUMBER(picID))
 	{
-		gs_create_food_image_header.selectedImage.picID = picID;
+		self.header.image.picID = picID;
+		[self.header.indicator stopAnimating];
 	}
 
 	[self updateShareButton];
@@ -560,12 +496,15 @@ static BOOL gs_need_scroll_to_begin = NO;
 		NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
 
 		[params setValue:gs_food_detail_text_view[FOOD_NAME].text forKey:@"name"];
-		[params setValue:gs_food_detail_text_view[FOOD_CITY].text forKey:@"city"];
+		[params setValue:gs_food_detail_text_view[FOOD_CITY] forKey:@"city"];
 		[params setValue:gs_food_detail_text_view[FOOD_PLACE].text forKey:@"place_name"];
 		[params setValue:gs_food_desc_text_view.text forKey:@"desc"];
-		[params setValue:gs_create_food_image_header.selectedImage.picID forKey:@"pic"];
+		[params setValue:self.header.image.picID forKey:@"pic"];
 		[params setValue:[gs_food_detail_text_view[FOOD_TAG].text componentsSeparatedByString:@" "] forKey:@"category"];
-		[gs_create_food_fout_count_header setFoutCountParams:params];
+		[params setValue:[NSNumber numberWithFloat:[self.header.score.text floatValue]]  forKey:@"taste_score"];
+		[params setValue:[NSNumber numberWithBool:self.header.special.selected]  forKey:@"like_special"];
+		[params setValue:[NSNumber numberWithBool:self.header.valued.selected]  forKey:@"like_valued"];
+		[params setValue:[NSNumber numberWithBool:self.header.health.selected]  forKey:@"like_healthy"];
 
 		[FoodManager createFood:params withHandler:@selector(foodCreated:) andTarget:self];
 		
@@ -579,7 +518,9 @@ static BOOL gs_need_scroll_to_begin = NO;
 
 - (void) cancelCreate:(id)sender
 {
-	[gs_create_food_image_header cleanImage];
+	[self.header cleanHeader];
+	
+	[self.navigationController popToRootViewControllerAnimated:NO];
 
 	[self dismissModalViewControllerAnimated:YES];
 }
@@ -588,13 +529,11 @@ static BOOL gs_need_scroll_to_begin = NO;
 {
 	@autoreleasepool 
 	{
-		[gs_create_food_fout_count_header cleanFourCount];
-
-		gs_create_food_image_header.selectedImage.picID = nil;
+		[self.header cleanHeader];
 
 		for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 		{
-			if (FOOD_CITY == i)
+			if (FOOD_PLACE == i)
 			{
 				// Do not clean city text
 				continue;
@@ -604,8 +543,8 @@ static BOOL gs_need_scroll_to_begin = NO;
 		}
 
 		gs_food_desc_text_view.text = @"";
-
-		[gs_create_food_image_header cleanImage];
+		
+		[self.navigationController popToRootViewControllerAnimated:NO];
 		
 		[self updateShareButton];
 
@@ -681,7 +620,7 @@ static BOOL gs_need_scroll_to_begin = NO;
 
 - (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
 {
-	if (gs_food_detail_text_view[FOOD_TAG] == textField)
+	if (gs_food_detail_text_view[NEW_FOOD_DETAIL_MAX - 1] == textField)
 	{
 		if (0 >= textField.text.length)
 		{
@@ -733,13 +672,6 @@ static BOOL gs_need_scroll_to_begin = NO;
 	[self.navigationController popViewControllerAnimated:YES];
 	inputer.text.text = nil;
 	[gs_food_desc_text_view resignFirstResponder];
-}
-
-#pragma mark - CreateFoodFourCountDelegate
-
-- (void) fourCountSelected
-{
-	[self updateShareButton];
 }
 
 #pragma mark - TagSelectorDelegate

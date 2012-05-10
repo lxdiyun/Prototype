@@ -85,7 +85,7 @@ static CGFloat gs_pic_size = 0;
 {
 	@autoreleasepool 
 	{
-		self.contentView.backgroundColor = [Color brownColor];
+		self.contentView.backgroundColor = [UIColor clearColor];
 		[self redrawImageV];
 		[self redrawAvator];
 	}

@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface FoodPage : UITableViewController
+
 - (void) requestNewerComment;
+- (void) updateGUI;
+
 @property (strong,nonatomic) NSDictionary *foodObject;
 
 @end

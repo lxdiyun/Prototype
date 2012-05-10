@@ -71,17 +71,22 @@ DEFINE_SINGLETON(ConversationDetailPage);
 
 #pragma mark - View lifecycle
 
+- (void) back
+{
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
 	
 	@autoreleasepool 
 	{
-		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
-							   initWithImage:[UIImage imageNamed:@"comIcon.png"] 
-							   style:UIBarButtonItemStylePlain 
-							   target:self 
-							   action:@selector(inputMessage:)] autorelease];
+		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"comIcon.png"], 
+									  self, 
+									  @selector(inputMessage:));
+		
+		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 	}
 }
 
@@ -219,7 +224,7 @@ DEFINE_SINGLETON(ConversationDetailPage);
 	if (nil == self.navco)
 	{
 		self.navco = [[[UINavigationController alloc] initWithRootViewController:self.inputer] autorelease];
-		self.navco.navigationBar.barStyle = UIBarStyleBlack;
+		CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
 		self.inputer.title = @"发送私信";
 	}
 	

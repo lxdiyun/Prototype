@@ -45,7 +45,7 @@ const static CGFloat PADING4 = 10.0; // padding between element virtical and bot
 
 + (CGFloat) getHeightFor:(NSString *)description forWidth:(CGFloat)width
 {
-	CGFloat descHeight = 0;
+	CGFloat descHeight = 15.0;
 	
 	if ((nil != description) &&  (0 < description.length))
 	{

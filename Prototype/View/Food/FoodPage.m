@@ -29,21 +29,20 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	FOOD_DESC = 0x1,
 	FOOD_COMMENT = 0x2,
 	FOOD_MORE = 0x3,
-	FOOD_TAG = 0x4,
-	FOOD_SECTION_MAX
+	FOOD_SECTION_MAX,
+// TODO: Evaluate to show tags
+	FOOD_TAG = 0xFFFF,
 } FOOD_PAGE_SECTION;
 
 @interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate, FoodInfoDelegate>
 {
 	NSDictionary *_foodObject;
-	NSString *_foodID;
 	TextInputer *_inputer;
 	UINavigationController *_navco;
 	TitleVC *_titleView;
 	FoodInfo *_foodInfo;
 }
 
-@property (strong) NSString *foodID;
 @property (strong, nonatomic) TextInputer *inputer;
 @property (strong, nonatomic) UINavigationController *navco;
 @property (strong, nonatomic) TitleVC *titleView;
@@ -53,7 +52,6 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 @implementation FoodPage
 
 @synthesize foodObject = _foodObject;
-@synthesize foodID = _foodID;
 @synthesize inputer = _inputer;
 @synthesize navco = _navco;
 @synthesize titleView = _titleView;
@@ -65,7 +63,8 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) refreshCommentSection
 {
-	int32_t commentArrayCount = [[FoodCommentMananger keyArrayForList:self.foodID] count];
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	NSUInteger commentArrayCount = [[FoodCommentMananger keyArrayForList:foodID] count];
 	static NSMutableIndexSet *commentSectionSet = nil;
 	
 	if (nil == commentSectionSet)
@@ -86,18 +85,27 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) forceRefreshTableView
 {	
-	int32_t commentArrayCount = [[FoodCommentMananger keyArrayForList:self.foodID] count];
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	NSUInteger commentArrayCount = [[FoodCommentMananger keyArrayForList:foodID] count];
 	
 	[self.tableView reloadData];
 	
 	s_lastCommentArrayCount = commentArrayCount;
 }
 
+- (void) updateGUI
+{
+	[self forceRefreshTableView];
+	
+	[self requestNewerComment];
+}
+
 #pragma mark message
 
 - (void) requestNewerComment
 {	
-	[FoodCommentMananger requestNewerWithListID:self.foodID 
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	[FoodCommentMananger requestNewerWithListID:foodID 
 					   andCount:COMMENT_REFRESH_WINDOW 
 					withHandler:@selector(refreshCommentSection) 
 					  andTarget:self];
@@ -105,7 +113,8 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) requestOlderComment
 {
-	[FoodCommentMananger requestOlderWithListID:self.foodID 
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	[FoodCommentMananger requestOlderWithListID:foodID 
 					   andCount:COMMENT_REFRESH_WINDOW 
 					withHandler:@selector(refreshCommentSection) 
 					  andTarget:self];
@@ -116,6 +125,7 @@ static int32_t s_lastCommentArrayCount = -1;
 - (id) initWithStyle:(UITableViewStyle)style
 {
 	self = [super initWithStyle:style];
+
 	if (self) 
 	{
 		self.titleView = [[[TitleVC alloc] init] autorelease];
@@ -125,7 +135,8 @@ static int32_t s_lastCommentArrayCount = -1;
 		self.inputer.title = @"添加评论";
 		[self.inputer redraw];
 
-		self.navco = [[[UINavigationController alloc] initWithRootViewController:self.inputer] autorelease];
+		self.navco = [[[UINavigationController alloc] initWithRootViewController:
+			       self.inputer] autorelease];
 		CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
 
 	}
@@ -134,16 +145,17 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) didReceiveMemoryWarning
 {
-	// Releases the view if it doesn't have a superview.
-	[super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
+	if (self.navigationController.visibleViewController 
+	    == self.navigationController.topViewController)
+	{
+		// Releases the view if it doesn't have a superview.
+		[super didReceiveMemoryWarning];
+	}
 }
 
 - (void) dealloc
 {
 	self.foodObject = nil;
-	self.foodID = nil;
 	self.inputer = nil;
 	self.navco = nil;
 	self.titleView = nil;
@@ -164,26 +176,7 @@ static int32_t s_lastCommentArrayCount = -1;
 	[_foodObject release];
 	_foodObject = [foodObject retain];
 	
-	
-	self.foodID = [[self.foodObject valueForKey:@"id"] stringValue];
 	self.titleView.object = self.foodObject;
-	[self forceRefreshTableView];
-}
-
-- (void) updateFood
-{
-	NSDictionary *food = [FoodManager getObjectWithStringID:self.foodID];
-	
-	if (nil != food)
-	{
-		self.foodObject = food;
-	}
-	else 
-	{
-		[FoodManager requestObjectWithStringID:self.foodID 
-					    andHandler:@selector(updateFood) 
-					     andTarget:self];
-	}
 }
 
 #pragma mark - View lifecycle
@@ -198,7 +191,7 @@ static int32_t s_lastCommentArrayCount = -1;
 	@autoreleasepool 
 	{
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-		self.view.backgroundColor = [Color orangeColor];
+		self.view.backgroundColor = [Color brownColor];
 
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, 
 									      @selector(backToPrevView));
@@ -223,7 +216,6 @@ static int32_t s_lastCommentArrayCount = -1;
 	[super viewDidUnload];
 	
 	self.foodObject = nil;
-	self.foodID = nil;
 	self.inputer = nil;
 	self.navco = nil;
 	self.titleView = nil;
@@ -233,6 +225,8 @@ static int32_t s_lastCommentArrayCount = -1;
 - (void) viewWillAppear:(BOOL)animated
 {	
 	[super viewWillAppear:animated];
+	
+	[self updateGUI];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -272,7 +266,8 @@ static int32_t s_lastCommentArrayCount = -1;
 	{
 		case FOOD_COMMENT:
 		{
-			NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:self.foodID] count];
+			NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+			NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:foodID] count];
 
 			if (0 < commentCount) 
 			{
@@ -286,7 +281,8 @@ static int32_t s_lastCommentArrayCount = -1;
 			break;
 		case FOOD_MORE:
 		{
-			NSInteger loadedComment =  [[FoodCommentMananger keyArrayForList:self.foodID] count];
+			NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+			NSInteger loadedComment =  [[FoodCommentMananger keyArrayForList:foodID] count];
 			NSInteger totalComment = [[self.foodObject valueForKey:@"comment_count"] intValue];
 			
 			if (loadedComment < totalComment)
@@ -378,9 +374,10 @@ static int32_t s_lastCommentArrayCount = -1;
 			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0);
 		}
 
-		NSArray * keyArray = [FoodCommentMananger keyArrayForList:self.foodID];
+		NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+		NSArray * keyArray = [FoodCommentMananger keyArrayForList:foodID];
 		NSString *commentID = [keyArray objectAtIndex:indexPath.row - 1];
-		cell.commentDict = [FoodCommentMananger getObject:commentID inList:self.foodID];
+		cell.commentDict = [FoodCommentMananger getObject:commentID inList:foodID];
 
 		return cell;
 	}
@@ -507,9 +504,10 @@ static int32_t s_lastCommentArrayCount = -1;
 			// row 0 for triangle cell
 			if (1 <= indexPath.row)
 			{
-				NSArray * keyArray = [FoodCommentMananger keyArrayForList:self.foodID];
+				NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+				NSArray * keyArray = [FoodCommentMananger keyArrayForList:foodID];
 				NSString *commentID = [keyArray objectAtIndex:indexPath.row - 1];
-				NSDictionary *comment = [FoodCommentMananger getObject:commentID inList:self.foodID];
+				NSDictionary *comment = [FoodCommentMananger getObject:commentID inList:foodID];
 				return [CommentCell cellHeightForComment:comment forCellWidth:self.view.frame.size.width];
 			}
 			else 
@@ -578,9 +576,10 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) textDoneWithTextInputer:(TextInputer *)inputer
 {
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
 	[self dismissModalViewControllerAnimated:YES];
 	[FoodCommentMananger createComment:inputer.text.text 
-				   forList:self.foodID 
+				   forList:foodID 
 			       withHandler:@selector(newCommentHandler:) 
 				 andTarget:self];
 }

@@ -322,8 +322,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	else 
 	{
 		self.score.text =@"－";
-	}
-	
+	}	
 }
 
 - (void) updateName

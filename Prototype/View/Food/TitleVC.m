@@ -50,6 +50,11 @@
 	[super viewDidUnload];
 }
 
+- (void) viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+}
+
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -97,7 +102,7 @@
 	[self updatePlace];
 }
 
--(void) setObject:(NSDictionary *)object
+- (void) setObject:(NSDictionary *)object
 {
 	if (_object == object)
 	{
@@ -106,7 +111,7 @@
 	
 	[_object release];
 	_object = [object retain];
-	
+
 	[self updateGUI];
 }
 

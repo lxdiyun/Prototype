@@ -51,17 +51,20 @@ static NSString *USER_INTRO_TITLE = @"个人介绍";
 	UIBarButtonItem *_cancelButton;
 	UIBarButtonItem *_saveButton;
 	UIBarButtonItem *_editButton;
+	UIBarButtonItem *_backButton;
 	TextInputer *_textInputer;
 }
 
-@property (strong) UITextView *introduceView;
-@property (assign) BOOL editable;
-@property (strong) AvatorCell *avatorCell;
-@property (strong) PhotoSelector *photoSelector;
-@property (strong) UIBarButtonItem *cancelButton;
-@property (strong) UIBarButtonItem *saveButton;
-@property (strong) UIBarButtonItem *editButton;
-@property (strong) TextInputer *textInputer;
+@property (strong, nonatomic) UITextView *introduceView;
+@property (assign, nonatomic) BOOL editable;
+@property (strong, nonatomic) AvatorCell *avatorCell;
+@property (strong, nonatomic) PhotoSelector *photoSelector;
+@property (strong, nonatomic) UIBarButtonItem *cancelButton;
+@property (strong, nonatomic) UIBarButtonItem *saveButton;
+@property (strong, nonatomic) UIBarButtonItem *editButton;
+@property (strong, nonatomic) UIBarButtonItem *backButton;
+@property (strong, nonatomic) TextInputer *textInputer;
+
 
 - (void) initViewDisplay;
 - (void) sendUserInfoRequest;
@@ -77,6 +80,7 @@ static NSString *USER_INTRO_TITLE = @"个人介绍";
 @synthesize cancelButton = _cancelButton;
 @synthesize saveButton = _sendButton;
 @synthesize editButton = _editButton;
+@synthesize backButton = _backButton;
 @synthesize textInputer = _textInputer;
 
 #pragma mark - singleton
@@ -121,6 +125,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	self.introduceView = nil;
 	self.photoSelector = nil;
 	self.avatorCell = nil;
+	self.backButton = nil;
 	self.textInputer = nil;
 }
 
@@ -135,24 +140,28 @@ DEFINE_SINGLETON(UserInfoPage);
 	[self sendUserInfoRequest];
 }
 
+- (void) back
+{
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void) initViewDisplay
 {
 	@autoreleasepool 
 	{
 		[self setTitle:@"个人设置"];
 		self.photoSelector = [[[PhotoSelector alloc] init] autorelease];
-		self.view.backgroundColor = [Color grey1Color];
+		self.view.backgroundColor = [Color lightyellowColor];
 		
 		if (nil == self.editButton)
 		{
-			self.editButton = [[[UIBarButtonItem alloc] initWithTitle:@"编辑" 
-									    style:UIBarButtonItemStylePlain 
-									   target:self 
-									   action:@selector(startEditUserInfo:)] 
-					   autorelease];
+			self.editButton = SETUP_BAR_TEXT_BUTTON(@"编辑", self, @selector(startEditUserInfo:));
 		}
 		
 		self.navigationItem.rightBarButtonItem = self.editButton;
+		
+		self.backButton = SETUP_BACK_BAR_BUTTON(self, @selector(back));
+		self.navigationItem.leftBarButtonItem = self.backButton;
 		
 		for (int i = 0; i < USER_DETAIL_MAX; ++i)
 		{
@@ -535,22 +544,14 @@ DEFINE_SINGLETON(UserInfoPage);
 	
 	if (nil == self.cancelButton)
 	{
-		UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"取消" 
-										style:UIBarButtonItemStylePlain 
-									       target:self
-									       action:@selector(cancelEdit:)];
+		UIBarButtonItem *cancelButton = SETUP_BAR_TEXT_BUTTON(@"取消", self, @selector(cancelEdit:));
 		self.cancelButton = cancelButton;
-		[cancelButton release];
 	}
 	
 	if (nil == self.saveButton)
 	{
-		UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"保存" 
-									       style:UIBarButtonItemStyleDone 
-									      target:self
-									      action:@selector(saveUserInfo:)];
+		UIBarButtonItem *saveButton = SETUP_BAR_TEXT_BUTTON(@"保存", self, @selector(saveUserInfo:));
 		self.saveButton = saveButton;
-		[saveButton release];
 	}
 	
 	self.navigationItem.leftBarButtonItem = self.cancelButton;
@@ -568,7 +569,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	self.introduceView.userInteractionEnabled = NO;
 	
 	self.navigationItem.rightBarButtonItem = self.editButton;
-	self.navigationItem.leftBarButtonItem = nil;
+	self.navigationItem.leftBarButtonItem = self.backButton;
 	self.avatorCell.accessoryType = UITableViewCellAccessoryNone;
 	[self.avatorCell hideProgressBar];
 	

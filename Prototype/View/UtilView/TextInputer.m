@@ -81,6 +81,11 @@ const static CGFloat FONT_SIZE = 15.0;
 
 #pragma mark - View draw
 
+- (void) back
+{
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void) redraw
 {
 	@autoreleasepool 
@@ -101,21 +106,17 @@ const static CGFloat FONT_SIZE = 15.0;
 		
 		self.view.autoresizesSubviews = YES;
 		
-		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
-							   initWithTitle:self.sendButtonTitle 
-							   style:UIBarButtonItemStyleDone 
-							   target:self 
-							   action:@selector(textDone:)] autorelease];
+		self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"完成", self, @selector(textDone:));
 		
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 		
 		if (self.drawCancel)
 		{
-			self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
-								  initWithBarButtonSystemItem:UIBarButtonSystemItemCancel 
-								  target:self 
-								  action:@selector(cancelEdit:)] 
-								 autorelease];
+			self.navigationItem.leftBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"取消", self, @selector(cancelEdit:));
+		}
+		else 
+		{
+			self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 		}
 	}
 }
@@ -141,7 +142,6 @@ const static CGFloat FONT_SIZE = 15.0;
 	{
 		if ([self.text isFirstResponder])
 		{
-			
 			[self.text resignFirstResponder];
 		}
 	}

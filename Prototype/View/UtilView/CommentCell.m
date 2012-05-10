@@ -80,6 +80,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	if (nil != self) 
 	{
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		self.contentView.backgroundColor = [Color orangeColor];
 	}
 	return self;
 }

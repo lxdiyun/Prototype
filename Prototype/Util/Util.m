@@ -356,7 +356,7 @@ void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
 	} 
 }
 
-static UIButton * create_button(UIImage *image,id target, SEL action)
+static UIButton * create_image_button(UIImage *image,id target, SEL action)
 {
 	UIButton *button = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)] autorelease];
 	[button setImage:image forState:UIControlStateNormal];
@@ -374,7 +374,7 @@ static UIBarButtonItem * create_bar_button(UIImage *image,id target, SEL action)
 
 UIButton * SETUP_BUTTON(UIImage *image,id target, SEL action)
 {
-	UIButton *button = create_button(image, target, action);
+	UIButton *button = create_image_button(image, target, action);
 
 	button.backgroundColor = [Color grey3Color];
 
@@ -392,7 +392,7 @@ UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action)
 
 UIButton * SETUP_BACK_BUTTON(id target, SEL action)
 {	
-	UIButton *button = create_button([UIImage imageNamed:@"backArrow.png"], target, action);
+	UIButton *button = create_image_button([UIImage imageNamed:@"backArrow.png"], target, action);
 
 	button.backgroundColor = [UIColor clearColor];
 
@@ -402,4 +402,23 @@ UIButton * SETUP_BACK_BUTTON(id target, SEL action)
 UIBarButtonItem * SETUP_BACK_BAR_BUTTON(id target, SEL action)
 {
 	return [[[UIBarButtonItem alloc] initWithCustomView:SETUP_BACK_BUTTON(target, action)] autorelease];
+}
+
+UIButton * SETUP_TEXT_BUTTON(NSString *title, id target, SEL action)
+{
+	UIButton *button = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 64, 30)] autorelease];
+	[button.titleLabel setFont:[UIFont systemFontOfSize:12.0]];
+	[button setTitle:title forState:UIControlStateNormal];
+	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[button setTitleColor:[Color grey1Color] forState:UIControlStateHighlighted];
+	[button setTitleColor:[Color darkgreyColor] forState:UIControlStateDisabled];
+	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+	button.backgroundColor = [Color grey3Color];
+	button.layer.cornerRadius = 5.0;
+	
+	return button;
+}
+UIBarButtonItem * SETUP_BAR_TEXT_BUTTON(NSString *title, id target, SEL action)
+{
+	return [[[UIBarButtonItem alloc] initWithCustomView:SETUP_TEXT_BUTTON(title, target, action)] autorelease];
 }

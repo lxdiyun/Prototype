@@ -31,19 +31,7 @@
 {
 	@autoreleasepool 
 	{
-		UIButton *loginButton = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 64, 28)] autorelease];
-		[loginButton setTitle:@"登陆" forState:UIControlStateNormal];
-		[loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-		[loginButton setTitleColor:[Color grey2Color] forState:UIControlStateHighlighted];
-		[loginButton setTitleColor:[Color grey2Color] forState:UIControlStateDisabled];
-		loginButton.titleLabel.font = [UIFont boldSystemFontOfSize:12.0];
-		loginButton.layer.cornerRadius = 8.0;
-		loginButton.backgroundColor = [Color grey3Color];
-		[loginButton addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
-		
-		UIBarButtonItem *loginItem = [[[UIBarButtonItem alloc] initWithCustomView:loginButton] autorelease];
-		
-		self.navigationItem.rightBarButtonItem = loginItem;
+		self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"登陆", self, @selector(login:));
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self.navigationController, @selector(popViewControllerAnimated:));
 	}
 

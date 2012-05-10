@@ -83,10 +83,9 @@
 		if (nil ==  self.navco)
 		{
 			self.navco = [[[UINavigationController alloc] initWithRootViewController:self.createFood] autorelease];
-			self.navco.navigationBar.barStyle = UIBarStyleBlack;
+			CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
 		}
 
-		[self.createFood needScrollToBegin];
 		[self.delegate presentModalViewController:self.navco animated:YES];
 		
 		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:2.0];

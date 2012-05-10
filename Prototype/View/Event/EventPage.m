@@ -343,7 +343,6 @@ DEFINE_SINGLETON(EventPage);
 		
 		[self.navigationController pushViewController:self.foodPage animated:YES];
 		self.foodPage.tableView.contentOffset = CGPointZero;
-		[self.foodPage requestNewerComment];
 	}
 }
 

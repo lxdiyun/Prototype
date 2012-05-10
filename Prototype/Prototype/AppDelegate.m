@@ -107,8 +107,16 @@ static UIViewController *gs_currentViewController;
 	
 	[tabBarController setViewControllers:tabBarViewControllers animated:NO];
 	tabBarController.delegate = self;
+	
+	// configure more view
 	CONFIG_NAGIVATION_BAR(tabBarController.moreNavigationController.navigationBar);
 	tabBarController.customizableViewControllers = nil;
+	UITableView *moreView = (UITableView *)tabBarController.moreNavigationController.topViewController.view;
+	if ([moreView isKindOfClass:[UITableView class]])
+	{
+		moreView.backgroundColor = [Color lightyellowColor];
+		[moreView setSeparatorColor:[UIColor blackColor]];
+	}
 	
 	self.tabco = tabBarController;
 	

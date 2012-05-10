@@ -44,7 +44,6 @@ typedef enum MAP_MENU_ENUM
 	UINavigationController *_placeNavco;
 	BOOL _selectedPlace;
 	UIActionSheet *_menu;
-	UIButton *_refreshButton;
 }
 
 @property (strong) MKMapView *mapView;
@@ -54,7 +53,6 @@ typedef enum MAP_MENU_ENUM
 @property (strong) UINavigationController *placeNavco;
 @property (assign) BOOL selectedPlace;
 @property (strong) UIActionSheet *menu;
-@property (strong, nonatomic) UIButton *refreshButton;
 
 - (void) showPlaces:(NSArray *)annotations;
 - (void) showPlaceDetailPage;
@@ -72,7 +70,6 @@ typedef enum MAP_MENU_ENUM
 @synthesize placeNavco = _placeNavco;
 @synthesize selectedPlace = _selectedPlace;
 @synthesize menu = _menu;
-@synthesize refreshButton = _refreshButton;
 
 #pragma mark - manage map object
 
@@ -106,7 +103,7 @@ typedef enum MAP_MENU_ENUM
 			{
 				continue;
 			}
-			else if ([self.mapObject valueForKey:key] == [newFood valueForKey:key]) 
+			else if ([[self.mapObject valueForKey:key] isEqual: [newFood valueForKey:key]]) 
 			{
 				[newFood setValue:nil forKey:key];
 			}
@@ -123,7 +120,7 @@ typedef enum MAP_MENU_ENUM
 {
 	NSString *mapID = [[self.mapObject valueForKey:@"id"] stringValue];
 	NSString *loginUserID  = [GET_USER_ID() stringValue];
-	NSDictionary *map;
+	NSDictionary *map = nil;
 	
 	if (nil != mapID)
 	{
@@ -134,8 +131,6 @@ typedef enum MAP_MENU_ENUM
 	{
 		self.mapObject = map;
 	}
-	
-	[self updateButtons];
 }
 
 - (void) reloadMapObject
@@ -170,8 +165,6 @@ typedef enum MAP_MENU_ENUM
 	self.title = [self.mapObject valueForKey:@"title"];
 	
 	[self goToLastCenter];
-
-	[self updateButtons];
 }
 
 - (void) goToLastCenter
@@ -256,15 +249,6 @@ typedef enum MAP_MENU_ENUM
 	backButton.frame = CGRectMake(0, 0, 40, 30);
 	[leftButtonView addSubview:backButton];
 	
-	// refresh
-	UIButton *refreshButton = SETUP_BUTTON([UIImage imageNamed:@"refresh.png"], 
-					       self, 
-					       @selector(reloadMapObject));
-	refreshButton.backgroundColor = [UIColor clearColor];
-	refreshButton.frame = CGRectMake(41, 0, 40, 30);
-	self.refreshButton = refreshButton;
-	[leftButtonView addSubview:refreshButton];
-	
 	// right bar buttons
 	UIView *rightButtonsView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 81, 30)] autorelease];
 	rightButtonsView.layer.cornerRadius = 5.0;
@@ -291,18 +275,6 @@ typedef enum MAP_MENU_ENUM
 	self.navigationItem.hidesBackButton = YES;
 	self.navigationItem.rightBarButtonItem = rightButtons;
 	self.navigationItem.leftBarButtonItem = leftButtons;
-}
-
-- (void) updateButtons
-{
-//	if (nil != [self.mapObject valueForKey:@"id"])
-//	{
-//		self.refreshButton.hidden = NO;
-//	}
-//	else 
-//	{
-		self.refreshButton.hidden = YES;
-//	}
 }
 
 #pragma mark - life circle
@@ -334,9 +306,19 @@ typedef enum MAP_MENU_ENUM
 	self.placeDetailPage = nil;
 	self.placeNavco = nil;
 	self.menu = nil;
-	self.refreshButton = nil;
 
 	[super dealloc];
+}
+
+- (void) didReceiveMemoryWarning
+{
+	if (self.navigationController.topViewController 
+	    == self.navigationController.visibleViewController)
+	{
+		// Releases the view if it doesn't have a superview 
+		// and the root view is presenting.
+		[super didReceiveMemoryWarning];
+	}
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -382,7 +364,6 @@ typedef enum MAP_MENU_ENUM
 	self.placeDetailPage = nil;
 	self.placeNavco = nil;
 	self.menu = nil;
-	self.refreshButton = nil;
 
 	[super viewDidUnload];
 }
@@ -745,16 +726,16 @@ typedef enum MAP_MENU_ENUM
 {
 	switch (buttonIndex) 
 	{
-	case SHOW_ALL_PLACE:
-		[self showAllPlaces];
-		break;
-	case SHOW_WHERE_AM_I:
-		[self focousUserLoaction];
-		break;
-	case REFRESH:
-		[self reloadMapObject];
-		break;
-	default:
+		case SHOW_ALL_PLACE:
+			[self showAllPlaces];
+			break;
+		case SHOW_WHERE_AM_I:
+			[self focousUserLoaction];
+			break;
+		case REFRESH:
+			[self reloadMapObject];
+			break;
+		default:
 			[self.menu dismissWithClickedButtonIndex:MAP_MENU_MAX animated:YES];
 			break;
 	}

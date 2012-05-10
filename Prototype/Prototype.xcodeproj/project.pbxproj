@@ -23,7 +23,6 @@
 		4820461C14A45E69001120C1 /* EventPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820461914A45E69001120C1 /* EventPage.m */; };
 		4832407C14A9A4150084584F /* AvatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatorCell.m */; };
 		4832408914A9B9BC0084584F /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832408814A9B9BC0084584F /* EventCell.m */; };
-		4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */; };
 		48333C45151309AE003475BE /* MapViewPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48333C44151309AE003475BE /* MapViewPage.m */; };
 		48333C4A15130D48003475BE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48333C4915130D48003475BE /* MapKit.framework */; };
 		48343308153FB4E70007876F /* refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 48343306153FB4E70007876F /* refresh.png */; };
@@ -101,7 +100,12 @@
 		48B76A7C14B9D3C600FD8646 /* ImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B76A7A14B9D3C600FD8646 /* ImageManager.m */; };
 		48B76A8414B9E51B00FD8646 /* LoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B76A8314B9E51B00FD8646 /* LoginManager.m */; };
 		48B9ED4414AEE67700046C26 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 48B9ED4214AEE67700046C26 /* JSONKit.m */; };
-		48C21BE014CC17940025807F /* CreateFoodImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C21BDD14CC17940025807F /* CreateFoodImage.m */; };
+		48B9FC3A155A0DA90005C700 /* Health.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B9FC36155A0DA90005C700 /* Health.png */; };
+		48B9FC3B155A0DA90005C700 /* Mark_It.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B9FC37155A0DA90005C700 /* Mark_It.png */; };
+		48B9FC3C155A0DA90005C700 /* Special.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B9FC38155A0DA90005C700 /* Special.png */; };
+		48B9FC3D155A0DA90005C700 /* Value.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B9FC39155A0DA90005C700 /* Value.png */; };
+		48BC42B11558FAA6003CBA99 /* CreateFoodHeaderVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 48BC42AF1558FAA6003CBA99 /* CreateFoodHeaderVC.m */; };
+		48BC42B21558FAA6003CBA99 /* CreateFoodHeaderVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48BC42B01558FAA6003CBA99 /* CreateFoodHeaderVC.xib */; };
 		48C21BE114CC17940025807F /* CreateFoodPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C21BDF14CC17940025807F /* CreateFoodPage.m */; };
 		48C21BE414CC17FB0025807F /* ShareNewEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C21BE314CC17FB0025807F /* ShareNewEvent.m */; };
 		48C21BE814CC571B0025807F /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 48C21BE714CC571B0025807F /* Icon@2x.png */; };
@@ -348,8 +352,6 @@
 		4832407A14A9A4150084584F /* AvatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AvatorCell.m; path = View/UserInformation/AvatorCell.m; sourceTree = "<group>"; };
 		4832408714A9B9BC0084584F /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventCell.h; path = View/Event/EventCell.h; sourceTree = "<group>"; };
 		4832408814A9B9BC0084584F /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventCell.m; path = View/Event/EventCell.m; sourceTree = "<group>"; };
-		4832B28B14CD16DA0021F5AB /* CreateFoodFourCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateFoodFourCount.h; sourceTree = "<group>"; };
-		4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateFoodFourCount.m; sourceTree = "<group>"; };
 		48333C43151309AE003475BE /* MapViewPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapViewPage.h; path = View/Map/MapViewPage.h; sourceTree = "<group>"; };
 		48333C44151309AE003475BE /* MapViewPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapViewPage.m; path = View/Map/MapViewPage.m; sourceTree = "<group>"; };
 		48333C4915130D48003475BE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -462,8 +464,13 @@
 		48B76A8314B9E51B00FD8646 /* LoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginManager.m; sourceTree = "<group>"; };
 		48B9ED4114AEE67700046C26 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		48B9ED4214AEE67700046C26 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		48C21BDC14CC17940025807F /* CreateFoodImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateFoodImage.h; sourceTree = "<group>"; };
-		48C21BDD14CC17940025807F /* CreateFoodImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateFoodImage.m; sourceTree = "<group>"; };
+		48B9FC36155A0DA90005C700 /* Health.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Health.png; sourceTree = "<group>"; };
+		48B9FC37155A0DA90005C700 /* Mark_It.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mark_It.png; sourceTree = "<group>"; };
+		48B9FC38155A0DA90005C700 /* Special.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Special.png; sourceTree = "<group>"; };
+		48B9FC39155A0DA90005C700 /* Value.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Value.png; sourceTree = "<group>"; };
+		48BC42AE1558FAA6003CBA99 /* CreateFoodHeaderVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateFoodHeaderVC.h; sourceTree = "<group>"; };
+		48BC42AF1558FAA6003CBA99 /* CreateFoodHeaderVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateFoodHeaderVC.m; sourceTree = "<group>"; };
+		48BC42B01558FAA6003CBA99 /* CreateFoodHeaderVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CreateFoodHeaderVC.xib; sourceTree = "<group>"; };
 		48C21BDE14CC17940025807F /* CreateFoodPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateFoodPage.h; sourceTree = "<group>"; };
 		48C21BDF14CC17940025807F /* CreateFoodPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateFoodPage.m; sourceTree = "<group>"; };
 		48C21BE214CC17FB0025807F /* ShareNewEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShareNewEvent.h; sourceTree = "<group>"; };
@@ -808,12 +815,11 @@
 			children = (
 				48C21BE214CC17FB0025807F /* ShareNewEvent.h */,
 				48C21BE314CC17FB0025807F /* ShareNewEvent.m */,
-				48C21BDC14CC17940025807F /* CreateFoodImage.h */,
-				48C21BDD14CC17940025807F /* CreateFoodImage.m */,
 				48C21BDE14CC17940025807F /* CreateFoodPage.h */,
 				48C21BDF14CC17940025807F /* CreateFoodPage.m */,
-				4832B28B14CD16DA0021F5AB /* CreateFoodFourCount.h */,
-				4832B28C14CD16DA0021F5AB /* CreateFoodFourCount.m */,
+				48BC42AE1558FAA6003CBA99 /* CreateFoodHeaderVC.h */,
+				48BC42AF1558FAA6003CBA99 /* CreateFoodHeaderVC.m */,
+				48BC42B01558FAA6003CBA99 /* CreateFoodHeaderVC.xib */,
 			);
 			name = ShareNewEvent;
 			path = View/ShareNewEvent;
@@ -863,6 +869,10 @@
 		48CE912B14AD9DBE00B1E9D3 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				48B9FC36155A0DA90005C700 /* Health.png */,
+				48B9FC37155A0DA90005C700 /* Mark_It.png */,
+				48B9FC38155A0DA90005C700 /* Special.png */,
+				48B9FC39155A0DA90005C700 /* Value.png */,
 				480FAA41154800220046563C /* LoginSina.png */,
 				48716565155280D00060DF40 /* aten.png */,
 				48716566155280D00060DF40 /* disabled_aten.png */,
@@ -1368,6 +1378,11 @@
 				4871656C155280D00060DF40 /* location.png in Resources */,
 				4871656D155280D00060DF40 /* selected_traget.png in Resources */,
 				4871656E155280D00060DF40 /* target.png in Resources */,
+				48BC42B21558FAA6003CBA99 /* CreateFoodHeaderVC.xib in Resources */,
+				48B9FC3A155A0DA90005C700 /* Health.png in Resources */,
+				48B9FC3B155A0DA90005C700 /* Mark_It.png in Resources */,
+				48B9FC3C155A0DA90005C700 /* Special.png in Resources */,
+				48B9FC3D155A0DA90005C700 /* Value.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1423,10 +1438,8 @@
 				48B0D0BA14C56CC500517100 /* TextFieldCell.m in Sources */,
 				48E2E18D14C6A7F000223175 /* FoodManager.m in Sources */,
 				48E2E1F814C9018600223175 /* ObjectSaver.m in Sources */,
-				48C21BE014CC17940025807F /* CreateFoodImage.m in Sources */,
 				48C21BE114CC17940025807F /* CreateFoodPage.m in Sources */,
 				48C21BE414CC17FB0025807F /* ShareNewEvent.m in Sources */,
-				4832B28D14CD16DA0021F5AB /* CreateFoodFourCount.m in Sources */,
 				48E8ADF414D0F32A00B9882C /* TagSelector.m in Sources */,
 				4891276F14DB838B003E7FEB /* ConversationListManager.m in Sources */,
 				4891277414DBB17B003E7FEB /* ConversationPage.m in Sources */,
@@ -1465,6 +1478,7 @@
 				48F3A3BA1550D9F700706B5E /* TitleVC.m in Sources */,
 				484D5CBF1553C5C00009919A /* FoodTagCell.m in Sources */,
 				48A514871554EF48000D5035 /* TriangleCell.m in Sources */,
+				48BC42B11558FAA6003CBA99 /* CreateFoodHeaderVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1556,7 +1570,7 @@
 				PRODUCT_NAME = "美食玩家";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 				WARNING_LDFLAGS = (
 					"-ObjC",
@@ -1648,7 +1662,7 @@
 				PRODUCT_NAME = "美食玩家D";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = NO;
 				WARNING_LDFLAGS = (
 					"-ObjC",
@@ -1677,7 +1691,7 @@
 				PRODUCT_NAME = "美食玩家";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 				WARNING_LDFLAGS = (
 					"-ObjC",

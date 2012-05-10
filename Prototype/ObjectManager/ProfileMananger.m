@@ -23,9 +23,21 @@ DEFINE_SINGLETON(ProfileMananger);
 	[self updateObjectWithhandler:handler andTarget:target];
 }
 
-#pragma mark - message
-
 #pragma mark - overwrite super class method
+
+#pragma mark - overwrite get and set
+
++ (NSDictionary *) getObjectWithStringID:(NSString *)ID
+{
+	if (CHECK_STRING(ID))
+	{		
+		return [[[self getInstnace] objectDict] valueForKey:ID];
+	}
+	else
+	{
+		return nil;
+	}
+}
 
 #pragma mark - get method handler overwrite
 

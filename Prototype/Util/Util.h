@@ -151,5 +151,7 @@ UIButton * SETUP_BACK_BUTTON(id target, SEL action);
 UIBarButtonItem * SETUP_BACK_BAR_BUTTON(id target, SEL action);
 UIButton * SETUP_BUTTON(UIImage *image,id target, SEL action);
 UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action);
+UIButton * SETUP_TEXT_BUTTON(NSString *title, id target, SEL action);
+UIBarButtonItem * SETUP_BAR_TEXT_BUTTON(NSString *title, id target, SEL action);
 
 #endif

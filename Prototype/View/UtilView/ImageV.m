@@ -38,6 +38,7 @@
 	
 	if (nil != self)
 	{
+		self.clipsToBounds = YES;
 	}
 	
 	return self;
@@ -165,6 +166,7 @@
 	
 	[self cancelCurrentImageLoad];
 	self.picDict = nil;
+	self.image = nil;
 	
 	if (nil != _picID)
 	{
@@ -174,7 +176,7 @@
 
 #pragma mark - SDWebImageManagerDelegate
 
-- (void)webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
+- (void) webImageManager:(SDWebImageManager *)imageManager didFinishWithImage:(UIImage *)image
 {
 	[super webImageManager:imageManager didFinishWithImage:image];
 	
@@ -197,7 +199,7 @@
 	
 	if ([self.indicator isHidden])
 	{
-		CGPoint center = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+		CGPoint center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
 		self.indicator.center = center;
 		[self.indicator startAnimating];
 		[self.indicator setHidden:NO];

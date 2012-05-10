@@ -10,6 +10,8 @@
 
 @interface TitleVC : UIViewController
 
+- (void) updateGUI;
+
 @property (retain, nonatomic) IBOutlet UILabel *name;
 @property (retain, nonatomic) IBOutlet UILabel *placeName;
 @property (retain, nonatomic) NSDictionary *object;
