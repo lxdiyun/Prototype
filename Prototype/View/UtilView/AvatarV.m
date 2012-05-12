@@ -42,15 +42,35 @@ DEFINE_CUSTOM_XIB(AvatarV);
 	xibInstance.delegate = self.delegate;
 }
 
-- (void) initAfterLoadXiB
+#pragma mark - life circle
+
+- (id) initWithCoder:(NSCoder *)aDecoder
 {
-	@autoreleasepool 
+	self = [super initWithCoder:aDecoder];
+	
+	if (nil != self)
 	{
-		self.userInfoPage = [[[UserInfoPage alloc] init] autorelease];
+		@autoreleasepool 
+		{
+			self.userInfoPage = [[[UserInfoPage alloc] init] autorelease];
+		}
 	}
+	
+	return self;
 }
 
-#pragma mark - life circle
+- (id) initWithFrame:(CGRect)frame
+{
+	self = [AvatarV loadInstanceFromNib];
+	
+	if (nil != self)
+	{
+		self.frame = frame;
+	}
+
+	return self;
+} 
+
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

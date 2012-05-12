@@ -92,10 +92,6 @@ return gs_shared_instance; \
 		if ([anObject isKindOfClass:[self class]])  \
 		{  \
 			result = anObject; \
-			if ([result respondsToSelector:@selector(initAfterLoadXiB)]) \
-			{ \
-				[result performSelector:@selector(initAfterLoadXiB)]; \
-			} \
 			 \
 			break; \
 		}  \
@@ -120,16 +116,6 @@ return gs_shared_instance; \
 	} \
 	 \
 	return self; \
-} \
-- (id) initWithFrame:(CGRect)frame \
-{ \
-	self = [CLASS_NAME loadInstanceFromNib]; \
-	self.frame = frame; \
-	if ([self respondsToSelector:@selector(extratInitWithFrame)]) \
-	{ \
-		[self performSelector:@selector(extratInitWithFrame)]; \
-	} \
-	return self; \
-} 
+}
 
 #endif
