@@ -16,11 +16,11 @@
 
 const static NSInteger MAX_TAG_QANTITY = 3;
 
-@interface FoodInfo ()
+@interface FoodInfo () 
 {
 	NSDictionary *_food;
 	NSInteger _tagMaxIndex;
-	id<FoodInfoDelegate> _delegate;
+	id<ShowVCDelegate> _delegate;
 	MapViewPage *_map;
 }
 
@@ -183,7 +183,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 
 - (void) setFood:(NSDictionary *)food
 {
-	if (_food == food)
+	if ([_food isEqualToDictionary:food])
 	{
 		return;
 	}
@@ -245,6 +245,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 - (void) viewDidLoad
 {
 	self.buttons.layer.cornerRadius = 5.0;
+	self.avatar.delegate = self.delegate;
 }
 
 - (void) viewDidUnload 
@@ -283,7 +284,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 		if (nil != userProfile)
 		{
 			self.username.text = [userProfile valueForKey:@"nick"];
-			self.avatar.picID = [userProfile valueForKey:@"avatar"];
+			self.avatar.user = userProfile;
 		}
 		else
 		{
@@ -292,6 +293,20 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 							 andTarget:self];
 		}
 	}
+}
+
+#pragma mark - managet object
+
+- (void) setDelegate:(id<ShowVCDelegate>)delegate
+{
+	if ([_delegate isEqual:delegate])
+	{
+		return;
+	}
+	
+	_delegate = delegate;
+	
+	self.avatar.delegate = delegate;
 }
 
 #pragma mark - button action
@@ -322,4 +337,5 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[placeIDArray release];
 	[tempMap release];
 }
+
 @end

@@ -13,6 +13,7 @@
 @interface CreateFoodHeaderVC : UIViewController
 
 - (void) cleanHeader;
+- (void) setImageID:(NSNumber *)picID;
 
 - (IBAction) scoreChanged:(id)sender;
 - (IBAction) tapButton:(id)sender;
@@ -23,5 +24,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *health;
 @property (retain, nonatomic) IBOutlet ImageV *image;
 @property (retain, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (retain, nonatomic) IBOutlet UILabel *text;
 
 @end

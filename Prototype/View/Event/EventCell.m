@@ -128,7 +128,7 @@ static CGFloat gs_pic_size = 0;
 
 - (void) setEventDict:(NSDictionary *)eventDict
 {
-	if (_eventDict == eventDict)
+	if ([_eventDict isEqualToDictionary: eventDict])
 	{
 		return;
 	}

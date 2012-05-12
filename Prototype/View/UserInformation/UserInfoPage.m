@@ -12,7 +12,7 @@
 
 #import "Util.h"
 #import "ImageV.h"
-#import "AvatorCell.h"
+#import "AvatarCell.h"
 #import "LoginManager.h"
 #import "ProfileMananger.h"
 #import "PhotoSelector.h"
@@ -44,7 +44,7 @@ static NSString *USER_INTRO_TITLE = @"个人介绍";
 
 @interface  UserInfoPage   () <UITableViewDelegate, UITextFieldDelegate, PhototSelectorDelegate, UITextViewDelegate, TextInputerDeletgate>
 {
-	AvatorCell *_avatorCell;
+	AvatarCell *_avatorCell;
 	PhotoSelector *_photoSelector;
 	UITextView *_introduceView;
 	UITextField *_userDetailTextView[USER_DETAIL_MAX];
@@ -57,7 +57,7 @@ static NSString *USER_INTRO_TITLE = @"个人介绍";
 
 @property (strong, nonatomic) UITextView *introduceView;
 @property (assign, nonatomic) BOOL editable;
-@property (strong, nonatomic) AvatorCell *avatorCell;
+@property (strong, nonatomic) AvatarCell *avatorCell;
 @property (strong, nonatomic) PhotoSelector *photoSelector;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) UIBarButtonItem *saveButton;
@@ -178,7 +178,7 @@ DEFINE_SINGLETON(UserInfoPage);
 		
 		if (nil == self.avatorCell) 
 		{
-			AvatorCell *cell = [[AvatorCell alloc] initWithStyle:UITableViewCellStyleValue2 
+			AvatarCell *cell = [[AvatarCell alloc] initWithStyle:UITableViewCellStyleValue2 
 							      reuseIdentifier:USER_AVATOR_TITLE];
 			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, AVATOR_CELL_HEIGTH * PROPORTION());
 			[cell redraw];

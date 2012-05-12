@@ -173,178 +173,6 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 	[alert release]; 
 }
 
-@implementation Color
-
-+ (UIColor *) tastyColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0x21/255.0 green:0xA6/255.0 blue:0xCE/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) specailColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xDD/255.0 green:0x4B/255.0 blue:0x39/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) valuedColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xFB/255.0 green:0xB0/255.0 blue:0x3B/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) healthyColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0x6A/255.0 green:0xC6/255.0 blue:0x00/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) whiteColor 
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xFF/255.0 green:0xFF/255.0 blue:0xFF/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) milkColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xE6/255.0 green:0xE6/255.0 blue:0xE6/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) orangeColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xD3/255.0 green:0x8E/255.0 blue:0x33/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) grey1Color
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xEE/255.0 green:0xEE/255.0 blue:0xEE/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) grey2Color
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-
-		color = [[UIColor alloc] initWithRed:0x66/255.0 green:0x66/255.0 blue:0x66/255.0 alpha:1.0];
-	}
-	return color;
-}
-
-+ (UIColor *) grey3Color
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0x4D/255.0 green:0x4D/255.0 blue:0x4D/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) darkgreyColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0x32/255.0 green:0x32/255.0 blue:0x32/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) brownColor
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0x40/255.0 green:0x24/255.0 blue:0x1A/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-+ (UIColor *) blackColorAlpha
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0x0/255.0 green:0x0/255.0 blue:0x0/255.0 alpha:0.5];
-	}
-
-	return color;
-}
-
-+ (UIColor *) lightyellowColor 
-{
-	static UIColor *color = nil;
-
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xEF/255.0 green:0xDD/255.0 blue:0xAC/255.0 alpha:1.0];
-	}
-
-	return color;
-}
-
-@end
-
 void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
 {
 	bar.barStyle = UIBarStyleBlack;
@@ -422,3 +250,85 @@ UIBarButtonItem * SETUP_BAR_TEXT_BUTTON(NSString *title, id target, SEL action)
 {
 	return [[[UIBarButtonItem alloc] initWithCustomView:SETUP_TEXT_BUTTON(title, target, action)] autorelease];
 }
+
+NSString * GET_STRING_FOR_SCORE(double score)
+{
+	if (score > 9.9)
+	{
+		return [NSString stringWithFormat:@"%d", (NSInteger)score];
+	}
+	else if (0 < ((NSInteger)(score * 10) % 10)) // if score has decimal
+	{
+		return [NSString stringWithFormat:@"%.1f", score];	
+	}
+	else if (0 <= score)
+	{
+		return [NSString stringWithFormat:@" %d ", (NSInteger)score];
+	}
+	else 
+	{
+		return @"－";
+	}
+}
+
+NSString * GET_DESC_FOR_SCORE(double score)
+{
+	if (score == 10)
+	{
+		return @"完美之食";
+	}
+	else if (score >= 9)
+	{
+		return @"传奇美食";
+	}
+	else if (score >= 8)
+	{
+		return @"超乎寻常";
+	}
+	else if (score >= 7)
+	{
+		return @"尽足本份";
+	}
+	else if (score >= 6)
+	{
+		return @"颇有不足";
+	}
+	else if (score >= 5)
+	{
+		return @"可填肚";
+	}
+	else if (score >= 4)
+	{
+		return @"尽量不吃";
+	}
+	else if (score >= 3)
+	{
+		return @"饿都不吃";
+	}
+	else if (score >= 2)
+	{
+		return @"吃坏肚子";
+	}
+	else if (score >= 0)
+	{
+		return @"会吃死人";
+	}
+	else
+	{
+		return @"　";
+	}
+}
+
+UIColor * GET_COLOR_FOR_SCORE(double score)
+{
+	if (score >= 8)
+	{
+		return [Color blueColor];
+	}
+	else 
+	{
+		return [Color grey2Color];
+	}
+}
+
+

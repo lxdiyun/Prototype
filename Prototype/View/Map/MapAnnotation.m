@@ -34,7 +34,7 @@
 
 - (void) setPlaceObject:(NSDictionary *)newPlaceObject
 {
-	if (_placeObject == newPlaceObject)
+	if ([_placeObject isEqualToDictionary:newPlaceObject])
 	{
 		return;
 	}

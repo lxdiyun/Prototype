@@ -48,18 +48,7 @@ const static CGFloat SCORE_FONT_SIZE = 12;
 		
 		if (0 < score)
 		{
-			if (score >= 10.0)
-			{
-				self.score.text = [NSString stringWithFormat:@"%d", (NSInteger)score];
-			}
-			else if (0 < ((NSInteger)(score * 10) % 10)) // if score has decimal
-			{
-				self.score.text = [NSString stringWithFormat:@"%.1f", score];	
-			}
-			else 
-			{
-				self.score.text = [NSString stringWithFormat:@" %d ", (NSInteger)score];
-			}
+			self.score.text = GET_STRING_FOR_SCORE(score);
 			
 			[self.score sizeToFit];
 			self.score.center = SCORE_CENTER;

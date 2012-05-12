@@ -20,6 +20,7 @@
 
 const static CGFloat  FONT_SIZE = 15.0;
 const static CGFloat STAR_SIZE = 22;
+static CGPoint TEXT_OFFSET = {0, 416};
 
 typedef enum NEW_FOOD_SECTION_ENUM
 {
@@ -50,16 +51,19 @@ static TagSelector *gs_tag_selector = nil;
 @interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, TagSelectorDelegate>
 {
 	CreateFoodHeaderVC *_header;
+	NSNumber *_uploadingID;
 }
 - (void) updateCity;
 - (BOOL) checkParamsReady;
 
 @property (retain, nonatomic) CreateFoodHeaderVC *header;
+@property (retain, nonatomic) NSNumber *uploadingID;
 @end
 
 @implementation CreateFoodPage
 
 @synthesize header = _header;
+@synthesize uploadingID = _uploadingID;
 
 - (id) initWithStyle:(UITableViewStyle)style
 {
@@ -76,17 +80,10 @@ static TagSelector *gs_tag_selector = nil;
 	return self;
 }
 
-- (void)didReceiveMemoryWarning
-{
-	// Releases the view if it doesn't have a superview.
-	[super didReceiveMemoryWarning];
-
-	// Release any cached data, images, etc that aren't in use.
-}
-
-- (void) dealloc
+- (void) cleanData
 {
 	self.header = nil;
+	self.uploadingID = nil;
 	
 	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 	{
@@ -104,6 +101,19 @@ static TagSelector *gs_tag_selector = nil;
 	
 	[gs_tag_selector release];
 	gs_tag_selector = nil;
+}
+
+- (void) didReceiveMemoryWarning
+{
+	// Releases the view if it doesn't have a superview.
+	[super didReceiveMemoryWarning];
+
+	// Release any cached data, images, etc that aren't in use.
+}
+
+- (void) dealloc
+{
+	[self cleanData];
 	
 	[super dealloc];
 }
@@ -132,26 +142,8 @@ static TagSelector *gs_tag_selector = nil;
 
 - (void) viewDidUnload
 {
+	[self cleanData];
 	[super viewDidUnload];
-	
-	self.header = nil;
-
-	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
-	{
-		[gs_food_detail_text_view[i] release];
-		gs_food_detail_text_view[i] = nil;
-		[gs_food_detail_star_label[i] release];
-		gs_food_detail_star_label[i] = nil;
-	}
-
-	[gs_food_desc_text_view release]; 
-	gs_food_desc_text_view = nil;
-
-	[gs_food_desc_inputer release];
-	gs_food_desc_inputer = nil;
-
-	[gs_tag_selector release];
-	gs_tag_selector = nil;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -229,92 +221,99 @@ static TagSelector *gs_tag_selector = nil;
 	return nil;
 }
 
+- (UITableViewCell *) createDetailCellFor:(UITableView *)tableView at:(NSIndexPath *)indexPath
+{
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FOOD_DETAIL_TITLE[indexPath.row]];
+	
+	if (cell == nil) 
+	{
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
+					       reuseIdentifier:FOOD_DETAIL_TITLE[indexPath.row]] 
+			autorelease];
+		cell.textLabel.textColor = [Color grey2Color];
+		cell.textLabel.font = [UIFont systemFontOfSize:13.0];
+		cell.textLabel.text = FOOD_DETAIL_TITLE[indexPath.row];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		
+		if (nil == gs_food_detail_text_view[indexPath.row])
+		{
+			CGFloat X = 75.0;
+			CGFloat Y = 0.0;
+			CGFloat width = cell.contentView.frame.size.width - X - 28.0;
+			CGFloat height = 44;
+			gs_food_detail_text_view[indexPath.row] = [[UITextField alloc] initWithFrame:CGRectMake(X, 
+														Y, 
+														width, 
+														height)];
+			gs_food_detail_text_view[indexPath.row].center = CGPointMake(gs_food_detail_text_view[indexPath.row].center.x, cell.center.y);
+			gs_food_detail_text_view[indexPath.row].font = [UIFont systemFontOfSize:FONT_SIZE];
+			gs_food_detail_text_view[indexPath.row].delegate = self;
+			gs_food_detail_text_view[indexPath.row].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+			gs_food_detail_text_view[indexPath.row].returnKeyType = UIReturnKeyDone;
+			
+			if (FOOD_TAG != indexPath.row)
+			{
+				if (nil == gs_food_detail_star_label[indexPath.row])
+				{
+					gs_food_detail_star_label[indexPath.row] = [[self createStarLabel] retain];
+				}
+				
+				[cell.contentView addSubview:gs_food_detail_star_label[indexPath.row]];
+			}
+		}
+		
+		[cell.contentView addSubview:gs_food_detail_text_view[indexPath.row]];
+	}
+	
+	if (FOOD_PLACE == indexPath.row)
+	{
+		[self updateCity];
+	}
+	
+	return cell;
+}
+
+- (UITableViewCell *) createDescCellFor:(UITableView *)tableView at:(NSIndexPath *)indexPath
+{
+	static NSString *cellType = @"FoodDescription";
+	
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellType];
+	
+	if (cell == nil) 
+	{
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+					       reuseIdentifier:cellType] autorelease];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		
+		if (nil == gs_food_desc_text_view)
+		{
+			gs_food_desc_text_view = [[UITextView alloc] initWithFrame:CGRectMake(0.0, 
+											      0.0, 
+											      cell.contentView.frame.size.width, 
+											      88)];
+			gs_food_desc_text_view.scrollEnabled = NO;
+			gs_food_desc_text_view.backgroundColor = [UIColor clearColor];
+			gs_food_desc_text_view.font = [UIFont systemFontOfSize:FONT_SIZE];
+			gs_food_desc_text_view.delegate = self;
+		}
+		
+		[cell.contentView addSubview:gs_food_desc_text_view];
+	}
+	
+	return cell;
+}
+
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	switch (indexPath.section) 
 	{
 	case FOOD_DETAIL:
-		{
-			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FOOD_DETAIL_TITLE[indexPath.row]];
+		return [self createDetailCellFor:tableView at:indexPath];
 
-			if (cell == nil) 
-			{
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-							       reuseIdentifier:FOOD_DETAIL_TITLE[indexPath.row]] 
-							       autorelease];
-				cell.textLabel.textColor = [Color grey2Color];
-				cell.textLabel.font = [UIFont systemFontOfSize:13.0];
-				cell.textLabel.text = FOOD_DETAIL_TITLE[indexPath.row];
-				cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-				if (nil == gs_food_detail_text_view[indexPath.row])
-				{
-					CGFloat X = 75.0;
-					CGFloat Y = 0.0;
-					CGFloat width = cell.contentView.frame.size.width - X - 28.0;
-					CGFloat height = 44;
-					gs_food_detail_text_view[indexPath.row] = [[UITextField alloc] initWithFrame:CGRectMake(X, 
-																Y, 
-																width, 
-																height)];
-					gs_food_detail_text_view[indexPath.row].center = CGPointMake(gs_food_detail_text_view[indexPath.row].center.x, cell.center.y);
-					gs_food_detail_text_view[indexPath.row].font = [UIFont systemFontOfSize:FONT_SIZE];
-					gs_food_detail_text_view[indexPath.row].delegate = self;
-					gs_food_detail_text_view[indexPath.row].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-					gs_food_detail_text_view[indexPath.row].returnKeyType = UIReturnKeyNext;
-
-					if (FOOD_TAG != indexPath.row)
-					{
-						if (nil == gs_food_detail_star_label[indexPath.row])
-						{
-							gs_food_detail_star_label[indexPath.row] = [[self createStarLabel] retain];
-						}
-
-						[cell.contentView addSubview:gs_food_detail_star_label[indexPath.row]];
-					}
-				}
-
-				[cell.contentView addSubview:gs_food_detail_text_view[indexPath.row]];
-			}
-
-			if (FOOD_PLACE == indexPath.row)
-			{
-				[self updateCity];
-			}
-
-			return cell;
-
-		}
 		break;
 	case FOOD_DESC:
-		{
-			static NSString *cellType = @"FoodDescription";
+		return [self createDescCellFor:tableView at:indexPath];
 
-			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellType];
-
-			if (cell == nil) 
-			{
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-							       reuseIdentifier:cellType] autorelease];
-				cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-				if (nil == gs_food_desc_text_view)
-				{
-					gs_food_desc_text_view = [[UITextView alloc] initWithFrame:CGRectMake(0.0, 
-													      0.0, 
-													      cell.contentView.frame.size.width, 
-													      88)];
-					gs_food_desc_text_view.scrollEnabled = NO;
-					gs_food_desc_text_view.backgroundColor = [UIColor clearColor];
-					gs_food_desc_text_view.font = [UIFont systemFontOfSize:FONT_SIZE];
-					gs_food_desc_text_view.delegate = self;
-				}
-
-				[cell.contentView addSubview:gs_food_desc_text_view];
-			}
-
-			return cell;
-		}
 		break;
 	default:
 		return nil;
@@ -348,7 +347,7 @@ static TagSelector *gs_tag_selector = nil;
 	switch (section) 
 	{
 		case FOOD_HEADER:
-			return 409.0;
+			return 416;
 
 			break;
 		case FOOD_DESC:
@@ -429,10 +428,11 @@ static TagSelector *gs_tag_selector = nil;
 
 - (void) resetImageWithUploadFileID:(NSInteger)fileID;
 {
-	// do nothing since we did not need to display the progress
+	@autoreleasepool 
+	{
+		self.uploadingID = [NSNumber numberWithInteger:fileID];
+	}
 }
-
-
 
 - (BOOL) checkParamsReady
 {
@@ -478,15 +478,17 @@ static TagSelector *gs_tag_selector = nil;
 
 - (void) imageUploadCompleted:(id)result
 {
-	NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
-
-	if (CHECK_NUMBER(picID))
+	NSNumber *uploadID = [result valueForKey:@"id"];
+	
+	if ([self.uploadingID isEqualToNumber:uploadID])
 	{
-		self.header.image.picID = picID;
-		[self.header.indicator stopAnimating];
+		NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
+		
+		[self.header setImageID:picID];
+		
+		self.uploadingID = nil;
+		[self updateShareButton];
 	}
-
-	[self updateShareButton];
 }
 
 - (void) createFood:(id)sender
@@ -519,6 +521,8 @@ static TagSelector *gs_tag_selector = nil;
 - (void) cancelCreate:(id)sender
 {
 	[self.header cleanHeader];
+	
+	self.uploadingID = nil;
 	
 	[self.navigationController popToRootViewControllerAnimated:NO];
 
@@ -579,24 +583,14 @@ static TagSelector *gs_tag_selector = nil;
 
 	int i;
 
-	for ( i = 0; i < NEW_FOOD_DETAIL_MAX - 1; ++i)
+	for ( i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 	{
 		if ([gs_food_detail_text_view[i] isFirstResponder])
 		{
 			[textField resignFirstResponder];
-			[gs_food_detail_text_view[i + 1] becomeFirstResponder];
 
 			break;
 		}
-	}
-
-
-	if (i == (NEW_FOOD_DETAIL_MAX - 1))
-	{
-		[textField resignFirstResponder];
-		[gs_food_desc_text_view becomeFirstResponder];
-
-		return NO;
 	}
 
 	return YES;
@@ -604,13 +598,6 @@ static TagSelector *gs_tag_selector = nil;
 
 - (void) textFieldDidBeginEditing:(UITextField *)textField
 {
-	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
-	{
-		if (gs_food_detail_text_view[i] == textField)
-		{
-			break;
-		}
-	}
 }
 
 - (void) textFieldDidEndEditing:(UITextField *)textField
@@ -618,25 +605,16 @@ static TagSelector *gs_tag_selector = nil;
 	[self updateShareButton];
 }
 
+- (void) showALlTextField
+{
+	[self.tableView setContentOffset:TEXT_OFFSET animated:YES];
+}
+
 - (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
 {
-	if (gs_food_detail_text_view[NEW_FOOD_DETAIL_MAX - 1] == textField)
+	if (gs_food_detail_text_view[FOOD_PLACE] != textField)
 	{
-		if (0 >= textField.text.length)
-		{
-			if (nil == gs_tag_selector)
-			{
-				gs_tag_selector = [[TagSelector alloc] init];
-				gs_tag_selector.delegate = self;
-			}
-
-			if (self.navigationController.topViewController != gs_tag_selector)
-			{
-				[self.navigationController pushViewController:gs_tag_selector animated:YES];
-
-				return NO;
-			}
-		}
+		[self performSelector:@selector(showALlTextField) withObject:nil afterDelay:0.5];
 	}
 
 	return YES;

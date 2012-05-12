@@ -146,7 +146,7 @@ const static CGFloat PADING4 = 10.0; // padding between element virtical and bot
 
 - (void) setObjectDict:(NSDictionary *)objectDict
 {
-	if (_objectDict == objectDict)
+	if ([_objectDict isEqualToDictionary:objectDict])
 	{
 		return;
 	}

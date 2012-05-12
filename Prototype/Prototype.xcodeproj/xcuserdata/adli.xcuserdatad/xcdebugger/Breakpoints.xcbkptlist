@@ -74,7 +74,7 @@
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
@@ -195,34 +195,6 @@
          startingLineNumber = "175"
          endingLineNumber = "175"
          landmarkName = "-tabBarController:shouldSelectViewController:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "View/UtilView/ImageV.m"
-         timestampString = "358314777.986056"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "153"
-         endingLineNumber = "153"
-         landmarkName = "-requsetPic"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "View/UtilView/ImageV.m"
-         timestampString = "358314777.986056"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "149"
-         endingLineNumber = "149"
-         landmarkName = "-requsetPic"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -673,11 +645,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapViewPage.m"
-         timestampString = "358326958.472035"
+         timestampString = "358410515.062563"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "398"
-         endingLineNumber = "398"
+         startingLineNumber = "401"
+         endingLineNumber = "401"
          landmarkName = "-mapView:didAddAnnotationViews:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -686,11 +658,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapViewPage.m"
-         timestampString = "358326958.472035"
+         timestampString = "358410515.062563"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "423"
-         endingLineNumber = "423"
+         startingLineNumber = "426"
+         endingLineNumber = "426"
          landmarkName = "-mapView:viewForAnnotation:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -699,11 +671,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapViewPage.m"
-         timestampString = "358326958.472035"
+         timestampString = "358410515.062563"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "407"
-         endingLineNumber = "407"
+         startingLineNumber = "410"
+         endingLineNumber = "410"
          landmarkName = "-mapView:didUpdateUserLocation:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -712,11 +684,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapViewPage.m"
-         timestampString = "358326958.472035"
+         timestampString = "358410515.062563"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "410"
-         endingLineNumber = "410"
+         startingLineNumber = "413"
+         endingLineNumber = "413"
          landmarkName = "-mapView:viewForAnnotation:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -840,11 +812,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapViewPage.m"
-         timestampString = "358326958.472035"
+         timestampString = "358410139.858477"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "338"
-         endingLineNumber = "338"
+         startingLineNumber = "337"
+         endingLineNumber = "337"
          landmarkName = "-viewWillDisappear:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -892,7 +864,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UtilView/ImageV.m"
-         timestampString = "358314777.986056"
+         timestampString = "358401093.149836"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "181"
@@ -1217,11 +1189,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapViewPage.m"
-         timestampString = "358326958.472035"
+         timestampString = "358410515.062563"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "676"
-         endingLineNumber = "676"
+         startingLineNumber = "692"
+         endingLineNumber = "692"
          landmarkName = "-updateUserLocation:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1334,11 +1306,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/PlaceDetailPage.m"
-         timestampString = "358236471.259291"
+         timestampString = "358412689.969836"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "366"
-         endingLineNumber = "366"
+         startingLineNumber = "351"
+         endingLineNumber = "351"
          landmarkName = "-updateFood"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1555,11 +1527,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodInfo.m"
-         timestampString = "358073266.424797"
+         timestampString = "358495351.577775"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "319"
-         endingLineNumber = "319"
+         startingLineNumber = "333"
+         endingLineNumber = "333"
          landmarkName = "-showInMap:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1594,11 +1566,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodHeaderVC.m"
-         timestampString = "358326958.472035"
+         timestampString = "358398635.797298"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "84"
-         endingLineNumber = "84"
+         startingLineNumber = "86"
+         endingLineNumber = "86"
          landmarkName = "-scoreChanged:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1613,6 +1585,71 @@
          startingLineNumber = "100"
          endingLineNumber = "100"
          landmarkName = "-updateGUI"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/UtilView/AvatarV.m"
+         timestampString = "358495758.852773"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "81"
+         endingLineNumber = "81"
+         landmarkName = "-setUser:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/UtilView/AvatarV.m"
+         timestampString = "358495758.852773"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "89"
+         endingLineNumber = "89"
+         landmarkName = "-setUser:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/UtilView/AvatarV.m"
+         timestampString = "358495792.968125"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "74"
+         endingLineNumber = "74"
+         landmarkName = "-tap:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/FoodInfo.m"
+         timestampString = "358495887.408465"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "308"
+         endingLineNumber = "308"
+         landmarkName = "-setDelegate:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/UtilView/AvatarV.m"
+         timestampString = "358495996.877996"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "42"
+         endingLineNumber = "42"
+         landmarkName = "-resetupXIB:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

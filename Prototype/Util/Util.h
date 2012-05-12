@@ -9,75 +9,16 @@
 #ifndef  _UTIL_H_
 #define  _UTIL_H_
 
-#include <libgen.h>
-
-// LOG
-#ifdef DEBUG
-#define LOG(format, ...) { NSLog(@"%s %s %d:", basename(__FILE__), (char *)_cmd, __LINE__); NSLog(format, ## __VA_ARGS__); }
-#else
-#define LOG(format, ...)
-#endif
-
-#ifdef DEBUG
-#define CLOG(format, ...) { NSLog(@"%s %s %d:", basename(__FILE__), __func__, __LINE__); NSLog(format, ## __VA_ARGS__); }
-#else
-#define CLOG(format, ...)
-#endif
-
-// singleton
-#if (!__has_feature(objc_arc))
-#define ARC_SINGLETON \
-- (id) retain \
-{ \
-return self; \
-} \
-- (unsigned) retainCount \
-{ \
-return UINT_MAX;  \
-}\
-\
-- (oneway void) release \
-{\
-}\
-- (id) autorelease \
-{ \
-return self; \
-}
-#else
-#define ARC_SINGLETON
-#endif
-
-#define DEFINE_SINGLETON(CLASS_NAME) \
-static CLASS_NAME *gs_shared_instance; \
-+ (id) allocWithZone:(NSZone *)zone \
-{ \
-	if ([CLASS_NAME class] == self) \
-	{ \
-		return [gs_shared_instance retain]; \
-	} \
-	else \
-	{ \
-		return [super allocWithZone:zone]; \
-	} \
-} \
-- (id) copyWithZone:(NSZone *)zone \
-{ \
-	return self; \
-} \
-ARC_SINGLETON \
-+ (void) initialize \
-{ \
-	if (self == [CLASS_NAME class]) \
-	{ \
-		gs_shared_instance = [[super allocWithZone:nil] init]; \
-	} \
-} \
-+ (id) getInstnace \
-{\
-	return gs_shared_instance; \
-}
-
 #import <Foundation/Foundation.h>
+
+#import "Util_Macro.h"
+#import "Color.h"
+
+@protocol ShowVCDelegate <NSObject>
+
+- (void) showVC:(UIViewController *)vc;
+
+@end
 
 // const variable
 const static CGFloat TAB_BAR_HEIGHT = 49;
@@ -113,25 +54,6 @@ BOOL CHECK_STRING(NSString *object);
 // alert
 void SHOW_ALERT_TEXT(NSString *title, NSString *message);
 
-@interface Color : NSObject 
-
-+ (UIColor *) whiteColor;
-+ (UIColor *) milkColor;
-+ (UIColor *) orangeColor;
-+ (UIColor *) grey1Color;
-+ (UIColor *) grey2Color;
-+ (UIColor *) grey3Color;
-+ (UIColor *) darkgreyColor;
-+ (UIColor *) brownColor;
-+ (UIColor *) blackColorAlpha;
-+ (UIColor *) tastyColor;
-+ (UIColor *) specailColor;
-+ (UIColor *) valuedColor;
-+ (UIColor *) healthyColor;
-+ (UIColor *) lightyellowColor;
-
-@end
-
 // custom nagivation bar
 // for iOS < 5.0
 @implementation UINavigationBar (UINavigationBarCategory)
@@ -153,5 +75,11 @@ UIButton * SETUP_BUTTON(UIImage *image,id target, SEL action);
 UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action);
 UIButton * SETUP_TEXT_BUTTON(NSString *title, id target, SEL action);
 UIBarButtonItem * SETUP_BAR_TEXT_BUTTON(NSString *title, id target, SEL action);
+
+// food score text and color
+
+NSString * GET_STRING_FOR_SCORE(double score);
+NSString * GET_DESC_FOR_SCORE(double score);
+UIColor * GET_COLOR_FOR_SCORE(double score);
 
 #endif

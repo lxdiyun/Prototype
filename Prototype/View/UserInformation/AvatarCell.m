@@ -6,11 +6,11 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "AvatorCell.h"
+#import "AvatarCell.h"
 
 #import "Util.h"
 
-@interface AvatorCell () 
+@interface AvatarCell () 
 {
 	ImageV *_avatorImageV;
 	UIProgressView *_progressBar;
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation AvatorCell
+@implementation AvatarCell
 
 @synthesize avatorImageV = _avatorImageV;
 @synthesize progressBar = _progressBar;

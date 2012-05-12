@@ -9,21 +9,17 @@
 #import <UIKit/UIKit.h>
 
 #import "ImageV.h"
-
-@protocol FoodInfoDelegate
-
-- (void) showVC:(UIViewController *)VC;
-
-@end
+#import "AvatarV.h"
+#import "Util.h"
 
 @interface FoodInfo : UIViewController
 
 @property (retain, nonatomic) NSDictionary *food;
-@property (assign) id<FoodInfoDelegate> delegate;
+@property (assign, nonatomic) id<ShowVCDelegate> delegate;
 
 @property (retain, nonatomic) IBOutlet UIView *buttons;
 @property (retain, nonatomic) IBOutlet UILabel *username;
-@property (retain, nonatomic) IBOutlet ImageV *avatar;
+@property (retain, nonatomic) IBOutlet AvatarV *avatar;
 @property (retain, nonatomic) IBOutlet UILabel *date;
 @property (retain, nonatomic) IBOutlet UIButton *target;
 @property (retain, nonatomic) IBOutlet UIButton *ate;

@@ -13,12 +13,12 @@
 
 @interface ImageV () <SDWebImageManagerDelegate>
 {
-	NSDictionary *_picDict;
+	NSDictionary *_pic;
 	NSNumber *_picID;
 	UIActivityIndicatorView *_indicator;
 }
 
-@property (strong, nonatomic) NSDictionary *picDict;
+@property (strong, nonatomic) NSDictionary *pic;
 @property (strong) UIActivityIndicatorView *indicator;
 
 @end
@@ -26,7 +26,7 @@
 @implementation ImageV
 
 #pragma mark - synthesize
-@synthesize picDict = _picDict;
+@synthesize pic = _pic;
 @synthesize picID = _picID;
 @synthesize indicator = _indicator;
 
@@ -46,7 +46,7 @@
 
 - (void) dealloc
 {
-	self.picDict = nil;
+	self.pic = nil;
 	self.picID = nil;
 	
 	[super dealloc];
@@ -54,28 +54,28 @@
 
 #pragma mark - picture infomation
 
-- (void) setPicDict:(NSDictionary *)picDict
+- (void) setPic:(NSDictionary *)pic
 {
 	@autoreleasepool 
 	{
-		if (_picDict == picDict)
+		if ([_pic isEqualToDictionary:pic])
 		{
 			return;
 		}
 		
-		[_picDict release];
+		[_pic release];
 		
-		_picDict = [picDict retain];
+		_pic = [pic retain];
 		
-		NSString *baseUrl = [self.picDict valueForKey:@"base_url"];
+		NSString *baseUrl = [self.pic valueForKey:@"base_url"];
 		NSMutableString *imageUrlString = nil;
 		NSMutableString *preImageUrlString = nil;
 		
 		if (nil != baseUrl)
 		{
-			NSString *ID = [self.picDict valueForKey:@"id"];
-			NSString *salt = [self.picDict valueForKey:@"salt"];
-			NSString *type = [self.picDict valueForKey:@"type"];
+			NSString *ID = [self.pic valueForKey:@"id"];
+			NSString *salt = [self.pic valueForKey:@"salt"];
+			NSString *type = [self.pic valueForKey:@"type"];
 			uint32_t real_size = lrintf(self.frame.size.height*SCALE());
 			uint32_t cached_size = [[ImageManager getImageSizeWithNumberID:self.picID] intValue];
 			imageUrlString = [[NSMutableString alloc] init];
@@ -144,7 +144,7 @@
 		
 		if (nil != picDict)
 		{
-			self.picDict = picDict;
+			self.pic = picDict;
 		}
 		else
 		{
@@ -155,7 +155,7 @@
 
 - (void) setPicID:(NSNumber *)picID
 {
-	if (_picID == picID)
+	if ([_picID isEqualToNumber:picID])
 	{
 		return;
 	}
@@ -165,7 +165,7 @@
 	_picID = [picID retain];
 	
 	[self cancelCurrentImageLoad];
-	self.picDict = nil;
+	self.pic = nil;
 	self.image = nil;
 	
 	if (nil != _picID)

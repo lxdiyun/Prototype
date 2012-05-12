@@ -307,22 +307,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 {
 	double scoreValue = [[self.foodObject valueForKey:@"taste_score"] doubleValue];
 	
-	if (scoreValue >= 10.0)
-	{
-		self.score.text = [NSString stringWithFormat:@"%d", (NSInteger)scoreValue];
-	}
-	else if (0 < ((NSInteger)(scoreValue * 10) % 10)) // if score has decimal
-	{
-		self.score.text = [NSString stringWithFormat:@"%.1f", scoreValue];	
-	}
-	else if (0 < scoreValue)
-	{
-		self.score.text = [NSString stringWithFormat:@" %d ", (NSInteger)scoreValue];
-	}
-	else 
-	{
-		self.score.text =@"－";
-	}	
+	self.score.text = GET_STRING_FOR_SCORE(scoreValue);	
 }
 
 - (void) updateName

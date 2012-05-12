@@ -267,10 +267,11 @@ DEFINE_SINGLETON(EventPage);
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {	
-	static NSString *CellIdentifier = @"Cell";
+	static NSString *CellIdentifier = @"EventCell";
 
 	EventCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	if (cell == nil) 
+	
+	if (nil == cell) 
 	{
 		cell = [[[EventCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.frame = CGRectMake(0.0, 0.0, gs_frame_width/2, gs_frame_width/2);

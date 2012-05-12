@@ -288,7 +288,7 @@ const static NSString *DEFUALT_TAGS[DEFAULT_TAGS_COUNT] =
 
 - (void) setTags:(NSMutableArray *)tags
 {
-	if (_tags == tags)
+	if ([_tags isEqualToArray:tags])
 	{
 		return;
 	}

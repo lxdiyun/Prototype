@@ -104,7 +104,7 @@
 
 - (void) setObject:(NSDictionary *)object
 {
-	if (_object == object)
+	if ([_object isEqualToDictionary:object])
 	{
 		return;
 	}

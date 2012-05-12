@@ -10,7 +10,7 @@
 
 #import "ImageV.h"
 
-@interface AvatorCell : UITableViewCell
+@interface AvatarCell : UITableViewCell
 
 @property (strong, nonatomic) ImageV *avatorImageV;
 @property (strong, nonatomic) UIProgressView *progressBar;

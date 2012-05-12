@@ -34,7 +34,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	FOOD_TAG = 0xFFFF,
 } FOOD_PAGE_SECTION;
 
-@interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate, FoodInfoDelegate>
+@interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate, ShowVCDelegate>
 {
 	NSDictionary *_foodObject;
 	TextInputer *_inputer;
@@ -168,7 +168,7 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) setFoodObject:(NSDictionary *)foodObject
 {
-	if (_foodObject == foodObject)
+	if ([_foodObject isEqualToDictionary:foodObject])
 	{
 		return;
 	}
@@ -372,6 +372,7 @@ static int32_t s_lastCommentArrayCount = -1;
 			      reuseIdentifier:commentCellIdentifier] 
 			      autorelease];
 			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 60.0);
+			cell.delegate = self;
 		}
 
 		NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];

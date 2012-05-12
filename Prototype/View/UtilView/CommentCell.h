@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+#import "Util.h"
+
 @interface CommentCell : UITableViewCell
-@property (strong,nonatomic) NSDictionary *commentDict;
+
 + (CGFloat) cellHeightForComment:(NSDictionary *)commentDict forCellWidth:(CGFloat)width;
+
+@property (strong, nonatomic) NSDictionary *commentDict;
+@property (assign, nonatomic) id<ShowVCDelegate> delegate;
+
+
 @end

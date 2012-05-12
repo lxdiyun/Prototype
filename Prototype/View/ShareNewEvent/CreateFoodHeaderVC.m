@@ -8,6 +8,8 @@
 
 #import "CreateFoodHeaderVC.h"
 
+#import "Util.h"
+
 @interface CreateFoodHeaderVC ()
 
 @end
@@ -19,6 +21,7 @@
 @synthesize health;
 @synthesize image;
 @synthesize indicator;
+@synthesize text;
 
 #pragma mark - life circle
 
@@ -51,6 +54,7 @@
 	[self setImage:nil];
 	
 	[self setIndicator:nil];
+	[self setText:nil];
 	[super viewDidUnload];
 }
 
@@ -63,6 +67,7 @@
 	[image release];
 	
 	[indicator release];
+	[text release];
 	[super dealloc];
 }
 
@@ -91,6 +96,10 @@
 		{
 			self.score.text = [NSString stringWithFormat:@" %d ", (NSInteger)scoreValue];
 		}
+		
+		self.text.textColor = GET_COLOR_FOR_SCORE(scoreValue);
+		
+		self.text.text = GET_DESC_FOR_SCORE(scoreValue);
 	}
 }
 
@@ -115,6 +124,18 @@
 	self.health.selected = NO;
 	
 	[self.indicator startAnimating];
+	self.indicator.hidden = NO;
+}
+
+- (void) setImageID:(NSNumber *)picID
+{
+	if (CHECK_NUMBER(picID))
+	{
+		self.image.picID = picID;
+
+		[self.indicator stopAnimating];
+		self.indicator.hidden = YES;
+	}
 }
 
 @end

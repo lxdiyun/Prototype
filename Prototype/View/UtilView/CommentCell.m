@@ -8,9 +8,8 @@
 
 #import "CommentCell.h"
 
-#import "ImageV.h"
-#import "Util.h"
 #import "ProfileMananger.h"
+#import "AvatarV.h"
 
 const static CGFloat AVATOR_SIZE = 30;
 const static CGFloat FONT_SIZE = 12.0;
@@ -26,13 +25,14 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	NSDictionary *_userProfileDict;
 	UILabel *_userAndDate;
 	UILabel *_comment;
-	ImageV *_avatorImageV;
+	AvatarV *_avatar;
+	id<ShowVCDelegate> _delegate;
 }
 
 @property (strong, nonatomic) UILabel *userAndDate;
 @property (strong, nonatomic) NSDictionary *userProfile;
 @property (strong, nonatomic) UILabel *comment;
-@property (strong, nonatomic) ImageV *avatorImageV;
+@property (strong, nonatomic) AvatarV *avatar;
 
 @end
 
@@ -42,7 +42,8 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 @synthesize userProfile = _userProfileDict;
 @synthesize userAndDate = _userAndDate;
 @synthesize comment = _comment;
-@synthesize avatorImageV = avatorImageV;
+@synthesize avatar = avatorImageV;
+@synthesize delegate = _delegate;
 
 # pragma mark - class method
 
@@ -81,6 +82,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	{
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.contentView.backgroundColor = [Color orangeColor];
+		[self redrawAvatar];
 	}
 	return self;
 }
@@ -97,35 +99,27 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	self.commentDict = nil;
 	self.userAndDate = nil;
 	self.comment = nil;
-	self.avatorImageV = nil;
+	self.avatar = nil;
 	
 	[super dealloc];
 }
 
 #pragma mark - draw cell
 
-- (void) redrawImageV
+- (void) redrawAvatar
 {
-	if (nil != self.avatorImageV)
+	if (nil != self.avatar)
 	{
-		[self.avatorImageV removeFromSuperview];
+		[self.avatar removeFromSuperview];
 	}
 	
-	self.avatorImageV = [[[ImageV alloc] initWithFrame:CGRectMake(PADING1, 
-								      PADING3, 
-								      AVATOR_SIZE, 
-								      AVATOR_SIZE)] 
+	self.avatar = [[[AvatarV alloc] initWithFrame:CGRectMake(PADING1, 
+								 PADING3, 
+								 AVATOR_SIZE, 
+								 AVATOR_SIZE)] 
 			     autorelease];
 	
-	[self.contentView addSubview:self.avatorImageV];
-	
-	if (nil != self.userProfile)
-	{
-		NSNumber *avatarID = [self.userProfile valueForKey:@"avatar"];
-		
-		self.avatorImageV.picID = avatarID;
-		
-	}
+	[self.contentView addSubview:self.avatar];
 }
 
 - (void) redrawUserAndDate
@@ -205,7 +199,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	[self.contentView addSubview:self.comment];
 }
 
-#pragma mark - message
+#pragma mark - manage object
 
 - (void) requestUserProfile
 {
@@ -218,8 +212,11 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 		if (nil != userProfile)
 		{
 			self.userProfile = userProfile;
+			if (nil != self.userProfile)
+			{
+				self.avatar.user = self.userProfile;
+			}
 			[self redrawUserAndDate];
-			[self redrawImageV];
 		}
 		else
 		{
@@ -232,7 +229,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 
 - (void) setCommentDict:(NSDictionary *)commentDict
 {
-	if (_commentDict == commentDict)
+	if ([_commentDict isEqualToDictionary:commentDict])
 	{
 		return;
 	}
@@ -249,6 +246,18 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 		
 		[self requestUserProfile];
 	}
+}
+
+- (void) setDelegate:(id<ShowVCDelegate>)delegate
+{
+	if ([_delegate isEqual:delegate])
+	{
+		return;
+	}
+	
+	_delegate = delegate;
+	
+	self.avatar.delegate = delegate;
 }
 
 @end

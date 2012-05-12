@@ -75,7 +75,7 @@ typedef enum MAP_MENU_ENUM
 
 - (void) setMapObject:(NSDictionary *)mapObject
 {
-	if (_mapObject == mapObject)
+	if ([_mapObject isEqualToDictionary:mapObject])
 	{
 		return;
 	}
@@ -330,7 +330,6 @@ typedef enum MAP_MENU_ENUM
 	[super viewWillAppear:animated];
 	
 	self.focousUser = NO;
-	self.mapView.showsUserLocation = NO;
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -346,7 +345,11 @@ typedef enum MAP_MENU_ENUM
 {
 	[super viewDidAppear:animated];
 
+	// add the annoation first
 	[self updateGUI];
+	
+	// then show the user location
+	self.mapView.showsUserLocation = YES;
 }
 
 - (void) viewDidLoad
@@ -375,7 +378,7 @@ typedef enum MAP_MENU_ENUM
 
 #pragma mark - MKMapViewDelegate
 
-- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views 
+- (void) mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views 
 { 
 	NSTimeInterval duration = 0.1;
 	NSInteger durationCount = 0;
@@ -407,7 +410,7 @@ typedef enum MAP_MENU_ENUM
 	}
 }
 
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+- (MKAnnotationView *) mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
 	// if it's the user location, just return nil.
 	if ([annotation isKindOfClass:[MKUserLocation class]])
@@ -611,13 +614,26 @@ typedef enum MAP_MENU_ENUM
 
 		if ([selectedAnnotation isKindOfClass:[MapAnnotation class]])
 		{
-			CLLocationCoordinate2D coordinate = selectedAnnotation.coordinate;
-			NSString *latlong = [NSString stringWithFormat:@"%lf,%lf", coordinate.latitude, coordinate.longitude];
-			NSString *title  = [selectedAnnotation.placeObject valueForKey:@"address"];
-			NSString *url = [NSString stringWithFormat: @"http://maps.google.com/maps?q=%@&ll=%@",
-		  [title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-		[latlong stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-
+			CLLocationCoordinate2D dest = selectedAnnotation.coordinate;
+			CLLocationCoordinate2D src;
+			
+			if (0 < self.mapView.userLocation.location.horizontalAccuracy)
+			{
+				
+				src = self.mapView.userLocation.coordinate;
+			}
+			else 
+			{
+				src = self.mapView.centerCoordinate;
+			}
+			
+			NSString *destlatlong = [NSString stringWithFormat:@"%lf,%lf", dest.latitude, dest.longitude];
+			NSString *srclatlong = [NSString stringWithFormat:@"%lf,%lf", src.latitude, src.longitude];
+			
+			NSString *url = [NSString stringWithFormat: @"http://maps.google.com/maps?saddr=%@&daddr=%@",
+					 [srclatlong stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+					 [destlatlong stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			
 			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
 		}
 	}
@@ -685,7 +701,10 @@ typedef enum MAP_MENU_ENUM
 
 - (void) focousUserLoaction
 {
+	self.mapView.showsUserLocation = NO;
+
 	self.focousUser = YES;
+
 	self.mapView.showsUserLocation = YES;
 
 	[self removePlaceDetailPage];
