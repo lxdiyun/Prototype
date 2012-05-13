@@ -95,6 +95,8 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) updateGUI
 {
+	self.titleView.object = self.foodObject;
+	
 	[self forceRefreshTableView];
 	
 	[self requestNewerComment];
@@ -128,34 +130,35 @@ static int32_t s_lastCommentArrayCount = -1;
 
 	if (self) 
 	{
-		self.titleView = [[[TitleVC alloc] init] autorelease];
-
-		self.inputer = [[[TextInputer alloc] init] autorelease];
-		self.inputer.delegate = self;
-		self.inputer.title = @"添加评论";
-		[self.inputer redraw];
-
-		self.navco = [[[UINavigationController alloc] initWithRootViewController:
-			       self.inputer] autorelease];
-		CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
-
 	}
+	
 	return self;
 }
 
 - (void) didReceiveMemoryWarning
 {
-	if (self.navigationController.visibleViewController 
-	    == self.navigationController.topViewController)
+	if (self.inputer.appearing)
 	{
-		// Releases the view if it doesn't have a superview.
-		[super didReceiveMemoryWarning];
+		[self cancelWithTextInputer:self.inputer];
 	}
+
+	[super didReceiveMemoryWarning];
+	
+	UIView* superview = self.view.superview;
+	
+	if (superview == nil)
+	{
+		NSMutableArray *allViewControllers =  [self.navigationController.viewControllers mutableCopy];
+		[allViewControllers removeObjectIdenticalTo: self];
+		self.navigationController.viewControllers = allViewControllers;
+		
+		[allViewControllers release];
+	}
+
 }
 
 - (void) dealloc
 {
-	self.foodObject = nil;
 	self.inputer = nil;
 	self.navco = nil;
 	self.titleView = nil;
@@ -168,15 +171,13 @@ static int32_t s_lastCommentArrayCount = -1;
 
 - (void) setFoodObject:(NSDictionary *)foodObject
 {
-	if ([_foodObject isEqualToDictionary:foodObject])
+	if (CHECK_EQUAL(_foodObject ,foodObject))
 	{
 		return;
 	}
 	
 	[_foodObject release];
 	_foodObject = [foodObject retain];
-	
-	self.titleView.object = self.foodObject;
 }
 
 #pragma mark - View lifecycle
@@ -190,6 +191,18 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	@autoreleasepool 
 	{
+		self.titleView = [[[TitleVC alloc] init] autorelease];
+		self.navigationItem.titleView = self.titleView.view;
+		
+		self.inputer = [[[TextInputer alloc] init] autorelease];
+		self.inputer.delegate = self;
+		self.inputer.title = @"添加评论";
+		[self.inputer redraw];
+		
+		self.navco = [[[UINavigationController alloc] initWithRootViewController:
+			       self.inputer] autorelease];
+		CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
+
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 		self.view.backgroundColor = [Color brownColor];
 
@@ -199,8 +212,6 @@ static int32_t s_lastCommentArrayCount = -1;
 		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"comIcon.png"], 
 									  self, 
 									  @selector(inputComment:));
-		
-		self.navigationItem.titleView = self.titleView.view;
 	}
 }
 
@@ -214,12 +225,6 @@ static int32_t s_lastCommentArrayCount = -1;
 - (void) viewDidUnload
 {
 	[super viewDidUnload];
-	
-	self.foodObject = nil;
-	self.inputer = nil;
-	self.navco = nil;
-	self.titleView = nil;
-	self.foodInfo = nil;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -570,14 +575,15 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	@autoreleasepool 
 	{
-		[self presentModalViewController:self.navco animated:YES];
 		[self dismissModalViewControllerAnimated:YES];
+		[self presentModalViewController:self.navco animated:YES];
 	}
 }
 
 - (void) textDoneWithTextInputer:(TextInputer *)inputer
 {
 	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+
 	[self dismissModalViewControllerAnimated:YES];
 	[FoodCommentMananger createComment:inputer.text.text 
 				   forList:foodID 

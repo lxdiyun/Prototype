@@ -75,7 +75,7 @@ typedef enum MAP_MENU_ENUM
 
 - (void) setMapObject:(NSDictionary *)mapObject
 {
-	if ([_mapObject isEqualToDictionary:mapObject])
+	if (CHECK_EQUAL(_mapObject ,mapObject))
 	{
 		return;
 	}

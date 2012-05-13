@@ -58,7 +58,7 @@
 {
 	@autoreleasepool 
 	{
-		if ([_pic isEqualToDictionary:pic])
+		if (CHECK_EQUAL(_pic ,pic))
 		{
 			return;
 		}
@@ -155,7 +155,7 @@
 
 - (void) setPicID:(NSNumber *)picID
 {
-	if ([_picID isEqualToNumber:picID])
+	if (CHECK_EQUAL(_picID ,picID))
 	{
 		return;
 	}

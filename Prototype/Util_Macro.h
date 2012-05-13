@@ -105,7 +105,7 @@ return gs_shared_instance; \
 	 \
 	if (theThingThatGotLoadedWasJustAPlaceholder) \
 	{ \
-		CLASS_NAME *xibInstance = [CLASS_NAME loadInstanceFromNib]; \
+		CLASS_NAME *xibInstance = [[CLASS_NAME loadInstanceFromNib] retain]; \
 		 \
 		if ([self respondsToSelector:@selector(resetupXIB:)]) \
 		{ \

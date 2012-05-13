@@ -161,6 +161,18 @@ BOOL CHECK_STRING(NSString *object)
 	}
 }
 
+BOOL CHECK_EQUAL(id obj1, id obj2)
+{
+	if ((nil != obj1) && (nil != obj2))
+	{
+		return [obj1 isEqual:obj2];
+	}
+	else 
+	{
+		return obj1 == obj2;
+	}
+}
+
 void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 {
 	UIAlertView *alert = [[UIAlertView alloc]  init];

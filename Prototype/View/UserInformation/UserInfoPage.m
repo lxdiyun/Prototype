@@ -510,7 +510,7 @@ DEFINE_SINGLETON(UserInfoPage);
 		paramsChanged = YES;
 	}
 	
-	if (![self.avatorCell.avatorImageV.picID isEqualToNumber:[orginUserInfo valueForKey:@"avatar"]])
+	if (!CHECK_EQUAL(self.avatorCell.avatorImageV.picID ,[orginUserInfo valueForKey:@"avatar"]))
 	{
 		paramsChanged = YES;
 	}
@@ -601,7 +601,7 @@ DEFINE_SINGLETON(UserInfoPage);
 			[params setValue:_userDetailTextView[USER_PLACE].text forKey:@"city"];
 		}
 		
-		if (![self.avatorCell.avatorImageV.picID isEqualToNumber:[orginUserInfo valueForKey:@"avatar"]])
+		if (!CHECK_EQUAL(self.avatorCell.avatorImageV.picID ,[orginUserInfo valueForKey:@"avatar"]))
 		{
 			[params setValue:self.avatorCell.avatorImageV.picID forKey:@"avatar"];
 		}

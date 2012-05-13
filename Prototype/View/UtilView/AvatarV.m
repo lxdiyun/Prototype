@@ -61,7 +61,7 @@ DEFINE_CUSTOM_XIB(AvatarV);
 
 - (id) initWithFrame:(CGRect)frame
 {
-	self = [AvatarV loadInstanceFromNib];
+	self = [[AvatarV loadInstanceFromNib] retain];
 	
 	if (nil != self)
 	{
@@ -98,7 +98,7 @@ DEFINE_CUSTOM_XIB(AvatarV);
 
 - (void) setUser:(NSDictionary *)user
 {
-	if ([_user isEqualToDictionary:user])
+	if (CHECK_EQUAL(_user, user))
 	{
 		return;
 	}

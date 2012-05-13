@@ -139,7 +139,7 @@ const static CGFloat ICON_SIZE = 20.0;
 
 - (void) setFoodObject:(NSDictionary *)foodObject
 {
-	if ([_foodObject isEqualToDictionary:foodObject])
+	if (CHECK_EQUAL(_foodObject ,foodObject))
 	{
 		return;
 	}

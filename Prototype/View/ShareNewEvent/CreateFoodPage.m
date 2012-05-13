@@ -480,7 +480,7 @@ static TagSelector *gs_tag_selector = nil;
 {
 	NSNumber *uploadID = [result valueForKey:@"id"];
 	
-	if ([self.uploadingID isEqualToNumber:uploadID])
+	if (CHECK_EQUAL(self.uploadingID ,uploadID))
 	{
 		NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
 		

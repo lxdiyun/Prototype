@@ -56,17 +56,31 @@ DEFINE_SINGLETON(ConversationDetailPage);
 	self = [super initWithStyle:style];
 	if (self) 
 	{
-		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+		
 	}
 	return self;
 }
 
 - (void) didReceiveMemoryWarning
-{
+{	
+	if (self.inputer.appearing)
+	{
+		[self cancelWithTextInputer:self.inputer];
+	}
+
 	// Releases the view if it doesn't have a superview.
 	[super didReceiveMemoryWarning];
 	
-	// Release any cached data, images, etc that aren't in use.
+	UIView* superview = self.view.superview;
+	
+	if (superview == nil)
+	{
+		NSMutableArray *allViewControllers =  [self.navigationController.viewControllers mutableCopy];
+		[allViewControllers removeObjectIdenticalTo: self];
+		self.navigationController.viewControllers = allViewControllers;
+		
+		[allViewControllers release];
+	}
 }
 
 #pragma mark - View lifecycle
@@ -87,16 +101,14 @@ DEFINE_SINGLETON(ConversationDetailPage);
 									  @selector(inputMessage:));
 		
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
+		
+		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	}
 }
 
 - (void) viewDidUnload
 {
 	[super viewDidUnload];
-	
-	self.targetUserID = nil;
-	self.inputer = nil;
-	self.navco = nil;
 }
 
 - (void) resetCanUpdateOlder

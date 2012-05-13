@@ -17,8 +17,10 @@ const static CGFloat FONT_SIZE = 15.0;
 	id<TextInputerDeletgate> _delegate;
 	NSString *_sendButtonTitle;
 	BOOL _drawCancel;
+	BOOL _appearing;
 }
 - (void) updateDoneButton;
+
 @end
 
 @implementation TextInputer
@@ -27,6 +29,7 @@ const static CGFloat FONT_SIZE = 15.0;
 @synthesize delegate = _delegate;
 @synthesize sendButtonTitle = _sendButtonTitle;
 @synthesize drawCancel = _drawCancel;
+@synthesize appearing = _appearing;
 
 #pragma mark - lifecycle
 
@@ -38,6 +41,7 @@ const static CGFloat FONT_SIZE = 15.0;
 	{
 		self.sendButtonTitle = @"发送";
 		self.drawCancel = YES;
+		self.appearing = NO;
 	}
 	return self;
 }
@@ -163,6 +167,15 @@ const static CGFloat FONT_SIZE = 15.0;
 - (void) viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
+	
+	self.appearing = YES;
+}
+
+- (void) viewDidDisappear:(BOOL)animated
+{
+	[super viewDidDisappear:animated];
+	
+	self.appearing = NO;
 }
 
 - (void) viewDidUnload

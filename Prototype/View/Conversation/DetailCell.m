@@ -117,7 +117,7 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 	
 	NSNumber * userID = [self.conversationDict valueForKey:@"sender"];
 	
-	if ([userID isEqualToNumber:GET_USER_ID()])
+	if (CHECK_EQUAL(userID ,GET_USER_ID()))
 	{
 		X = self.contentView.frame.size.width * PROPORTION() - (PADING2 + AVATOR_SIZE);
 	}
@@ -179,7 +179,7 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 		UIImage *bubbleImage;
 		UIImageView *bubbleView = [[[UIImageView alloc] initWithFrame:CGRectZero] autorelease];
 		
-		if ([userID isEqualToNumber:GET_USER_ID()])
+		if (CHECK_EQUAL(userID ,GET_USER_ID()))
 		{
 			maxWidth = self.contentView.frame.size.width - ((2 * PADING2 + AVATOR_SIZE + PADING1));
 			bestSize = [fullMessage sizeWithFont:font 
@@ -267,7 +267,7 @@ const static CGFloat PADING4 = 8.0; // padding between element virtical and bott
 
 - (void) setConversationDict:(NSDictionary *)conversationListDict
 {
-	if ([_conversationListDict isEqualToDictionary:conversationListDict])
+	if (CHECK_EQUAL(_conversationListDict ,conversationListDict))
 	{
 		return;
 	}

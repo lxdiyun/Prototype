@@ -229,7 +229,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 
 - (void) setCommentDict:(NSDictionary *)commentDict
 {
-	if ([_commentDict isEqualToDictionary:commentDict])
+	if (CHECK_EQUAL(_commentDict, commentDict))
 	{
 		return;
 	}

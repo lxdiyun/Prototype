@@ -183,7 +183,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 
 - (void) setFood:(NSDictionary *)food
 {
-	if ([_food isEqualToDictionary:food])
+	if (CHECK_EQUAL(_food ,food))
 	{
 		return;
 	}
@@ -239,6 +239,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[tag3Text release];
 	[tag3 release];
 	[score release];
+
 	[super dealloc];
 }
 
@@ -268,6 +269,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[self setTag3Text:nil];
 	[self setTag3:nil];
 	[self setScore:nil];
+
 	[super viewDidUnload];
 }
 

@@ -50,6 +50,7 @@ NSInteger DEVICE_TYPE(void);
 // check and error handling;
 BOOL CHECK_NUMBER(NSNumber *object);
 BOOL CHECK_STRING(NSString *object);
+BOOL CHECK_EQUAL(id obj1, id obj2);
 
 // alert
 void SHOW_ALERT_TEXT(NSString *title, NSString *message);

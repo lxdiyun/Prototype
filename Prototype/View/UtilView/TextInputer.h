@@ -15,6 +15,7 @@
 @property (assign) id<TextInputerDeletgate> delegate;
 @property (strong) NSString *sendButtonTitle;
 @property (assign) BOOL drawCancel;
+@property (assign, nonatomic) BOOL appearing;
 - (void) redraw;
 @end
 

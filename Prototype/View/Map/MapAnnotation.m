@@ -8,6 +8,8 @@
 
 #import "MapAnnotation.h"
 
+#import "Util.h"
+
 @interface MapAnnotation ()
 {
 	NSDictionary *_placeObject;
@@ -34,7 +36,7 @@
 
 - (void) setPlaceObject:(NSDictionary *)newPlaceObject
 {
-	if ([_placeObject isEqualToDictionary:newPlaceObject])
+	if (CHECK_EQUAL(_placeObject ,newPlaceObject))
 	{
 		return;
 	}

@@ -212,7 +212,7 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 
 - (void) setConversationListDict:(NSDictionary *)conversationListDict
 {
-	if ([_conversationListDict isEqualToDictionary:conversationListDict])
+	if (CHECK_EQUAL(_conversationListDict ,conversationListDict))
 	{
 		return;
 	}
