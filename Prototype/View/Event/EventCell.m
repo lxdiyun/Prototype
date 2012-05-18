@@ -14,7 +14,7 @@
 #import "Util.h"
 #import "ProfileMananger.h"
 
-const static CGFloat AVATOR_SIZE = 44;
+const static CGFloat AVATOR_SIZE = 44.0;
 const static CGFloat AVATOR_BORDER = 3.0;
 const static CGFloat FONT_SIZE = 15.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
@@ -104,7 +104,7 @@ static CGFloat gs_pic_size = 0;
 		if (nil != userProfile)
 		{
 			self.avator.picID = [userProfile valueForKey:@"avatar"];
-			[self.avator.layer setBorderColor:[[Color blackColorAlpha] CGColor]];
+			[self.avator.layer setBorderColor:[[Color blackAlpha] CGColor]];
 			[self.avator.layer setBorderWidth: AVATOR_BORDER * PROPORTION()];
 			
 		}

@@ -91,7 +91,7 @@ const static NSString *DEFUALT_TAGS[DEFAULT_TAGS_COUNT] =
 			
 			self.title = @"美食类型";
 			
-			self.tableView.backgroundColor = [Color lightyellowColor];
+			self.tableView.backgroundColor = [Color lightyellow];
 		}
 	}
 

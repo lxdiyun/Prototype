@@ -10,7 +10,7 @@
 
 @implementation Color
 
-+ (UIColor *) tastyColor
++ (UIColor *) tasty
 {
 	static UIColor *color = nil;
 	
@@ -22,7 +22,7 @@
 	return color;
 }
 
-+ (UIColor *) specailColor
++ (UIColor *) specail
 {
 	static UIColor *color = nil;
 	
@@ -46,7 +46,7 @@
 	return color;
 }
 
-+ (UIColor *) healthyColor
++ (UIColor *) healthy
 {
 	static UIColor *color = nil;
 	
@@ -58,19 +58,7 @@
 	return color;
 }
 
-+ (UIColor *) whiteColor 
-{
-	static UIColor *color = nil;
-	
-	if (nil == color)
-	{
-		color = [[UIColor alloc] initWithRed:0xFF/255.0 green:0xFF/255.0 blue:0xFF/255.0 alpha:1.0];
-	}
-	
-	return color;
-}
-
-+ (UIColor *) milkColor
++ (UIColor *) milk
 {
 	static UIColor *color = nil;
 	
@@ -82,7 +70,7 @@
 	return color;
 }
 
-+ (UIColor *) orangeColor
++ (UIColor *) orange
 {
 	static UIColor *color = nil;
 	
@@ -94,7 +82,7 @@
 	return color;
 }
 
-+ (UIColor *) grey1Color
++ (UIColor *) grey1
 {
 	static UIColor *color = nil;
 	
@@ -106,7 +94,7 @@
 	return color;
 }
 
-+ (UIColor *) grey2Color
++ (UIColor *) grey2
 {
 	static UIColor *color = nil;
 	
@@ -118,7 +106,7 @@
 	return color;
 }
 
-+ (UIColor *) grey3Color
++ (UIColor *) grey3
 {
 	static UIColor *color = nil;
 	
@@ -130,7 +118,7 @@
 	return color;
 }
 
-+ (UIColor *) darkgreyColor
++ (UIColor *) darkgrey
 {
 	static UIColor *color = nil;
 	
@@ -142,7 +130,7 @@
 	return color;
 }
 
-+ (UIColor *) brownColor
++ (UIColor *) brown
 {
 	static UIColor *color = nil;
 	
@@ -154,7 +142,7 @@
 	return color;
 }
 
-+ (UIColor *) blackColorAlpha
++ (UIColor *) blackAlpha
 {
 	static UIColor *color = nil;
 	
@@ -166,7 +154,19 @@
 	return color;
 }
 
-+ (UIColor *) lightyellowColor 
++ (UIColor *) blackAlpha85
+{
+	static UIColor *color = nil;
+	
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x0/255.0 green:0x0/255.0 blue:0x0/255.0 alpha:0.85];
+	}
+	
+	return color;
+}
+
++ (UIColor *) lightyellow 
 {
 	static UIColor *color = nil;
 	
@@ -178,7 +178,19 @@
 	return color;
 }
 
-+ (UIColor *) blueColor
++ (UIColor *) darkyellow 
+{
+	static UIColor *color = nil;
+	
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xD8/255.0 green:0xC5/255.0 blue:0x9A/255.0 alpha:1.0];
+	}
+	
+	return color;
+}
+
++ (UIColor *) blue
 {
 	static UIColor *color = nil;
 	

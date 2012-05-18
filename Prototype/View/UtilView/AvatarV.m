@@ -10,16 +10,20 @@
 
 #import "Util.h"
 #import "ImageManager.h"
-#import "UserInfoPage.h"
+#import "UserHomePage.h"
+#import "MyHomePage.h"
+#import "AppDelegate.h"
 
 @interface AvatarV ()
 {
 	NSDictionary *_user;
 	id<ShowVCDelegate> _delegate;
-	UserInfoPage *_userInfoPage;
+	UserHomePage *_userHomePage;
+	MyHomePage *_myHomePage;
 }
 
-@property (retain, nonatomic) UserInfoPage *userInfoPage;
+@property (retain, nonatomic) UserHomePage *userHomePage;
+@property (retain, nonatomic) MyHomePage *myHomePage;
 
 @end
 
@@ -27,7 +31,9 @@
 
 @synthesize user = _user;
 @synthesize delegate = _delegate;
-@synthesize userInfoPage = _userInfoPage;
+@synthesize userHomePage = _userHomePage;
+@synthesize myHomePage = _myHomePage;
+
 @synthesize button;
 @synthesize avator;
 
@@ -42,6 +48,15 @@ DEFINE_CUSTOM_XIB(AvatarV);
 	xibInstance.delegate = self.delegate;
 }
 
++ (id) createFromXibWithFrame:(CGRect)frame
+{
+	AvatarV *xibInstance = [[self loadInstanceFromNib] retain];
+	
+	xibInstance.frame = frame;
+	
+	return [xibInstance autorelease];
+}
+
 #pragma mark - life circle
 
 - (id) initWithCoder:(NSCoder *)aDecoder
@@ -52,25 +67,13 @@ DEFINE_CUSTOM_XIB(AvatarV);
 	{
 		@autoreleasepool 
 		{
-			self.userInfoPage = [[[UserInfoPage alloc] init] autorelease];
+			self.userHomePage = [[[UserHomePage alloc] init] autorelease];
+			self.myHomePage = [[[MyHomePage alloc] init] autorelease];
 		}
 	}
 	
 	return self;
 }
-
-- (id) initWithFrame:(CGRect)frame
-{
-	self = [[AvatarV loadInstanceFromNib] retain];
-	
-	if (nil != self)
-	{
-		self.frame = frame;
-	}
-
-	return self;
-} 
-
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -80,7 +83,7 @@ DEFINE_CUSTOM_XIB(AvatarV);
 - (void) dealloc
 {
 	self.user = nil;
-	self.userInfoPage = nil;
+	self.userHomePage = nil;
 
 	[button release];
 	[avator release];
@@ -91,7 +94,15 @@ DEFINE_CUSTOM_XIB(AvatarV);
 
 - (IBAction) tap:(id)sender 
 {
-	[self.delegate showVC:self.userInfoPage];
+	NSNumber *userID = [self.user valueForKey:@"id"];
+	
+	if (nil != userID)
+	{
+		self.userHomePage.userID = userID;
+		[self.userHomePage restGUI];
+		
+		[self.delegate showVC:self.userHomePage];
+	}
 }
 
 #pragma mark - manager object

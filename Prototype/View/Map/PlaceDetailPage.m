@@ -279,7 +279,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 	if (flag)
 	{
-		[self addTagwithColor:[Color specailColor] andText:@"特色"];
+		[self addTagwithColor:[Color specail] andText:@"特色"];
 	}
 }
 
@@ -299,7 +299,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 	if (flag)
 	{
-		[self addTagwithColor:[Color healthyColor] andText:@"健康"];
+		[self addTagwithColor:[Color healthy] andText:@"健康"];
 	}
 }
 

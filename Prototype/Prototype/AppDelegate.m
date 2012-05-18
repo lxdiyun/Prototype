@@ -12,16 +12,17 @@
 
 #import "EventPage.h"
 #import "UserInfoPage.h"
+#import "MyHomePage.h"
 #import "ShareNewEvent.h"
 #import "Util.h"
 #import "ObjectSaver.h"
 #import "ConversationPage.h"
 #import "WebPage.h"
-#import "FoodMapListPage.h"
+#import "PublicFoodMapListPage.h"
 #import "LogoutPage.h"
 
-static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"私信", @"Web", @"个人设置",@"注销"};
-static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"PrivateMessage.png", @"More.png", @"UserInfo.png", @"Logout.png"};
+static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"私信", @"Web", @"我的主页", @"个人设置",@"注销"};
+static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"PrivateMessage.png", @"More.png", @"MyHomePage.png", @"UserInfo.png", @"Logout.png"};
 static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 
 static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 static UIViewController *gs_currentViewController;
@@ -43,11 +44,12 @@ static UIViewController *gs_currentViewController;
 - (void) setupPageClass
 {
 	MSWJ_PAGE_CLASS[HOME_PAGE] = [EventPage class];
-	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [FoodMapListPage class];
+	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [PublicFoodMapListPage class];
 	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
 	MSWJ_PAGE_CLASS[CONVERSATION_PAGE] = [ConversationPage class];
 	MSWJ_PAGE_CLASS[WEB_PAGE] = [WebPage class];
-	MSWJ_PAGE_CLASS[PERSONAL_SETTING_PAGE] = [UserInfoPage class];
+	MSWJ_PAGE_CLASS[MY_HOME_PAGE] = [MyHomePage class];
+	MSWJ_PAGE_CLASS[USER_INFO_PAGE] = [UserInfoPage class];
 	MSWJ_PAGE_CLASS[LOGOUT_PAGE] = [LogoutPage class];
 }
 
@@ -85,7 +87,7 @@ static UIViewController *gs_currentViewController;
 {	
 	self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	// Override point for customization after application launch.
-	self.window.backgroundColor = [Color whiteColor];
+	self.window.backgroundColor = [UIColor whiteColor];
 	
 	// init and show page 
 	[self setupPageClass];
@@ -114,8 +116,8 @@ static UIViewController *gs_currentViewController;
 	UITableView *moreView = (UITableView *)tabBarController.moreNavigationController.topViewController.view;
 	if ([moreView isKindOfClass:[UITableView class]])
 	{
-		moreView.backgroundColor = [Color lightyellowColor];
-		[moreView setSeparatorColor:[UIColor blackColor]];
+		moreView.backgroundColor = [Color lightyellow];
+		[moreView setSeparatorColor:[Color darkyellow]];
 	}
 	
 	self.tabco = tabBarController;
@@ -210,7 +212,7 @@ static UIViewController *gs_currentViewController;
 	[EventPage requestUpdate];
 	[EventPage reloadData];
 	[UserInfoPage reloadData];
-	[FoodMapListPage reloadData];
+	[PublicFoodMapListPage reloadData];
 }
 
 + (void) showPage:(MSWJ_PAGE)page
@@ -220,6 +222,7 @@ static UIViewController *gs_currentViewController;
 		if ([gs_currentViewController isKindOfClass:[UITabBarController class]])
 		{
 			[(UITabBarController *)gs_currentViewController setSelectedIndex:page];
+
 		}
 	}
 }

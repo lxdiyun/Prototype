@@ -82,7 +82,7 @@ void json_message_handler(NSData *message_data)
 		}
 
 		// TODO: Remove comment to log
-		// CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
+		CLOG(@"ID = %@ message = %@ dict = \n%@", ID, messageDict, gs_handler_dict);
 
 		if (nil != ID)
 		{
@@ -101,6 +101,7 @@ void json_message_handler(NSData *message_data)
 				{
 					[gs_handler_dict setValue:nil forKey:ID];
 				}
+
 				[responder performWithObject:messageDict];
 
 				[responder release];

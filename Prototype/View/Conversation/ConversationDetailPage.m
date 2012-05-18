@@ -71,16 +71,7 @@ DEFINE_SINGLETON(ConversationDetailPage);
 	// Releases the view if it doesn't have a superview.
 	[super didReceiveMemoryWarning];
 	
-	UIView* superview = self.view.superview;
-	
-	if (superview == nil)
-	{
-		NSMutableArray *allViewControllers =  [self.navigationController.viewControllers mutableCopy];
-		[allViewControllers removeObjectIdenticalTo: self];
-		self.navigationController.viewControllers = allViewControllers;
-		
-		[allViewControllers release];
-	}
+	HANDLE_MEMORY_WARNING(self);
 }
 
 #pragma mark - View lifecycle
@@ -230,7 +221,6 @@ DEFINE_SINGLETON(ConversationDetailPage);
 	{
 		self.inputer = [[[TextInputer alloc] init] autorelease];
 		self.inputer.delegate = self;
-		[self.inputer redraw];
 	}
 	
 	if (nil == self.navco)
@@ -391,6 +381,11 @@ DEFINE_SINGLETON(ConversationDetailPage);
 + (BOOL) newPushMessageForUser:(NSString *)userID
 {
 	return [[self getInstnace] newPushMessageForUser:userID];
+}
+
++ (void) startChatWith:(NSNumber *)userID
+{
+	[[self getInstnace] startChatWith:userID];
 }
 
 @end

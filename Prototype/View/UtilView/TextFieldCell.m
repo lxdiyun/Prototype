@@ -8,8 +8,6 @@
 
 #import "TextFieldCell.h"
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "ImageV.h"
 #import "Util.h"
 #import "TextInputer.h"
@@ -75,8 +73,8 @@
 
 		LOG(@"%f %f", self.self.contentView.frame.size.width, self.contentView.frame.size.height)
 		self.inputView = [[[UITextView alloc] initWithFrame:self.contentView.frame] autorelease];
-		self.inputView.layer.cornerRadius = 11.0;
-		self.inputView.backgroundColor = [Color milkColor];
+		ROUND_RECT(self.inputView.layer);
+		self.inputView.backgroundColor = [Color milk];
 		
 		self.inputView.delegate = self;
 		

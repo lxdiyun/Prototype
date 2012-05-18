@@ -121,7 +121,7 @@
 			break;
 	}
 	
-	[AppDelegate showPage:PERSONAL_SETTING_PAGE];
+	[AppDelegate showPage:USER_INFO_PAGE];
 }
 
 - (IBAction) nativeLogin:(id)sender 

@@ -10,20 +10,21 @@
 
 @interface Color : NSObject 
 
-+ (UIColor *) whiteColor;
-+ (UIColor *) milkColor;
-+ (UIColor *) orangeColor;
-+ (UIColor *) grey1Color;
-+ (UIColor *) grey2Color;
-+ (UIColor *) grey3Color;
-+ (UIColor *) darkgreyColor;
-+ (UIColor *) brownColor;
-+ (UIColor *) blackColorAlpha;
-+ (UIColor *) tastyColor;
-+ (UIColor *) specailColor;
++ (UIColor *) milk;
++ (UIColor *) orange;
++ (UIColor *) grey1;
++ (UIColor *) grey2;
++ (UIColor *) grey3;
++ (UIColor *) darkgrey;
++ (UIColor *) brown;
++ (UIColor *) blackAlpha;
++ (UIColor *) blackAlpha85;
++ (UIColor *) tasty;
++ (UIColor *) specail;
 + (UIColor *) valuedColor;
-+ (UIColor *) healthyColor;
-+ (UIColor *) lightyellowColor;
-+ (UIColor *) blueColor;
++ (UIColor *) healthy;
++ (UIColor *) lightyellow;
++ (UIColor *) darkyellow;
++ (UIColor *) blue;
 
 @end

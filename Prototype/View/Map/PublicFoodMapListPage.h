@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "ListPage.h"
 
-@interface FoodMapListPage : UITableViewController
+@interface PublicFoodMapListPage : ListPage
 
 + (void) reloadData;
 

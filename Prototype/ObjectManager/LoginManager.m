@@ -14,7 +14,6 @@
 #import "ObjectSaver.h"
 #import "UserInfoPage.h"
 #import "EventPage.h"
-#import "FoodMapListPage.h"
 #import "LoginPageVC.h"
 
 NSString * const LOGIN_TYPE_KEY = @"meishiwanjia_login_type";

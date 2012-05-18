@@ -94,7 +94,7 @@ DEFINE_SINGLETON(ConversationListManager);
 	}
 }
 
-+ (NSDate *)lastUpdatedDate
++ (NSDate *) lastUpdatedDate
 {
 	return [self lastUpdatedDateForList:gs_fakeListID];
 }

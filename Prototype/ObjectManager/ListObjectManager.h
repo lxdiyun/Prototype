@@ -35,14 +35,18 @@ typedef enum MESSAGE_TYPE_ENUM
 // key array
 - (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward;
 + (NSArray *) keyArrayForList:(NSString *)listID;
-- (NSInteger) newestKeyWithlistID:(NSString *)listID;
-- (NSInteger) oldestKeyWithlistID:(NSString *)listID;
+- (NSInteger) newestCursorWithlistID:(NSString *)listID;
+- (NSInteger) cursorForObject:(NSString *)objectID inlist:(NSString *)listID;
+- (NSInteger) oldestCursorWithlistID:(NSString *)listID;
 + (NSInteger) newestKeyForList:(NSString *)listID;
 + (NSInteger) oldestKeyForList:(NSString *)listID;
 
 
 // object in list
 + (id) getObject:(NSString *)objectID inList:(NSString *)listID;
++ (void) setObject:(NSDictionary *)object 
+      withStringID:(NSString *)objectID 
+	    inList:(NSString *)listID;
 
 // updating flag
 + (BOOL) isUpdatingWithType:(LIST_OBJECT_MESSAGE_TYPE)type withListID:(NSString *)listID;

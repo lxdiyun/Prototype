@@ -79,7 +79,7 @@ static CGFloat LABEL_WIDTH = 300;
 			self.descriptionLabel = [[[UILabel alloc] init] autorelease];
 			
 			self.descriptionLabel.font = [UIFont systemFontOfSize:FONT_SIZE];
-			self.descriptionLabel.textColor = [Color lightyellowColor];
+			self.descriptionLabel.textColor = [Color lightyellow];
 			self.descriptionLabel.backgroundColor = [UIColor clearColor];
 			self.descriptionLabel.numberOfLines = 0;
 			

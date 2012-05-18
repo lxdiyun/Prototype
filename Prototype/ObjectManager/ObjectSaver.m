@@ -18,6 +18,9 @@
 #import "PlaceManager.h"
 #import "FoodMapListManager.h"
 #import "LoginManager.h"
+#import "FollowingListManager.h"
+#import "FansListManager.h"
+#import "UserFoodHistoryManager.h"
 #import "Util.h"
 
 typedef enum MSWJ_OBJECT_ENUM
@@ -29,9 +32,12 @@ typedef enum MSWJ_OBJECT_ENUM
 	FOOD_MAP_LIST_MANAGER = 0x4,
 	PLACE_MANAGER = 0x5,
 	LOGIN_MANAGER = 0x6,
-//	FOOD_COMMENT_MANAGER = 0x7,
-//	CONVERSEATION_LIST_MANAGER = 0x8,
-//	CONVERSEATION_MANAGER = 0x9,
+	FOLLOWING_LIST_MANAGER = 0x7,
+	FANS_LIST_MANAGER = 0x8,
+	USER_FOOD_HISTORY_MANAGER = 0x9,
+//	FOOD_COMMENT_MANAGER = 0xA,
+//	CONVERSEATION_LIST_MANAGER = 0xB,
+//	CONVERSEATION_MANAGER = 0xC,
 	MSWJ_OBJECT_QUANTITY
 } MSWJ_OBJECT;
 
@@ -144,6 +150,7 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 	[FoodMapListManager reset];
 	[ConversationListManager reset];
 	[ConversationManager reset];
+	[ProfileMananger reset];
 
 	[self saveAll];
 }
@@ -159,6 +166,9 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 	MSWJ_OBJECT_CLASS[FOOD_MAP_LIST_MANAGER] = [FoodMapListManager class];
 	MSWJ_OBJECT_CLASS[PLACE_MANAGER] = [PlaceManager class];
 	MSWJ_OBJECT_CLASS[LOGIN_MANAGER] = [LoginManager class];
+	MSWJ_OBJECT_CLASS[FOLLOWING_LIST_MANAGER] = [FollowingListManager class];
+	MSWJ_OBJECT_CLASS[FANS_LIST_MANAGER] = [FansListManager class];
+	MSWJ_OBJECT_CLASS[USER_FOOD_HISTORY_MANAGER] = [UserFoodHistoryManager class];
 }
 
 + (void) initialize

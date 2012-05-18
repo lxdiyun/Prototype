@@ -79,7 +79,7 @@ const static CGFloat PADING4 = 10.0; // padding between element virtical and bot
 
 	if (self) 
 	{
-		self.contentView.backgroundColor = [Color whiteColor];
+		self.contentView.backgroundColor = [UIColor whiteColor];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
 	return self;

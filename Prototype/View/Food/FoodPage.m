@@ -142,19 +142,10 @@ static int32_t s_lastCommentArrayCount = -1;
 		[self cancelWithTextInputer:self.inputer];
 	}
 
+	// Releases the view if it doesn't have a superview.
 	[super didReceiveMemoryWarning];
 	
-	UIView* superview = self.view.superview;
-	
-	if (superview == nil)
-	{
-		NSMutableArray *allViewControllers =  [self.navigationController.viewControllers mutableCopy];
-		[allViewControllers removeObjectIdenticalTo: self];
-		self.navigationController.viewControllers = allViewControllers;
-		
-		[allViewControllers release];
-	}
-
+	HANDLE_MEMORY_WARNING(self);
 }
 
 - (void) dealloc
@@ -182,44 +173,11 @@ static int32_t s_lastCommentArrayCount = -1;
 
 #pragma mark - View lifecycle
 
-- (void) backToPrevView
-{
-	[self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void) setupView
-{
-	@autoreleasepool 
-	{
-		self.titleView = [[[TitleVC alloc] init] autorelease];
-		self.navigationItem.titleView = self.titleView.view;
-		
-		self.inputer = [[[TextInputer alloc] init] autorelease];
-		self.inputer.delegate = self;
-		self.inputer.title = @"添加评论";
-		[self.inputer redraw];
-		
-		self.navco = [[[UINavigationController alloc] initWithRootViewController:
-			       self.inputer] autorelease];
-		CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
-
-		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-		self.view.backgroundColor = [Color brownColor];
-
-		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, 
-									      @selector(backToPrevView));
-		
-		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"comIcon.png"], 
-									  self, 
-									  @selector(inputComment:));
-	}
-}
-
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
 	
-	[self setupView];
+	[self initGUI];
 }
 
 - (void) viewDidUnload
@@ -397,7 +355,7 @@ static int32_t s_lastCommentArrayCount = -1;
 			cell = [[[TriangleCell alloc] 
 				initWithStyle:UITableViewCellStyleDefault 
 			      reuseIdentifier:triangleCellIndentifier
-				    backColor:[Color orangeColor] 
+				    backColor:[Color orange] 
 				triangleColor:[UIColor whiteColor]
 				] autorelease];
 		}
@@ -425,7 +383,7 @@ static int32_t s_lastCommentArrayCount = -1;
 		[moreComment setTitle:@"更多评论" forState:UIControlStateNormal];
 		[moreComment setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 		[moreComment setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
-		[moreComment setBackgroundColor:[Color lightyellowColor]];
+		[moreComment setBackgroundColor:[Color lightyellow]];
 		[moreComment addTarget:self 
 				action:@selector(requestOlderComment) 
 		      forControlEvents:UIControlEventTouchUpInside];
@@ -450,7 +408,7 @@ static int32_t s_lastCommentArrayCount = -1;
 			initWithStyle:UITableViewCellStyleDefault 
 		      reuseIdentifier:tagCellIdentifier] 
 		      autorelease];
-		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0);
+		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, DEFAULT_CELL_HEIGHT);
 	}
 
 	if (nil  != self.foodObject)
@@ -527,7 +485,7 @@ static int32_t s_lastCommentArrayCount = -1;
 		case FOOD_TAG:
 			return [FoodTagCell cellHeightForObject:self.foodObject forCellWidth:self.view.frame.size.width];
 		default:
-			return 44.0;
+			return DEFAULT_CELL_HEIGHT;
 	}
 	
 }
@@ -601,6 +559,49 @@ static int32_t s_lastCommentArrayCount = -1;
 - (void) showVC:(UIViewController *)VC
 {
 	[self.navigationController pushViewController:VC animated:YES];
+}
+
+#pragma mark - GUI
+
+- (void) backToPrevView
+{
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) initGUI
+{
+	@autoreleasepool 
+	{
+		if (nil == self.titleView)
+		{
+			self.titleView = [[[TitleVC alloc] init] autorelease];
+		}
+		self.navigationItem.titleView = self.titleView.view;
+		
+		if (nil == self.inputer)
+		{
+			self.inputer = [[[TextInputer alloc] init] autorelease];
+			self.inputer.delegate = self;
+			self.inputer.title = @"添加评论";
+		}
+		
+		if (nil == self.navco)
+		{
+			self.navco = [[[UINavigationController alloc] initWithRootViewController:
+				       self.inputer] autorelease];
+			CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
+		}
+		
+		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+		self.view.backgroundColor = [Color brown];
+		
+		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, 
+									      @selector(backToPrevView));
+		
+		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"comIcon.png"], 
+									  self, 
+									  @selector(inputComment:));
+	}
 }
 
 @end

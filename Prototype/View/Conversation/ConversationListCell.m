@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "ListCell.h"
+#import "ConversationListCell.h"
 
 #import "ImageV.h"
 #import "Util.h"
@@ -19,7 +19,7 @@ const static CGFloat PADING2 = 20.0; // padding from right border
 const static CGFloat PADING3 = 7.0; // padding from top virtical border
 const static CGFloat PADING4 = 0.0; // padding between element virtical and bottom border
 
-@interface ListCell () 
+@interface ConversationListCell () 
 {
 @private
 	NSDictionary *_conversationListDict;
@@ -36,7 +36,7 @@ const static CGFloat PADING4 = 0.0; // padding between element virtical and bott
 
 @end
 
-@implementation ListCell
+@implementation ConversationListCell
 
 @synthesize conversationListDict = _conversationListDict;
 @synthesize userProfile = _userProfileDict;

@@ -151,7 +151,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	{
 		[self setTitle:@"个人设置"];
 		self.photoSelector = [[[PhotoSelector alloc] init] autorelease];
-		self.view.backgroundColor = [Color lightyellowColor];
+		self.view.backgroundColor = [Color lightyellow];
 		
 		if (nil == self.editButton)
 		{
@@ -182,7 +182,7 @@ DEFINE_SINGLETON(UserInfoPage);
 							      reuseIdentifier:USER_AVATOR_TITLE];
 			cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, AVATOR_CELL_HEIGTH * PROPORTION());
 			[cell redraw];
-			cell.textLabel.textColor = [Color grey2Color];
+			cell.textLabel.textColor = [Color grey2];
 			cell.textLabel.font = [UIFont systemFontOfSize:13.0];
 			cell.textLabel.text = USER_AVATOR_TITLE;
 			
@@ -280,7 +280,7 @@ DEFINE_SINGLETON(UserInfoPage);
 			{
 				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 
 							       reuseIdentifier:cellType] autorelease];
-				cell.textLabel.textColor = [Color grey2Color];
+				cell.textLabel.textColor = [Color grey2];
 				cell.textLabel.font = [UIFont systemFontOfSize:13.0];
 				cell.textLabel.text = USER_DETAIL_TITLE[indexPath.row];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -288,7 +288,7 @@ DEFINE_SINGLETON(UserInfoPage);
 				CGFloat X = 75.0;
 				CGFloat Y = 0.0;
 				CGFloat width = (cell.contentView.frame.size.width) - (X + 28.0);
-				CGFloat height = 44.0;
+				CGFloat height = DEFAULT_CELL_HEIGHT;
 				CGRect frame = CGRectMake(X, Y, width, height);
 				_userDetailTextView[indexPath.row].frame = frame;
 				_userDetailTextView[indexPath.row].center = CGPointMake(_userDetailTextView[indexPath.row].center.x, 
@@ -368,7 +368,7 @@ DEFINE_SINGLETON(UserInfoPage);
 			break;
 		
 	default:
-			return 44;
+			return DEFAULT_CELL_HEIGHT;
 
 	}
 	
@@ -631,6 +631,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	[self sendUserInfo];
 
 	self.navigationItem.rightBarButtonItem = self.editButton;
+	self.navigationItem.leftBarButtonItem = self.backButton;
 }
 
 #pragma mark - PhototSelectorDelegate
@@ -686,7 +687,6 @@ DEFINE_SINGLETON(UserInfoPage);
 		textInputer.sendButtonTitle = @"完成";
 		textInputer.drawCancel = NO;
 		textInputer.title = @"个人介绍";
-		[textInputer redraw];
 		
 		self.textInputer = textInputer;
 		

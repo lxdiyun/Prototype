@@ -125,7 +125,7 @@ const static CGFloat ICON_SIZE = 20.0;
 		}
 
 		self.tagLabel.font = [UIFont systemFontOfSize:FONT_SIZE];
-		self.tagLabel.textColor = [Color tastyColor];
+		self.tagLabel.textColor = [Color tasty];
 		self.tagLabel.backgroundColor = [UIColor clearColor];
 		self.tagLabel.text = tagText;
 		self.tagLabel.numberOfLines = 0;
@@ -166,7 +166,7 @@ const static CGFloat ICON_SIZE = 20.0;
 
 	if (self) 
 	{
-		self.contentView.backgroundColor = [Color grey1Color];
+		self.contentView.backgroundColor = [Color grey1];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
 	

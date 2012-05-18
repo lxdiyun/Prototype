@@ -19,6 +19,7 @@
 // save and restore
 + (void) saveTo:(NSMutableDictionary *)dict;
 + (void) restoreFrom:(NSMutableDictionary *)dict;
++ (void) reset;
 
 // object updating flagss
 + (void) markUpdatingStringID:(NSString *)ID;

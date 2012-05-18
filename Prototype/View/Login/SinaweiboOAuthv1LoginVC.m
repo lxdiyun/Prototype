@@ -31,7 +31,6 @@ NSString * const kSinaweiboApiCallbackURL = @"http://www.meishiwanjia.com";
 @synthesize activityIndicator;
 @synthesize newlyLoginAlert = _newlyLoginAlert;
 
-
 #pragma mark - View lifecycle
 
 - (void) viewDidLoad
@@ -40,6 +39,7 @@ NSString * const kSinaweiboApiCallbackURL = @"http://www.meishiwanjia.com";
 
 	self.title = @"美食玩家";
 	self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self.navigationController, @selector(popViewControllerAnimated:));
+	self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -157,7 +157,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 							    verifier:verifier
 							    callback:nil];
 		_step = 1;
-		self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
 		[self.activityIndicator startAnimating];
 		[r startAsynchronous];
 
@@ -171,7 +170,6 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 - (void) startLogin
 {		
-
 	ASIHTTPRequest * request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://api.t.sina.com.cn/oauth/request_token"]];
 	request.delegate = self;
 	[request setRequestMethod:@"POST"];
@@ -187,6 +185,7 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 	self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
 	[self.activityIndicator startAnimating];
 	
+	LOG(@"%@", [request.requestHeaders valueForKey:@"Authorization"]);
 	[request startAsynchronous];
 }
 

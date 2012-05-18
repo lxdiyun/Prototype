@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ListCell : UITableViewCell
+@interface ConversationListCell : UITableViewCell
 @property (strong,nonatomic) NSDictionary *conversationListDict;
+
 @end

@@ -94,11 +94,11 @@ DEFINE_SINGLETON(EventManager);
 #pragma mark - overwrite super class
 #pragma mark - overwrite handler
 
-- (void) getMethodHandler:(id)dict withListID:(NSString *)ID forward:(BOOL)forward
+- (void) getMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward
 {
-	[super getMethodHandler:dict withListID:ID forward:forward];
+	[super getMethodHandler:result withListID:listID forward:forward];
 	
-	NSDictionary *messageDict = [(NSDictionary*)dict retain];
+	NSDictionary *messageDict = [(NSDictionary*)result retain];
 	NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
 	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
 	

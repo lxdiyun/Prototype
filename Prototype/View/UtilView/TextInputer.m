@@ -110,7 +110,7 @@ const static CGFloat FONT_SIZE = 15.0;
 		
 		self.view.autoresizesSubviews = YES;
 		
-		self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"完成", self, @selector(textDone:));
+		self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(self.sendButtonTitle, self, @selector(textDone:));
 		
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 		
@@ -126,10 +126,6 @@ const static CGFloat FONT_SIZE = 15.0;
 }
 
 #pragma mark - View lifecycle
-
-- (void) loadView
-{
-}
 
 - (void) viewWillAppear:(BOOL)animated
 {
@@ -157,7 +153,7 @@ const static CGFloat FONT_SIZE = 15.0;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector (keyboardDidHide:) name: UIKeyboardDidHideNotification object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
 	// unregister for keyboard notifications while not visible.
 	[[NSNotificationCenter defaultCenter] removeObserver:self name: UIKeyboardDidShowNotification object:nil];
@@ -176,6 +172,11 @@ const static CGFloat FONT_SIZE = 15.0;
 	[super viewDidDisappear:animated];
 	
 	self.appearing = NO;
+}
+
+- (void) viewDidLoad
+{
+	[self redraw];
 }
 
 - (void) viewDidUnload

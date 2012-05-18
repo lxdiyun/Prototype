@@ -9,7 +9,6 @@
 #import "MapViewPage.h"
 
 #import <MapKit/MapKit.h>
-#import <QuartzCore/QuartzCore.h>
 
 #import "MKMapView+ZoomLevel.h"
 #import "Util.h"
@@ -44,15 +43,16 @@ typedef enum MAP_MENU_ENUM
 	UINavigationController *_placeNavco;
 	BOOL _selectedPlace;
 	UIActionSheet *_menu;
+	BOOL _saveWhenLeved;
 }
 
-@property (strong) MKMapView *mapView;
-@property (assign) BOOL focousUser;
-@property (strong) NSArray *unAddedPlacesIDArray;
-@property (strong) PlaceDetailPage *placeDetailPage;
-@property (strong) UINavigationController *placeNavco;
-@property (assign) BOOL selectedPlace;
-@property (strong) UIActionSheet *menu;
+@property (strong, nonatomic) MKMapView *mapView;
+@property (assign, nonatomic) BOOL focousUser;
+@property (strong, nonatomic) NSArray *unAddedPlacesIDArray;
+@property (strong, nonatomic) PlaceDetailPage *placeDetailPage;
+@property (strong, nonatomic) UINavigationController *placeNavco;
+@property (assign, nonatomic) BOOL selectedPlace;
+@property (strong, nonatomic) UIActionSheet *menu;
 
 - (void) showPlaces:(NSArray *)annotations;
 - (void) showPlaceDetailPage;
@@ -70,6 +70,7 @@ typedef enum MAP_MENU_ENUM
 @synthesize placeNavco = _placeNavco;
 @synthesize selectedPlace = _selectedPlace;
 @synthesize menu = _menu;
+@synthesize saveWhenLeaved = _saveWhenLeved;
 
 #pragma mark - manage map object
 
@@ -251,7 +252,7 @@ typedef enum MAP_MENU_ENUM
 	
 	// right bar buttons
 	UIView *rightButtonsView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 81, 30)] autorelease];
-	rightButtonsView.layer.cornerRadius = 5.0;
+	ROUND_RECT(rightButtonsView.layer);
 	rightButtonsView.clipsToBounds = YES;
 	UIBarButtonItem *rightButtons = [[[UIBarButtonItem alloc] initWithCustomView:rightButtonsView] autorelease];
 	
@@ -260,7 +261,7 @@ typedef enum MAP_MENU_ENUM
 					     self, 
 					     @selector(focousUserLoaction));
 	routeButton.frame = CGRectMake(0, 0, 40, 30);
-	routeButton.backgroundColor = [Color grey3Color];
+	routeButton.backgroundColor = [Color grey3];
 	[rightButtonsView addSubview:routeButton];
 	
 	// show all places
@@ -268,7 +269,7 @@ typedef enum MAP_MENU_ENUM
 					       self, 
 					       @selector(showAllPlaces));
 	showAllButton.frame = CGRectMake(41, 0, 40, 30);
-	showAllButton.backgroundColor = [Color grey3Color];
+	showAllButton.backgroundColor = [Color grey3];
 	[rightButtonsView addSubview:showAllButton];
 	
 	// set all buttons
@@ -290,6 +291,7 @@ typedef enum MAP_MENU_ENUM
 			self.mapView = [[[MKMapView alloc] init] autorelease];
 			self.view = self.mapView;
 			self.mapView.delegate = self;
+			self.saveWhenLeaved = NO;
 			
 			[self setupButtons];
 		}
@@ -336,7 +338,10 @@ typedef enum MAP_MENU_ENUM
 {
 	[super viewWillDisappear:animated];
 
-	[self saveMapObject];
+	if (self.saveWhenLeaved)
+	{
+		[self saveMapObject];
+	}
 
 	[self forcceRemoveDetailPage];
 }
@@ -701,8 +706,6 @@ typedef enum MAP_MENU_ENUM
 
 - (void) focousUserLoaction
 {
-	self.mapView.showsUserLocation = NO;
-
 	self.focousUser = YES;
 
 	self.mapView.showsUserLocation = YES;

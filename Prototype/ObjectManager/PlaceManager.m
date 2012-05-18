@@ -65,4 +65,21 @@ DEFINE_SINGLETON(PlaceManager);
 	return @"place.update";
 }
 
+#pragma mark - overwrite get and set
+
++ (NSDictionary *) getObjectWithStringID:(NSString *)ID
+{
+	if (CHECK_STRING(ID))
+	{
+		// refresh object from server 
+		[self requestObjectWithStringID:ID andHandler:nil andTarget:nil];
+		
+		return [[[self getInstnace] objectDict] valueForKey:ID];
+	}
+	else
+	{
+		return nil;
+	}
+}
+
 @end

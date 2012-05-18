@@ -10,7 +10,7 @@
 
 #import "ConversationListManager.h"
 #import "UserInfoPage.h"
-#import "ListCell.h"
+#import "ConversationListCell.h"
 #import "Util.h"
 #import "ConversationDetailPage.h"
 
@@ -112,12 +112,12 @@ DEFINE_SINGLETON(ConversationPage);
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *CellIdentifier = @"Cell";
+	static NSString *CellIdentifier = @"ListCell";
 	
-	ListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	ConversationListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) 
 	{
-		cell = [[[ListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell = [[[ConversationListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	

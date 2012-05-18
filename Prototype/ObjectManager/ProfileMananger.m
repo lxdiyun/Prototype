@@ -25,20 +25,6 @@ DEFINE_SINGLETON(ProfileMananger);
 
 #pragma mark - overwrite super class method
 
-#pragma mark - overwrite get and set
-
-+ (NSDictionary *) getObjectWithStringID:(NSString *)ID
-{
-	if (CHECK_STRING(ID))
-	{		
-		return [[[self getInstnace] objectDict] valueForKey:ID];
-	}
-	else
-	{
-		return nil;
-	}
-}
-
 #pragma mark - get method handler overwrite
 
 - (void) checkAndPerformResponderWithID:(NSString *)ID
@@ -104,6 +90,23 @@ DEFINE_SINGLETON(ProfileMananger);
 - (NSString *) updateMethod
 {
 	return @"user.update";
+}
+
+#pragma mark - overwrite get and set
+
++ (NSDictionary *) getObjectWithStringID:(NSString *)ID
+{
+	if (CHECK_STRING(ID))
+	{
+		// refresh object from server 
+		[self requestObjectWithStringID:ID andHandler:nil andTarget:nil];
+		
+		return [[[self getInstnace] objectDict] valueForKey:ID];
+	}
+	else
+	{
+		return nil;
+	}
 }
 
 @end

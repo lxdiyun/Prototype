@@ -144,7 +144,7 @@ const static CGFloat IMAGE_SIZE = 320;
 		case 1:
 			return [FoodDescCell cellHeightForDesc:[self.foodObject valueForKey:@"desc"]];
 		default:
-			return 44;
+			return DEFAULT_CELL_HEIGHT;
 			break;
 	}
 }

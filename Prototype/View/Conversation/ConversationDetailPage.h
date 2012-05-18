@@ -13,5 +13,6 @@
 @property (strong) NSString *targetUserID;
 
 + (BOOL) newPushMessageForUser:(NSString *)userID;
++ (void) startChatWith:(NSNumber *)userID;
 
 @end

@@ -92,6 +92,15 @@
 	}
 }
 
++ (void) reset
+{
+	NSMutableDictionary *newEmptyDict = [[NSMutableDictionary alloc] init];
+	
+	[[self getInstnace] setObjectDict:newEmptyDict];
+	
+	[newEmptyDict release];
+}
+
 #pragma mark - updating flag
 
 - (void) markUpdatingStringID:(NSString *)ID
@@ -194,9 +203,6 @@
 {
 	if (CHECK_STRING(ID))
 	{
-		// refresh object from server 
-		[self requestObjectWithStringID:ID andHandler:nil andTarget:nil];
-		
 		return [[[self getInstnace] objectDict] valueForKey:ID];
 	}
 	else

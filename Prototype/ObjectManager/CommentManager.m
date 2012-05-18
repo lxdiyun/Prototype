@@ -77,9 +77,9 @@
 #pragma mark - overwrite super class method
 #pragma mark - overwrite handler
 
-- (void) getMethodHandler:(id)dict withListID:(NSString *)ID forward:(BOOL)forward
+- (void) getMethodHandler:(id)dict withListID:(NSString *)listID forward:(BOOL)forward
 {
-	[super getMethodHandler:dict withListID:ID forward:forward];
+	[super getMethodHandler:dict withListID:listID forward:forward];
 	
 	NSDictionary *messageDict = [(NSDictionary*)dict retain];
 	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];

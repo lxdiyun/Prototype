@@ -8,7 +8,6 @@
 
 #import "NativeLoginVC.h"
 
-#import <QuartzCore/QuartzCore.h>
 #import <CommonCrypto/CommonDigest.h>
 
 #import "Util.h"
@@ -51,8 +50,8 @@
 {
 	[super viewDidLoad];
 	
-	self.accountLabel.layer.cornerRadius = 8.0;
-	self.passwordLabel.layer.cornerRadius = 8.0;
+	ROUND_RECT(self.accountLabel.layer);
+	ROUND_RECT(self.passwordLabel.layer);
 	
 	self.title = @"美食玩家";
 }

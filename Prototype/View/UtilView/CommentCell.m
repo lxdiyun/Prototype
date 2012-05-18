@@ -81,7 +81,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	if (nil != self) 
 	{
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
-		self.contentView.backgroundColor = [Color orangeColor];
+		self.contentView.backgroundColor = [Color orange];
 		[self redrawAvatar];
 	}
 	return self;
@@ -108,24 +108,27 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 
 - (void) redrawAvatar
 {
-	if (nil != self.avatar)
+	@autoreleasepool 
 	{
-		[self.avatar removeFromSuperview];
+		if (nil != self.avatar)
+		{
+			[self.avatar removeFromSuperview];
+		}
+		
+		self.avatar = [AvatarV createFromXibWithFrame:CGRectMake(PADING1, 
+									 PADING3, 
+									 AVATOR_SIZE, 
+									 AVATOR_SIZE)];
+		
+		[self.contentView addSubview:self.avatar];
 	}
-	
-	self.avatar = [[[AvatarV alloc] initWithFrame:CGRectMake(PADING1, 
-								 PADING3, 
-								 AVATOR_SIZE, 
-								 AVATOR_SIZE)] 
-			     autorelease];
-	
-	[self.contentView addSubview:self.avatar];
 }
 
 - (void) redrawUserAndDate
 {
 	if (nil != self.userAndDate)
 	{
+		self.userAndDate.text = @"";
 		[self.userAndDate removeFromSuperview];
 	}
 	
@@ -145,10 +148,11 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	self.userAndDate.font = font;
 	self.userAndDate.adjustsFontSizeToFitWidth = YES;
 	self.userAndDate.backgroundColor = [UIColor clearColor];
-	self.userAndDate.textColor = [Color milkColor];
+	self.userAndDate.textColor = [Color milk];
 	
 	NSString *nick = @"";
 	NSString *createTime  = @"";
+
 	if (nil != self.userProfile)
 	{
 		nick = [self.userProfile valueForKey:@"nick"];
@@ -188,7 +192,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	self.comment.numberOfLines = 0;
 	self.comment.font = font;
 	self.comment.backgroundColor = [UIColor clearColor];
-	self.comment.textColor = [Color whiteColor];
+	self.comment.textColor = [UIColor whiteColor];
 	self.comment.lineBreakMode = UILineBreakModeWordWrap;
 	
 	if (nil != self.commentDict)
@@ -212,14 +216,15 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 		if (nil != userProfile)
 		{
 			self.userProfile = userProfile;
-			if (nil != self.userProfile)
-			{
-				self.avatar.user = self.userProfile;
-			}
+
+			self.avatar.user = self.userProfile;
+
 			[self redrawUserAndDate];
 		}
 		else
 		{
+			self.avatar.user = nil;
+
 			[ProfileMananger requestObjectWithNumberID:userID 
 							andHandler:@selector(requestUserProfile) 
 							 andTarget:self];

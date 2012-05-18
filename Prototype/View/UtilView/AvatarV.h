@@ -10,7 +10,7 @@
 #import "ImageV.h"
 #import "Util.h"
 
-@interface AvatarV : UIView
+@interface AvatarV : UIView <CustomXIBObject>
 
 - (IBAction)tap:(id)sender;
 

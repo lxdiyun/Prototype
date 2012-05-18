@@ -8,7 +8,7 @@
 
 #import "EventPage.h"
 
-#import "EGORefreshTableHeaderView.h"
+#import "PullToRefreshV.h"
 
 #import "Util.h"
 #import "FoodPage.h"
@@ -24,18 +24,18 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 	UITableView *_leftColumn;
 	UITableView *_rightColumn;
 	FoodPage *_foodPage;
-	EGORefreshTableHeaderView *_refreshHeaderView;
+	PullToRefreshV *_refreshHeaderView;
 	BOOL _pushed;
 	NSUInteger _eventCount;
 }
 
-@property (strong) UIScrollView *scrollColumn;
-@property (strong) UITableView *leftColumn;
-@property (strong) UITableView *rightColumn;
-@property (strong) FoodPage *foodPage;
-@property (strong) EGORefreshTableHeaderView *refreshHeaderView;
-@property (assign) BOOL pushed;
-@property (assign) NSUInteger eventCount;
+@property (strong, nonatomic) UIScrollView *scrollColumn;
+@property (strong, nonatomic) UITableView *leftColumn;
+@property (strong, nonatomic) UITableView *rightColumn;
+@property (strong, nonatomic) FoodPage *foodPage;
+@property (strong, nonatomic) PullToRefreshV *refreshHeaderView;
+@property (assign, nonatomic) BOOL pushed;
+@property (assign, nonatomic) NSUInteger eventCount;
 
 // event message
 - (void) requestOlderEvent;
@@ -79,7 +79,7 @@ DEFINE_SINGLETON(EventPage);
 	gs_frame_width = self.view.frame.size.width;
 	gs_frame_height = self.view.frame.size.height;
 	
-	self.view.backgroundColor = [Color brownColor];
+	self.view.backgroundColor = [Color brown];
 	
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.leftColumn indexPathForSelectedRow];
@@ -159,7 +159,7 @@ DEFINE_SINGLETON(EventPage);
 	if (nil == self.refreshHeaderView) 
 	{
 		
-		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] 
+		PullToRefreshV *view = [[PullToRefreshV alloc] 
 						   initWithFrame:CGRectMake(0.0f, 
 									    0.0f - self.leftColumn.bounds.size.height, 
 									    gs_frame_width,
@@ -447,17 +447,17 @@ static UIScrollView *trigerView = nil;
 
 #pragma mark - EGORefreshTableHeaderDelegate Methods
 
-- (void) egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+- (void) egoRefreshTableHeaderDidTriggerRefresh:(PullToRefreshV*)view
 {
 	[self requestNewerEvent];
 }
 
-- (BOOL) egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
+- (BOOL) egoRefreshTableHeaderDataSourceIsLoading:(PullToRefreshV*)view
 {
 	return [EventManager isNewerUpdating]; 
 }
 
-- (NSDate*) egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
+- (NSDate*) egoRefreshTableHeaderDataSourceLastUpdated:(PullToRefreshV*)view
 {
 	NSDate *updatedDate = [EventManager lastUpdatedDate];
 

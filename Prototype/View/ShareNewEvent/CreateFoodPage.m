@@ -72,7 +72,7 @@ static TagSelector *gs_tag_selector = nil;
 	{
 		@autoreleasepool 
 		{
-			self.view.backgroundColor = [Color lightyellowColor];
+			self.view.backgroundColor = [Color lightyellow];
 			self.header = [[[CreateFoodHeaderVC alloc] init] autorelease];
 			self.title = @"分享美食";
 		}
@@ -230,7 +230,7 @@ static TagSelector *gs_tag_selector = nil;
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
 					       reuseIdentifier:FOOD_DETAIL_TITLE[indexPath.row]] 
 			autorelease];
-		cell.textLabel.textColor = [Color grey2Color];
+		cell.textLabel.textColor = [Color grey2];
 		cell.textLabel.font = [UIFont systemFontOfSize:13.0];
 		cell.textLabel.text = FOOD_DETAIL_TITLE[indexPath.row];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -240,7 +240,7 @@ static TagSelector *gs_tag_selector = nil;
 			CGFloat X = 75.0;
 			CGFloat Y = 0.0;
 			CGFloat width = cell.contentView.frame.size.width - X - 28.0;
-			CGFloat height = 44;
+			CGFloat height = DEFAULT_CELL_HEIGHT;
 			gs_food_detail_text_view[indexPath.row] = [[UITextField alloc] initWithFrame:CGRectMake(X, 
 														Y, 
 														width, 
@@ -383,7 +383,7 @@ static TagSelector *gs_tag_selector = nil;
 		break;
 
 	default:
-		return 44;
+		return DEFAULT_CELL_HEIGHT;
 		break;
 	}
 }
@@ -566,7 +566,6 @@ static TagSelector *gs_tag_selector = nil;
 		gs_food_desc_inputer.sendButtonTitle = @"完成";
 		gs_food_desc_inputer.drawCancel = NO;
 		gs_food_desc_inputer.title = @"美食介绍";
-		[gs_food_desc_inputer redraw];
 	}
 
 	gs_food_desc_inputer.text.text = gs_food_desc_text_view.text;

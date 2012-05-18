@@ -44,6 +44,22 @@ NSInteger ID_SORTER(id ID1, id ID2, void *context)
 		return NSOrderedSame;
 }
 
+NSInteger LIST_RESULT_SORTER(id ID1, id ID2, void *context)
+{
+	if ([(id)context isKindOfClass:[NSDictionary class]])
+	{
+		uint32_t v1 = [[(NSDictionary *)context valueForKey:ID1] integerValue];
+		uint32_t v2 = [[(NSDictionary *)context valueForKey:ID2] integerValue];
+		
+		if (v1 > v2)
+			return NSOrderedAscending;
+		else if (v1 < v2)
+			return NSOrderedDescending;
+	}
+	
+	return NSOrderedSame;
+}
+
 NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context)
 {
 	uint32_t v1 = [ID1 integerValue];
@@ -185,6 +201,17 @@ void SHOW_ALERT_TEXT(NSString *title, NSString *message)
 	[alert release]; 
 }
 
+void ROUND_RECT(CALayer *layer)
+{
+	layer.cornerRadius = 8.0;
+}
+
+void CELL_BORDER(CALayer *layer)
+{
+	layer.borderWidth = 0.5;
+	layer.borderColor = [[Color darkyellow] CGColor];
+}
+
 void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
 {
 	bar.barStyle = UIBarStyleBlack;
@@ -195,6 +222,7 @@ void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
 		[bar setBackgroundImage:[UIImage imageNamed:@"DarkGrey.png"] forBarMetrics: UIBarMetricsDefault];
 	} 
 }
+
 
 static UIButton * create_image_button(UIImage *image,id target, SEL action)
 {
@@ -216,7 +244,7 @@ UIButton * SETUP_BUTTON(UIImage *image,id target, SEL action)
 {
 	UIButton *button = create_image_button(image, target, action);
 
-	button.backgroundColor = [Color grey3Color];
+	button.backgroundColor = [Color grey3];
 
 	return button;
 }
@@ -225,7 +253,7 @@ UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action)
 {
 	UIButton *button = SETUP_BUTTON(image, target, action);
 
-	button.layer.cornerRadius = 5.0;
+	ROUND_RECT(button.layer);
 
 	return [[[UIBarButtonItem alloc] initWithCustomView:button] autorelease];
 }
@@ -244,17 +272,36 @@ UIBarButtonItem * SETUP_BACK_BAR_BUTTON(id target, SEL action)
 	return [[[UIBarButtonItem alloc] initWithCustomView:SETUP_BACK_BUTTON(target, action)] autorelease];
 }
 
+const static CGFloat BUTTON_FONT_SIZE = 12.0;
+const static CGFloat BUTTON_HEIGHT_PADDING = 15.0;
+const static CGFloat BUTTON_WIDTH_PADDING = 25.0;
+
 UIButton * SETUP_TEXT_BUTTON(NSString *title, id target, SEL action)
 {
-	UIButton *button = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 64, 30)] autorelease];
-	[button.titleLabel setFont:[UIFont systemFontOfSize:12.0]];
+	static UIFont *s_font = nil;
+	
+	if (nil == s_font)
+	{
+		@autoreleasepool 
+		{
+			s_font = [[UIFont systemFontOfSize:BUTTON_FONT_SIZE] retain];
+		}
+		
+	}
+	
+	CGSize size = [title sizeWithFont:s_font];
+	size.width += BUTTON_WIDTH_PADDING;
+	size.height += BUTTON_HEIGHT_PADDING;
+	UIButton *button = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)] autorelease];
+	
+	[button.titleLabel setFont:s_font];
 	[button setTitle:title forState:UIControlStateNormal];
 	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-	[button setTitleColor:[Color grey1Color] forState:UIControlStateHighlighted];
-	[button setTitleColor:[Color darkgreyColor] forState:UIControlStateDisabled];
+	[button setTitleColor:[Color grey1] forState:UIControlStateHighlighted];
+	[button setTitleColor:[Color darkgrey] forState:UIControlStateDisabled];
 	[button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
-	button.backgroundColor = [Color grey3Color];
-	button.layer.cornerRadius = 5.0;
+	button.backgroundColor = [Color grey3];
+	ROUND_RECT(button.layer);
 	
 	return button;
 }
@@ -335,11 +382,23 @@ UIColor * GET_COLOR_FOR_SCORE(double score)
 {
 	if (score >= 8)
 	{
-		return [Color blueColor];
+		return [Color blue];
 	}
 	else 
 	{
-		return [Color grey2Color];
+		return [Color grey2];
+	}
+}
+
+void HANDLE_MEMORY_WARNING(UIViewController *vc)
+{
+	if (nil == vc.view.superview)
+	{
+		NSMutableArray *allViewControllers =  [vc.navigationController.viewControllers mutableCopy];
+		[allViewControllers removeObjectIdenticalTo: vc];
+		vc.navigationController.viewControllers = allViewControllers;
+		
+		[allViewControllers release];
 	}
 }
 

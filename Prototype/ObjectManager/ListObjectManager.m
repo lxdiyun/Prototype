@@ -100,7 +100,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 + (id) getInstnace
 {
-	LOG(@"Error should use the subclass method");
+	LOG(@"%@: Error should use the subclass method", [self class]);
 	return nil;
 }
 
@@ -187,7 +187,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 
-- (NSInteger) newestKeyWithlistID:(NSString *)listID
+- (NSInteger) newestCursorWithlistID:(NSString *)listID
 {
 	NSInteger objectKey = 0;
 	
@@ -201,7 +201,12 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	return objectKey;
 }
 
-- (NSInteger) oldestKeyWithlistID:(NSString *)listID
+- (NSInteger) cursorForObject:(NSString *)objectID inlist:(NSString *)listID
+{
+	return [objectID integerValue];
+}
+
+- (NSInteger) oldestCursorWithlistID:(NSString *)listID
 {
 	NSInteger objectKey = 0;
 	
@@ -218,12 +223,12 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 + (NSInteger) oldestKeyForList:(NSString *)listID
 {
-	return [[self getInstnace] oldestKeyWithlistID:listID];
+	return [[self getInstnace] oldestCursorWithlistID:listID];
 }
 
 + (NSInteger) newestKeyForList:(NSString *)listID
 {
-	return [[self getInstnace] newestKeyWithlistID:listID];
+	return [[self getInstnace] newestCursorWithlistID:listID];
 }
 
 #pragma mark - object in list
@@ -239,6 +244,24 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[self requestMiddle:objectID inListID:listID andCount:1 withHandler:nil andTarget:nil];
 	
 	return [[[[self getInstnace] objectDict] valueForKey:listID] valueForKey:objectID];
+}
+
++ (void) setObject:(NSDictionary *)object 
+      withStringID:(NSString *)objectID 
+	    inList:(NSString *)listID
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	if (!CHECK_STRING(objectID))
+	{
+		return;
+	}
+	
+	[[[[self getInstnace] objectDict] valueForKey:listID] setValue:object 
+								forKey:objectID];
 }
 
 #pragma mark - updating flag
@@ -552,12 +575,12 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t newestKey = [self newestKeyWithlistID:listID];
+	uint32_t newestKey = [self newestCursorWithlistID:listID];
 	
 	// this will call the sub class method
 	[request setValue:self.getMethodString forKey:@"method"];
 	[self configGetMethodParams:params forList:listID];
-	
+
 	if (0 < newestKey)
 	{
 		[self setParms:params withCursor:newestKey count:count forward:NO];
@@ -602,7 +625,10 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[request setValue:self.getMethodString forKey:@"method"];
 	[self configGetMethodParams:params forList:listID];
 	
-	[self setParms:params withCursor:[objectID intValue] count:count forward:YES];
+	[self setParms:params 
+	    withCursor:[self cursorForObject:objectID inlist:listID]
+		 count:count 
+	       forward:YES];
 	
 	if (0 < params.count)
 	{
@@ -632,7 +658,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t oldestKey = [self oldestKeyWithlistID:listID];
+	uint32_t oldestKey = [self oldestCursorWithlistID:listID];
 	
 	// this will call the sub class method
 	[request setValue:self.getMethodString forKey:@"method"];
@@ -706,7 +732,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		return;	
 	}
 	
-	if (0 >= [[self getInstnace] oldestKeyWithlistID:listID])
+	if (0 >= [[self getInstnace] oldestCursorWithlistID:listID])
 	{
 		[self requestNewerWithListID:listID andCount:count withHandler:handler andTarget:target];
 		return;

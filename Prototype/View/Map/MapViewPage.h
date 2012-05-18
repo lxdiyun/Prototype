@@ -13,5 +13,6 @@
 - (void) showAllPlaces;
 
 @property (strong, nonatomic) NSDictionary *mapObject;
+@property (assign, nonatomic) BOOL saveWhenLeaved;
 
 @end

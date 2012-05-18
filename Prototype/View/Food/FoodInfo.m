@@ -8,8 +8,6 @@
 
 #import "FoodInfo.h"
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "Util.h"
 #import "ProfileMananger.h"
 #import "MapViewPage.h"
@@ -102,7 +100,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 	if (flag)
 	{
-		[self addTagwithColor:[Color specailColor] andText:@"特色"];
+		[self addTagwithColor:[Color specail] andText:@"特色"];
 	}
 }
 
@@ -122,7 +120,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 	if (flag)
 	{
-		[self addTagwithColor:[Color healthyColor] andText:@"健康"];
+		[self addTagwithColor:[Color healthy] andText:@"健康"];
 	}
 }
 
@@ -245,7 +243,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 
 - (void) viewDidLoad
 {
-	self.buttons.layer.cornerRadius = 5.0;
+	ROUND_RECT(self.buttons.layer);
 	self.avatar.delegate = self.delegate;
 }
 

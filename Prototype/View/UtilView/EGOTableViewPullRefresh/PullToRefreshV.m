@@ -1,5 +1,5 @@
 //
-//  EGORefreshTableHeaderView.m
+//  PullToRefreshWhite.m
 //  Demo
 //
 //  Created by Devin Doty on 10/14/09October14.
@@ -24,30 +24,33 @@
 //  THE SOFTWARE.
 //
 
-#import "EGORefreshTableHeaderView.h"
-
-#import "Util.h"
+#import "PullToRefreshV.h"
 
 
 #define TEXT_COLOR	 [UIColor colorWithRed:87.0/255.0 green:108.0/255.0 blue:137.0/255.0 alpha:1.0]
 #define FLIP_ANIMATION_DURATION 0.18f
 
 
-@interface EGORefreshTableHeaderView (Private)
+@interface PullToRefreshV (Private)
 - (void)setState:(EGOPullRefreshState)aState;
 @end
 
-@implementation EGORefreshTableHeaderView
+@implementation PullToRefreshV
 
 @synthesize delegate=_delegate;
 
 
-- (id)initWithFrame:(CGRect)frame arrowImageName:(NSString *)arrow textColor:(UIColor *)textColor  {
-    if((self = [super initWithFrame:frame])) {
+- (id)initWithFrame:(CGRect)frame 
+     arrowImageName:(NSString *)arrow 
+	  textColor:(UIColor *)textColor  
+	  indicator:(UIActivityIndicatorViewStyle)style
+{
+	if((self = [super initWithFrame:frame])) 
+	{
 		
 		self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		self.backgroundColor = [Color brownColor];
-
+		self.backgroundColor = [UIColor clearColor];
+		
 		UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height - 30.0f, self.frame.size.width, 20.0f)];
 		label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		label.font = [UIFont systemFontOfSize:12.0f];
@@ -86,7 +89,7 @@
 		[[self layer] addSublayer:layer];
 		_arrowImage=layer;
 		
-		UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+		UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
 		view.frame = CGRectMake(25.0f, frame.size.height - 38.0f, 20.0f, 20.0f);
 		[self addSubview:view];
 		_activityView = view;
@@ -95,14 +98,17 @@
 		
 		[self setState:EGOOPullRefreshNormal];
 		
-    }
+	}
 	
-    return self;
+	return self;
 	
 }
 
 - (id)initWithFrame:(CGRect)frame  {
-  return [self initWithFrame:frame arrowImageName:@"whiteArrow.png" textColor:[UIColor whiteColor]];
+	return [self initWithFrame:frame 
+		    arrowImageName:@"whiteArrow.png" 
+			 textColor:[UIColor whiteColor] 
+			 indicator:UIActivityIndicatorViewStyleWhite];
 }
 
 #pragma mark -
@@ -118,7 +124,7 @@
 		NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
 		[dateFormatter setDateStyle:NSDateFormatterShortStyle];
 		[dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-
+		
 		_lastUpdatedLabel.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Last Updated", nil), [dateFormatter stringFromDate:date]];
 		[[NSUserDefaults standardUserDefaults] setObject:_lastUpdatedLabel.text forKey:@"EGORefreshTableView_LastRefresh"];
 		[[NSUserDefaults standardUserDefaults] synchronize];
@@ -128,10 +134,11 @@
 		_lastUpdatedLabel.text = nil;
 		
 	}
-
+	
 }
 
-- (void)setState:(EGOPullRefreshState)aState{
+- (void) setState:(EGOPullRefreshState)aState
+{
 	
 	switch (aState) {
 		case EGOOPullRefreshPulling:
@@ -244,7 +251,7 @@
 	[UIView commitAnimations];
 	
 	[self setState:EGOOPullRefreshNormal];
-
+	
 }
 
 
@@ -258,7 +265,7 @@
 	_statusLabel = nil;
 	_arrowImage = nil;
 	_lastUpdatedLabel = nil;
-    [super dealloc];
+	[super dealloc];
 }
 
 
