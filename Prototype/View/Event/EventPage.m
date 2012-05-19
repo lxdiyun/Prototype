@@ -370,6 +370,13 @@ DEFINE_SINGLETON(EventPage);
 	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.leftColumn];
 }
 
+- (void) requestNewestEvent
+{
+	[EventManager requestNewestCount:EVENT_REFRESH_WINDOW 
+			    withHandler:@selector(requestNewerEventHandler:) 
+			      andTarget:self];
+}
+
 - (void) requestNewerEvent
 {	
 	[EventManager requestNewerCount:EVENT_REFRESH_WINDOW 
@@ -451,12 +458,12 @@ static UIScrollView *trigerView = nil;
 
 - (void) egoRefreshTableHeaderDidTriggerRefresh:(PullToRefreshV*)view
 {
-	[self requestNewerEvent];
+	[self requestNewestEvent];
 }
 
 - (BOOL) egoRefreshTableHeaderDataSourceIsLoading:(PullToRefreshV*)view
 {
-	return [EventManager isNewerUpdating]; 
+	return [EventManager isNewestUpdating]; 
 }
 
 - (NSDate*) egoRefreshTableHeaderDataSourceLastUpdated:(PullToRefreshV*)view

@@ -240,9 +240,6 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		return nil;	
 	}
 	
-	// refresh object from server
-	[self requestMiddle:objectID inListID:listID andCount:1 withHandler:nil andTarget:nil];
-	
 	return [[[[self getInstnace] objectDict] valueForKey:listID] valueForKey:objectID];
 }
 
@@ -459,6 +456,15 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {	
 	switch (type) 
 	{
+		case REQUEST_NEWEST:
+		{
+			NSDate *date =  [NSDate date];
+			
+			[self.lastUpdatedDateDict setValue:date forKey:ID];
+			
+			[self getMethodHandler:dict withListID:ID forward:YES];
+		}
+			break;
 		case REQUEST_NEWER:
 		{
 			NSDate *date =  [NSDate date];
@@ -575,6 +581,41 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[params setValue:[NSNumber numberWithInteger:cursor] forKey:@"cursor"];
 	[params setValue:[NSNumber numberWithInteger:count] forKey:@"count"];
 	[params setValue:[NSNumber numberWithBool:forward] forKey:@"forwarding"];
+}
+
+- (void) sendRequestNewestWithCount:(uint32_t)count withListID:(NSString *)listID
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	
+	// this will call the sub class method
+	[request setValue:self.getMethodString forKey:@"method"];
+	[self configGetMethodParams:params forList:listID];
+	
+	[self setParms:params withCursor:-1 count:count forward:YES];
+	
+	if (0 < params.count)
+	{
+		[request setValue:params forKey:@"params"];
+	}
+	
+	uint32_t messageID = GET_MSG_ID();
+	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
+	
+	// bind the handler
+	[self bindMessageID:messageIDString withListID:[listID intValue] withType:REQUEST_NEWEST];
+	
+	// then send
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
+						      self, 
+						      @selector(messageDispatcher:), 
+						      NORMAL_PRIORITY,
+						      messageID);
+	
+	
+	[messageIDString release];
+	[params release];
+	[request release];
 }
 
 - (void) sendRequestNewerWithCount:(uint32_t)count withListID:(NSString *)listID
@@ -703,6 +744,31 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[request release];
 }
 
++ (void) requestNewestWithListID:(NSString *)listID 
+			andCount:(uint32_t)count 
+		     withHandler:(SEL)handler 
+		       andTarget:(id)target
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	if (NO == [self requestUpdateWith:REQUEST_NEWEST withListID:listID])
+	{
+		return;
+	}
+	
+	// bind target
+	[[self getInstnace] bindMessageType:REQUEST_NEWEST 
+				 withListID:listID 
+				withHandler:handler 
+				  andTarget:target];
+	
+	// then send request
+	[[self getInstnace] sendRequestNewestWithCount:count withListID:listID];
+}
+
 + (void) requestNewerWithListID:(NSString *)listID 
 		       andCount:(uint32_t)count 
 		    withHandler:(SEL)handler 
@@ -726,34 +792,6 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	
 	// then send request
 	[[self getInstnace] sendRequestNewerWithCount:count withListID:listID];
-}
-
-+ (void) requestOlderWithListID:(NSString *)listID 
-		       andCount:(uint32_t)count 
-		    withHandler:(SEL)handler 
-		      andTarget:(id)target
-{
-	if (!CHECK_STRING(listID))
-	{
-		return;	
-	}
-	
-	if (0 >= [[self getInstnace] oldestCursorWithlistID:listID])
-	{
-		[self requestNewerWithListID:listID andCount:count withHandler:handler andTarget:target];
-		return;
-	}
-	
-	if (NO == [self requestUpdateWith:REQUEST_OLDER withListID:listID])
-	{
-		return;
-	}
-	
-	// bind target
-	[[self getInstnace] bindMessageType:REQUEST_OLDER withListID:listID withHandler:handler andTarget:target ];
-	
-	// then send request
-	[[self getInstnace] sendRequestOlderWithCount:count withListID:listID];
 }
 
 + (void) requestMiddle:(NSString *)objectID
@@ -782,6 +820,34 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	
 	// then send request
 	[[self getInstnace] sendRequestMiddle:objectID withCount:count withListID:listID];
+}
+
++ (void) requestOlderWithListID:(NSString *)listID 
+		       andCount:(uint32_t)count 
+		    withHandler:(SEL)handler 
+		      andTarget:(id)target
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	if (0 >= [[self getInstnace] oldestCursorWithlistID:listID])
+	{
+		[self requestNewerWithListID:listID andCount:count withHandler:handler andTarget:target];
+		return;
+	}
+	
+	if (NO == [self requestUpdateWith:REQUEST_OLDER withListID:listID])
+	{
+		return;
+	}
+	
+	// bind target
+	[[self getInstnace] bindMessageType:REQUEST_OLDER withListID:listID withHandler:handler andTarget:target ];
+	
+	// then send request
+	[[self getInstnace] sendRequestOlderWithCount:count withListID:listID];
 }
 
 #pragma mark create method - handler

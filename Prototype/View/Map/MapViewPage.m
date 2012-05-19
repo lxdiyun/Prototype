@@ -323,6 +323,8 @@ typedef enum MAP_MENU_ENUM
 	}
 }
 
+#pragma mark - view life circle
+
 - (void) viewWillAppear:(BOOL)animated
 {
 	PLACE_DETAIL_HEIGHT = CONST_PLACE_DETAIL_HEIGHT * PROPORTION();
@@ -352,9 +354,6 @@ typedef enum MAP_MENU_ENUM
 
 	// add the annoation first
 	[self updateGUI];
-	
-	// then show the user location
-	self.mapView.showsUserLocation = YES;
 }
 
 - (void) viewDidLoad
@@ -613,6 +612,15 @@ typedef enum MAP_MENU_ENUM
 
 - (void) showInSystemMap
 {
+	if (!self.mapView.showsUserLocation)
+	{
+		// then show the user location
+		self.mapView.showsUserLocation = YES;
+		[self performSelector:@selector(showInSystemMap) withObject:nil	afterDelay:1.0];
+		
+		return;
+	}
+
 	@autoreleasepool 
 	{
 		MapAnnotation *selectedAnnotation = [self.mapView.selectedAnnotations objectAtIndex:0];

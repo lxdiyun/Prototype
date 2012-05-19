@@ -61,6 +61,22 @@ DEFINE_SINGLETON(FoodMapListManager);
 }
 
 #pragma mark - overwrite super class method
+
+#pragma mark - overwrite get and set
+
++ (id) getObject:(NSString *)objectID inList:(NSString *)listID
+{
+	if (!CHECK_STRING(listID))
+	{
+		return nil;	
+	}
+	
+	// refresh object from server
+	[self requestMiddle:objectID inListID:listID andCount:1 withHandler:nil andTarget:nil];
+	
+	return [[[[self getInstnace] objectDict] valueForKey:listID] valueForKey:objectID];
+}
+
 #pragma mark - overwrite super classs get method
 
 - (void) configGetMethodParams:(NSMutableDictionary *)params forList:(NSString *)listID

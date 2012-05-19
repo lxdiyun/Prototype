@@ -8,9 +8,11 @@
 #import "ListObjectManager.h"
 
 @interface EventManager : ListObjectManager
++ (void) requestNewestCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
 + (void) requestOlderCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target;
 + (NSArray *) keyArray;
++ (BOOL) isNewestUpdating;
 + (BOOL) isNewerUpdating;
 + (NSDate *) lastUpdatedDate;
 + (NSDictionary *) getObjectWithStringID:(NSString *)objectID;

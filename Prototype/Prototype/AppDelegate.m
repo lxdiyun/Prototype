@@ -212,7 +212,6 @@ static UIViewController *gs_currentViewController;
 	[EventPage requestUpdate];
 	[EventPage reloadData];
 	[UserInfoPage reloadData];
-	[PublicFoodMapListPage reloadData];
 }
 
 + (void) showPage:(MSWJ_PAGE)page

@@ -150,11 +150,4 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 	return foodMap;
 }
 
-#pragma mark - class interface
-
-+ (void) reloadData
-{
-	[[[self getInstnace] tableView] reloadData];
-}
-
 @end

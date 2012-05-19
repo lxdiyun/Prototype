@@ -7,13 +7,14 @@
 
 typedef enum MESSAGE_TYPE_ENUM
 {
-	REQUEST_NEWER = 0x0,
-	REQUEST_MIDDLE= 0x1,
-	REQUEST_OLDER = 0x2,
-	LIST_OBJECT_CREATE = 0x3,
-	LIST_OBJECT_READ = 0x4,
-	LIST_OBJECT_UPDATE = 0x5,
-	LIST_OBJECT_DELETE = 0x6,
+	REQUEST_NEWEST = 0x0,
+	REQUEST_NEWER = 0x1,
+	REQUEST_MIDDLE= 0x2,
+	REQUEST_OLDER = 0x3,
+	LIST_OBJECT_CREATE = 0x4,
+	LIST_OBJECT_READ = 0x5,
+	LIST_OBJECT_UPDATE = 0x6,
+	LIST_OBJECT_DELETE = 0x7,
 	MAX_MESSAGE
 } LIST_OBJECT_MESSAGE_TYPE;
 
@@ -56,6 +57,11 @@ typedef enum MESSAGE_TYPE_ENUM
 + (NSDate *) lastUpdatedDateForList:(NSString *)listID;
 
 // get method
++ (void) requestNewestWithListID:(NSString *)listID 
+		       andCount:(uint32_t)count 
+		    withHandler:(SEL)handler 
+		      andTarget:(id)target;
+
 + (void) requestNewerWithListID:(NSString *)listID 
 		       andCount:(uint32_t)count 
 		    withHandler:(SEL)handler 

@@ -10,6 +10,4 @@
 
 @interface PublicFoodMapListPage : ListPage
 
-+ (void) reloadData;
-
 @end
