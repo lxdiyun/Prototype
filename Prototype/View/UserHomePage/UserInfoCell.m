@@ -38,7 +38,7 @@ DEFINE_CUSTOM_XIB(UserInfoCell);
 	else 
 	{
 		self.chat.hidden = NO;
-		self.background.image = [UIImage imageNamed:@"background1.png"];
+		self.background.image = [UIImage imageNamed:@"background3.png"];
 	}
 }
 

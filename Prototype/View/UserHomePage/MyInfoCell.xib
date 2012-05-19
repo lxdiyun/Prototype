@@ -49,11 +49,12 @@
 								<reference key="NSSuperview" ref="845287650"/>
 								<reference key="NSNextKeyView" ref="156343126"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
+								<int key="IBUIContentMode">5</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">background2.png</string>
+									<string key="NSResourceName">background3.png</string>
 								</object>
 							</object>
 							<object class="IBUIView" id="925464212">
@@ -516,7 +517,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="UserBG_Pic.png">{20, 16}</string>
-			<string key="background2.png">{16, 16}</string>
+			<string key="background3.png">{320, 320}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1181</string>
 	</data>

@@ -81,7 +81,7 @@ DEFINE_SINGLETON(EventManager);
 	}
 }
 
-+ (NSDate *)lastUpdatedDate
++ (NSDate *) lastUpdatedDate
 {
 	return [self lastUpdatedDateForList:gs_fakeListID];
 }
@@ -152,6 +152,25 @@ DEFINE_SINGLETON(EventManager);
 	[newUserSet release];
 	[newPicSet release];
 	[messageDict release];
+}
+
+#pragma mark - class method
+
++ (void) removeEventsForUser:(NSNumber *)userID
+{
+	NSDictionary *allEvents = [[[self getInstnace] objectDict] valueForKey:gs_fakeListID];
+	
+	for (NSString *eventKey in [allEvents allKeys]) 
+	{
+		NSDictionary *object = [[allEvents valueForKey:eventKey] valueForKey:@"obj"] ;
+		
+		if (CHECK_EQUAL(userID, [object valueForKey:@"user"]))
+		{
+			[allEvents setValue:nil forKey:eventKey];
+		}
+	}
+	
+	[[self getInstnace] updateKeyArrayForList:gs_fakeListID withResult:nil forward:NO];
 }
 
 @end

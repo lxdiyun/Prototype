@@ -556,10 +556,12 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	if (isFollowing)
 	{
 		self.navigationItem.rightBarButtonItem = self.unFollowButton;
+		self.unFollowButton.enabled = YES;
 	}
 	else
 	{
 		self.navigationItem.rightBarButtonItem = self.followButton;
+		self.followButton.enabled = YES;
 	}
 	
 }
@@ -722,11 +724,13 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 - (void) follow
 {
 	[FollowingListManager follow:self.userID with:@selector(followResultHandler:) and:self];
+	self.followButton.enabled = NO;
 }
 
 - (void) unfollow
 {
 	[FollowingListManager unFollow:self.userID with:@selector(followResultHandler:) and:self];
+	self.unFollowButton.enabled = NO;
 }
 
 @end

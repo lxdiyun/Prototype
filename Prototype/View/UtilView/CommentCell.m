@@ -218,8 +218,6 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 			self.userProfile = userProfile;
 
 			self.avatar.user = self.userProfile;
-
-			[self redrawUserAndDate];
 		}
 		else
 		{
@@ -229,6 +227,8 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 							andHandler:@selector(requestUserProfile) 
 							 andTarget:self];
 		}
+		
+		[self redrawUserAndDate];
 	}
 }
 

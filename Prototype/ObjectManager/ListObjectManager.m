@@ -262,6 +262,8 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	
 	[[[[self getInstnace] objectDict] valueForKey:listID] setValue:object 
 								forKey:objectID];
+	
+	[[self getInstnace] updateKeyArrayForList:listID withResult:nil forward:NO];
 }
 
 #pragma mark - updating flag
@@ -471,10 +473,14 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 			[self getMethodHandler:dict withListID:ID forward:YES];
 			break;
 		case LIST_OBJECT_CREATE:
-			[self createMethodHanlder:dict withListID:ID];
+			[self createMethodHandler:dict withListID:ID];
 			break;
 		case LIST_OBJECT_UPDATE:
 			[self updateMethodHandler:dict withListID:ID];
+			break;
+		case LIST_OBJECT_DELETE:
+			[self deleteMethodHandler:dict withListID:ID];
+			break;
 		default:
 			break;
 	}
@@ -780,7 +786,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 #pragma mark create method - handler
 
-- (void) createMethodHanlder:(id)result withListID:(NSString *)listID;
+- (void) createMethodHandler:(id)result withListID:(NSString *)listID
 {
 	NSDictionary *messageDict = [(NSDictionary*)result retain];
 	NSMutableArray *resultArray = [[NSMutableArray alloc] init];
@@ -869,7 +875,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 #pragma mark update method - handler
 
-- (void) updateMethodHandler:(id)result withListID:(NSString *)listID;
+- (void) updateMethodHandler:(id)result withListID:(NSString *)listID
 {
 	NSDictionary *messageDict = [(NSDictionary*)result retain];
 	NSMutableArray *resultArray = [[NSMutableArray alloc] init];
@@ -955,6 +961,76 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	
 	// then send request
 	[[self getInstnace] sendRequestUpdateForObject:object inList:listID];
+}
+
+#pragma mark - delete method - handler
+
+- (void) deleteMethodHandler:(id)result withListID:(NSString *)listID
+{
+	
+}
+
+#pragma mark - delete method - request
+
+- (void) configDeleteMethodParams:(NSMutableDictionary *)params 
+			forObject:(NSString *)objectID
+			   inList:(NSString *)listID
+{
+	// default do nothing
+}
+
+- (void) sendRequestDeleteForObject:(NSString *)objectID
+			     inList:(NSString *)listID
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	
+	// this will call the sub class method
+	[request setValue:self.deleteMethodString forKey:@"method"];
+	[self configDeleteMethodParams:params forObject:objectID inList:listID];
+	
+	if (0 < params.count)
+	{
+		[request setValue:params forKey:@"params"];
+	}
+	
+	uint32_t messageID = GET_MSG_ID();
+	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
+	
+	// bind the handler
+	[self bindMessageID:messageIDString withListID:[listID intValue] withType:LIST_OBJECT_DELETE];
+	
+	// then send
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
+						      self, 
+						      @selector(messageDispatcher:), 
+						      NORMAL_PRIORITY,
+						      messageID);
+	
+	
+	[messageIDString release];
+	[params release];
+	[request release];
+}
+
++ (void) requestDeleteWithObject:(NSString *)objectID
+			  inList:(NSString *)listID 
+		     withHandler:(SEL)handler 
+		       andTarget:(id)target
+{
+	if (!CHECK_STRING(listID))
+	{
+		return;	
+	}
+	
+	// bind target
+	[[self getInstnace] bindMessageType:LIST_OBJECT_DELETE 
+				 withListID:listID 
+				withHandler:handler 
+				  andTarget:target];
+	
+	// then send request
+	[[self getInstnace] sendRequestDeleteForObject:objectID inList:listID];
 }
 
 @end

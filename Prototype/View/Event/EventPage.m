@@ -78,6 +78,7 @@ DEFINE_SINGLETON(EventPage);
 {
 	gs_frame_width = self.view.frame.size.width;
 	gs_frame_height = self.view.frame.size.height;
+	UIViewAutoresizing reszingMakr = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 	
 	self.view.backgroundColor = [Color brown];
 	
@@ -100,6 +101,7 @@ DEFINE_SINGLETON(EventPage);
 		view.backgroundColor = [UIColor clearColor];
 		view.bounces = NO;
 		view.scrollsToTop = NO;
+		view.autoresizingMask = reszingMakr;
 		
 		[self.view addSubview:view];
 		self.scrollColumn = view;
@@ -124,6 +126,7 @@ DEFINE_SINGLETON(EventPage);
 		view.alwaysBounceVertical = NO;
 		view.bounces = NO;
 		view.scrollsToTop = NO;
+		view.autoresizingMask = reszingMakr;
 
 		[self.scrollColumn addSubview:view];
 		self.leftColumn = view;
@@ -148,6 +151,7 @@ DEFINE_SINGLETON(EventPage);
 		view.alwaysBounceVertical = NO;
 		view.bounces = NO;
 		view.scrollsToTop = YES;
+		view.autoresizingMask = reszingMakr;
 		
 		[self.scrollColumn addSubview:view];
 		self.rightColumn = view;
@@ -166,13 +170,12 @@ DEFINE_SINGLETON(EventPage);
 									    self.leftColumn.bounds.size.height)];
 		
 		view.delegate = self;
+		view.autoresizingMask = reszingMakr;
 		[self.leftColumn addSubview:view];
 		
 		self.refreshHeaderView = view;
 		[view release];
 	}
-	
-	self.pushed = NO;
 }
 
 - (void) viewDidLoad
@@ -181,15 +184,7 @@ DEFINE_SINGLETON(EventPage);
 
 	[self setTitle:@"新鲜事"];
 	
-	UIView *view = [[UIView alloc] init];
-	self.view = view;
-	[view release];
-
-	//  update the last update date
-	[self.refreshHeaderView refreshLastUpdatedDate];
-
-	// triger message
-	[self requestNewerEvent];
+	[self setupView];
 }
 
 - (void) viewDidUnload
@@ -206,10 +201,17 @@ DEFINE_SINGLETON(EventPage);
 }
 
 - (void) viewWillAppear:(BOOL)animated
-{	
-	[self setupView];
-	
+{		
 	[super viewWillAppear:animated];
+
+	
+	//  update the last update date
+	[self.refreshHeaderView refreshLastUpdatedDate];
+	
+	// triger message
+	[self requestNewerEvent];
+	
+	self.pushed = NO;
 }
 
 - (void) viewDidAppear:(BOOL)animated

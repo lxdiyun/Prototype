@@ -133,12 +133,12 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "359021884.982636"
+         timestampString = "359092943.561059"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "806"
-         endingLineNumber = "806"
-         landmarkName = "-createMethodHanlder:withListID:"
+         startingLineNumber = "808"
+         endingLineNumber = "808"
+         landmarkName = "-createMethodHandler:withListID:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -147,12 +147,12 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "359021884.982636"
+         timestampString = "359092943.561059"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "800"
-         endingLineNumber = "800"
-         landmarkName = "-createMethodHanlder:withListID:"
+         startingLineNumber = "802"
+         endingLineNumber = "802"
+         landmarkName = "-createMethodHandler:withListID:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -708,11 +708,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "359021884.982636"
+         timestampString = "359092943.561059"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "775"
-         endingLineNumber = "775"
+         startingLineNumber = "777"
+         endingLineNumber = "777"
          landmarkName = "+requestMiddle:inListID:andCount:withHandler:andTarget:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -721,24 +721,24 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "359021884.982636"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "769"
-         endingLineNumber = "769"
-         landmarkName = "+requestMiddle:inListID:andCount:withHandler:andTarget:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "ObjectManager/ListObjectManager.m"
-         timestampString = "359021884.982636"
+         timestampString = "359092943.561059"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "771"
          endingLineNumber = "771"
+         landmarkName = "+requestMiddle:inListID:andCount:withHandler:andTarget:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/ListObjectManager.m"
+         timestampString = "359092943.561059"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "773"
+         endingLineNumber = "773"
          landmarkName = "+requestMiddle:inListID:andCount:withHandler:andTarget:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1737,6 +1737,162 @@
          startingLineNumber = "97"
          endingLineNumber = "97"
          landmarkName = "-tap:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/UserHomePage/HomePage.m"
+         timestampString = "359096025.313689"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "720"
+         endingLineNumber = "720"
+         landmarkName = "-followResultHandler:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/FollowingListManager.m"
+         timestampString = "359091863.146943"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "61"
+         endingLineNumber = "61"
+         landmarkName = "-createMethodHandler:withListID:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/FollowingListManager.m"
+         timestampString = "359091863.146943"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "101"
+         endingLineNumber = "101"
+         landmarkName = "-deleteMethodHandler:withListID:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/ListObjectManager.m"
+         timestampString = "359092943.561059"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "488"
+         endingLineNumber = "488"
+         landmarkName = "-handlerForType:withDict:withID:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/ListObjectManager.m"
+         timestampString = "359092943.561059"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "401"
+         endingLineNumber = "401"
+         landmarkName = "-checkAndPerformResponderWithType:withListID:forResult:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/ListObjectManager.m"
+         timestampString = "359092943.561059"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "405"
+         endingLineNumber = "405"
+         landmarkName = "-checkAndPerformResponderWithType:withListID:forResult:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "NetworkService/MessageReader.m"
+         timestampString = "359092203.891389"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "106"
+         endingLineNumber = "106"
+         landmarkName = "-performWithObject:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "NetworkService/MessageReader.m"
+         timestampString = "359092239.737097"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "110"
+         endingLineNumber = "110"
+         landmarkName = "-performWithObject:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/UserHomePage/HomePage.m"
+         timestampString = "359096025.313689"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "716"
+         endingLineNumber = "716"
+         landmarkName = "-followResultHandler:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Event/EventPage.m"
+         timestampString = "359095238.348715"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "395"
+         endingLineNumber = "395"
+         landmarkName = "-refreshTableViewWithAnimationAndResult:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Event/EventPage.m"
+         timestampString = "359095238.348715"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "82"
+         endingLineNumber = "82"
+         landmarkName = "-setupView"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Event/EventPage.m"
+         timestampString = "359095238.348715"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "83"
+         endingLineNumber = "83"
+         landmarkName = "-setupView"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

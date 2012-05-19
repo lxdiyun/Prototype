@@ -31,6 +31,7 @@
 		482059EC1564FB58005A75F8 /* InfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 482059EB1564FB58005A75F8 /* InfoCell.m */; };
 		482059F21564FEBE005A75F8 /* MyInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 482059F11564FEBE005A75F8 /* MyInfoCell.m */; };
 		48205A07156501E8005A75F8 /* MyInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48205A06156501E8005A75F8 /* MyInfoCell.xib */; };
+		4825C51B156650AC0077E45F /* background3.png in Resources */ = {isa = PBXBuildFile; fileRef = 4825C51A156650AC0077E45F /* background3.png */; };
 		4832407C14A9A4150084584F /* AvatarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatarCell.m */; };
 		4832408914A9B9BC0084584F /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832408814A9B9BC0084584F /* EventCell.m */; };
 		48333C45151309AE003475BE /* MapViewPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48333C44151309AE003475BE /* MapViewPage.m */; };
@@ -413,6 +414,7 @@
 		482059F01564FEBE005A75F8 /* MyInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyInfoCell.h; sourceTree = "<group>"; };
 		482059F11564FEBE005A75F8 /* MyInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyInfoCell.m; sourceTree = "<group>"; };
 		48205A06156501E8005A75F8 /* MyInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyInfoCell.xib; sourceTree = "<group>"; };
+		4825C51A156650AC0077E45F /* background3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background3.png; sourceTree = "<group>"; };
 		4832407914A9A4150084584F /* AvatarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AvatarCell.h; path = View/UserInformation/AvatarCell.h; sourceTree = "<group>"; };
 		4832407A14A9A4150084584F /* AvatarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AvatarCell.m; path = View/UserInformation/AvatarCell.m; sourceTree = "<group>"; };
 		4832408714A9B9BC0084584F /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventCell.h; path = View/Event/EventCell.h; sourceTree = "<group>"; };
@@ -1155,6 +1157,7 @@
 		48CE912B14AD9DBE00B1E9D3 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				4825C51A156650AC0077E45F /* background3.png */,
 				48D6E4A71565F8EE004A56C3 /* UserInfo.png */,
 				48D6E4A81565F8EE004A56C3 /* UserInfo@2x.png */,
 				48FDF71D1561007E00FB7352 /* User_aten.png */,
@@ -1710,6 +1713,7 @@
 				48205A07156501E8005A75F8 /* MyInfoCell.xib in Resources */,
 				48D6E4A91565F8EE004A56C3 /* UserInfo.png in Resources */,
 				48D6E4AA1565F8EE004A56C3 /* UserInfo@2x.png in Resources */,
+				4825C51B156650AC0077E45F /* background3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

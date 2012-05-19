@@ -80,7 +80,7 @@ DEFINE_SINGLETON(PublicFoodMapListManager);
 	}
 }
 
-+ (NSDate *)lastUpdatedDate
++ (NSDate *) lastUpdatedDate
 {
 	return [self lastUpdatedDateForList:gs_fakeListID];
 }

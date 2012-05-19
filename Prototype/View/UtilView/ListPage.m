@@ -103,6 +103,8 @@
 	[self requestNewer];
 	
 	[self.refreshHeader refreshLastUpdatedDate];
+	
+	[self reload];
 }
 
 #pragma mark - Table view data source

@@ -13,6 +13,7 @@ typedef enum MESSAGE_TYPE_ENUM
 	LIST_OBJECT_CREATE = 0x3,
 	LIST_OBJECT_READ = 0x4,
 	LIST_OBJECT_UPDATE = 0x5,
+	LIST_OBJECT_DELETE = 0x6,
 	MAX_MESSAGE
 } LIST_OBJECT_MESSAGE_TYPE;
 
@@ -59,17 +60,19 @@ typedef enum MESSAGE_TYPE_ENUM
 		       andCount:(uint32_t)count 
 		    withHandler:(SEL)handler 
 		      andTarget:(id)target;
+
 + (void) requestMiddle:(NSString *)objectID
 	      inListID:(NSString *)listID 
 	      andCount:(uint32_t)count 
 	   withHandler:(SEL)handler 
 	     andTarget:(id)target;
+
 + (void) requestOlderWithListID:(NSString *)listID 
 		       andCount:(uint32_t)count 
 		    withHandler:(SEL)handler 
 		      andTarget:(id)target;
 - (void) getMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward;
-// get method
+
 - (void) configGetMethodParams:(NSMutableDictionary *)params 
 		       forList:(NSString *)listID;
 
@@ -78,22 +81,36 @@ typedef enum MESSAGE_TYPE_ENUM
 			  inList:(NSString *)listID 
 		     withHandler:(SEL)handler 
 		       andTarget:(id)target;
-- (void) createMethodHanlder:(id)result withListID:(NSString *)listID;
+
+- (void) createMethodHandler:(id)result withListID:(NSString *)listID;
+
 - (void) configCreateMethodParams:(NSMutableDictionary *)params 
 			forObject:(NSDictionary *)object
-			  inList:(NSString *)listID;
+			   inList:(NSString *)listID;
 
 // update method
 + (void) requestUpdateWithObject:(NSDictionary *)object 
 			  inList:(NSString *)listID
 		     withHandler:(SEL)handler
-			 andTarget:(id)target;
+		       andTarget:(id)target;
 
 - (void) updateMethodHandler:(id)result withListID:(NSString *)listID;
 
 - (void) configUpdateParams:(NSMutableDictionary *)params 
 		  forObject:(NSDictionary *)object
 		     inList:(NSString *)listID;
+
+// delete method
++ (void) requestDeleteWithObject:(NSString *)objectID
+			  inList:(NSString *)listID 
+		     withHandler:(SEL)handler 
+		       andTarget:(id)target;
+
+- (void) deleteMethodHandler:(id)result withListID:(NSString *)listID;
+
+- (void) configDeleteMethodParams:(NSMutableDictionary *)params 
+			forObject:(NSString *)objectID
+			   inList:(NSString *)listID;
 
 
 @end

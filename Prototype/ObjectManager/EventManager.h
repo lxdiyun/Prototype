@@ -14,4 +14,5 @@
 + (BOOL) isNewerUpdating;
 + (NSDate *) lastUpdatedDate;
 + (NSDictionary *) getObjectWithStringID:(NSString *)objectID;
++ (void) removeEventsForUser:(NSNumber *)userID;
 @end
