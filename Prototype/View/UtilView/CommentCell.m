@@ -128,7 +128,6 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 {
 	if (nil != self.userAndDate)
 	{
-		self.userAndDate.text = @"";
 		[self.userAndDate removeFromSuperview];
 	}
 	
@@ -218,17 +217,19 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 			self.userProfile = userProfile;
 
 			self.avatar.user = self.userProfile;
+
+			[self redrawUserAndDate];
+			
 		}
 		else
 		{
 			self.avatar.user = nil;
+			self.userProfile = nil;
 
 			[ProfileMananger requestObjectWithNumberID:userID 
 							andHandler:@selector(requestUserProfile) 
 							 andTarget:self];
 		}
-		
-		[self redrawUserAndDate];
 	}
 }
 
@@ -247,9 +248,10 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	{
 		[self redrawComment];
 		
-		[self redrawUserAndDate];
-		
+		// refresh the profile before draw the user and date
 		[self requestUserProfile];
+		
+		[self redrawUserAndDate];
 	}
 }
 

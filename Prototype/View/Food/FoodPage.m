@@ -34,7 +34,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	FOOD_TAG = 0xFFFF,
 } FOOD_PAGE_SECTION;
 
-@interface FoodPage () <UIScrollViewDelegate, TextInputerDeletgate, ShowVCDelegate>
+@interface FoodPage () <TextInputerDeletgate, ShowVCDelegate>
 {
 	NSDictionary *_foodObject;
 	TextInputer *_inputer;
@@ -57,79 +57,15 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 @synthesize titleView = _titleView;
 @synthesize foodInfo = _foodInfo;
 
-#pragma mark - util
-
-static int32_t s_lastCommentArrayCount = -1;
-
-- (void) refreshCommentSection
-{
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	NSUInteger commentArrayCount = [[FoodCommentMananger keyArrayForList:foodID] count];
-	static NSMutableIndexSet *commentSectionSet = nil;
-	
-	if (nil == commentSectionSet)
-	{
-		commentSectionSet = [[NSMutableIndexSet alloc] init];
-		[commentSectionSet addIndex:FOOD_COMMENT];
-		[commentSectionSet addIndex:FOOD_MORE];
-	}
-	
-	if (s_lastCommentArrayCount < commentArrayCount) 
-	{
-		[self.tableView reloadSections:commentSectionSet withRowAnimation:UITableViewRowAnimationFade];
-		
-		s_lastCommentArrayCount = commentArrayCount;
-	}
-}
-
-
-- (void) forceRefreshTableView
-{	
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	NSUInteger commentArrayCount = [[FoodCommentMananger keyArrayForList:foodID] count];
-	
-	[self.tableView reloadData];
-	
-	s_lastCommentArrayCount = commentArrayCount;
-}
-
-- (void) updateGUI
-{
-	self.titleView.object = self.foodObject;
-	
-	[self forceRefreshTableView];
-	
-	[self requestNewerComment];
-}
-
-#pragma mark message
-
-- (void) requestNewerComment
-{	
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	[FoodCommentMananger requestNewerWithListID:foodID 
-					   andCount:COMMENT_REFRESH_WINDOW 
-					withHandler:@selector(refreshCommentSection) 
-					  andTarget:self];
-}
-
-- (void) requestOlderComment
-{
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	[FoodCommentMananger requestOlderWithListID:foodID 
-					   andCount:COMMENT_REFRESH_WINDOW 
-					withHandler:@selector(refreshCommentSection) 
-					  andTarget:self];
-}
-
 #pragma mark - life circle
 
-- (id) initWithStyle:(UITableViewStyle)style
+- (id) init
 {
-	self = [super initWithStyle:style];
+	self = [super init];
 
 	if (self) 
 	{
+		self.refreshStyle = PULL_TO_REFRESH_STYLE_WHITE;
 	}
 	
 	return self;
@@ -144,8 +80,6 @@ static int32_t s_lastCommentArrayCount = -1;
 
 	// Releases the view if it doesn't have a superview.
 	[super didReceiveMemoryWarning];
-	
-	HANDLE_MEMORY_WARNING(self);
 }
 
 - (void) dealloc
@@ -158,59 +92,11 @@ static int32_t s_lastCommentArrayCount = -1;
 	[super dealloc];
 }
 
-#pragma mark - food objet
-
-- (void) setFoodObject:(NSDictionary *)foodObject
-{
-	if (CHECK_EQUAL(_foodObject ,foodObject))
-	{
-		return;
-	}
-	
-	[_foodObject release];
-	_foodObject = [foodObject retain];
-}
-
 #pragma mark - View lifecycle
-
-- (void) viewDidLoad
-{
-	[super viewDidLoad];
-	
-	[self initGUI];
-}
-
-- (void) viewDidUnload
-{
-	[super viewDidUnload];
-}
 
 - (void) viewWillAppear:(BOOL)animated
 {	
 	[super viewWillAppear:animated];
-	
-	[self updateGUI];
-}
-
-- (void) viewDidAppear:(BOOL)animated
-{
-	[super viewDidAppear:animated];
-}
-
-- (void) viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void) viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-}
-
-- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	// Return YES for supported orientations
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
@@ -231,6 +117,8 @@ static int32_t s_lastCommentArrayCount = -1;
 		{
 			NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
 			NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:foodID] count];
+			
+			self.lastRowCount = commentCount;
 
 			if (0 < commentCount) 
 			{
@@ -507,26 +395,6 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 }
 
-#pragma mark - UIScrollViewDelegate Methods
-
-- (void) scrollViewDidScroll:(UIScrollView *)view
-{	
-	
-}
-
-- (void) scrollViewDidEndDragging:(UIScrollView *)view willDecelerate:(BOOL)decelerate
-{
-	
-}
-
-#pragma mark - NewComment handler
-
-- (void) newCommentHandler:(id)result
-{
-	[self requestNewerComment];
-	[self refreshCommentSection];
-}
-
 #pragma mark - textInputerDelegate
 
 - (void) inputComment:(id)sender
@@ -545,7 +413,7 @@ static int32_t s_lastCommentArrayCount = -1;
 	[self dismissModalViewControllerAnimated:YES];
 	[FoodCommentMananger createComment:inputer.text.text 
 				   forList:foodID 
-			       withHandler:@selector(newCommentHandler:) 
+			       withHandler:@selector(createCommentHandler:) 
 				 andTarget:self];
 }
 
@@ -563,6 +431,27 @@ static int32_t s_lastCommentArrayCount = -1;
 
 #pragma mark - GUI
 
+- (void) reloadCommentSection
+{
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:foodID] count];
+	static NSMutableIndexSet *commentSectionSet = nil;
+	
+	if (nil == commentSectionSet)
+	{
+		commentSectionSet = [[NSMutableIndexSet alloc] init];
+		[commentSectionSet addIndex:FOOD_COMMENT];
+		[commentSectionSet addIndex:FOOD_MORE];
+	}
+	
+	if (self.lastRowCount != commentCount) 
+	{
+		[self.tableView reloadSections:commentSectionSet withRowAnimation:UITableViewRowAnimationFade];
+	}
+	
+	[self.refreshHeader egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+}
+
 - (void) backToPrevView
 {
 	[self.navigationController popViewControllerAnimated:YES];
@@ -572,6 +461,8 @@ static int32_t s_lastCommentArrayCount = -1;
 {
 	@autoreleasepool 
 	{
+		[super initGUI];
+
 		if (nil == self.titleView)
 		{
 			self.titleView = [[[TitleVC alloc] init] autorelease];
@@ -602,6 +493,104 @@ static int32_t s_lastCommentArrayCount = -1;
 									  self, 
 									  @selector(inputComment:));
 	}
+}
+
+- (void) reload
+{
+	self.titleView.object = self.foodObject;
+	
+	[self.tableView reloadData];
+}
+
+#pragma mark - object manange
+
+- (void) refreshFood
+{
+	self.foodObject = [FoodManager getObjectWithNumberID:[self.foodObject valueForKey:@"id"]];
+	
+	[self reload];
+}
+
+- (void) requestFood
+{
+	NSNumber *foodID = [self.foodObject valueForKey:@"id"];
+	
+	if (nil != foodID)
+	{
+		[FoodManager requestObjectWithNumberID:foodID
+					    andHandler:@selector(refreshFood) 
+					     andTarget:self];
+	}
+}
+
+- (void) requestNewestComment
+{
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	[FoodCommentMananger requestNewestWithListID:foodID 
+					    andCount:COMMENT_REFRESH_WINDOW 
+					 withHandler:@selector(reloadCommentSection) 
+					   andTarget:self];
+}
+
+- (void) requestNewerComment
+{	
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	[FoodCommentMananger requestNewerWithListID:foodID 
+					   andCount:COMMENT_REFRESH_WINDOW 
+					withHandler:@selector(reloadCommentSection) 
+					  andTarget:self];
+}
+
+- (void) requestOlderComment
+{
+	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
+	[FoodCommentMananger requestOlderWithListID:foodID 
+					   andCount:COMMENT_REFRESH_WINDOW 
+					withHandler:@selector(reloadCommentSection) 
+					  andTarget:self];
+}
+
+- (void) setFoodObject:(NSDictionary *)foodObject
+{
+	if (CHECK_EQUAL(_foodObject ,foodObject))
+	{
+		return;
+	}
+	
+	[_foodObject release];
+	_foodObject = [foodObject retain];
+}
+
+- (void) createCommentHandler:(id)result
+{
+	[self requestNewestComment];
+	[self reloadCommentSection];
+}
+
+- (void) pullToRefreshRequest
+{
+	[self requestFood];
+	[self requestNewestComment];
+}
+
+- (void) requestNewer
+{
+	[self requestNewerComment];
+}
+
+- (void) requestOlder
+{
+	[self requestOlderComment];
+}
+
+- (BOOL) isUpdating
+{
+	return [FoodCommentMananger isUpdatingWithType:REQUEST_NEWEST 
+					    withListID:[[self.foodObject valueForKey:@"user"] stringValue]];
+}
+- (NSDate* ) lastUpdateDate
+{
+	return [FoodCommentMananger lastUpdatedDateForList:[[self.foodObject valueForKey:@"id"] stringValue]];
 }
 
 @end

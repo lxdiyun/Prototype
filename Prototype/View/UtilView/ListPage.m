@@ -9,16 +9,13 @@
 #import "ListPage.h"
 
 #import "Util.h"
-#import "PullToRefreshV.h"
 
 @interface ListPage () <EGORefreshTableHeaderDelegate>
 {
 	PullToRefreshV *_refreshHeader;
+	PULL_TO_REFRESH_STYLE _refreshStyle;
 	NSInteger _lastRowCount;
 }
-
-@property (strong, nonatomic) PullToRefreshV *refreshHeader;
-@property (assign, nonatomic) NSInteger lastRowCount;
 
 @end
 
@@ -26,6 +23,7 @@
 
 @synthesize refreshHeader = _refreshHeader;
 @synthesize lastRowCount = _lastRowCount;
+@synthesize refreshStyle = _refreshStyle;
 
 #pragma mark - view controller life circle
 
@@ -36,6 +34,7 @@
 	if (nil != self) 
 	{
 		self.lastRowCount = 0;
+		self.refreshStyle = PULL_TO_REFRESH_STYLE_BLACK;
 	}
 	
 	return self;
@@ -61,34 +60,7 @@
 {
 	[super viewDidLoad];
 	
-	self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
-	
-	if (nil == self.refreshHeader) 
-	{
-		// init fresh header
-		CGRect frame = CGRectMake(0.0f, 
-					  0.0f - self.tableView.bounds.size.height, 
-					  self.tableView.frame.size.width,
-					  self.tableView.bounds.size.height);
-		
-		PullToRefreshV *view = [[PullToRefreshV alloc] initWithFrame:frame
-							      arrowImageName:@"blackArrow.png" 
-								   textColor:[UIColor blackColor]
-								   indicator:UIActivityIndicatorViewStyleGray];
-		view.delegate = self;
-		self.refreshHeader = view;
-		[view release];
-	}
-
-	[self.view addSubview:self.refreshHeader];
-	
-	self.tableView.backgroundColor = [Color lightyellow];
-	self.tableView.separatorStyle = UITableViewCellSelectionStyleNone;
-}
-
-- (void) viewDidUnload
-{
-	[super viewDidUnload];
+	[self initGUI];
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -117,7 +89,7 @@
 - (NSInteger) tableView:(UITableView *)tableView 
   numberOfRowsInSection:(NSInteger)section
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	
 	return 0;
 }
@@ -125,14 +97,14 @@
 - (UITableViewCell *) tableView:(UITableView *)tableView 
 	  cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	
 	return nil;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	
 	return 0;
 }
@@ -142,7 +114,7 @@
 - (void) tableView:(UITableView *)tableView 
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 }
 
 - (void) tableView:(UITableView *)tableView 
@@ -174,25 +146,30 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - object manage
 
+- (void) pullToRefreshRequest
+{
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
+}
+
 - (void) requestNewer
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 }
 
 - (void) requestOlder
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 }
 
 - (BOOL) isUpdating
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	return NO;
 }
 
 - (NSDate *) lastUpdateDate
 {
-	LOG(@"Error: need to implement in the sub class");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	return nil;
 }
 
@@ -218,11 +195,51 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 	[self.refreshHeader egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
+- (void) initGUI
+{
+	self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
+	
+	if (nil == self.refreshHeader) 
+	{
+		// init fresh header
+		CGRect frame = CGRectMake(0.0f, 
+					  0.0f - self.tableView.bounds.size.height, 
+					  self.tableView.frame.size.width,
+					  self.tableView.bounds.size.height);
+		
+		PullToRefreshV *view;
+		
+		if (self.refreshStyle == PULL_TO_REFRESH_STYLE_BLACK)
+		{
+			view = [[PullToRefreshV alloc] initWithFrame:frame
+						      arrowImageName:@"blackArrow.png" 
+							   textColor:[UIColor blackColor]
+							   indicator:UIActivityIndicatorViewStyleGray];
+		}
+		else 
+		{
+			view = [[PullToRefreshV alloc] initWithFrame:frame
+						      arrowImageName:@"whiteArrow.png" 
+							   textColor:[UIColor whiteColor]
+							   indicator:UIActivityIndicatorViewStyleWhite];
+		}
+
+		view.delegate = self;
+		self.refreshHeader = view;
+		[view release];
+	}
+	
+	[self.view addSubview:self.refreshHeader];
+	
+	self.tableView.backgroundColor = [Color lightyellow];
+	self.tableView.separatorStyle = UITableViewCellSelectionStyleNone;
+}
+
 #pragma mark - EGORefreshTableHeaderDelegate Methods
 
 - (void) egoRefreshTableHeaderDidTriggerRefresh:(PullToRefreshV *)view
 {
-	[self requestNewer];
+	[self pullToRefreshRequest];
 }
 
 - (BOOL) egoRefreshTableHeaderDataSourceIsLoading:(PullToRefreshV *)view

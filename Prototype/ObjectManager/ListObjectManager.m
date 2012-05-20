@@ -100,7 +100,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 + (id) getInstnace
 {
-	LOG(@"%@: Error should use the subclass method", [self class]);
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	return nil;
 }
 

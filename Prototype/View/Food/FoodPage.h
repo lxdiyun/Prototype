@@ -6,12 +6,11 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "ListPage.h"
 
-@interface FoodPage : UITableViewController
+@interface FoodPage : ListPage
 
 - (void) requestNewerComment;
-- (void) updateGUI;
 
 @property (strong,nonatomic) NSDictionary *foodObject;
 

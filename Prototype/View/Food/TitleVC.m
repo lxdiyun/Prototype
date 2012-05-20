@@ -98,6 +98,7 @@
 - (void) updateGUI	
 {
 	self.name.text = [self.object valueForKey:@"name"];
+	self.placeName.text = @"";
 	
 	[self updatePlace];
 }

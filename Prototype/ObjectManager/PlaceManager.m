@@ -23,11 +23,11 @@ DEFINE_SINGLETON(PlaceManager);
 	return @"place.get";
 }
 
-- (void) handlerForSingleResult:(id)result;
+- (void) handlerForSingleResult:(id)result
 {
 	[super handlerForSingleResult:result];
 	
-	NSArray *foods = [result valueForKey:@"foods"];
+	NSArray *foods = [[result valueForKey:@"result"] valueForKey:@"foods"];
 	
 	if (0 < [foods count])
 	{
@@ -40,15 +40,24 @@ DEFINE_SINGLETON(PlaceManager);
 {
 	[super handlerForArrayResult:result];
 	
+	NSMutableArray *foodIDArray = [[NSMutableArray alloc] init];
+	
 	for (NSDictionary *object in [result objectForKey:@"result"]) 
 	{
 		NSArray *foods = [object valueForKey:@"foods"];
 		
-		if (0 < [foods count])
+		if (0 < foods.count)
 		{
-			[FoodManager requestObjectWithNumberIDArray:foods];
+			[foodIDArray addObjectsFromArray:foods];
 		}
 	}
+	
+	if (0 < foodIDArray.count)
+	{
+		[FoodManager requestObjectWithNumberIDArray:foodIDArray];
+	}
+	
+	[foodIDArray release];
 }
 
 #pragma mark - overwrite create method

@@ -27,6 +27,13 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
+typedef enum PULL_TO_REFRESH_STYLE_ENUM
+{
+	PULL_TO_REFRESH_STYLE_WHITE = 0x0,
+	PULL_TO_REFRESH_STYLE_BLACK = 0x1,
+	PULL_TO_REFRESH_STYLE_MAX
+} PULL_TO_REFRESH_STYLE;
+
 typedef enum{
 	EGOOPullRefreshPulling = 0,
 	EGOOPullRefreshNormal,

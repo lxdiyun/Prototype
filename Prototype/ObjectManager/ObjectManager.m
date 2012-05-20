@@ -67,7 +67,7 @@
 
 + (id) getInstnace
 {
-	LOG(@"Error should not get here, use the sub class method");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	return nil;
 }
 
@@ -455,7 +455,7 @@
 
 - (NSString *) getMethod
 {
-	LOG(@"Error should use the subclass method");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	return nil;
 }
 
@@ -578,7 +578,7 @@
 
 - (NSString *) createMethod
 {
-	LOG(@"Error should use the subclass method");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	return nil;
 }
 
@@ -681,7 +681,7 @@
 
 - (NSString *) updateMethod
 {
-	LOG(@"Error should use the subclass method");
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 	return nil;
 }
 

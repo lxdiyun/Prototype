@@ -8,23 +8,49 @@
 
 #import <UIKit/UIKit.h>
 
+#import "PullToRefreshV.h"
+
 const static NSUInteger REFRESH_WINDOW = 21;
 const static NSUInteger ROW_TO_MORE_FROM_BOTTOM = 5;
 
 @interface ListPage : UITableViewController
 
 // method that must be overwrite by sub classes
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
-- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
-- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+// table view
+- (NSInteger) tableView:(UITableView *)tableView 
+  numberOfRowsInSection:(NSInteger)section;
+- (UITableViewCell *) tableView:(UITableView *)tableView 
+	  cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (CGFloat) tableView:(UITableView *)tableView 
+heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+// object manange
+- (void) pullToRefreshRequest;
 - (void) requestNewer;
 - (void) requestOlder;
 - (BOOL) isUpdating;
 - (NSDate* ) lastUpdateDate;
 
 // method that may be overwrite by sub classes
+// life circle
+- (id) init;
+- (void) dealloc;
+- (void) didReceiveMemoryWarning;
+// view life circle
+- (void) viewDidLoad;
+- (void) viewWillAppear:(BOOL)animated;
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
+// table view
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView;
+- (void) tableView:(UITableView *)tableView 
+   willDisplayCell:(UITableViewCell *)cell 
+ forRowAtIndexPath:(NSIndexPath *)indexPath;
+// GUI
 - (void) back;
 - (void) reload;
-- (id) init;
+- (void) initGUI;
+
+@property (assign, nonatomic) NSInteger lastRowCount;
+@property (strong, nonatomic) PullToRefreshV *refreshHeader;
+@property (assign, nonatomic) PULL_TO_REFRESH_STYLE refreshStyle;
 
 @end

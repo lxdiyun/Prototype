@@ -30,24 +30,67 @@ DEFINE_SINGLETON(FoodManager);
 }
 
 #pragma mark - overwrite super class method
+
 #pragma mark - get method handler overwrite
 
-- (void) checkAndPerformResponderWithID:(NSString *)ID
+- (void) handlerForSingleResult:(id)result
 {
-	@autoreleasepool 
+	[super handlerForSingleResult:result];
+	
+	NSDictionary *object = [result valueForKey:@"result"];
+	
+	NSNumber *picID = [object valueForKey:@"pic"];
+
+	if (CHECK_NUMBER(picID))
 	{
-		[super checkAndPerformResponderWithID:ID];
+		if (nil == [ImageManager getObjectWithNumberID:picID])
+		{
+			[ImageManager requestObjectWithNumberID:picID 
+						     andHandler:nil 
+						      andTarget:nil];
+		}
+	}
+	else
+	{
+		LOG(@"Error failed to get picID from \n:%@", object);
+	}
+	
+	NSNumber *userID = [object objectForKey:@"user"];
+	
+	if (CHECK_NUMBER(userID))
+	{
+		if (nil == [ProfileMananger getObjectWithNumberID:userID])
+		{
+			[ProfileMananger requestObjectWithNumberID:userID 
+							andHandler:nil 
+							 andTarget:nil];
+		}
 		
-		NSDictionary *object = [self.objectDict valueForKey:ID];
-		
+	}
+	else
+	{
+		LOG(@"Error failed to get userID from \n:%@", object);
+	}
+}
+
+- (void) handlerForArrayResult:(id)result
+{
+	[super handlerForArrayResult:result];
+	
+	
+	
+	NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
+	NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
+	
+	for (NSDictionary *object in [result objectForKey:@"result"]) 
+	{
 		NSNumber *picID = [object valueForKey:@"pic"];
+		
 		if (CHECK_NUMBER(picID))
 		{
 			if (nil == [ImageManager getObjectWithNumberID:picID])
 			{
-				[ImageManager requestObjectWithNumberID:picID 
-							     andHandler:nil 
-							      andTarget:nil];
+				[newPicSet addObject:picID];
 			}
 		}
 		else
@@ -61,107 +104,28 @@ DEFINE_SINGLETON(FoodManager);
 		{
 			if (nil == [ProfileMananger getObjectWithNumberID:userID])
 			{
-				[ProfileMananger requestObjectWithNumberID:userID 
-								andHandler:nil 
-								 andTarget:nil];
+				[newUserSet addObject:userID];
 			}
-
 		}
 		else
 		{
 			LOG(@"Error failed to get userID from \n:%@", object);
-		}
-		
-		NSNumber *placeID = [object valueForKey:@"place"];
-		
-		if (CHECK_NUMBER(placeID))
-		{
-			if (nil == [PlaceManager getObjectWithNumberID:placeID])
-			{
-				[PlaceManager requestObjectWithNumberID:placeID 
-							     andHandler:nil 
-							      andTarget:nil];
-			}
-		}
-		else
-		{
-			LOG(@"Error failed to get placeID from \n:%@", object);
-		}
-
+		}	
 	}
-}
+	
+	// cache the new image info
+	[ImageManager requestObjectWithNumberIDArray:[newPicSet allObjects]];
+	
+	// cacahe the new user info
+	[ProfileMananger requestObjectWithNumberIDArray:[newUserSet allObjects]];
 
-- (void) checkAndPerformResponderWithStringIDArray:(NSArray *)IDArray
-{
-	@autoreleasepool 
-	{
-		[super checkAndPerformResponderWithStringIDArray:IDArray];
-		
-		NSMutableSet *newPicSet = [[NSMutableSet alloc] init];
-		NSMutableSet *newUserSet = [[NSMutableSet alloc] init];
-		NSMutableSet *newPlaceSet = [[NSMutableSet alloc] init];
-		
-		for (NSString *ID in IDArray)
-		{
-			NSDictionary *object = [self.objectDict valueForKey:ID];
-			NSNumber *picID = [object valueForKey:@"pic"];
-			if (CHECK_NUMBER(picID))
-			{
-				if (nil == [ImageManager getObjectWithNumberID:picID])
-				{
-					[newPicSet addObject:picID];
-				}
-			}
-			else
-			{
-				LOG(@"Error failed to get picID from \n:%@", object);
-			}
-			
-			NSNumber *userID = [object objectForKey:@"user"];
-			
-			if (CHECK_NUMBER(userID))
-			{
-				if (nil == [ProfileMananger getObjectWithNumberID:userID])
-				{
-					[newUserSet addObject:userID];
-				}
-			}
-			else
-			{
-				LOG(@"Error failed to get userID from \n:%@", object);
-			}
-			
-			NSNumber *placeID = [object valueForKey:@"place"];
-			
-			if (CHECK_NUMBER(placeID))
-			{
-				if (nil == [PlaceManager getObjectWithNumberID:placeID])
-				{
-					[newPlaceSet addObject:placeID];
-				}
-			}
-			else
-			{
-				LOG(@"Error failed to get placeID from \n:%@", object);
-			}
-		}
-		
-		// cache the new image info
-		[ImageManager requestObjectWithNumberIDArray:[newPicSet allObjects]];
-		
-		// cacahe the new user info
-		[ProfileMananger requestObjectWithNumberIDArray:[newUserSet allObjects]];
-		
-		// cache the new place info
-		[PlaceManager requestObjectWithNumberIDArray:[newPlaceSet allObjects]];
-		
-		[newPlaceSet release];
-		[newUserSet release];
-		[newPicSet release];
-	}
+	[newUserSet release];
+	[newPicSet release];
+	
 }
 
 #pragma mark - overwrite get method
+
 - (NSString *) getMethod
 {
 	return @"food.get";

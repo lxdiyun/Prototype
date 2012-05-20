@@ -117,6 +117,13 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 
 #pragma mark - object manage
 
+- (void) pullToRefreshRequest
+{
+	[PublicFoodMapListManager requestNewestCount:REFRESH_WINDOW 
+					 withHandler:@selector(reload) 
+					   andTarget:self];
+}
+
 - (void) requestNewer
 {
 	[PublicFoodMapListManager requestNewerCount:REFRESH_WINDOW 
@@ -133,7 +140,7 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 
 - (BOOL) isUpdating
 {
-	return [PublicFoodMapListManager isNewerUpdating];
+	return [PublicFoodMapListManager isNewestUpdating];
 }
 
 - (NSDate* ) lastUpdateDate

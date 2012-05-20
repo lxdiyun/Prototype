@@ -82,6 +82,10 @@
 		cell.desc.text = [user valueForKey:@"intro"];
 		cell.image.picID = [user valueForKey:@"avatar"];
 	}
+	else 
+	{
+		[ProfileMananger requestObjectWithStringID:userID andHandler:@selector(reloadData) andTarget:self.tableView];
+	}
 	
 	return cell;
 }
@@ -111,6 +115,14 @@
 
 #pragma mark - object manage
 
+- (void) pullToRefreshRequest
+{
+	[FansListManager requestNewestWithListID:self.userID 
+				       andCount:REFRESH_WINDOW 
+				    withHandler:@selector(reload) 
+				      andTarget:self];
+}
+
 - (void) requestNewer
 {
 	[FansListManager requestNewerWithListID:self.userID 
@@ -129,7 +141,7 @@
 
 - (BOOL) isUpdating
 {
-	return [FansListManager isUpdatingWithType:REQUEST_NEWER withListID:self.userID];
+	return [FansListManager isUpdatingWithType:REQUEST_NEWEST withListID:self.userID];
 }
 
 - (NSDate* ) lastUpdateDate

@@ -11,8 +11,9 @@
 #import "InfoCell.h"
 #import "FoodPage.h"
 #import "MapViewPage.h"
+#import "ListPage.h"
 
-@interface HomePage : UITableViewController <ShowVCDelegate>
+@interface HomePage : ListPage <ShowVCDelegate>
 
 - (InfoCell *) getInfoCell;
 - (void) initGUI;

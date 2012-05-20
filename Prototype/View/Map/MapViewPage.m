@@ -616,7 +616,7 @@ typedef enum MAP_MENU_ENUM
 	{
 		// then show the user location
 		self.mapView.showsUserLocation = YES;
-		[self performSelector:@selector(showInSystemMap) withObject:nil	afterDelay:1.0];
+		[self performSelector:@selector(showInSystemMap) withObject:nil	afterDelay:2.0];
 		
 		return;
 	}

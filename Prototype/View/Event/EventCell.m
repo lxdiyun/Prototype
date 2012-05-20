@@ -16,6 +16,7 @@
 
 const static CGFloat AVATOR_SIZE = 44.0;
 const static CGFloat AVATOR_BORDER = 3.0;
+const static CGFloat NAME_HEIGHT = 30.0;
 const static CGFloat FONT_SIZE = 15.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
@@ -28,10 +29,12 @@ const static CGFloat PADING4 = 10.0; // padding between element virtical and bot
 	NSDictionary *_eventDict;
 	ImageV *_picImageV;
 	ImageV *_avator;
+	UILabel *_name;
 }
 
 @property (strong, nonatomic) ImageV *picImageV;
 @property (strong, nonatomic) ImageV *avator;
+@property (strong, nonatomic) UILabel *name;
 @end
 
 @implementation EventCell
@@ -39,8 +42,34 @@ const static CGFloat PADING4 = 10.0; // padding between element virtical and bot
 @synthesize eventDict = _eventDict;
 @synthesize picImageV = _picImageV;
 @synthesize avator = _avator;
+@synthesize name = _name;
 
 static CGFloat gs_pic_size = 0;
+
+- (void) redrawName
+{
+	if (nil != self.name)
+	{
+		[self.name removeFromSuperview];
+	}
+	
+	
+	CGFloat X = 0;
+	CGFloat height = NAME_HEIGHT;
+	CGFloat Y = gs_pic_size - height;
+	CGFloat width = gs_pic_size;
+	
+	self.name = [[[UILabel alloc] initWithFrame:CGRectMake(X, Y, width, height)] 
+		     autorelease];
+	
+	self.name.font = [UIFont systemFontOfSize:FONT_SIZE];
+	self.name.backgroundColor = [Color blackAlpha];
+	self.name.textColor = [UIColor whiteColor];
+	self.name.textAlignment = UITextAlignmentCenter;
+	self.name.numberOfLines = 0;
+	
+	[self.contentView addSubview:self.name];
+}
 
 - (void) redrawImageV
 {
@@ -87,7 +116,7 @@ static CGFloat gs_pic_size = 0;
 	{
 		self.contentView.backgroundColor = [UIColor clearColor];
 		[self redrawImageV];
-		[self redrawAvator];
+		[self redrawName];
 	}
 }
 
@@ -139,9 +168,19 @@ static CGFloat gs_pic_size = 0;
 	
 	NSDictionary *objDict =  [self.eventDict valueForKey:@"obj"];
 
-	self.picImageV.picID = [objDict valueForKey:@"pic"];
-
-	[self requestUserProfile];
+	if (nil != objDict) 
+	{
+		self.picImageV.picID = [objDict valueForKey:@"pic"];
+		self.name.text = [objDict valueForKey:@"name"]; 
+		self.picImageV.hidden = NO;
+		self.name.hidden = NO;
+	}
+	else 
+	{
+		self.picImageV.hidden = YES;
+		self.name.hidden = YES;
+	}
+	
 }
 
 - (void) dealloc

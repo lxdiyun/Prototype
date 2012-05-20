@@ -19,16 +19,14 @@
 #import "ListCell.h"
 #import "Util.h"
 
-const static NSUInteger REFRESH_WINDOW = 8;
-const static NSUInteger ROW_TO_MORE_FROM_BOTTOM = 5;
-
 typedef enum USER_HOME_PAGE_SECTION_ENUM
 {
 	USER_INFO = 0x0,
-	USER_FOOD_TARGET = 0x1,
-	USER_FOOD_HISTORY = 0x2,
-	USER_FOOD_MAP = 0x3,
-	USER_PAGE_SECTION_MAX
+	USER_FOOD_HISTORY = 0x1,
+	USER_FOOD_MAP = 0x2,
+	USER_PAGE_SECTION_MAX,
+// revalute to show target
+	USER_FOOD_TARGET = 0xFFF,
 	
 } USER_HOME_PAGE_SECTION;
 
@@ -68,17 +66,15 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 
 #pragma mark - view control life circle
 
-- (id) initWithStyle:(UITableViewStyle)style
+- (id) init
 {
-	self = [super initWithStyle:style];
-
-	if (nil != self) 
+	self = [super init];
+	
+	if (nil != self)
 	{
-		@autoreleasepool 
-		{
-		}
+		self.refreshStyle = PULL_TO_REFRESH_STYLE_WHITE;
 	}
-
+	
 	return self;
 }
 
@@ -92,50 +88,6 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	self.foodPage = nil;
 
 	[super dealloc];
-}
-
-- (void) didReceiveMemoryWarning
-{
-	// Releases the view if it doesn't have a superview.
-	[super didReceiveMemoryWarning];
-	
-	HANDLE_MEMORY_WARNING(self);
-}
-
-- (void) back
-{
-	[self.navigationController popViewControllerAnimated:YES];
-}
-
-#pragma mark - view life circle
-
-- (void) viewDidLoad
-{
-	[super viewDidLoad];
-	
-	[self initGUI];
-}
-
-- (void) viewDidUnload
-{
-	[super viewDidUnload];
-}
-
-- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (void) viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
-	
-	[self requestUserInfo];
-	[self requestNewerTarget];
-	[self requestNewerHistory];
-	[self requestNewerFoodMap];
-	
-	[self reloadAll];
 }
 
 #pragma mark - Table view data source - cell
@@ -362,6 +314,34 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	}
 }
 
+- (void) pullToRefreshRequest
+{
+	[self forceRequestUserInfo];
+	[self requestNewestTarget];
+	[self requestNewestHistory];
+	[self requestNewestFoodMap];
+}
+
+- (void) requestNewer
+{
+	[self requestUserInfo];
+	[self requestNewerTarget];
+	[self requestNewerHistory];
+	[self requestNewerFoodMap];
+}
+
+- (void) requestOlder
+{
+	[self requestOlderTarget];
+	[self requestOlderHistory];
+	[self requestOlderFoodMap];
+}
+
+- (void) requestNewestTarget
+{
+	
+}
+
 - (void) requestNewerTarget
 {
 	
@@ -370,6 +350,14 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 - (void) requestOlderTarget
 {
 	
+}
+
+- (void) requestNewestHistory
+{
+	[UserFoodHistoryManager requestNewestWithListID:[self.userID stringValue] 
+					      andCount:REFRESH_WINDOW 
+					   withHandler:@selector(reloadHistory) 
+					     andTarget:self];
 }
 
 - (void) requestNewerHistory
@@ -384,8 +372,16 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 {
 	[UserFoodHistoryManager requestOlderWithListID:[self.userID stringValue] 
 					       andCount:REFRESH_WINDOW 
-					    withHandler:@selector(reloadAll) 
+					    withHandler:@selector(reload) 
 					      andTarget:self];
+}
+
+- (void) requestNewestFoodMap
+{
+	[FoodMapListManager requestNewestWithListID:[self.userID stringValue] 
+					   andCount:REFRESH_WINDOW 
+					withHandler:@selector(reloadFoodMap) 
+					  andTarget:self];
 }
 
 - (void) requestNewerFoodMap
@@ -400,7 +396,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 {
 	[FoodMapListManager requestOlderWithListID:[self.userID stringValue] 
 					  andCount:REFRESH_WINDOW 
-				       withHandler:@selector(reloadAll) 
+				       withHandler:@selector(reload) 
 					 andTarget:self];
 }
 
@@ -475,15 +471,31 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	}
 }
 
+- (BOOL) isUpdating
+{
+	return [ProfileMananger isUpdatingObjectNumberID:self.userID] 
+	| [UserFoodHistoryManager isUpdatingWithType:REQUEST_NEWEST 
+					  withListID:[self.userID stringValue]]
+	| [FoodMapListManager isUpdatingWithType:REQUEST_NEWEST 
+				      withListID:[self.userID stringValue]];
+}
+
+- (NSDate *) lastUpdateDate
+{
+	return [UserFoodHistoryManager lastUpdatedDateForList:[self.userID stringValue]];
+}
+
 #pragma mark - GUI
 
 - (void) initGUI
 {
 	@autoreleasepool 
 	{
+		[super initGUI];
+		
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 		self.tableView.backgroundColor = [Color brown];
+		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 
 		if (nil == self.targetHeader)
 		{
@@ -575,6 +587,8 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:section] 
 				      withRowAnimation:UITableViewRowAnimationNone];
 		}
+		
+		[self.refreshHeader egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 	}
 }
 
@@ -593,9 +607,17 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	[self reloadSection:USER_FOOD_MAP];
 }
 
-- (void) reloadAll
+- (void) reload
 {
-	[self.tableView reloadData];
+	for (int section = 0; section < USER_PAGE_SECTION_MAX; ++section)
+	{
+		if ([self getObjectCountForSection:section] != _lastSectionObjectCount[section])
+		{
+			[self.tableView reloadData];
+			
+			break;
+		}
+	}
 }
 
 - (void) config:(ListCell *)cell at:(NSIndexPath *)index

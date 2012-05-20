@@ -14,6 +14,7 @@
 DEFINE_SINGLETON(ProfileMananger);
 
 #pragma mark - class interface
+
 + (void) updateProfile:(NSDictionary *)params 
 	   withHandler:(SEL)handler 
 	     andTarget:target
@@ -90,23 +91,6 @@ DEFINE_SINGLETON(ProfileMananger);
 - (NSString *) updateMethod
 {
 	return @"user.update";
-}
-
-#pragma mark - overwrite get and set
-
-+ (NSDictionary *) getObjectWithStringID:(NSString *)ID
-{
-	if (CHECK_STRING(ID))
-	{
-		// refresh object from server 
-		[self requestObjectWithStringID:ID andHandler:nil andTarget:nil];
-		
-		return [[[self getInstnace] objectDict] valueForKey:ID];
-	}
-	else
-	{
-		return nil;
-	}
 }
 
 @end

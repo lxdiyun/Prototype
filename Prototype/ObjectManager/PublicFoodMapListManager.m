@@ -50,6 +50,14 @@ DEFINE_SINGLETON(PublicFoodMapListManager);
 
 #pragma mark - send request message
 
++ (void) requestNewestCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
+{
+	return [self requestNewestWithListID:gs_fakeListID 
+				    andCount:count 
+				 withHandler:handler 
+				   andTarget:target];
+}
+
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
 	return [self requestNewerWithListID:gs_fakeListID 
@@ -70,6 +78,14 @@ DEFINE_SINGLETON(PublicFoodMapListManager);
 + (NSArray *) keyArray
 {
 	return [self keyArrayForList:gs_fakeListID]; 
+}
+
++ (BOOL) isNewestUpdating
+{
+	@autoreleasepool 
+	{
+		return [self isUpdatingWithType:REQUEST_NEWEST withListID:gs_fakeListID];
+	}
 }
 
 + (BOOL) isNewerUpdating
