@@ -16,38 +16,38 @@
 
 #pragma mark - overwrite cursor method
 
-- (NSInteger) newestCursorWithlistID:(NSString *)listID
+- (NSNumber *) newestCursorWithlistID:(NSString *)listID
 {
 	NSString *objectKey;
-	NSInteger cursor = 0;
+	NSNumber *cursor = 0;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
 	if (0 < keyArray.count)
 	{
 		objectKey = [keyArray objectAtIndex:0];
-		cursor = [[[self.objectDict valueForKey:listID] valueForKey:objectKey] integerValue];
+		cursor = CONVER_NUMBER_FROM_STRING(objectKey);
 	}
 	
 	return cursor;
 }
 
-- (NSInteger) cursorForObject:(NSString *)objectID inlist:(NSString *)listID
+- (NSNumber *) cursorForObject:(NSString *)objectID inlist:(NSString *)listID
 {
-	return [[[self.objectDict valueForKey:listID] valueForKey:objectID] integerValue];
+	return CONVER_NUMBER_FROM_STRING(objectID);
 }
 
-- (NSInteger) oldestCursorWithlistID:(NSString *)listID
+- (NSNumber *) oldestCursorWithlistID:(NSString *)listID
 {
 	NSString *objectKey;
-	NSInteger cursor = 0;
+	NSNumber *cursor = 0;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
 	if (0 < keyArray.count)
 	{
 		objectKey = [keyArray lastObject];
-		cursor = [[[self.objectDict valueForKey:listID] valueForKey:objectKey] integerValue];
+		cursor = CONVER_NUMBER_FROM_STRING(objectKey);
 	}
 	
 	return cursor;

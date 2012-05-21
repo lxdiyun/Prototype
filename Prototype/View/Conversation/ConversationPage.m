@@ -43,11 +43,13 @@ DEFINE_SINGLETON(ConversationPage);
 	{
 		// init ConserSationListManager
 		[ConversationListManager class];
+		
+		[[self class] updateConversationList];
 	}
 	return self;
 }
 
-- (void)didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
 	// Releases the view if it doesn't have a superview.
 	[super didReceiveMemoryWarning];
@@ -57,41 +59,41 @@ DEFINE_SINGLETON(ConversationPage);
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
 	[super viewDidLoad];
 }
 
-- (void)viewDidUnload
+- (void) viewDidUnload
 {
 	[super viewDidUnload];
 	
 	self.detailPage = nil;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
 	[[self class ] updateConversationList];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void) viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void) viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	// Return YES for supported orientations
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -99,18 +101,18 @@ DEFINE_SINGLETON(ConversationPage);
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
 	return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	// Return the number of rows in the section.
 	return [[ConversationListManager keyArray] count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString *CellIdentifier = @"ListCell";
 	
@@ -122,7 +124,7 @@ DEFINE_SINGLETON(ConversationPage);
 	}
 	
 	NSString *conversationID = [[ConversationListManager keyArray] objectAtIndex:indexPath.row];
-	NSDictionary *conversation = [ConversationListManager getConversationWithUser:conversationID];
+	NSDictionary *conversation = [ConversationListManager getConversationWith:conversationID];
 	
 	if (nil != conversation)
 	{
@@ -134,10 +136,10 @@ DEFINE_SINGLETON(ConversationPage);
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSString *conversationID = [[ConversationListManager keyArray] objectAtIndex:indexPath.row];
-	NSDictionary *conversation = [ConversationListManager getConversationWithUser:conversationID];
+	NSDictionary *conversation = [ConversationListManager getConversationWith:conversationID];
 	NSNumber *targetUserID = [conversation valueForKey:@"target"];
 	
 	if(nil != targetUserID)

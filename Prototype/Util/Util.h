@@ -67,6 +67,9 @@ CGFloat SCALE(void);
 CGFloat PROPORTION(void);
 NSInteger DEVICE_TYPE(void);
 
+// conver between types
+NSNumber * CONVER_NUMBER_FROM_STRING(NSString *string);
+
 // memory warning handling
 void HANDLE_MEMORY_WARNING(UIViewController *vc);
 

@@ -187,46 +187,46 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 
-- (NSInteger) newestCursorWithlistID:(NSString *)listID
+- (NSNumber *) newestCursorWithlistID:(NSString *)listID
 {
-	NSInteger objectKey = 0;
+	NSString *objectKey = nil;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
 	if (0 < keyArray.count)
 	{
-		objectKey = [[keyArray objectAtIndex:0] integerValue];
+		objectKey = [keyArray objectAtIndex:0];
 	}
 	
-	return objectKey;
+	return CONVER_NUMBER_FROM_STRING(objectKey) ;
 }
 
-- (NSInteger) cursorForObject:(NSString *)objectID inlist:(NSString *)listID
+- (NSNumber *) cursorForObject:(NSString *)objectID inlist:(NSString *)listID
 {
-	return [objectID integerValue];
+	return CONVER_NUMBER_FROM_STRING(objectID);
 }
 
-- (NSInteger) oldestCursorWithlistID:(NSString *)listID
+- (NSNumber *) oldestCursorWithlistID:(NSString *)listID
 {
-	NSInteger objectKey = 0;
+	NSString *objectKey = nil;
 	
 	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
 	
 	if (0 < keyArray.count)
 	{
-		objectKey = [[keyArray lastObject] integerValue];
+		objectKey = [keyArray lastObject];
 	}
 	
-	return objectKey;
+	return CONVER_NUMBER_FROM_STRING(objectKey);
 }
 
 
-+ (NSInteger) oldestKeyForList:(NSString *)listID
++ (NSNumber *) oldestKeyForList:(NSString *)listID
 {
 	return [[self getInstnace] oldestCursorWithlistID:listID];
 }
 
-+ (NSInteger) newestKeyForList:(NSString *)listID
++ (NSNumber *) newestKeyForList:(NSString *)listID
 {
 	return [[self getInstnace] newestCursorWithlistID:listID];
 }
@@ -574,11 +574,11 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 - (void ) setParms:(NSMutableDictionary*)params 
-	withCursor:(int32_t)cursor 
+	withCursor:(NSNumber *)cursor 
 	     count:(uint32_t)count 
 	   forward:(BOOL)forward
 {	
-	[params setValue:[NSNumber numberWithInteger:cursor] forKey:@"cursor"];
+	[params setValue:cursor forKey:@"cursor"];
 	[params setValue:[NSNumber numberWithInteger:count] forKey:@"count"];
 	[params setValue:[NSNumber numberWithBool:forward] forKey:@"forwarding"];
 }
@@ -592,7 +592,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	[request setValue:self.getMethodString forKey:@"method"];
 	[self configGetMethodParams:params forList:listID];
 	
-	[self setParms:params withCursor:-1 count:count forward:YES];
+	[self setParms:params withCursor:[NSNumber numberWithInteger:-1] count:count forward:YES];
 	
 	if (0 < params.count)
 	{
@@ -622,7 +622,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t newestKey = [self newestCursorWithlistID:listID];
+	NSNumber * newestKey = [self newestCursorWithlistID:listID];
 	
 	// this will call the sub class method
 	[request setValue:self.getMethodString forKey:@"method"];
@@ -634,7 +634,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	}
 	else
 	{
-		[self setParms:params withCursor:-1 count:count forward:YES];
+		[self setParms:params withCursor:[NSNumber numberWithInteger:-1] count:count forward:YES];
 	}
 	
 	if (0 < params.count)
@@ -705,7 +705,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	uint32_t oldestKey = [self oldestCursorWithlistID:listID];
+	NSNumber * oldestKey = [self oldestCursorWithlistID:listID];
 	
 	// this will call the sub class method
 	[request setValue:self.getMethodString forKey:@"method"];
@@ -717,7 +717,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	}
 	else
 	{
-		[self setParms:params withCursor:-1 count:count forward:YES];
+		[self setParms:params withCursor:[NSNumber numberWithInteger:-1] count:count forward:YES];
 	}
 	
 	if (0 < params.count)

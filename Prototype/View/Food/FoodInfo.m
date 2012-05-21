@@ -190,19 +190,18 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 	_food = [food retain];
 	
-	if (nil != _food)
+
+	@autoreleasepool
 	{
-		@autoreleasepool
-		{
-			self.date.text = [self.food valueForKey:@"created_on"];
-			self.image.picID = [self.food valueForKey:@"pic"];
-			
-			[self requestUserProfile];
-			[self updateScore];
-			[self updateTags];
-			[self updateButtons];
-		}
+		self.date.text = [self.food valueForKey:@"created_on"];
+		self.image.picID = [self.food valueForKey:@"pic"];
+		
+		[self requestUserProfile];
+		[self updateScore];
+		[self updateTags];
+		[self updateButtons];
 	}
+
 }
 
 #pragma mark - life circle

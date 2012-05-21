@@ -12,6 +12,6 @@
 
 - (void) requestNewerComment;
 
-@property (strong,nonatomic) NSDictionary *foodObject;
+@property (strong, nonatomic) NSNumber *foodID;
 
 @end

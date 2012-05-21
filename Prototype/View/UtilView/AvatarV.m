@@ -99,7 +99,7 @@ DEFINE_CUSTOM_XIB(AvatarV);
 	if (nil != userID)
 	{
 		self.userHomePage.userID = userID;
-		[self.userHomePage restGUI];
+		[self.userHomePage resetGUI];
 		
 		[self.delegate showVC:self.userHomePage];
 	}

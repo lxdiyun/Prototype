@@ -100,7 +100,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	NSUInteger objectCount = [self getObjectCountForSection:section];
+	NSUInteger objectCount = [self objectCountFor:section];
 	
 	_lastSectionObjectCount[section] = objectCount;
 	
@@ -227,7 +227,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 {
 
 	NSUInteger index = indexPath.row;
-	NSInteger total = [self getObjectCountForSection:indexPath.section];
+	NSInteger total = [self objectCountFor:indexPath.section];
 	
 	
 	if ((total - ROW_TO_MORE_FROM_BOTTOM) <= index)
@@ -400,7 +400,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 					 andTarget:self];
 }
 
-- (NSUInteger) getObjectCountForSection:(USER_HOME_PAGE_SECTION)section
+- (NSUInteger) objectCountFor:(USER_HOME_PAGE_SECTION)section
 {
 	switch (section) 
 	{
@@ -538,7 +538,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	}
 }
 
-- (void) restGUI
+- (void) resetGUI
 {
 	[self.targetHeader resetGUI];
 	[self.historyHeader resetGUI];
@@ -582,7 +582,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 {
 	@autoreleasepool 
 	{
-		if ([self getObjectCountForSection:section] != _lastSectionObjectCount[section])
+		if ([self objectCountFor:section] != _lastSectionObjectCount[section])
 		{
 			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:section] 
 				      withRowAnimation:UITableViewRowAnimationNone];
@@ -611,7 +611,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 {
 	for (int section = 0; section < USER_PAGE_SECTION_MAX; ++section)
 	{
-		if ([self getObjectCountForSection:section] != _lastSectionObjectCount[section])
+		if ([self objectCountFor:section] != _lastSectionObjectCount[section])
 		{
 			[self.tableView reloadData];
 			
@@ -699,7 +699,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 {
 	NSDictionary *food = [self getObjectFor:index];
 	
-	self.foodPage.foodObject = food;
+	self.foodPage.foodID = [food valueForKey:@"id"];
 	
 	[self.navigationController pushViewController:self.foodPage animated:YES];
 }
@@ -722,8 +722,6 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	}
 }
 
-
-
 #pragma mark - ShowVCDelegate
 
 - (void) showVC:(UIViewController *)vc
@@ -733,25 +731,15 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 
 #pragma mark - button action
 
-- (void) followResultHandler:(NSDictionary *)result
-{
-	BOOL followUpdated = [[result valueForKey:@"result"] boolValue];
-	
-	if (followUpdated)
-	{
-		[self forceRequestUserInfo];
-	}
-}
-
 - (void) follow
 {
-	[FollowingListManager follow:self.userID with:@selector(followResultHandler:) and:self];
+	[FollowingListManager follow:self.userID with:@selector(forceRequestUserInfo) and:self];
 	self.followButton.enabled = NO;
 }
 
 - (void) unfollow
 {
-	[FollowingListManager unFollow:self.userID with:@selector(followResultHandler:) and:self];
+	[FollowingListManager unFollow:self.userID with:@selector(forceRequestUserInfo) and:self];
 	self.unFollowButton.enabled = NO;
 }
 

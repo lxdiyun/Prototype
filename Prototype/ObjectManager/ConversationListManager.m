@@ -13,13 +13,13 @@
 #import "Message.h"
 #import "ConversationPage.h"
 #import "ConversationDetailPage.h"
+#import "DaemonManager.h"
 
 static NSString *gs_fakeListID = nil;
 
 @interface ConversationListManager () 
 {
 }
-- (void) bindDaemonResponder;
 @end
 
 @implementation ConversationListManager
@@ -46,7 +46,7 @@ DEFINE_SINGLETON(ConversationListManager);
 			
 			self.getMethodString = @"msg.get_conversation_list";
 			
-			[self bindDaemonResponder];
+			[self registerDaemonResponder];
 		}
 		
 	}
@@ -63,6 +63,14 @@ DEFINE_SINGLETON(ConversationListManager);
 }
 
 #pragma mark - send request message
+
++ (void) requestNewestCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
+{
+	[self requestNewestWithListID:gs_fakeListID 
+			     andCount:count 
+			  withHandler:handler 
+			    andTarget:target];
+}
 
 + (void) requestNewerCount:(uint32_t)count withHandler:(SEL)handler andTarget:(id)target
 {
@@ -86,11 +94,11 @@ DEFINE_SINGLETON(ConversationListManager);
 	return [self keyArrayForList:gs_fakeListID]; 
 }
 
-+ (BOOL) isNewerUpdating
++ (BOOL) isNewestUpdating
 {
 	@autoreleasepool 
 	{
-		return [self isUpdatingWithType:REQUEST_NEWER withListID:gs_fakeListID];
+		return [self isUpdatingWithType:REQUEST_NEWEST withListID:gs_fakeListID];
 	}
 }
 
@@ -99,9 +107,9 @@ DEFINE_SINGLETON(ConversationListManager);
 	return [self lastUpdatedDateForList:gs_fakeListID];
 }
 
-+ (NSDictionary *) getConversationWithUser:(NSString *)userID
++ (NSDictionary *) getConversationWith:(NSString *)ID
 {
-	return [self getObject:userID inList:gs_fakeListID];
+	return [self getObject:ID inList:gs_fakeListID];
 }
 
 #pragma mark - overwrite handler
@@ -113,7 +121,7 @@ DEFINE_SINGLETON(ConversationListManager);
 	
 	for (NSString *key in keyArray)
 	{
-		NSDictionary *conversation = [self getConversationWithUser:key];
+		NSDictionary *conversation = [self getConversationWith:key];
 		
 		totalUnreadMessage += [[conversation valueForKey:@"unread_count"] integerValue];
 	}
@@ -210,31 +218,21 @@ DEFINE_SINGLETON(ConversationListManager);
 
 #pragma mark - daemon
 
-- (void) bindDaemonResponder
+- (void) registerDaemonResponder
 {
-	MessageResponder *responder = [[MessageResponder alloc] init];
-	
-	responder.handler = @selector(daemonMessageHandler:);
-	responder.target = self;
-	
-	ADD_MESSAGE_RESPONDER(responder, CONVERSATION_DAEMON);
-	
-	[responder release];
+	[DaemonManager registerDaemon:@"msg.push" 
+				 with:@selector(daemonMessageHandler:) 
+				  and:self];
 }
 
 - (void) daemonMessageHandler:(NSDictionary *)message
 {	
-	NSString *method = [message valueForKey:@"method"];
+	NSDictionary *params  = [message valueForKey:@"params"];
+	NSString *userID = [[[params valueForKey:@"msg"] valueForKey:@"sender"] stringValue];
 	
-	if ([method isEqualToString:@"msg.push"])
+	if (![ConversationDetailPage newPushMessageForUser:userID])
 	{
-		NSDictionary *params  = [message valueForKey:@"params"];
-		NSString *userID = [[[params valueForKey:@"msg"] valueForKey:@"sender"] stringValue];
-		
-		if (![ConversationDetailPage newPushMessageForUser:userID])
-		{
-			[ConversationPage updateConversationList];
-		}
+		[ConversationPage updateConversationList];
 	}
 }
 

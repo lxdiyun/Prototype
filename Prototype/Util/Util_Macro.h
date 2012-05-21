@@ -83,13 +83,13 @@ return gs_shared_instance; \
 {  \
 	CLASS_NAME *result = nil;  \
 	 \
-	NSArray* elements = [[NSBundle mainBundle] loadNibNamed:NSStringFromClass([self class])  \
+	NSArray* elements = [[NSBundle mainBundle] loadNibNamed:NSStringFromClass([CLASS_NAME class])  \
 							  owner:nil  \
 							options:nil];  \
 	 \
 	for (id anObject in elements)  \
 	{  \
-		if ([anObject isKindOfClass:[self class]])  \
+		if ([anObject isKindOfClass:[CLASS_NAME class]])  \
 		{  \
 			result = anObject; \
 			 \

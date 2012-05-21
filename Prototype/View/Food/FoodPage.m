@@ -36,26 +36,29 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 @interface FoodPage () <TextInputerDeletgate, ShowVCDelegate>
 {
-	NSDictionary *_foodObject;
+	NSDictionary *_food;
 	TextInputer *_inputer;
 	UINavigationController *_navco;
 	TitleVC *_titleView;
 	FoodInfo *_foodInfo;
+	NSNumber *_foodID;
 }
 
 @property (strong, nonatomic) TextInputer *inputer;
 @property (strong, nonatomic) UINavigationController *navco;
 @property (strong, nonatomic) TitleVC *titleView;
 @property (strong, nonatomic) FoodInfo *foodInfo;
+@property (strong, nonatomic) NSDictionary *food;
 @end
 
 @implementation FoodPage
 
-@synthesize foodObject = _foodObject;
+@synthesize food = _food;
 @synthesize inputer = _inputer;
 @synthesize navco = _navco;
 @synthesize titleView = _titleView;
 @synthesize foodInfo = _foodInfo;
+@synthesize foodID = _foodID;
 
 #pragma mark - life circle
 
@@ -88,15 +91,9 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	self.navco = nil;
 	self.titleView = nil;
 	self.foodInfo = nil;
+	self.foodID = nil;
 	
 	[super dealloc];
-}
-
-#pragma mark - View lifecycle
-
-- (void) viewWillAppear:(BOOL)animated
-{	
-	[super viewWillAppear:animated];
 }
 
 #pragma mark - Table view data source
@@ -115,8 +112,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	{
 		case FOOD_COMMENT:
 		{
-			NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-			NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:foodID] count];
+			NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:[self.foodID stringValue]] count];
 			
 			self.lastRowCount = commentCount;
 
@@ -132,9 +128,8 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 			break;
 		case FOOD_MORE:
 		{
-			NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-			NSInteger loadedComment =  [[FoodCommentMananger keyArrayForList:foodID] count];
-			NSInteger totalComment = [[self.foodObject valueForKey:@"comment_count"] intValue];
+			NSInteger loadedComment =  [[FoodCommentMananger keyArrayForList:[self.foodID stringValue]] count];
+			NSInteger totalComment = [[self.food valueForKey:@"comment_count"] intValue];
 			
 			if (loadedComment < totalComment)
 			{
@@ -148,7 +143,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 			break;
 			
 		case FOOD_TAG:
-			if (1 < [[self.foodObject valueForKey:@"tags"] count])
+			if (1 < [[self.food valueForKey:@"tags"] count])
 			{
 				return 1;
 			}
@@ -184,7 +179,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 		[cell.contentView addSubview:self.foodInfo.view];
 	}
 	
-	self.foodInfo.food = self.foodObject;
+	self.foodInfo.food = self.food;
 	
 	return cell;
 }
@@ -203,7 +198,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, 40.0);
 	}
 	
-	cell.objectDict = self.foodObject;
+	cell.objectDict = self.food;
 	
 	return cell;
 }
@@ -226,10 +221,9 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 			cell.delegate = self;
 		}
 
-		NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-		NSArray * keyArray = [FoodCommentMananger keyArrayForList:foodID];
+		NSArray * keyArray = [FoodCommentMananger keyArrayForList:[self.foodID stringValue]];
 		NSString *commentID = [keyArray objectAtIndex:indexPath.row - 1];
-		cell.commentDict = [FoodCommentMananger getObject:commentID inList:foodID];
+		cell.commentDict = [FoodCommentMananger getObject:commentID inList:[self.foodID stringValue]];
 
 		return cell;
 	}
@@ -299,9 +293,9 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 		cell.frame = CGRectMake(0.0, 0.0, self.view.frame.size.width, DEFAULT_CELL_HEIGHT);
 	}
 
-	if (nil  != self.foodObject)
+	if (nil  != self.food)
 	{
-		cell.foodObject = self.foodObject;
+		cell.foodObject = self.food;
 	}
 
 	return cell;
@@ -348,7 +342,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 			break;
 		case FOOD_DESC:
 		{
-			return [DescriptionCell cellHeightForObject:self.foodObject forCellWidth:self.view.frame.size.width];
+			return [DescriptionCell cellHeightForObject:self.food forCellWidth:self.view.frame.size.width];
 		}
 			break;
 		case FOOD_COMMENT:
@@ -356,10 +350,9 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 			// row 0 for triangle cell
 			if (1 <= indexPath.row)
 			{
-				NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-				NSArray * keyArray = [FoodCommentMananger keyArrayForList:foodID];
+				NSArray * keyArray = [FoodCommentMananger keyArrayForList:[self.foodID stringValue]];
 				NSString *commentID = [keyArray objectAtIndex:indexPath.row - 1];
-				NSDictionary *comment = [FoodCommentMananger getObject:commentID inList:foodID];
+				NSDictionary *comment = [FoodCommentMananger getObject:commentID inList:[self.foodID stringValue]];
 				return [CommentCell cellHeightForComment:comment forCellWidth:self.view.frame.size.width];
 			}
 			else 
@@ -371,7 +364,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 		case FOOD_MORE:
 			return 40.0;
 		case FOOD_TAG:
-			return [FoodTagCell cellHeightForObject:self.foodObject forCellWidth:self.view.frame.size.width];
+			return [FoodTagCell cellHeightForObject:self.food forCellWidth:self.view.frame.size.width];
 		default:
 			return DEFAULT_CELL_HEIGHT;
 	}
@@ -408,11 +401,9 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 - (void) textDoneWithTextInputer:(TextInputer *)inputer
 {
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-
 	[self dismissModalViewControllerAnimated:YES];
 	[FoodCommentMananger createComment:inputer.text.text 
-				   forList:foodID 
+				   forList:[self.foodID stringValue] 
 			       withHandler:@selector(createCommentHandler:) 
 				 andTarget:self];
 }
@@ -433,8 +424,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 - (void) reloadCommentSection
 {
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:foodID] count];
+	NSUInteger commentCount = [[FoodCommentMananger keyArrayForList:[self.foodID stringValue]] count];
 	static NSMutableIndexSet *commentSectionSet = nil;
 	
 	if (nil == commentSectionSet)
@@ -446,7 +436,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	
 	if (self.lastRowCount != commentCount) 
 	{
-		[self.tableView reloadSections:commentSectionSet withRowAnimation:UITableViewRowAnimationFade];
+		[self.tableView reloadSections:commentSectionSet withRowAnimation:UITableViewRowAnimationNone];
 	}
 	
 	[self.refreshHeader egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
@@ -497,36 +487,56 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 - (void) reload
 {
-	self.titleView.object = self.foodObject;
+	self.titleView.object = self.food;
 	
 	[self.tableView reloadData];
 }
 
 #pragma mark - object manange
 
-- (void) refreshFood
+- (void) setFoodID:(NSNumber *)foodID
 {
-	self.foodObject = [FoodManager getObjectWithNumberID:[self.foodObject valueForKey:@"id"]];
+	if (CHECK_EQUAL(foodID, _foodID))
+	{
+		return;
+	}
 	
-	[self reload];
+	[_foodID release];
+	_foodID = [foodID retain];
+	
+	self.food = nil;
+}
+
+- (void) forceRequestFood
+{
+	[FoodManager requestObjectWithNumberID:self.foodID
+				    andHandler:@selector(refreshFood) 
+				     andTarget:self];
 }
 
 - (void) requestFood
-{
-	NSNumber *foodID = [self.foodObject valueForKey:@"id"];
-	
-	if (nil != foodID)
+{	
+	if (nil != self.foodID)
 	{
-		[FoodManager requestObjectWithNumberID:foodID
-					    andHandler:@selector(refreshFood) 
-					     andTarget:self];
+		NSDictionary *food = [FoodManager getObjectWithNumberID:self.foodID];
+		
+		if (nil != food)
+		{
+			self.food = food;
+			
+			[self reload];
+		}
+		else 
+		{
+			[self forceRequestFood];
+		}
+	
 	}
 }
 
 - (void) requestNewestComment
 {
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	[FoodCommentMananger requestNewestWithListID:foodID 
+	[FoodCommentMananger requestNewestWithListID:[self.foodID stringValue] 
 					    andCount:COMMENT_REFRESH_WINDOW 
 					 withHandler:@selector(reloadCommentSection) 
 					   andTarget:self];
@@ -534,8 +544,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 - (void) requestNewerComment
 {	
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	[FoodCommentMananger requestNewerWithListID:foodID 
+	[FoodCommentMananger requestNewerWithListID:[self.foodID stringValue] 
 					   andCount:COMMENT_REFRESH_WINDOW 
 					withHandler:@selector(reloadCommentSection) 
 					  andTarget:self];
@@ -543,22 +552,10 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 - (void) requestOlderComment
 {
-	NSString *foodID = [[self.foodObject valueForKey:@"id"] stringValue];
-	[FoodCommentMananger requestOlderWithListID:foodID 
+	[FoodCommentMananger requestOlderWithListID:[self.foodID stringValue] 
 					   andCount:COMMENT_REFRESH_WINDOW 
 					withHandler:@selector(reloadCommentSection) 
 					  andTarget:self];
-}
-
-- (void) setFoodObject:(NSDictionary *)foodObject
-{
-	if (CHECK_EQUAL(_foodObject ,foodObject))
-	{
-		return;
-	}
-	
-	[_foodObject release];
-	_foodObject = [foodObject retain];
 }
 
 - (void) createCommentHandler:(id)result
@@ -569,12 +566,13 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 - (void) pullToRefreshRequest
 {
-	[self requestFood];
+	[self forceRequestFood];
 	[self requestNewestComment];
 }
 
 - (void) requestNewer
 {
+	[self requestFood];
 	[self requestNewerComment];
 }
 
@@ -585,12 +583,13 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 - (BOOL) isUpdating
 {
+	
 	return [FoodCommentMananger isUpdatingWithType:REQUEST_NEWEST 
-					    withListID:[[self.foodObject valueForKey:@"user"] stringValue]];
+					    withListID:[self.foodID stringValue]];
 }
 - (NSDate* ) lastUpdateDate
 {
-	return [FoodCommentMananger lastUpdatedDateForList:[[self.foodObject valueForKey:@"id"] stringValue]];
+	return [FoodCommentMananger lastUpdatedDateForList:[self.foodID stringValue]];
 }
 
 @end

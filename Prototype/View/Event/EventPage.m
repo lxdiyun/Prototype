@@ -342,7 +342,7 @@ DEFINE_SINGLETON(EventPage);
 	
 		NSString *eventID = [[EventManager keyArray] objectAtIndex:eventIndex];
 		NSDictionary *event = [EventManager getObjectWithStringID:eventID];
-		self.foodPage.foodObject = [event valueForKey:@"obj"];
+		self.foodPage.foodID = [[event valueForKey:@"obj"] valueForKey:@"id"];
 		
 		[self.navigationController pushViewController:self.foodPage animated:YES];
 		self.foodPage.tableView.contentOffset = CGPointZero;

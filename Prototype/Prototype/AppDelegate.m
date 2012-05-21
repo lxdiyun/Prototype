@@ -16,7 +16,7 @@
 #import "ShareNewEvent.h"
 #import "Util.h"
 #import "ObjectSaver.h"
-#import "ConversationPage.h"
+#import "NewsPage.h"
 #import "WebPage.h"
 #import "PublicFoodMapListPage.h"
 #import "LogoutPage.h"
@@ -46,7 +46,7 @@ static UIViewController *gs_currentViewController;
 	MSWJ_PAGE_CLASS[HOME_PAGE] = [EventPage class];
 	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [PublicFoodMapListPage class];
 	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
-	MSWJ_PAGE_CLASS[CONVERSATION_PAGE] = [ConversationPage class];
+	MSWJ_PAGE_CLASS[NEWS_PAGE] = [NewsPage class];
 	MSWJ_PAGE_CLASS[WEB_PAGE] = [WebPage class];
 	MSWJ_PAGE_CLASS[MY_HOME_PAGE] = [MyHomePage class];
 	MSWJ_PAGE_CLASS[USER_INFO_PAGE] = [UserInfoPage class];

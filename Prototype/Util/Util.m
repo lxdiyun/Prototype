@@ -149,6 +149,20 @@ NSInteger DEVICE_TYPE(void)
 	return s_device_type;
 }
 
+// conver between types
+NSNumber * CONVER_NUMBER_FROM_STRING(NSString *string)
+{
+	static NSNumberFormatter * s_formatter = nil;
+	
+	if (nil == s_formatter)
+	{
+		s_formatter = [[NSNumberFormatter alloc] init];
+		s_formatter.numberStyle = NSNumberFormatterNoStyle;
+	}
+
+	return [s_formatter numberFromString:string];
+}
+
 // check and error handling;
 BOOL CHECK_NUMBER(NSNumber *object)
 {

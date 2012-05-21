@@ -17,7 +17,7 @@
 
 - (InfoCell *) getInfoCell;
 - (void) initGUI;
-- (void) restGUI;
+- (void) resetGUI;
 - (void) updateGUIWith:(NSDictionary *)user;
 - (void) requestUserInfo;
 

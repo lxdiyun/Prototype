@@ -253,8 +253,8 @@ DEFINE_SINGLETON(ConversationDetailPage);
 
 - (void) checkUnreadMesssage
 {
-	NSInteger oldestKey = [ConversationManager oldestKeyForList:self.targetUserID];
-	NSString *oldestID = [[NSString alloc] initWithFormat:@"%d", oldestKey]; 
+	NSNumber *oldestKey = [ConversationManager oldestKeyForList:self.targetUserID];
+	NSString *oldestID = [oldestKey stringValue]; 
 	NSDictionary *oldestConversation = [ConversationManager getObject:oldestID  inList:self.targetUserID];
 	BOOL unreadFlag = [[oldestConversation valueForKey:@"is_read"] boolValue];
 	
@@ -263,8 +263,6 @@ DEFINE_SINGLETON(ConversationDetailPage);
 		// may has unread messages, request for them
 		[self updateOlderConversation];
 	}
-	
-	[oldestID release];
 }
 
 - (void) updateNewerConversationHandler
@@ -278,10 +276,10 @@ DEFINE_SINGLETON(ConversationDetailPage);
 
 - (void) updateOlderConversationHandler
 {
-	static uint32_t lastOldestID = 0;
-	uint32_t currentOldestID = [ConversationManager oldestKeyForList:self.targetUserID];
+	static NSNumber * lastOldestID = nil;
+	NSNumber *currentOldestID = [ConversationManager oldestKeyForList:self.targetUserID];
 
-	if (lastOldestID == currentOldestID)
+	if (CHECK_EQUAL(currentOldestID, lastOldestID))
 	{
 		self.canUpdateOlder = NO;
 	}

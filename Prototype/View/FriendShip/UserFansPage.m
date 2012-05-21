@@ -1,29 +1,30 @@
 //
-//  UserFollowingPage.m
+//  UserFansPage.m
 //  Prototype
 //
-//  Created by Adrian Lee on 5/15/12.
+//  Created by Adrian Lee on 5/16/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "UserFollowingPage.h"
+#import "UserFansPage.h"
 
-#import "FollowingListManager.h"
+#import "UserHomePage.h"
+#import "FansListManager.h"
 #import "ProfileMananger.h"
 #import "ListCell.h"
-#import "UserHomePage.h"
+#import "AppDelegate.h"
 
-@interface UserFollowingPage ()
+@interface UserFansPage ()
 {
 	NSString *_userID;
-	HomePage *_userPage;
+	UserHomePage *_userPage;
 }
 
-@property (retain, nonatomic) HomePage *userPage;
+@property (retain, nonatomic) UserHomePage *userPage;
 
 @end
 
-@implementation UserFollowingPage
+@implementation UserFansPage
 
 @synthesize userID = _userID;
 @synthesize userPage = _userPage;
@@ -58,7 +59,7 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [[FollowingListManager keyArrayForList:self.userID] count];
+	return [[FansListManager keyArrayForList:self.userID] count];
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -71,7 +72,7 @@
 		cell = [ListCell createFromXIB];
 	}
 	
-	NSString *userID = [[FollowingListManager keyArrayForList:self.userID] objectAtIndex:indexPath.row];
+	NSString *userID = [[FansListManager keyArrayForList:self.userID] objectAtIndex:indexPath.row];
 	
 	NSDictionary *user = [ProfileMananger getObjectWithStringID:userID];
 	
@@ -98,15 +99,16 @@
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NSString *userID = [[FollowingListManager keyArrayForList:self.userID] objectAtIndex:indexPath.row];
+	NSString *userID = [[FansListManager keyArrayForList:self.userID] objectAtIndex:indexPath.row];
 	
 	if (nil != userID)
 	{
 		self.userPage.userID = [NSNumber numberWithInteger:[userID integerValue]];
 		
-		[self.userPage restGUI];
+		[self.userPage resetGUI];
 		
 		[self.navigationController pushViewController:self.userPage animated:YES];
+
 	}
 }
 
@@ -115,15 +117,15 @@
 
 - (void) pullToRefreshRequest
 {
-	[FollowingListManager requestNewestWithListID:self.userID 
-					     andCount:REFRESH_WINDOW 
-					  withHandler:@selector(reload) 
-					    andTarget:self];
+	[FansListManager requestNewestWithListID:self.userID 
+				       andCount:REFRESH_WINDOW 
+				    withHandler:@selector(reload) 
+				      andTarget:self];
 }
 
 - (void) requestNewer
 {
-	[FollowingListManager requestNewerWithListID:self.userID 
+	[FansListManager requestNewerWithListID:self.userID 
 					    andCount:REFRESH_WINDOW 
 					 withHandler:@selector(reload) 
 					   andTarget:self];
@@ -131,7 +133,7 @@
 
 - (void) requestOlder
 {
-	[FollowingListManager requestOlderWithListID:self.userID 
+	[FansListManager requestOlderWithListID:self.userID 
 					    andCount:REFRESH_WINDOW
 					 withHandler:@selector(reload) 
 					   andTarget:self];
@@ -139,33 +141,41 @@
 
 - (BOOL) isUpdating
 {
-	return [FollowingListManager isUpdatingWithType:REQUEST_NEWEST withListID:self.userID];
+	return [FansListManager isUpdatingWithType:REQUEST_NEWEST withListID:self.userID];
 }
 
 - (NSDate* ) lastUpdateDate
 {
-	return [FollowingListManager lastUpdatedDateForList:self.userID];
+	return [FansListManager lastUpdatedDateForList:self.userID];
 }
 
 - (void) updateUser
 {
-	NSDictionary *user = [ProfileMananger getObjectWithStringID:self.userID];
-	
-	if (nil != user)
+	if (CHECK_EQUAL(self.userID, [GET_USER_ID() stringValue]))
 	{
-		NSString *title = [[NSString alloc] initWithFormat:@"%@关注的人", [user valueForKey:@"nick"]];
-		
-		self.title = title;
-		
-		[title release];
+		self.title = @"我的粉丝";
 	}
 	else 
 	{
-		[ProfileMananger requestObjectWithStringID:self.userID 
-						andHandler:@selector(updateUser) 
-						 andTarget:self];
+		NSDictionary *user = [ProfileMananger getObjectWithStringID:self.userID];
+		
+		if (nil != user)
+		{
+			NSString *title = [[NSString alloc] initWithFormat:@"%@的粉丝", [user valueForKey:@"nick"]];
+			
+			self.title = title;
+			
+			[title release];
+		}
+		else 
+		{
+			[ProfileMananger requestObjectWithStringID:self.userID 
+							andHandler:@selector(updateUser) 
+							 andTarget:self];
+		}
 	}
-}
+	}
+
 
 
 @end

@@ -132,14 +132,13 @@ DEFINE_SINGLETON(ConversationManager);
 {
 	@autoreleasepool 
 	{
-		NSInteger currentNewestKey = [[self class] newestKeyForList:listID];
+		NSNumber *currentNewestKey = [[self class] newestKeyForList:listID];
 		
 		[super updateKeyArrayForList:listID withResult:result forward:forward];
 		
-		NSInteger updatedNewestKey = [[self class] newestKeyForList:listID];
+		NSNumber *updatedNewestKey = [[self class] newestKeyForList:listID];
 
-			
-		if (currentNewestKey != updatedNewestKey)
+		if (!CHECK_EQUAL(currentNewestKey, updatedNewestKey))
 		{
 			[self.unreadMessageFlags setValue:[NSNumber numberWithBool:YES] forKey:listID];
 		}
