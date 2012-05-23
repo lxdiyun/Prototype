@@ -114,7 +114,7 @@ DEFINE_SINGLETON(ConversationPage);
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *CellIdentifier = @"ListCell";
+	static NSString *CellIdentifier = @"ConversationListCell";
 	
 	ConversationListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) 

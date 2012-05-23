@@ -34,14 +34,15 @@ typedef enum MESSAGE_TYPE_ENUM
 + (void) restoreFrom:(NSMutableDictionary *)dict;
 + (void) reset;
 
-// key array
+// key and cursor
 - (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward;
 + (NSArray *) keyArrayForList:(NSString *)listID;
-- (NSNumber *) newestCursorWithlistID:(NSString *)listID;
-- (NSNumber *) cursorForObject:(NSString *)objectID inlist:(NSString *)listID;
-- (NSNumber *) oldestCursorWithlistID:(NSString *)listID;
-+ (NSNumber *) newestKeyForList:(NSString *)listID;
-+ (NSNumber *) oldestKeyForList:(NSString *)listID;
+- (NSString *) newestKeyWithListID:(NSString *)listID;
+- (NSString *) keyForObjectID:(NSString *)objectID inList:(NSString *)listID;
+- (NSString *) oldestKeyWithListID:(NSString *)listID;
++ (NSString *) newestKeyForList:(NSString *)listID;
++ (NSString *) oldestKeyForList:(NSString *)listID;
+- (NSNumber *) cursorForKey:(NSString *)key inList:(NSString *)listID;
 
 
 // object in list

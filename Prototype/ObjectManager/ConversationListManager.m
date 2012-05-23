@@ -11,9 +11,9 @@
 #import "Util.h"
 #import "ProfileMananger.h"
 #import "Message.h"
-#import "ConversationPage.h"
 #import "ConversationDetailPage.h"
 #import "DaemonManager.h"
+#import "NewsPage.h"
 
 static NSString *gs_fakeListID = nil;
 
@@ -47,6 +47,7 @@ DEFINE_SINGLETON(ConversationListManager);
 			self.getMethodString = @"msg.get_conversation_list";
 			
 			[self registerDaemonResponder];
+			[[self class] checkNew];
 		}
 		
 	}
@@ -112,6 +113,11 @@ DEFINE_SINGLETON(ConversationListManager);
 	return [self getObject:ID inList:gs_fakeListID];
 }
 
++ (void) checkNew
+{
+	[self requestNewestCount:20 withHandler:nil andTarget:nil];
+}
+
 #pragma mark - overwrite handler
 
 + (void) updateUnreadMessage
@@ -126,7 +132,7 @@ DEFINE_SINGLETON(ConversationListManager);
 		totalUnreadMessage += [[conversation valueForKey:@"unread_count"] integerValue];
 	}
 	
-	[ConversationPage updateBage:totalUnreadMessage];
+	[NewsPage setUnreadMessageCount:totalUnreadMessage];
 }
 
 - (void) getMethodHandler:(id)dict withListID:(NSString *)ID forward:(BOOL)forward
@@ -232,7 +238,7 @@ DEFINE_SINGLETON(ConversationListManager);
 	
 	if (![ConversationDetailPage newPushMessageForUser:userID])
 	{
-		[ConversationPage updateConversationList];
+		[NewsPage updateMessage];
 	}
 }
 

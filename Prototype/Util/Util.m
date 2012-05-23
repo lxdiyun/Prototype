@@ -14,6 +14,8 @@
 #import "SDNetworkActivityIndicator.h"
 #import "Message.h"
 
+// login user id
+
 static NSNumber *gs_login_user_id = nil;
 
 NSNumber * GET_USER_ID(void)
@@ -32,13 +34,27 @@ void SET_USER_ID(NSNumber *ID)
 	gs_login_user_id = [ID retain];
 }
 
+// sorter
 NSInteger ID_SORTER(id ID1, id ID2, void *context)
 {
-	uint32_t v1 = [ID1 integerValue];
-	uint32_t v2 = [ID2 integerValue];
+	NSUInteger v1 = [ID1 integerValue];
+	NSUInteger v2 = [ID2 integerValue];
+
 	if (v1 > v2)
 		return NSOrderedAscending;
 	else if (v1 < v2)
+		return NSOrderedDescending;
+	else
+		return NSOrderedSame;
+}
+NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context)
+{
+	NSUInteger v1 = [ID1 integerValue];
+	NSUInteger v2 = [ID2 integerValue];
+
+	if (v1 < v2)
+		return NSOrderedAscending;
+	else if (v1 > v2)
 		return NSOrderedDescending;
 	else
 		return NSOrderedSame;
@@ -48,8 +64,8 @@ NSInteger LIST_RESULT_SORTER(id ID1, id ID2, void *context)
 {
 	if ([(id)context isKindOfClass:[NSDictionary class]])
 	{
-		uint32_t v1 = [[(NSDictionary *)context valueForKey:ID1] integerValue];
-		uint32_t v2 = [[(NSDictionary *)context valueForKey:ID2] integerValue];
+		NSUInteger v1 = [[(NSDictionary *)context valueForKey:ID1] integerValue];
+		NSUInteger v2 = [[(NSDictionary *)context valueForKey:ID2] integerValue];
 		
 		if (v1 > v2)
 			return NSOrderedAscending;
@@ -60,16 +76,46 @@ NSInteger LIST_RESULT_SORTER(id ID1, id ID2, void *context)
 	return NSOrderedSame;
 }
 
-NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context)
+NSInteger NOTIFICATION_SORTER(id ID1, id ID2, void *context)
 {
-	uint32_t v1 = [ID1 integerValue];
-	uint32_t v2 = [ID2 integerValue];
-	if (v1 < v2)
-		return NSOrderedAscending;
-	else if (v1 > v2)
-		return NSOrderedDescending;
-	else
-		return NSOrderedSame;
+	if ([(id)context isKindOfClass:[NSDictionary class]])
+	{
+		NSDictionary *noticfication1 = [(NSDictionary *)context valueForKey:ID1];
+		NSDictionary *noticfication2 = [(NSDictionary *)context valueForKey:ID2];
+		BOOL n1Readed = [[noticfication1 valueForKey:@"is_read"] boolValue];
+		BOOL n2Readed = [[noticfication2 valueForKey:@"is_read"] boolValue];
+		double n1lastUpdated = [[noticfication1 valueForKey:@"last_update"] doubleValue];
+		double n2lastUpdated = [[noticfication2 valueForKey:@"last_update"] doubleValue];
+		
+		if (n1Readed != n2Readed)
+		{
+			if (n1Readed)
+			{
+				return NSOrderedDescending;
+			}
+			else 
+			{
+				return NSOrderedAscending;
+			}
+		}
+		else 
+		{
+			if (n1lastUpdated > n2lastUpdated)
+			{
+				return NSOrderedAscending;
+			}
+			else if (n1lastUpdated < n2lastUpdated)
+			{
+				return NSOrderedDescending;
+			}
+			else 
+			{
+				return NSOrderedSame;
+			}
+		}
+	}
+	
+	return NSOrderedSame;
 }
 
 

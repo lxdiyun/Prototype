@@ -76,14 +76,17 @@
 			NSString *ID = [self.pic valueForKey:@"id"];
 			NSString *salt = [self.pic valueForKey:@"salt"];
 			NSString *type = [self.pic valueForKey:@"type"];
-			uint32_t real_size = lrintf(self.frame.size.height*SCALE());
-			uint32_t cached_size = [[ImageManager getImageSizeWithNumberID:self.picID] intValue];
+			NSInteger real_size_height = lrintf(self.frame.size.height * SCALE());
+			NSInteger real_size_width = lrintf(self.frame.size.width * SCALE());
+			NSInteger cached_size_height = [[ImageManager getImageSizeWithNumberID:self.picID] intValue];
+			NSInteger cached_size_width = cached_size_height * real_size_width / real_size_height;
 			imageUrlString = [[NSMutableString alloc] init];
 			
-			if (cached_size > real_size)
+			if (cached_size_height > real_size_height)
 			{
+				 
 				// cached size bigger than real size
-				NSString *size = [[NSString alloc] initWithFormat:@"%d", cached_size];
+				NSString *size = [[NSString alloc] initWithFormat:@"%d!%d", cached_size_width , cached_size_height];
 				[imageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
 				[size release];
 			}
@@ -91,23 +94,25 @@
 			{
 				// cached size smaller than realsize or not cached
 				NSString *size = nil;
-				if (cached_size > 0)
+				if (cached_size_height > 0)
 				{
 					preImageUrlString = [[NSMutableString alloc] init];
-					size = [[NSString alloc] initWithFormat:@"%d", cached_size];
+					size = [[NSString alloc] initWithFormat:@"%d!%d", cached_size_width , cached_size_height];
 					[preImageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
 					[size release];
 				}
 				
-				size = [[NSString alloc] initWithFormat:@"%d", real_size]; 
+				size = [[NSString alloc] initWithFormat:@"%d!%d", real_size_width, real_size_height]; 
 				[imageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
 				[size release];
 				
-				[ImageManager setImageSize:[NSNumber numberWithUnsignedInt:real_size] withNumberID:self.picID];
+				[ImageManager setImageSize:[NSNumber numberWithUnsignedInt:real_size_height] withNumberID:self.picID];
 				
 				[self startIndicator];
 			} 
 		}
+		
+		LOG(@"pre url = %@\n url = %@", preImageUrlString, imageUrlString);
 		
 		if ((nil == preImageUrlString) && (nil == imageUrlString))
 		{

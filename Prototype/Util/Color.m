@@ -34,7 +34,7 @@
 	return color;
 }
 
-+ (UIColor *) valuedColor
++ (UIColor *) valued
 {
 	static UIColor *color = nil;
 	

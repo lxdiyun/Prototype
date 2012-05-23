@@ -66,18 +66,6 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 
 #pragma mark - view control life circle
 
-- (id) init
-{
-	self = [super init];
-	
-	if (nil != self)
-	{
-		self.refreshStyle = PULL_TO_REFRESH_STYLE_WHITE;
-	}
-	
-	return self;
-}
-
 - (void) dealloc
 {
 	self.userID = nil;
@@ -322,7 +310,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	[self requestNewestFoodMap];
 }
 
-- (void) requestNewer
+- (void) viewWillAppearRequest
 {
 	[self requestUserInfo];
 	[self requestNewerTarget];
@@ -494,7 +482,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 		[super initGUI];
 		
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-		self.tableView.backgroundColor = [Color brown];
+		self.tableView.backgroundColor = [Color lightyellow];
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 
 		if (nil == self.targetHeader)
@@ -531,7 +519,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 			self.foodPage = [[[FoodPage alloc] init] autorelease];
 		}
 
-		for (NSInteger i =0 ; i < USER_PAGE_SECTION_MAX; ++i)
+		for (NSInteger i = 0 ; i < USER_PAGE_SECTION_MAX; ++i)
 		{
 			_lastSectionObjectCount[i] = 0;
 		}

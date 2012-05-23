@@ -16,4 +16,5 @@
 + (BOOL) isNewestUpdating;
 + (NSDate *) lastUpdatedDate;
 + (NSDictionary *) getConversationWith:(NSString *)ID;
++ (void) checkNew;
 @end

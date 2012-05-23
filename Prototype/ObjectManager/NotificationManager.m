@@ -10,6 +10,8 @@
 
 #import "Util.h"
 #import "DaemonManager.h"
+#import "NewsPage.h"
+#import "Message.h"
 
 static NSString *gs_fakeListID = nil;
 
@@ -32,9 +34,10 @@ DEFINE_SINGLETON(NotificationManager);
 			gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
 		}
 
-		self.getMethodString = @"notification.get_read";
+		self.getMethodString = @"notification.get";
 		
 		[self registerDaemonResponder];
+		[self checkNewNotification];
 	}
 	
 	return self;
@@ -46,6 +49,29 @@ DEFINE_SINGLETON(NotificationManager);
 	gs_fakeListID = nil;
 	
 	[super dealloc];
+}
+
+#pragma mark - overwrite super class method
+#pragma mark - overwrite key and cursor
+
+- (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward
+{
+	NSDictionary *listDict = [self.objectDict valueForKey:listID];
+	
+	if (nil != listDict)
+	{
+		[self.objectKeyArrayDict setValue:[[listDict allKeys] 
+						   sortedArrayUsingFunction:NOTIFICATION_SORTER 
+						   context:listDict] 
+					   forKey:listID];
+	}
+}
+
+- (NSNumber *) cursorForKey:(NSString *)key inList:(NSString *)listID
+{
+	NSDictionary *notification = [[self.objectDict valueForKey:listID] valueForKey:key];
+	
+	return [notification valueForKey:@"last_update"];
 }
 
 #pragma mark - send request message
@@ -101,6 +127,34 @@ DEFINE_SINGLETON(NotificationManager);
 	return [self getObject:ID inList:gs_fakeListID];
 }
 
++ (void) checkNew
+{
+	[[self getInstnace] checkNewNotification];
+}
+
+#pragma mark - check new notification
+
+- (void) checkMessageHandler:(NSDictionary *)message
+{	
+	NSInteger unreadMessageCount = [[message valueForKey:@"result"] integerValue];
+	
+	[NewsPage setUnNoticeCount:unreadMessageCount];
+}
+
+- (void) checkNewNotification
+{
+	NSMutableDictionary *checkMessage = [[NSMutableDictionary alloc] init];
+	
+	[checkMessage setValue:@"notification.get_new_count" forKey:@"method"];
+	
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(checkMessage, 
+					       self, 
+					       @selector(checkMessageHandler:), 
+					       NORMAL_PRIORITY);
+	
+	[checkMessage release];
+}
+
 #pragma mark - daemon
 
 - (void) registerDaemonResponder
@@ -112,7 +166,9 @@ DEFINE_SINGLETON(NotificationManager);
 
 - (void) daemonMessageHandler:(NSDictionary *)message
 {	
-
+	NSInteger unreadMessageCount = [[message valueForKey:@"params"] integerValue];
+	
+	[NewsPage setUnNoticeCount:unreadMessageCount];
 }
 
 

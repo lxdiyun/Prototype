@@ -19,6 +19,7 @@
 
 @synthesize chat;
 @synthesize delegate = _delegate;
+@synthesize background;
 
 #pragma mark - custom xib object
 
@@ -33,12 +34,10 @@ DEFINE_CUSTOM_XIB(UserInfoCell);
 	if (CHECK_EQUAL(GET_USER_ID(), [self.user valueForKey:@"id"]))
 	{
 		self.chat.hidden = YES;
-		self.background.image = [UIImage imageNamed:@"background2.png"];
 	}
 	else 
 	{
 		self.chat.hidden = NO;
-		self.background.image = [UIImage imageNamed:@"background3.png"];
 	}
 }
 
@@ -52,6 +51,7 @@ DEFINE_CUSTOM_XIB(UserInfoCell);
 - (void) dealloc 
 {
 	[chat release];
+	[background release];
 	[super dealloc];
 }
 

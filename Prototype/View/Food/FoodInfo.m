@@ -110,7 +110,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 	if (flag)
 	{
-		[self addTagwithColor:[Color valuedColor] andText:@"超值"];
+		[self addTagwithColor:[Color valued] andText:@"超值"];
 	}
 }
 
@@ -335,6 +335,11 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	
 	[placeIDArray release];
 	[tempMap release];
+}
+
+- (IBAction) showUser:(id)sender 
+{
+	[self.avatar tap:sender];
 }
 
 @end

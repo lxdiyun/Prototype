@@ -48,7 +48,7 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 {
 	[super viewWillAppear:animated];
 	
-	[self requestNewer];
+	[self viewWillAppearRequest];
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -124,7 +124,7 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 					   andTarget:self];
 }
 
-- (void) requestNewer
+- (void) viewWillAppearRequest
 {
 	[PublicFoodMapListManager requestNewerCount:REFRESH_WINDOW 
 				    withHandler:@selector(reload) 

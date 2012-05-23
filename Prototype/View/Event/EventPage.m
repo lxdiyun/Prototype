@@ -80,7 +80,7 @@ DEFINE_SINGLETON(EventPage);
 	gs_frame_height = self.view.frame.size.height;
 	UIViewAutoresizing reszingMakr = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 	
-	self.view.backgroundColor = [Color brown];
+	self.view.backgroundColor = [Color lightyellow];
 	
 	// this UIViewController is about to re-appear, make sure we remove the current selection in our table view
 	NSIndexPath *tableSelection = [self.leftColumn indexPathForSelectedRow];

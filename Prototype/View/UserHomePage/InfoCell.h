@@ -26,7 +26,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *intro;
 @property (retain, nonatomic) IBOutlet UIButton *follow;
 @property (retain, nonatomic) IBOutlet UIButton *fans;
-@property (retain, nonatomic) IBOutlet UIImageView *background;
+@property (retain, nonatomic) IBOutlet ImageV *background;
 @property (retain, nonatomic) IBOutlet ShadowV *shadow;
 
 @property (assign, nonatomic) id<ShowVCDelegate> delegate;

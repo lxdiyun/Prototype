@@ -72,7 +72,7 @@
 {
 	[super viewWillAppear:animated];
 	
-	[self requestNewer];
+	[self viewWillAppearRequest];
 	
 	[self.refreshHeader refreshLastUpdatedDate];
 	
@@ -151,7 +151,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 }
 
-- (void) requestNewer
+- (void) viewWillAppearRequest
 {
 	LOG(@"Error %@: need to implement in the sub class",  [self class]);
 }

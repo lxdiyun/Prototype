@@ -62,18 +62,6 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 
 #pragma mark - life circle
 
-- (id) init
-{
-	self = [super init];
-
-	if (self) 
-	{
-		self.refreshStyle = PULL_TO_REFRESH_STYLE_WHITE;
-	}
-	
-	return self;
-}
-
 - (void) didReceiveMemoryWarning
 {
 	if (self.inputer.appearing)
@@ -474,7 +462,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 		}
 		
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-		self.view.backgroundColor = [Color brown];
+		self.view.backgroundColor = [Color lightyellow];
 		
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, 
 									      @selector(backToPrevView));
@@ -570,7 +558,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	[self requestNewestComment];
 }
 
-- (void) requestNewer
+- (void) viewWillAppearRequest
 {
 	[self requestFood];
 	[self requestNewerComment];

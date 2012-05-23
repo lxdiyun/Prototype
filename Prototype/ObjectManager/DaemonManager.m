@@ -92,6 +92,8 @@ DEFINE_SINGLETON(DaemonManager);
 		responder.target = target;
 		
 		[[[self getInstnace] daemonResponders] setValue:responder forKey:method];
+		
+		[responder release];
 	}
 }
 

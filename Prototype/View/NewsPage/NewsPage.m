@@ -13,7 +13,11 @@
 #import "FoodPage.h"
 #import "ConversationDetailPage.h"
 #import "UserHomePage.h"
+#import "MessageHeader.h"
+#import "NoticeHeader.h"
 #import "Util.h"
+#import "MessageCell.h"
+#import "NoticeCell.h"
 
 typedef enum NEWS_SECTION_ENUM
 {
@@ -22,18 +26,28 @@ typedef enum NEWS_SECTION_ENUM
 	NEWS_SECTION_MAX
 } NEWS_SECTION;
 
-@interface NewsPage ()
-{
-	NSInteger _lastSectionObjectCount[NEWS_SECTION_MAX];
-	
+@interface NewsPage () <FoldDelegate>
+{	
 	FoodPage *_foodPage;
 	UserHomePage *_userPage;
 	ConversationDetailPage *_conversationPage;
+	NSInteger _unreadMessageCount;
+	NSInteger _unreadNoticeCount;
+	NSInteger _displayedNoticeCount;
+	MessageHeader *_messageHeader;
+	NoticeHeader *_noticeHeader;
+	NSUInteger _lastSectionObjectCount[NEWS_SECTION_MAX];
 }
 
 @property (strong, nonatomic) FoodPage *foodPage;
 @property (strong, nonatomic) UserHomePage *userPage;
 @property (strong, nonatomic) ConversationDetailPage *conversationPage;
+@property (assign, nonatomic) NSInteger unreadMessageCount;
+@property (assign, nonatomic) NSInteger unreadNoticeCount;
+@property (assign, nonatomic) NSInteger displayedNoticeCount;
+@property (strong, nonatomic) MessageHeader *messageHeader;
+@property (strong, nonatomic) NoticeHeader *noticeHeader;
+
 
 @end
 
@@ -42,26 +56,17 @@ typedef enum NEWS_SECTION_ENUM
 @synthesize foodPage = _foodPage;
 @synthesize userPage = _userPage;
 @synthesize conversationPage = _conversationPage;
+@synthesize unreadMessageCount = _unreadMessageCount;
+@synthesize unreadNoticeCount = _unreadNoticeCount;
+@synthesize messageHeader = _messageHeader;
+@synthesize noticeHeader = _noticeHeader;
+@synthesize displayedNoticeCount = _displayedNoticeCount;
 
 #pragma mark - singleton
 
 DEFINE_SINGLETON(NewsPage);
 
 #pragma mark - life circle
-
-- (id) init
-{
-	self = [super init];
-	
-	if (self)
-	{
-		// init daemon messages
-		[NotificationManager class];
-		[ConversationListManager class];
-	}
-	
-	return self;
-}
 
 - (void) dealloc
 {
@@ -70,6 +75,15 @@ DEFINE_SINGLETON(NewsPage);
 	self.conversationPage = nil;
 
 	[super dealloc];
+}
+
+#pragma mark - view life circle
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	
+	[self cleanNews];
 }
 
 #pragma mark - table view data source - cell
@@ -86,6 +100,32 @@ DEFINE_SINGLETON(NewsPage);
 	
 	_lastSectionObjectCount[section] = objectCount;
 	
+	switch (section) 
+	{
+		case MESSAGE_SECTION:
+		{
+			if (self.messageHeader.isFolding)
+			{
+				return 0;
+			}
+		}
+			break;
+			
+		case NOTICE_SECTION:
+		{
+			if (self.noticeHeader.isFolding)
+			{
+				return 0;
+			}
+		}
+			break;
+			
+		default:
+			
+			
+			break;
+	}
+	
 	return objectCount;
 }
 
@@ -96,54 +136,66 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	static NSString *CellIdentifier = @"NewsCell";
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	
-	if (nil == cell)
-	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle 
-					      reuseIdentifier:CellIdentifier] autorelease];
-	}
-	
-	NSDictionary *cellObject = [self objectFor:indexPath];
-	
-	
+{	
 	switch (indexPath.section) 
 	{
 		case MESSAGE_SECTION:
 		{
-			cell.textLabel.text = [cellObject valueForKey:@"created_on"];
-			cell.detailTextLabel.text = [cellObject valueForKey:@"msg"];
+			return [self messageCellFor:indexPath];
 		}
 			
 			break;
 		case NOTICE_SECTION:
 		{
-			cell.textLabel.text = [cellObject valueForKey:@"msg"];
+			return [self noticeCellFor:indexPath];
 		}
 			
 			break;
-		
-			break;
 	}
 	
-	return cell;
+	return nil;
 }
 
 #pragma mark - table view data source - header
 
-- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	switch (section) {
+	switch (section) 
+	{
 		case MESSAGE_SECTION:
-			return @"私信";
+			return self.messageHeader.frame.size.height;
+
 			break;
+			
 		case NOTICE_SECTION:
-			return @"通知";
+			return self.noticeHeader.frame.size.height;
+			
 			break;
+			
 		default:
-			return [NSString stringWithFormat:@"%d", section];
+			return 0;
+			
+			break;
+	}
+}
+
+- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+	switch (section) 
+	{
+		case MESSAGE_SECTION:
+			return self.messageHeader;
+			
+			break;
+			
+		case NOTICE_SECTION:
+			return self.noticeHeader;
+			
+			break;
+			
+		default:
+			return nil;
+			
 			break;
 	}
 }
@@ -164,16 +216,12 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 		switch (indexPath.section) 
 		{
 			case MESSAGE_SECTION:
-				[ConversationListManager requestOlderCount:REFRESH_WINDOW 
-							       withHandler:@selector(reload) 
-								 andTarget:self];
+				[self requestOlderMessage];
 				
 				break;
 				
 			case NOTICE_SECTION:
-				[NotificationManager requestOlderCount:REFRESH_WINDOW 
-							   withHandler:@selector(reload) 
-							     andTarget:self];
+				[self requestOlderNotice];
 				
 				break;
 				
@@ -202,6 +250,17 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - object manage
+
+- (void) cleanNews
+{
+	[NotificationManager reset];
+	
+	self.displayedNoticeCount = 0;
+	
+	[self updateBage];
+
+	[self resetGUI];
+}
 
 - (NSInteger) objectCountFor:(NEWS_SECTION)section
 {
@@ -259,18 +318,64 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void) pullToRefreshRequest
 {
-	[ConversationListManager requestNewestCount:REFRESH_WINDOW withHandler:@selector(reloadMessage) andTarget:self];
-	[NotificationManager requestNewestCount:REFRESH_WINDOW withHandler:@selector(reloadNotice) andTarget:self];
+	[self requestNewestMessage];
+	[self requestNewestNotice];
+	
+	self.displayedNoticeCount = self.unreadNoticeCount;
+	self.unreadNoticeCount = 0;
+	[self updateNoticeHeader];
+
+//	[self cleanNews];
+//	[self reloadNotice];
 }
 
-- (void) requestNewer
+- (void) viewWillAppearRequest
 {
-	[ConversationListManager requestNewerCount:REFRESH_WINDOW withHandler:@selector(reloadMessage) andTarget:self];
-	[NotificationManager requestNewerCount:REFRESH_WINDOW withHandler:@selector(reloadNotice) andTarget:self];
+	[self requestNewerMessage];
+	[self requestNewestNotice];
+	
+	self.displayedNoticeCount = self.unreadNoticeCount;
+	self.unreadNoticeCount = 0;
+	[self updateNoticeHeader];
+	
+	[self reload];
 }
 
 - (void) requestOlder
 {
+	// done in - (void) tableView:(UITableView *)tableView 
+	// willDisplayCell:(UITableViewCell *)cell 
+	// forRowAtIndexPath:(NSIndexPath *)indexPath
+}
+
+- (void) requestNewestNotice
+{
+	[NotificationManager requestNewestCount:REFRESH_WINDOW withHandler:@selector(reloadNotice) andTarget:self];
+}
+
+- (void) requestNewerNotice
+{
+	[NotificationManager requestNewerCount:REFRESH_WINDOW withHandler:@selector(reloadNotice) andTarget:self];
+}
+
+- (void) requestOlderNotice
+{
+	[NotificationManager requestOlderCount:REFRESH_WINDOW withHandler:@selector(reload) andTarget:self];
+}
+
+- (void) requestNewestMessage
+{
+	[ConversationListManager requestNewestCount:REFRESH_WINDOW withHandler:@selector(reloadMessage) andTarget:self];
+}
+
+- (void) requestNewerMessage
+{
+	[ConversationListManager requestNewerCount:REFRESH_WINDOW withHandler:@selector(reloadMessage) andTarget:self];
+}
+
+- (void) requestOlderMessage
+{
+	[ConversationListManager requestOlderCount:REFRESH_WINDOW withHandler:@selector(reload) andTarget:self];
 }
 
 - (BOOL) isUpdating
@@ -298,10 +403,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 	{
 		[super initGUI];
 		
-		for (NSInteger section; section < NEWS_SECTION_MAX; ++section)
-		{
-			_lastSectionObjectCount[section] = 0;
-		}
+		self.navigationItem.leftBarButtonItem = nil;
 		
 		if (nil == self.foodPage)
 		{
@@ -317,21 +419,43 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 		{
 			self.conversationPage = [[[ConversationDetailPage alloc] init] autorelease];
 		}
+		
+		if (nil == self.messageHeader)
+		{
+			self.messageHeader = [MessageHeader createFromXIB];
+			self.messageHeader.delegate = self;
+		}
+		
+		if (nil == self.noticeHeader) 
+		{
+			self.noticeHeader = [NoticeHeader createFromXIB];
+			self.noticeHeader.delegate = self;
+		}
+		
+		[self resetGUI];
 	}
 
+}
+
+- (void) resetGUI
+{
+	[self.messageHeader resetGUI];
+	[self.noticeHeader resetGUI];
+	
+	for (NSInteger i = 0 ; i < NEWS_SECTION_MAX; ++i)
+	{
+		_lastSectionObjectCount[i] = 0;
+	}
 }
 
 - (void) reloadSection:(NEWS_SECTION)section
 {
 	@autoreleasepool 
 	{
-		if ([self objectCountFor:section] != _lastSectionObjectCount[section])
-		{
-			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:section] 
-				      withRowAnimation:UITableViewRowAnimationNone];
-		}
+
+		[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:section] 
+			      withRowAnimation:UITableViewRowAnimationNone];
 		
-		[self.refreshHeader egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 	}
 }
 
@@ -343,6 +467,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 - (void) reloadNotice
 {
 	[self reloadSection:NOTICE_SECTION];
+	
+	[self.refreshHeader egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
 - (void) reload
@@ -386,9 +512,121 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 		
 		[self.navigationController pushViewController:self.foodPage animated:YES];
 	}
-	
-	
 }
 
+- (void) updateNoticeHeader
+{
+	NSInteger totalUnreadCount = self.displayedNoticeCount + self.unreadNoticeCount;
+
+	if (0 < totalUnreadCount)
+	{
+		self.noticeHeader.unread.text = [NSString stringWithFormat:@"%d条", 
+						 totalUnreadCount];
+	}
+	else 
+	{
+		self.noticeHeader.unread.text = nil;
+	}
+}
+
+- (void) updateBage
+{
+	NSInteger totalUnread = self.unreadNoticeCount + self.unreadMessageCount + self.displayedNoticeCount;
+	
+	if (totalUnread > 0)
+	{
+		@autoreleasepool 
+		{
+			NSString *newBadge = [NSString stringWithFormat:@"%d", totalUnread];
+			[self.navigationController.tabBarItem setBadgeValue:newBadge];
+		}
+		
+	}
+	else
+	{
+		[self.navigationController.tabBarItem setBadgeValue:nil];
+	}
+}
+
+- (void) setUnreadMessageCount:(NSInteger)unreadMessageCount
+{
+	_unreadMessageCount = unreadMessageCount;
+	
+	if (0 < _unreadMessageCount)
+	{
+		self.messageHeader.unread.text = [NSString stringWithFormat:@"%d条", _unreadMessageCount];
+	}
+	else 
+	{
+		self.messageHeader.unread.text = nil;
+	}
+}
+
++ (void) setUnreadMessageCount:(NSInteger)count
+{
+	[[self getInstnace] setUnreadMessageCount:count];
+	
+	[[self getInstnace]  updateBage];
+}
+
++ (void) setUnNoticeCount:(NSInteger)count
+{
+	[[self getInstnace] setUnreadNoticeCount:count];
+	
+	[[self getInstnace]  updateBage];
+}
+
++ (void) updateMessage
+{
+	[[self getInstnace] requestNewerMessage];
+}
+
+- (UITableViewCell *) noticeCellFor:(NSIndexPath *)index
+{
+	static NSString *CellIdentifier = @"NoticeCell";
+	
+	NSDictionary *notice = [self noticeFor:index];	
+	NoticeCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	
+	if (nil == cell)
+	{
+		cell = [NoticeCell createFromXIB];
+	}
+	
+	cell.noticeObject = notice;
+	
+	return cell;
+}
+
+- (UITableViewCell *) messageCellFor:(NSIndexPath *)index
+{
+	static NSString *CellIdentifier = @"MessageCell";
+	
+	NSDictionary *message = [self messageFor:index];
+	MessageCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	
+	if (nil == cell)
+	{
+		cell = [MessageCell createFromXIB];
+	}
+	
+	cell.conversationListDict = message;
+	
+	return cell;
+}
+
+#pragma mark - FoldDelegate
+
+- (void) fold:(id)sender
+{
+	if (sender == self.messageHeader)
+	{
+		[self reloadMessage];
+	}
+	else if (sender == self.noticeHeader)
+	{
+		[self reloadNotice];
+	}
+}
 
 @end

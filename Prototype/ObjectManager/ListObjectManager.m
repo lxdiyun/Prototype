@@ -151,17 +151,11 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 + (void) reset
 {
-	NSMutableDictionary *newEmptyDict = [[NSMutableDictionary alloc] init];
-	NSMutableDictionary *emptyKeyArrayDict = [[NSMutableDictionary alloc] init];
-
-	[[self getInstnace] setObjectDict:newEmptyDict];
-	[[self getInstnace] setObjectKeyArrayDict:emptyKeyArrayDict];
-	
-	[newEmptyDict release];
-	[emptyKeyArrayDict release];
+	[[[self getInstnace] objectDict] removeAllObjects];
+	[[[self getInstnace] objectKeyArrayDict] removeAllObjects];
 }
 
-#pragma mark - key array
+#pragma mark - key and cursor
 
 - (void) updateKeyArrayForList:(NSString *)listID withResult:(NSArray *)result forward:(BOOL)forward;
 {
@@ -187,7 +181,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 }
 
 
-- (NSNumber *) newestCursorWithlistID:(NSString *)listID
+- (NSString *) newestKeyWithListID:(NSString *)listID
 {
 	NSString *objectKey = nil;
 	
@@ -198,15 +192,15 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		objectKey = [keyArray objectAtIndex:0];
 	}
 	
-	return CONVER_NUMBER_FROM_STRING(objectKey) ;
+	return objectKey ;
 }
 
-- (NSNumber *) cursorForObject:(NSString *)objectID inlist:(NSString *)listID
+- (NSString *) keyForObjectID:(NSString *)objectID inList:(NSString *)listID
 {
-	return CONVER_NUMBER_FROM_STRING(objectID);
+	return objectID;
 }
 
-- (NSNumber *) oldestCursorWithlistID:(NSString *)listID
+- (NSString *) oldestKeyWithListID:(NSString *)listID
 {
 	NSString *objectKey = nil;
 	
@@ -217,18 +211,23 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		objectKey = [keyArray lastObject];
 	}
 	
-	return CONVER_NUMBER_FROM_STRING(objectKey);
+	return objectKey;
 }
 
 
-+ (NSNumber *) oldestKeyForList:(NSString *)listID
++ (NSString *) oldestKeyForList:(NSString *)listID
 {
-	return [[self getInstnace] oldestCursorWithlistID:listID];
+	return [[self getInstnace] oldestKeyWithListID:listID];
 }
 
-+ (NSNumber *) newestKeyForList:(NSString *)listID
++ (NSString *) newestKeyForList:(NSString *)listID
 {
-	return [[self getInstnace] newestCursorWithlistID:listID];
+	return [[self getInstnace] newestKeyWithListID:listID];
+}
+
+- (NSNumber *) cursorForKey:(NSString *)key inList:(NSString *)listID
+{
+	return CONVER_NUMBER_FROM_STRING(key);
 }
 
 #pragma mark - object in list
@@ -622,15 +621,16 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	NSNumber * newestKey = [self newestCursorWithlistID:listID];
+	NSString *newestKey = [self newestKeyWithListID:listID];
+	NSNumber *cursor = [self cursorForKey:newestKey inList:listID];
 	
 	// this will call the sub class method
 	[request setValue:self.getMethodString forKey:@"method"];
 	[self configGetMethodParams:params forList:listID];
 
-	if (0 < newestKey)
+	if (nil != newestKey)
 	{
-		[self setParms:params withCursor:newestKey count:count forward:NO];
+		[self setParms:params withCursor:cursor count:count forward:NO];
 	}
 	else
 	{
@@ -667,22 +667,21 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+	NSString *key = [self keyForObjectID:objectID inList:listID];
+	NSNumber *cursor = [self cursorForKey:key inList:listID];
 	
 	// this will call the sub class method
 	[request setValue:self.getMethodString forKey:@"method"];
 	[self configGetMethodParams:params forList:listID];
 	
-	[self setParms:params 
-	    withCursor:[self cursorForObject:objectID inlist:listID]
-		 count:count 
-	       forward:YES];
+	[self setParms:params withCursor:cursor count:count forward:YES];
 	
 	if (0 < params.count)
 	{
 		[request setValue:params forKey:@"params"];
 	}
 	
-	uint32_t messageID = GET_MSG_ID();
+	NSInteger messageID = GET_MSG_ID();
 	NSString *messageIDString = [[NSString alloc] initWithFormat:@"%u", messageID];
 	
 	// bind the handler
@@ -705,15 +704,16 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 {
 	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
 	NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-	NSNumber * oldestKey = [self oldestCursorWithlistID:listID];
+	NSString *oldestKey = [self oldestKeyWithListID:listID];
+	NSNumber *cursor = [self cursorForKey:oldestKey inList:listID];
 	
 	// this will call the sub class method
 	[request setValue:self.getMethodString forKey:@"method"];
 	[self configGetMethodParams:params forList:listID];
 	
-	if (0 < oldestKey)
+	if (nil != oldestKey)
 	{
-		[self setParms:params withCursor:oldestKey count:count forward:YES];
+		[self setParms:params withCursor:cursor count:count forward:YES];
 	}
 	else
 	{
@@ -832,7 +832,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 		return;	
 	}
 	
-	if (0 >= [[self getInstnace] oldestCursorWithlistID:listID])
+	if (0 >= [[self getInstnace] oldestKeyWithListID:listID])
 	{
 		[self requestNewerWithListID:listID andCount:count withHandler:handler andTarget:target];
 		return;

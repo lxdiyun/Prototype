@@ -10,7 +10,7 @@
 
 #import "FollowingListManager.h"
 #import "ProfileMananger.h"
-#import "ListCell.h"
+#import "UserListCell.h"
 #import "UserHomePage.h"
 
 @interface UserFollowingPage ()
@@ -63,35 +63,25 @@
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *CellIdentifier = @"ListCell";
-	ListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	static NSString *CellIdentifier = @"UserListCell";
+	UserListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	
 	if (nil == cell)
 	{
-		cell = [ListCell createFromXIB];
+		cell = [UserListCell createFromXIB];
 	}
 	
 	NSString *userID = [[FollowingListManager keyArrayForList:self.userID] objectAtIndex:indexPath.row];
 	
-	NSDictionary *user = [ProfileMananger getObjectWithStringID:userID];
 	
-	if (nil != user)
-	{
-		cell.name.text = [user valueForKey:@"nick"];
-		cell.desc.text = [user valueForKey:@"intro"];
-		cell.image.picID = [user valueForKey:@"avatar"];
-	}
-	else 
-	{
-		[ProfileMananger requestObjectWithStringID:userID andHandler:@selector(reloadData) andTarget:self.tableView];
-	}
+	cell.userID = CONVER_NUMBER_FROM_STRING(userID);
 	
 	return cell;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return LIST_CELL_HEIGTH;
+	return USER_LIST_CELL_HEIGTH;
 }
 
 #pragma mark - UITableViewDelegate
@@ -121,7 +111,7 @@
 					    andTarget:self];
 }
 
-- (void) requestNewer
+- (void) viewWillAppearRequest
 {
 	[FollowingListManager requestNewerWithListID:self.userID 
 					    andCount:REFRESH_WINDOW 

@@ -14,43 +14,13 @@
 
 #pragma mark - overwrite super class method
 
-#pragma mark - overwrite cursor method
+#pragma mark - overwrite key and cursor method
 
-- (NSNumber *) newestCursorWithlistID:(NSString *)listID
+- (NSNumber *) cursorForKey:(NSString *)key inList:(NSString *)listID
 {
-	NSString *objectKey;
-	NSNumber *cursor = 0;
+	NSNumber *object = [[self.objectDict valueForKey:listID] valueForKey:key];
 	
-	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
-	
-	if (0 < keyArray.count)
-	{
-		objectKey = [keyArray objectAtIndex:0];
-		cursor = CONVER_NUMBER_FROM_STRING(objectKey);
-	}
-	
-	return cursor;
-}
-
-- (NSNumber *) cursorForObject:(NSString *)objectID inlist:(NSString *)listID
-{
-	return CONVER_NUMBER_FROM_STRING(objectID);
-}
-
-- (NSNumber *) oldestCursorWithlistID:(NSString *)listID
-{
-	NSString *objectKey;
-	NSNumber *cursor = 0;
-	
-	NSArray *keyArray = [self.objectKeyArrayDict valueForKey:listID];
-	
-	if (0 < keyArray.count)
-	{
-		objectKey = [keyArray lastObject];
-		cursor = CONVER_NUMBER_FROM_STRING(objectKey);
-	}
-	
-	return cursor;
+	return object;
 }
 
 #pragma mark - overwrite super classs key method

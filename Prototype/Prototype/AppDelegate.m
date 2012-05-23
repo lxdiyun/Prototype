@@ -20,9 +20,11 @@
 #import "WebPage.h"
 #import "PublicFoodMapListPage.h"
 #import "LogoutPage.h"
+#import "ConversationListManager.h"
+#import "NotificationManager.h"
 
-static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"私信", @"Web", @"我的主页", @"个人设置",@"注销"};
-static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"PrivateMessage.png", @"More.png", @"MyHomePage.png", @"UserInfo.png", @"Logout.png"};
+static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"消息", @"Web", @"我的主页", @"个人设置",@"注销"};
+static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"News.png", @"More.png", @"MyHomePage.png", @"UserInfo.png", @"Logout.png"};
 static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 
 static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 static UIViewController *gs_currentViewController;
@@ -130,6 +132,9 @@ static UIViewController *gs_currentViewController;
 	
 	// restore cache
 	[ObjectSaver restoreAll];
+	// check news
+	[NotificationManager checkNew];
+	[ConversationListManager checkNew];
 	
 	[self.window makeKeyAndVisible];
 	
@@ -152,7 +157,11 @@ static UIViewController *gs_currentViewController;
 
 - (void) applicationWillEnterForeground:(UIApplication *)application
 {
+	// restore cache
 	[ObjectSaver restoreAll];
+	// check news
+	[NotificationManager checkNew];
+	[ConversationListManager checkNew];
 }
 
 - (void) applicationDidBecomeActive:(UIApplication *)application

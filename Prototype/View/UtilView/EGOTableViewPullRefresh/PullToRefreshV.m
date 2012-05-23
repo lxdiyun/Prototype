@@ -106,9 +106,9 @@
 
 - (id)initWithFrame:(CGRect)frame  {
 	return [self initWithFrame:frame 
-		    arrowImageName:@"whiteArrow.png" 
-			 textColor:[UIColor whiteColor] 
-			 indicator:UIActivityIndicatorViewStyleWhite];
+		    arrowImageName:@"blackArrow.png" 
+			 textColor:[UIColor blackColor] 
+			 indicator:UIActivityIndicatorViewStyleGray];
 }
 
 #pragma mark -

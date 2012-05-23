@@ -17,5 +17,6 @@
 + (BOOL) isNewestUpdating;
 + (NSDate *) lastUpdatedDate;
 + (NSDictionary *) getNotificationWith:(NSString *)ID;
++ (void) checkNew;
 
 @end

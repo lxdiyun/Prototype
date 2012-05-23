@@ -10,4 +10,8 @@
 
 @interface NewsPage : ListPage
 
++ (void) setUnreadMessageCount:(NSInteger)count;
++ (void) setUnNoticeCount:(NSInteger)count;
++ (void) updateMessage;
+
 @end

@@ -32,6 +32,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *tag3Text;
 @property (retain, nonatomic) IBOutlet UILabel *tag3;
 @property (retain, nonatomic) IBOutlet UILabel *score;
-- (IBAction)showInMap:(id)sender;
+- (IBAction) showInMap:(id)sender;
+- (IBAction) showUser:(id)sender;
 
 @end

@@ -46,6 +46,8 @@ const static CGFloat PADING4 = 10.0; // padding between element virtical and bot
 
 static CGFloat gs_pic_size = 0;
 
+#pragma mark - GUI
+
 - (void) redrawName
 {
 	if (nil != self.name)
@@ -120,7 +122,7 @@ static CGFloat gs_pic_size = 0;
 	}
 }
 
-#pragma mark - message
+#pragma mark - object manage
 
 - (void) requestUserProfile
 {
@@ -181,6 +183,20 @@ static CGFloat gs_pic_size = 0;
 		self.name.hidden = YES;
 	}
 	
+}
+
+#pragma mark - life cirlce
+
+- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+	
+	if (nil != self)
+	{
+		self.selectionStyle = UITableViewCellSelectionStyleNone;
+	}
+	
+	return self;
 }
 
 - (void) dealloc

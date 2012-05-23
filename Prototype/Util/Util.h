@@ -43,12 +43,14 @@ NSNumber * GET_USER_ID(void);
 void SET_USER_ID(NSNumber *ID);
 
 // sorter
-// hight ID => low ID
+// high ID => low ID
 NSInteger ID_SORTER(id ID1, id ID2, void *context);
-// low ID => hight ID
+// low ID => high ID
 NSInteger ID_SORTER_REVERSE(id ID1, id ID2, void *context);
 // content high => low
 NSInteger LIST_RESULT_SORTER(id ID1, id ID2, void *context);
+// is_read NO => YES, last_update high => low
+NSInteger NOTIFICATION_SORTER(id ID1, id ID2, void *context);
 // map annotation view from left top to right bottom 
 NSInteger MAP_ANNOTATION_VIEW_SORTER(id view1, id view2, void *context);
 

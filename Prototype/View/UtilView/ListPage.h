@@ -25,7 +25,7 @@ const static NSUInteger ROW_TO_MORE_FROM_BOTTOM = 5;
 heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 // object manange
 - (void) pullToRefreshRequest;
-- (void) requestNewer;
+- (void) viewWillAppearRequest;
 - (void) requestOlder;
 - (BOOL) isUpdating;
 - (NSDate* ) lastUpdateDate;

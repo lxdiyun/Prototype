@@ -135,6 +135,7 @@ DEFINE_CUSTOM_XIB(InfoCell)
 			self.place.text = [self.user valueForKey:@"city"];
 			self.intro.text = [self.user valueForKey:@"intro"];
 			self.avatar.picID = [self.user valueForKey:@"avatar"];
+			self.background.picID = [self.user valueForKey:@"bg_pic"];
 			NSString *fansTitle = [NSString stringWithFormat:@"%@ 粉丝", 
 					       [self.user valueForKey:@"fans_count"]];
 			[self.fans setTitle:fansTitle forState:UIControlStateNormal];
