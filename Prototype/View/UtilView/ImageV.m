@@ -193,7 +193,8 @@
 {
 	if (nil == self.indicator)
 	{
-		UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] init];
+		UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] 
+						      initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 		[self addSubview:indicator];
 		[indicator setHidden:YES];
 		

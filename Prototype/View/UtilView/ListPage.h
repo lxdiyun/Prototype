@@ -23,6 +23,8 @@ const static NSUInteger ROW_TO_MORE_FROM_BOTTOM = 5;
 	  cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 - (CGFloat) tableView:(UITableView *)tableView 
 heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void) tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 // object manange
 - (void) pullToRefreshRequest;
 - (void) viewWillAppearRequest;

@@ -257,6 +257,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 	
 	self.displayedNoticeCount = 0;
 	
+	[self reload];
+	
 	[self updateBage];
 
 	[self resetGUI];
@@ -324,9 +326,6 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 	self.displayedNoticeCount = self.unreadNoticeCount;
 	self.unreadNoticeCount = 0;
 	[self updateNoticeHeader];
-
-//	[self cleanNews];
-//	[self reloadNotice];
 }
 
 - (void) viewWillAppearRequest

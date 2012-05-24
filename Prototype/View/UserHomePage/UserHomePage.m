@@ -11,6 +11,7 @@
 #import "UserInfoCell.h"
 #import "TextInputer.h"
 #import "ConversationManager.h"
+#import "NewsPage.h"
 
 @interface UserHomePage () <UserInfoCellDelegate, TextInputerDeletgate>
 {
@@ -19,9 +20,9 @@
 	TextInputer *_msgInputer;
 }
 
-@property (retain, nonatomic) UserInfoCell *info;
-@property (retain, nonatomic) UINavigationController *msgNavco;
-@property (retain, nonatomic) TextInputer *msgInputer;
+@property (strong, nonatomic) UINavigationController *msgNavco;
+@property (strong, nonatomic) TextInputer *msgInputer;
+@property (strong, nonatomic) UserInfoCell *info;
 
 @end
 
@@ -87,6 +88,7 @@
 				 toUser:[self.userID stringValue] 
 			    withHandler:nil 
 			      andTarget:nil];
+	[NewsPage updateMessage];
 	
 	[self dismissModalViewControllerAnimated:YES];
 }

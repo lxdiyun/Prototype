@@ -15,6 +15,7 @@
 #import "UserInfoPage.h"
 #import "EventPage.h"
 #import "LoginPageVC.h"
+#import "SDImageCache.h"
 
 NSString * const LOGIN_TYPE_KEY = @"meishiwanjia_login_type";
 
@@ -320,6 +321,10 @@ DEFINE_SINGLETON(LoginManager);
 	[[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
+	// clean image cache
+	[[SDImageCache sharedImageCache] clearMemory];
+	[[SDImageCache sharedImageCache] clearDisk];
+	
 	[gs_login_page cleanInfo];
 	[self handleNotLogin];
 	
@@ -327,6 +332,7 @@ DEFINE_SINGLETON(LoginManager);
 }
 
 #pragma mark - save and restore
+
 + (void) saveTo:(NSMutableDictionary *)dict
 {
 	NSNumber *loginUserID = GET_USER_ID();

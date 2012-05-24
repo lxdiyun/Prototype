@@ -13,7 +13,7 @@
 #import "TextInputer.h"
 #import "ProfileMananger.h"
 #import "Util.h"
-#import "ConversationPage.h"
+#import "NewsPage.h"
 
 const static uint32_t CONVERSATION_DETAIL_REFRESH_WINDOW = 21;
 const static uint32_t ROW_TO_MORE_CONVERSATION = 2;
@@ -94,6 +94,8 @@ DEFINE_SINGLETON(ConversationDetailPage);
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 		
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+		
+		self.tableView.backgroundColor = [Color lightyellow];
 	}
 }
 
@@ -319,7 +321,7 @@ DEFINE_SINGLETON(ConversationDetailPage);
 			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:maxCellIndex inSection:0] 
 					      atScrollPosition:UITableViewScrollPositionBottom 
 						      animated:YES];
-			[ConversationPage updateConversationList];
+			[NewsPage updateMessage];
 			[ConversationManager cleanUnreadMessageCountForUser:self.targetUserID];
 		}
 	}

@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+#import "Util.h"
+
 @interface FoodDetailController : UITableViewController
 
-@property (retain, nonatomic) NSDictionary *foodObject;
+@property (strong, nonatomic) NSDictionary *foodObject;
+@property (assign, nonatomic) id<SwipeDelegate> delegate;
 
 @end

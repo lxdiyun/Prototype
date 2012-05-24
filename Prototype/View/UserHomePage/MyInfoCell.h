@@ -8,6 +8,16 @@
 
 #import "InfoCell.h"
 
+@protocol SelectBackgroundDelegate <NSObject>
+
+- (void) selectBackground;
+
+@end
+
 @interface MyInfoCell : InfoCell
+
+- (IBAction) selectBackground:(id)sender;
+
+@property (assign, nonatomic) id<ShowVCDelegate, SelectBackgroundDelegate> delegate;
 
 @end

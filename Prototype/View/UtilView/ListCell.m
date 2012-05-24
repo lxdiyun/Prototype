@@ -33,8 +33,6 @@ DEFINE_CUSTOM_XIB(ListCell);
 	return [xibInstance autorelease];
 }
 
-
-
 #pragma mark - life circle
 
 - (void) dealloc 

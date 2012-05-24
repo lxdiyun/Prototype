@@ -182,7 +182,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void) reload
 {
-	NSInteger newRowCount = [self tableView:self.tableView numberOfRowsInSection:1];
+	NSInteger newRowCount = [self tableView:self.tableView numberOfRowsInSection:0];
 	
 	if (newRowCount != self.lastRowCount)
 	{

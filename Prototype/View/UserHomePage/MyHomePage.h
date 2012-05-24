@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "UserHomePage.h"
+#import "HomePage.h"
 
-@interface MyHomePage : UserHomePage
+@interface MyHomePage : HomePage
 
 @end

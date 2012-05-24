@@ -17,6 +17,7 @@ const static CGFloat IMAGE_SIZE = 320;
 @interface FoodDetailController ()
 {
 	NSDictionary *_foodObject;
+	id<SwipeDelegate> _delegate;
 }
 
 @end
@@ -24,6 +25,7 @@ const static CGFloat IMAGE_SIZE = 320;
 @implementation FoodDetailController
 
 @synthesize foodObject = _foodObject;
+@synthesize delegate = _delegate;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -37,6 +39,17 @@ const static CGFloat IMAGE_SIZE = 320;
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	
+	UISwipeGestureRecognizer *left = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)] autorelease];
+	[left setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+	
+	[self.view addGestureRecognizer:left];
+	
+	UISwipeGestureRecognizer *right = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)] autorelease];
+	[right setDirection:(UISwipeGestureRecognizerDirectionRight)];
+	
+	[self.view addGestureRecognizer:right];
+	
 }
 
 - (void)viewDidUnload
@@ -86,7 +99,17 @@ const static CGFloat IMAGE_SIZE = 320;
 					 initWithStyle:UITableViewCellStyleDefault 
 					 reuseIdentifier:imageCellIdentifier] 
 					autorelease];
-				cell.frame = CGRectMake(0.0, 0.0, IMAGE_SIZE, IMAGE_SIZE);
+				cell.frame = CGRectMake(0.0, 0.0, IMAGE_SIZE, IMAGE_SIZE);				
+				
+				UISwipeGestureRecognizer *left = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)] autorelease];
+				[left setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+				
+				[cell addGestureRecognizer:left];
+				
+				UISwipeGestureRecognizer *right = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)] autorelease];
+				[right setDirection:(UISwipeGestureRecognizerDirectionRight)];
+				
+				[cell addGestureRecognizer:right];
 				
 				[cell redraw];
 			}
@@ -108,6 +131,15 @@ const static CGFloat IMAGE_SIZE = 320;
 					 initWithStyle:UITableViewCellStyleDefault 
 					 reuseIdentifier:descCellIdentifier] 
 					autorelease];
+				UISwipeGestureRecognizer *left = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)] autorelease];
+				[left setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+				
+				[cell addGestureRecognizer:left];
+				
+				UISwipeGestureRecognizer *right = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)] autorelease];
+				[right setDirection:(UISwipeGestureRecognizerDirectionRight)];
+				
+				[cell addGestureRecognizer:right];
 			}
 			
 			cell.description = [self.foodObject valueForKey:@"desc"];
@@ -162,6 +194,18 @@ const static CGFloat IMAGE_SIZE = 320;
 		
 		[self.tableView reloadData];
 	}
+}
+
+#pragma mark - gesture
+
+- (void) swipeLeft
+{
+	[self.delegate swipeLeft:self];
+}
+
+- (void) swipeRight
+{
+	[self.delegate swipeRight:self];
 }
 
 @end

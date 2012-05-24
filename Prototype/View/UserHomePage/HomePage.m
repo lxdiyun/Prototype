@@ -537,14 +537,14 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 
 - (void) updateGUIWith:(NSDictionary *)user
 {
+	self.title = [user valueForKey:@"nick"];
+
 	if (CHECK_EQUAL(GET_USER_ID(), [user valueForKey:@"id"]))
 	{
-		self.title = @"我的主页";
 		self.navigationItem.rightBarButtonItem = nil;
 	}
 	else 
 	{
-		self.title = [user valueForKey:@"nick"];
 		[self updateFollowButtonWith:user];
 	}
 }

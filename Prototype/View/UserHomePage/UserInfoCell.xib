@@ -288,6 +288,7 @@
 				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="145287958"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
+				<bool key="IBUIClipsSubviews">YES</bool>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<int key="IBUISelectionStyle">0</int>
 				<reference key="IBUIContentView" ref="145287958"/>

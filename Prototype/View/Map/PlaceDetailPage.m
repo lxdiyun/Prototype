@@ -16,7 +16,7 @@
 
 const static NSInteger MAX_TAG_QANTITY = 3;
 
-@interface PlaceDetailPage ()
+@interface PlaceDetailPage () <SwipeDelegate>
 {
 	FoodDetailController *_detailController;
 	NSDictionary *_foodObject;
@@ -93,6 +93,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 		_tagMaxIndex = 0;
 		
 		self.detailController = [[[FoodDetailController alloc] init] autorelease];
+		self.detailController.delegate = self;
 		
 		self.foodDetailView.delegate = self.detailController;
 		self.foodDetailView.dataSource = self.detailController;
@@ -416,6 +417,18 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[self showTitleAndPageControlInstanly];
 	
 	[UIView commitAnimations];
+}
+
+#pragma mark - SwipeDelegate
+
+- (void) swipeRight:(id)sender
+{
+	[self swipeRight];
+}
+
+- (void) swipeLeft:(id)sender
+{
+	[self swipeLeft];
 }
 
 @end

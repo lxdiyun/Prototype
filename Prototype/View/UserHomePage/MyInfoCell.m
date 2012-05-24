@@ -8,10 +8,23 @@
 
 #import "MyInfoCell.h"
 
+@interface MyInfoCell ()
+{
+	id<ShowVCDelegate, SelectBackgroundDelegate> _delegate;
+}
+
+@end
+
 @implementation MyInfoCell
+
+@synthesize delegate = _delegate;
 
 #pragma mark - custom xib object
 
 DEFINE_CUSTOM_XIB(MyInfoCell);
 
+- (IBAction) selectBackground:(id)sender 
+{
+	[self.delegate selectBackground];
+}
 @end

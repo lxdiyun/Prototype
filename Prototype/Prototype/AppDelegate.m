@@ -17,14 +17,13 @@
 #import "Util.h"
 #import "ObjectSaver.h"
 #import "NewsPage.h"
-#import "WebPage.h"
 #import "PublicFoodMapListPage.h"
 #import "LogoutPage.h"
 #import "ConversationListManager.h"
 #import "NotificationManager.h"
 
-static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"消息", @"Web", @"我的主页", @"个人设置",@"注销"};
-static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"News.png", @"More.png", @"MyHomePage.png", @"UserInfo.png", @"Logout.png"};
+static NSString *MSWJ_PAGE_NAME[MSWJ_PAGE_QUANTITY] = {@"新鲜事", @"美食地图", @"分享美食", @"消息", @"我的主页", @"个人设置",@"注销"};
+static NSString *MSWJ_ICON[MSWJ_PAGE_QUANTITY] = {@"HomePage.png", @"FoodMap.png", @"Share.png", @"News.png", @"MyHomePage.png", @"UserInfo.png", @"Logout.png"};
 static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY]; 
 static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 static UIViewController *gs_currentViewController;
@@ -49,7 +48,6 @@ static UIViewController *gs_currentViewController;
 	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [PublicFoodMapListPage class];
 	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
 	MSWJ_PAGE_CLASS[NEWS_PAGE] = [NewsPage class];
-	MSWJ_PAGE_CLASS[WEB_PAGE] = [WebPage class];
 	MSWJ_PAGE_CLASS[MY_HOME_PAGE] = [MyHomePage class];
 	MSWJ_PAGE_CLASS[USER_INFO_PAGE] = [UserInfoPage class];
 	MSWJ_PAGE_CLASS[LOGOUT_PAGE] = [LogoutPage class];

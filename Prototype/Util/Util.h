@@ -21,6 +21,13 @@
 
 @end
 
+@protocol SwipeDelegate <NSObject>
+
+- (void) swipeLeft:(id)sender;
+- (void) swipeRight:(id)sender;
+
+@end
+
 // category
 
 @protocol CustomXIBObject <NSObject>

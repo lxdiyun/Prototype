@@ -334,6 +334,7 @@ typedef enum MAP_MENU_ENUM
 	[super viewWillAppear:animated];
 	
 	self.focousUser = NO;
+	self.mapView.showsUserLocation = NO;
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -386,6 +387,7 @@ typedef enum MAP_MENU_ENUM
 { 
 	NSTimeInterval duration = 0.1;
 	NSInteger durationCount = 0;
+	CGFloat offset = -200;
 	NSArray *sortedViews = [views sortedArrayUsingFunction:MAP_ANNOTATION_VIEW_SORTER context:nil];
 
 	for (MKAnnotationView *aV in sortedViews) 
@@ -393,7 +395,7 @@ typedef enum MAP_MENU_ENUM
 		CGRect endFrame = aV.frame;
 		++durationCount;
 
-		aV.frame = CGRectOffset(endFrame, 0, -500);
+		aV.frame = CGRectOffset(endFrame, 0, offset * durationCount);
 
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationDuration:duration * durationCount];
@@ -432,10 +434,11 @@ typedef enum MAP_MENU_ENUM
 
 		annotationView.canShowCallout = YES;
 
-		UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-		[rightButton addTarget:self
-				action:@selector(showInSystemMap)
-		      forControlEvents:UIControlEventTouchUpInside];
+		UIButton* rightButton = SETUP_BUTTON([UIImage imageNamed:@"GetDirection.png"],
+						     self, 
+						     @selector(showInSystemMap));
+		rightButton.backgroundColor = [UIColor clearColor];
+
 		annotationView.rightCalloutAccessoryView = rightButton;
 		annotationView.delegate = self;
 	}
