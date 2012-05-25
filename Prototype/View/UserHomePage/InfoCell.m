@@ -99,12 +99,7 @@ DEFINE_CUSTOM_XIB(InfoCell)
 #pragma mark - object manage
 
 - (void) setUser:(NSDictionary *)user
-{
-	if (CHECK_EQUAL(_user, user))
-	{
-		return;
-	}
-	
+{	
 	[_user release];
 	_user = [user retain];
 	

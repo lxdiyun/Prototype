@@ -58,7 +58,7 @@ static CGFloat gs_pic_size = 0;
 	
 	CGFloat X = 0;
 	CGFloat height = NAME_HEIGHT;
-	CGFloat Y = gs_pic_size - height;
+	CGFloat Y = 0;
 	CGFloat width = gs_pic_size;
 	
 	self.name = [[[UILabel alloc] initWithFrame:CGRectMake(X, Y, width, height)] 
@@ -67,7 +67,7 @@ static CGFloat gs_pic_size = 0;
 	self.name.font = [UIFont systemFontOfSize:FONT_SIZE];
 	self.name.backgroundColor = [Color blackAlpha];
 	self.name.textColor = [UIColor whiteColor];
-	self.name.textAlignment = UITextAlignmentCenter;
+	self.name.textAlignment = UITextAlignmentLeft;
 	self.name.numberOfLines = 0;
 	
 	[self.contentView addSubview:self.name];
@@ -173,7 +173,7 @@ static CGFloat gs_pic_size = 0;
 	if (nil != objDict) 
 	{
 		self.picImageV.picID = [objDict valueForKey:@"pic"];
-		self.name.text = [objDict valueForKey:@"name"]; 
+		self.name.text = [NSString stringWithFormat:@" %@", [objDict valueForKey:@"name"]]; 
 		self.picImageV.hidden = NO;
 		self.name.hidden = NO;
 	}

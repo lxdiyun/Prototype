@@ -11,153 +11,70 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "Util.h"
-#import "FoodDetailController.h"
 #import "FoodManager.h"
 
-const static NSInteger MAX_TAG_QANTITY = 3;
-
-@interface PlaceDetailPage () <SwipeDelegate>
+@interface PlaceDetailPage () 
 {
-	FoodDetailController *_detailController;
-	NSDictionary *_foodObject;
 	NSInteger _foodIndex;
 	NSDictionary *_placeObject;
-	NSInteger _tagMaxIndex;
+	MapFoodPage *_leftFoodPage;
+	MapFoodPage *_currentFoodPage;
+	MapFoodPage *_rightFoodPage;
 }
 
-@property (strong) FoodDetailController *detailController;
-@property (assign) NSInteger foodIndex;
-@property (strong) NSDictionary *foodObject;
+@property (assign, nonatomic) NSInteger foodIndex;
+@property (strong, nonatomic) MapFoodPage *leftFoodPage;
+@property (strong, nonatomic) MapFoodPage *currentFoodPage;
+@property (strong, nonatomic) MapFoodPage *rightFoodPage;
 
 @end
 
 @implementation PlaceDetailPage
-@synthesize foodDetailView;
 @synthesize pageControl;
-@synthesize name;
-@synthesize score;
-@synthesize tag3;
-@synthesize tag3Text;
-@synthesize tag2;
-@synthesize tag2Text;
-@synthesize tag1;
-@synthesize tag1Text;
-@synthesize titleView;
+@synthesize foodsView;
+@synthesize foodTitle;
 @synthesize delegate;
-@synthesize detailController = _detailController;
 @synthesize foodIndex = _foodIndex;
 @synthesize placeObject = _placeObject;
-@synthesize foodObject = _foodObject;
+@synthesize leftFoodPage = _leftFoodPage;
+@synthesize currentFoodPage = _currentFoodPage;
+@synthesize rightFoodPage = _rightFoodPage;
 
 
 #pragma mark - life circle
 
-- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-	if (self) 
-	{
-	}
-	
-	return self;
-}
-
 - (void) dealloc
 {
-	self.titleView = nil;
-	self.detailController = nil;
 	self.delegate = nil;
 	self.placeObject = nil;
-	self.foodObject = nil;
-	[name release];
-	[score release];
-	[tag3 release];
-	[tag3Text release];
-	[tag2 release];
-	[tag2Text release];
-	[tag1 release];
-	[tag1Text release];
-	
-	[foodDetailView release];
 	
 	[pageControl release];
-	[titleView release];
+	[foodsView release];
+	[foodTitle release];
 	[super dealloc];
 }
 
-- (void) setupView
-{
-	@autoreleasepool 
-	{
-		// initilizate gui
-		_tagMaxIndex = 0;
-		
-		self.detailController = [[[FoodDetailController alloc] init] autorelease];
-		self.detailController.delegate = self;
-		
-		self.foodDetailView.delegate = self.detailController;
-		self.foodDetailView.dataSource = self.detailController;
-		self.detailController.view = self.foodDetailView;
-		self.pageControl.frame = CGRectMake(0, self.view.frame.size.height - 18, self.view.frame.size.width, 18);
-		
-		
-		// shadow
-		[self.view.layer setShadowColor:[UIColor blackColor].CGColor];
-		[self.view.layer setShadowOpacity:0.5];
-		[self.view.layer setShadowRadius:10];
-		[self.view.layer setShadowOffset:CGSizeMake(0.0, -6.0)];
-		
-		// handle gesture
-		UISwipeGestureRecognizer *down = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown)] autorelease];
-		[down setDirection:(UISwipeGestureRecognizerDirectionDown)];
-		
-		[self.view addGestureRecognizer:down];
-		
-		UISwipeGestureRecognizer *left = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)] autorelease];
-		[left setDirection:(UISwipeGestureRecognizerDirectionLeft)];
-		
-		[self.view addGestureRecognizer:left];
-		
-		UISwipeGestureRecognizer *right = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)] autorelease];
-		[right setDirection:(UISwipeGestureRecognizerDirectionRight)];
-		
-		[self.view addGestureRecognizer:right];
-		
-		UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)] autorelease];
-		
-		[self.view addGestureRecognizer:tap];
-	} 
-}
+#pragma mark - view life circle
+
 
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
 	
-	[self setupView];
+	[self initGUI];
 	
 	[self updatePlace];
 }
 
 - (void) viewDidUnload
 {
-	self.titleView = nil;
-	self.detailController = nil;
 	self.delegate = nil;
 	self.placeObject = nil;
-	self.foodObject = nil;
-	
-	[self setFoodDetailView:nil];
-	[self setName:nil];
-	[self setScore:nil];
-	[self setTag3:nil];
-	[self setTag3Text:nil];
-	[self setTag2:nil];
-	[self setTag2Text:nil];
-	[self setTag1:nil];
-	[self setTag1Text:nil];	
-	[self setPageControl:nil];
 
-	[self setTitleView:nil];
+	[self setPageControl:nil];
+	[self setFoodsView:nil];
+	[self setFoodTitle:nil];
+
 	[super viewDidUnload];
 }
 
@@ -170,7 +87,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 
 - (void) tap:(UITapGestureRecognizer *)recognizer
 {
-	if (self.titleView.alpha <= 0.1)
+	if (self.foodTitle.alpha <= 0.1)
 	{
 		[self showTitleAndPageControl];
 	}
@@ -185,159 +102,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[self.delegate placeDetailPagePullDown];
 }
 
-- (void) swipeLeft
-{
-	NSInteger newIndex = self.foodIndex;
-	
-	if ([[self.placeObject valueForKey:@"foods"] count] > (self.foodIndex + 1)) 
-	{
-		newIndex = self.foodIndex + 1;
-	}
-	
-	if (self.foodIndex != newIndex)
-	{
-		self.foodIndex = newIndex;
-		[self updaeFoodWithAnnmination:kCATransitionFromRight];
-	}
-}
-
-- (void) swipeRight
-{
-	NSInteger newIndex = 0;
-	
-	if (0 < self.foodIndex)
-	{
-		newIndex = self.foodIndex - 1;
-	}
-	
-	if (self.foodIndex != newIndex)
-	{
-		self.foodIndex = newIndex;
-		[self updaeFoodWithAnnmination:kCATransitionFromLeft];
-	}
-}
-
-#pragma mark - update detail page
-
-- (void) updaeFoodWithAnnmination:(NSString *)transitionSubtype
-{
-	[self updateFood];
-	
-	CATransition* transition = [CATransition animation];
-	transition.type = kCATransitionPush;
-	transition.subtype = transitionSubtype;
-	[self.titleView.layer addAnimation:transition forKey:@"push-transition"];
-	[self.foodDetailView.layer addAnimation:transition forKey:@"push-transition"];
-}
-
-- (void) setTag:(NSInteger)tagIndex withColor:(UIColor *)color andText:(NSString *)text
-{
-	switch (tagIndex) 
-	{
-		case 0:
-		{
-			self.tag1.backgroundColor = color;
-			self.tag1Text.text = text;
-		}
-			break;
-		case 1:
-		{
-			self.tag2.backgroundColor = color;
-			self.tag2Text.text = text;
-		}
-			break;
-		case 2:
-		{
-			self.tag3.backgroundColor = color;
-			self.tag3Text.text = text;
-		}
-			break;
-			
-		default:
-			break;
-	}
-}
-
-- (void) cleanNotUsedTag
-{
-	for (int i = _tagMaxIndex; i < MAX_TAG_QANTITY; ++i) 
-	{
-		[self setTag:i withColor:[UIColor clearColor] andText:@""];
-	}
-	
-	_tagMaxIndex = 0;
-}
-
-- (void) addTagwithColor:(UIColor *)color andText:(NSString *)text
-{
-	[self setTag:_tagMaxIndex withColor:color andText:text];
-	++_tagMaxIndex;
-}
-
-- (void) updateSpecial
-{
-	BOOL flag = [[self.foodObject valueForKey:@"like_special"] boolValue];
-	
-	if (flag)
-	{
-		[self addTagwithColor:[Color specail] andText:@"特色"];
-	}
-}
-
-- (void) updateValued
-{
-	BOOL flag = [[self.foodObject valueForKey:@"like_valued"] boolValue];
-	
-	if (flag)
-	{
-		[self addTagwithColor:[Color valued] andText:@"超值"];
-	}
-}
-
-- (void) updateHealth
-{
-	BOOL flag = [[self.foodObject valueForKey:@"like_healthy"] boolValue];
-	
-	if (flag)
-	{
-		[self addTagwithColor:[Color healthy] andText:@"健康"];
-	}
-}
-
-- (void) updateScore
-{
-	double scoreValue = [[self.foodObject valueForKey:@"taste_score"] doubleValue];
-	
-	self.score.text = GET_STRING_FOR_SCORE(scoreValue);	
-}
-
-- (void) updateName
-{
-	NSString *foodName = [self.foodObject valueForKey:@"name"];
-	
-	if (nil != name)
-	{
-		self.name.text = foodName;
-	}
-	else 
-	{
-		self.name.text = @"";
-	}
-}
-
-- (void) updateFoodTitle
-{
-	@autoreleasepool 
-	{
-		[self updateName];
-		[self updateScore];
-		_tagMaxIndex = 0;
-		[self updateHealth];
-		[self updateValued];
-		[self updateSpecial];
-		[self cleanNotUsedTag];
-	}
-}
+#pragma mark - object manage
 
 - (void) updateFood
 {
@@ -347,22 +112,10 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	{
 		NSNumber *foodID = [foodsIDArray objectAtIndex:self.foodIndex];
 		
-		NSDictionary *foodObject = [FoodManager getObjectWithNumberID:foodID];
-		
-		if (nil != foodObject)
-		{
-			self.foodObject = foodObject;
-			[self updateFoodTitle];
-			self.detailController.foodObject = foodObject;
-			[self.pageControl setCurrentPage:self.foodIndex];
-			[self showTitleAndPageControlInstanly];
-		}
-		else 
-		{
-			[FoodManager requestObjectWithNumberID:foodID 
-						    andHandler:@selector(updateFood) 
-						     andTarget:self];
-		}
+		self.currentFoodPage.foodID = foodID;
+		self.foodTitle.foodID = foodID;
+		[self.pageControl setCurrentPage:self.foodIndex];
+		[self showTitleAndPageControlInstanly];
 	}
 }
 
@@ -370,8 +123,13 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 {
 	NSArray *foodsIDArray = [self.placeObject valueForKey:@"foods"];
 	[self.pageControl setNumberOfPages:[foodsIDArray count]];
+	
+	CGFloat contentWidth = self.foodsView.frame.size.width * foodsIDArray.count;
+	
+	self.foodsView.contentSize = CGSizeMake(contentWidth , self.foodsView.frame.size.height);
 
-	self.foodIndex = 0;
+	[self initFoodPage];
+
 	[self updateFood];
 }
 
@@ -395,7 +153,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[UIView setAnimationDuration:0.5];
 	[UIView setAnimationCurve: UIViewAnimationCurveEaseInOut];
 	
-	[self.titleView setAlpha:0.0];
+	[self.foodTitle setAlpha:0.0];
 	[self.pageControl setAlpha:0.0];
 	
 	[UIView commitAnimations];
@@ -404,7 +162,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 - (void) showTitleAndPageControlInstanly
 {
 	
-	[self.titleView setAlpha:1.0];
+	[self.foodTitle setAlpha:1.0];
 	[self.pageControl setAlpha:1.0];
 }
 
@@ -419,16 +177,136 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[UIView commitAnimations];
 }
 
-#pragma mark - SwipeDelegate
+#pragma mark - UIScrollViewDelegate
 
-- (void) swipeRight:(id)sender
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView
 {
-	[self swipeRight];
+	CGFloat pageWidth = scrollView.frame.size.width;
+	NSInteger page = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+
+	[self updateFoodPage:page];	
 }
 
-- (void) swipeLeft:(id)sender
+#pragma mark - GUI
+
+- (void) initGUI
 {
-	[self swipeLeft];
+	@autoreleasepool 
+	{
+		// initilizate gui
+		self.pageControl.frame = CGRectMake(0, self.view.frame.size.height - 18, self.view.frame.size.width, 18);
+		
+		// shadow
+		[self.view.layer setShadowColor:[UIColor blackColor].CGColor];
+		[self.view.layer setShadowOpacity:0.5];
+		[self.view.layer setShadowRadius:10];
+		[self.view.layer setShadowOffset:CGSizeMake(0.0, -6.0)];
+		
+		// handle gesture
+		UISwipeGestureRecognizer *down = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown)] autorelease];
+		[down setDirection:(UISwipeGestureRecognizerDirectionDown)];
+		
+		[self.view addGestureRecognizer:down];
+		
+		UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)] autorelease];
+		
+		[self.view addGestureRecognizer:tap];
+		
+		if (nil == self.leftFoodPage)
+		{
+			self.leftFoodPage = [MapFoodPage createFromXIB];
+		}
+		
+		if (nil == self.currentFoodPage)
+		{
+			self.currentFoodPage = [MapFoodPage createFromXIB];
+		}
+		
+		if (nil == self.rightFoodPage)
+		{
+			self.rightFoodPage = [MapFoodPage createFromXIB];
+		}
+	} 
 }
+
+- (void) updateFoodWithAnnmination:(NSString *)transitionSubtype
+{
+	[self updateFood];
+	
+	CATransition* transition = [CATransition animation];
+	transition.type = kCATransitionFade;
+	transition.subtype = transitionSubtype;
+	[self.pageControl.layer addAnimation:transition forKey:@"swape-transition"];
+	[self.foodTitle.layer addAnimation:transition forKey:@"swape-transition"];
+}
+
+- (void) updateFoodPage:(NSInteger)index
+{
+	if (self.foodIndex < index)
+	{
+		self.foodIndex = index;
+		[self pageRight];
+		[self updateFoodWithAnnmination:kCATransitionFromLeft];
+	}
+	else if (self.foodIndex > index)
+	{
+		self.foodIndex = index;
+		[self pageLeft];
+		[self updateFoodWithAnnmination:kCATransitionFromRight];
+	}
+	
+	
+}
+
+- (void) initFoodPage
+{
+	self.foodIndex = 0;
+	
+	[self redraw:self.leftFoodPage at:-1];
+	[self redraw:self.currentFoodPage at:0];
+	[self redraw:self.rightFoodPage at:1];
+	[self.foodsView scrollRectToVisible:self.currentFoodPage.frame animated:NO];
+}
+
+- (void) pageRight
+{
+	NSInteger index = self.foodIndex;
+	
+	SWAP(&_currentFoodPage, &_rightFoodPage);
+	SWAP(&_rightFoodPage, &_leftFoodPage);
+	
+	[self redraw:self.rightFoodPage at:index + 1];
+}
+
+- (void) pageLeft
+{
+	NSInteger index = self.foodIndex;
+	
+	SWAP(&_currentFoodPage, &_leftFoodPage);
+	SWAP(&_rightFoodPage, &_leftFoodPage);
+	
+	[self redraw:self.leftFoodPage at:index - 1];
+}
+
+- (void) redraw:(MapFoodPage *)page at:(NSInteger)index
+{
+	NSArray *foodsIDArray = [self.placeObject valueForKey:@"foods"];
+
+	[page removeFromSuperview];
+	
+	if ((index < foodsIDArray.count) && (0 <= index))
+	{
+		NSNumber *foodID = [foodsIDArray objectAtIndex:index];
+		CGSize size = self.foodsView.frame.size;
+		CGFloat X = self.foodsView.frame.size.width * index;
+		CGRect frame = CGRectMake(X, 0, size.width, size.height);
+
+		page.foodID = foodID;
+		page.frame = frame;
+		
+		[self.foodsView addSubview:page];
+	}
+}
+
 
 @end

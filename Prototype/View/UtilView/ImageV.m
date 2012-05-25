@@ -16,6 +16,7 @@
 	NSDictionary *_pic;
 	NSNumber *_picID;
 	UIActivityIndicatorView *_indicator;
+	UIActivityIndicatorViewStyle _indicatorStyle;
 }
 
 @property (strong, nonatomic) NSDictionary *pic;
@@ -29,6 +30,7 @@
 @synthesize pic = _pic;
 @synthesize picID = _picID;
 @synthesize indicator = _indicator;
+@synthesize indicatorStyle = _indicatorStyle;
 
 #pragma mark - life cicle
 
@@ -39,6 +41,7 @@
 	if (nil != self)
 	{
 		self.clipsToBounds = YES;
+		self.indicatorStyle = UIActivityIndicatorViewStyleGray;
 	}
 	
 	return self;
@@ -189,12 +192,13 @@
 }
 
 #pragma mark - indicator
+
 - (void) startIndicator
 {
 	if (nil == self.indicator)
 	{
 		UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] 
-						      initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+						      initWithActivityIndicatorStyle:self.indicatorStyle];
 		[self addSubview:indicator];
 		[indicator setHidden:YES];
 		

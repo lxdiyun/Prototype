@@ -15,6 +15,7 @@
 #import "Color.h"
 
 // protocol
+
 @protocol ShowVCDelegate <NSObject>
 
 - (void) showVC:(UIViewController *)vc;
@@ -27,8 +28,6 @@
 - (void) swipeRight:(id)sender;
 
 @end
-
-// category
 
 @protocol CustomXIBObject <NSObject>
 
@@ -44,6 +43,10 @@
 const static CGFloat TAB_BAR_HEIGHT = 49;
 const static CGFloat STATUS_BAR_HEIGHT = 20;
 const static CGFloat DEFAULT_CELL_HEIGHT = 44.0;
+
+// util
+
+void SWAP(id *ID1, id *ID2);
 
 // login user id
 NSNumber * GET_USER_ID(void);

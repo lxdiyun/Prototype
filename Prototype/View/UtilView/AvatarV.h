@@ -12,7 +12,7 @@
 
 @interface AvatarV : UIView <CustomXIBObject>
 
-- (IBAction)tap:(id)sender;
+- (IBAction) tap:(id)sender;
 
 @property (strong, nonatomic) NSDictionary *user;
 @property (assign, nonatomic) id<ShowVCDelegate> delegate;

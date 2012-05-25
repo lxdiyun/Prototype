@@ -14,6 +14,16 @@
 #import "SDNetworkActivityIndicator.h"
 #import "Message.h"
 
+// util
+
+void SWAP(id *ID1, id *ID2)
+{
+	id temp = *ID1;
+	
+	*ID1 = *ID2;
+	*ID2 = temp;
+}
+
 // login user id
 
 static NSNumber *gs_login_user_id = nil;
@@ -209,7 +219,8 @@ NSNumber * CONVER_NUMBER_FROM_STRING(NSString *string)
 	return [s_formatter numberFromString:string];
 }
 
-// check and error handling;
+// check and error handling
+
 BOOL CHECK_NUMBER(NSNumber *object)
 {
 	if ((nil != object) && [object isKindOfClass:[NSNumber class]])

@@ -27,4 +27,5 @@ DEFINE_CUSTOM_XIB(MyInfoCell);
 {
 	[self.delegate selectBackground];
 }
+
 @end
