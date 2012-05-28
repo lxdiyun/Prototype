@@ -363,7 +363,7 @@ UIButton * SETUP_TEXT_BUTTON(NSString *title, id target, SEL action)
 	CGSize size = [title sizeWithFont:s_font];
 	size.width += BUTTON_WIDTH_PADDING;
 	size.height += BUTTON_HEIGHT_PADDING;
-	UIButton *button = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)] autorelease];
+	UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
 	
 	[button.titleLabel setFont:s_font];
 	[button setTitle:title forState:UIControlStateNormal];
@@ -374,11 +374,14 @@ UIButton * SETUP_TEXT_BUTTON(NSString *title, id target, SEL action)
 	button.backgroundColor = [Color grey3];
 	ROUND_RECT(button.layer);
 	
-	return button;
+	return [button autorelease];
 }
 UIBarButtonItem * SETUP_BAR_TEXT_BUTTON(NSString *title, id target, SEL action)
 {
-	return [[[UIBarButtonItem alloc] initWithCustomView:SETUP_TEXT_BUTTON(title, target, action)] autorelease];
+	UIButton *button = SETUP_TEXT_BUTTON(title, target, action);
+	UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+	
+	return [barButton autorelease];
 }
 
 NSString * GET_STRING_FOR_SCORE(double score)
@@ -466,8 +469,11 @@ void HANDLE_MEMORY_WARNING(UIViewController *vc)
 	if (nil == vc.view.superview)
 	{
 		NSMutableArray *allViewControllers =  [vc.navigationController.viewControllers mutableCopy];
-		[allViewControllers removeObjectIdenticalTo: vc];
-		vc.navigationController.viewControllers = allViewControllers;
+		if (![[allViewControllers objectAtIndex:0] isEqual:vc])
+		{
+			[allViewControllers removeObjectIdenticalTo: vc];
+			vc.navigationController.viewControllers = allViewControllers;
+		}
 		
 		[allViewControllers release];
 	}

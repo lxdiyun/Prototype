@@ -44,6 +44,7 @@ typedef enum MAP_MENU_ENUM
 	BOOL _selectedPlace;
 	UIActionSheet *_menu;
 	BOOL _saveWhenLeved;
+	BOOL _needShowInSystemMap;
 }
 
 @property (strong, nonatomic) MKMapView *mapView;
@@ -53,6 +54,7 @@ typedef enum MAP_MENU_ENUM
 @property (strong, nonatomic) UINavigationController *placeNavco;
 @property (assign, nonatomic) BOOL selectedPlace;
 @property (strong, nonatomic) UIActionSheet *menu;
+@property (assign, nonatomic) BOOL needShowInSystemMap;
 
 - (void) showPlaces:(NSArray *)annotations;
 - (void) showPlaceDetailPage;
@@ -71,6 +73,7 @@ typedef enum MAP_MENU_ENUM
 @synthesize selectedPlace = _selectedPlace;
 @synthesize menu = _menu;
 @synthesize saveWhenLeaved = _saveWhenLeved;
+@synthesize needShowInSystemMap = _needShowInSystemMap;
 
 #pragma mark - manage map object
 
@@ -80,7 +83,8 @@ typedef enum MAP_MENU_ENUM
 	{
 		return;
 	}
-	
+
+	[_mapObject release];
 	_mapObject = [mapObject retain];
 	
 	[self updateGUI];
@@ -335,6 +339,7 @@ typedef enum MAP_MENU_ENUM
 	
 	self.focousUser = NO;
 	self.mapView.showsUserLocation = NO;
+	self.needShowInSystemMap = NO;
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -383,6 +388,29 @@ typedef enum MAP_MENU_ENUM
 
 #pragma mark - MKMapViewDelegate
 
+- (void) mapView:(MKMapView *)mapView didFailToLocateUserWithError:(NSError *)error
+{
+	switch([error code])
+	{
+		case kCLErrorLocationUnknown: // location is currently unknown, but CL will keep trying
+			break;
+			
+		case kCLErrorDenied: // CL access has been denied (eg, user declined location use)
+		{
+			if (self.needShowInSystemMap)
+			{
+				self.needShowInSystemMap = NO;
+				SHOW_ALERT_TEXT(@"无法获取您的位置", @"需要您的地理位置进行导航");
+			}
+		}
+			break;
+			
+		case kCLErrorNetwork: // general, network-related error
+			break;
+	}
+}
+
+
 - (void) mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views 
 { 
 	NSTimeInterval duration = 0.1;
@@ -413,6 +441,12 @@ typedef enum MAP_MENU_ENUM
 		[self updateUserLocation:userLocation];
 
 		self.focousUser = NO;
+	}
+	
+	if (self.needShowInSystemMap)
+	{
+		self.needShowInSystemMap = NO;
+		[self showInSystemMap];
 	}
 }
 
@@ -613,13 +647,21 @@ typedef enum MAP_MENU_ENUM
 
 #pragma mark - map menu
 
+- (void) cancelShowInSystemMap
+{
+	self.needShowInSystemMap = NO;
+}
+
 - (void) showInSystemMap
 {
 	if (!self.mapView.showsUserLocation)
 	{
 		// then show the user location
 		self.mapView.showsUserLocation = YES;
-		[self performSelector:@selector(showInSystemMap) withObject:nil	afterDelay:2.0];
+		self.needShowInSystemMap = YES;
+		
+		// canccel the action after 5 seconds
+		[self performSelector:@selector(cancelShowInSystemMap) withObject:nil afterDelay:5.0];
 		
 		return;
 	}

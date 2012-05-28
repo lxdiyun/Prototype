@@ -90,10 +90,10 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 	NSPropertyListFormat format = NSPropertyListBinaryFormat_v1_0;
 	NSMutableDictionary *plist;
 	
-	plist = [NSPropertyListSerialization propertyListFromData:plistData
+	plist = [[NSPropertyListSerialization propertyListFromData:plistData
 						 mutabilityOption:NSPropertyListMutableContainersAndLeaves
 							   format:&format
-						 errorDescription:&error];
+						 errorDescription:&error] retain];
 	if(nil == plist)
 	{
 		LOG(@"Error: %@", error);
@@ -102,7 +102,7 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 		return nil;
 	}
 	
-	return plist;
+	return [plist autorelease];
 }
 
 

@@ -74,6 +74,8 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	self.mapHeader = nil;
 	self.mapPage = nil;
 	self.foodPage = nil;
+	self.followButton = nil;
+	self.unFollowButton = nil;
 
 	[super dealloc];
 }

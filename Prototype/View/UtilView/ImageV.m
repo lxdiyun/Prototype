@@ -34,14 +34,31 @@
 
 #pragma mark - life cicle
 
-- (id) initWithFrame:(CGRect)frame
+- (void) setup
 {
-	self = [super initWithFrame:frame];
+	self.clipsToBounds = YES;
+	self.indicatorStyle = UIActivityIndicatorViewStyleGray;
+}
+
+- (id) initWithCoder:(NSCoder *)aDecoder
+{
+	[super initWithCoder:aDecoder];
 	
 	if (nil != self)
 	{
-		self.clipsToBounds = YES;
-		self.indicatorStyle = UIActivityIndicatorViewStyleGray;
+		[self setup];
+	}
+	
+	return self;
+}
+
+- (id) initWithFrame:(CGRect)frame
+{
+	[super initWithFrame:frame];
+	
+	if (nil != self)
+	{
+		[self setup];
 	}
 	
 	return self;

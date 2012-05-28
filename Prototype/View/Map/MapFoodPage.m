@@ -121,7 +121,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	static CGRect TopRect = {0, 0, 1, 1};
 	
 	NSDictionary *foodObject = [FoodManager getObjectWithNumberID:self.foodID];
-	
+
 	if (nil != foodObject)
 	{
 		self.foodObject = foodObject;
