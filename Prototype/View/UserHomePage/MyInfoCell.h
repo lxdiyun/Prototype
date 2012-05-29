@@ -8,9 +8,10 @@
 
 #import "InfoCell.h"
 
-@protocol SelectBackgroundDelegate <NSObject>
+@protocol MyInfoDelegate <NSObject>
 
 - (void) selectBackground;
+- (void) selectAvatar;
 
 @end
 
@@ -18,6 +19,6 @@
 
 - (IBAction) selectBackground:(id)sender;
 
-@property (assign, nonatomic) id<ShowVCDelegate, SelectBackgroundDelegate> delegate;
+@property (assign, nonatomic) id<ShowVCDelegate, MyInfoDelegate> delegate;
 
 @end

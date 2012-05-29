@@ -10,7 +10,7 @@
 
 @interface MyInfoCell ()
 {
-	id<ShowVCDelegate, SelectBackgroundDelegate> _delegate;
+	id<ShowVCDelegate, MyInfoDelegate> _delegate;
 }
 
 @end
@@ -23,9 +23,36 @@
 
 DEFINE_CUSTOM_XIB(MyInfoCell);
 
+- (void) resetupXIB:xibInstance
+{
+	[xibInstance initGUI];
+}
+
+#pragma mark - life circle
+
+#pragma mark - GUI
+
+- (void) initGUI
+{
+	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self 
+									      action:@selector(selectAvatar)];
+	
+	[self.avatar addGestureRecognizer:tap];
+	self.avatar.userInteractionEnabled = YES;
+	
+	[tap release];
+}
+
+#pragma mark - actioni
+
 - (IBAction) selectBackground:(id)sender 
 {
 	[self.delegate selectBackground];
+}
+
+- (void) selectAvatar
+{
+	[self.delegate selectAvatar];
 }
 
 @end

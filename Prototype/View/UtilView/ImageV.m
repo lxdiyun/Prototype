@@ -132,8 +132,6 @@
 			} 
 		}
 		
-		LOG(@"pre url = %@\n url = %@", preImageUrlString, imageUrlString);
-		
 		if ((nil == preImageUrlString) && (nil == imageUrlString))
 		{
 			[self setImage: nil];

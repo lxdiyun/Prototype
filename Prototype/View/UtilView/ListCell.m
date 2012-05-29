@@ -50,7 +50,6 @@ DEFINE_CUSTOM_XIB(ListCell);
 	@autoreleasepool 
 	{
 		UIView* background = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-		background.backgroundColor = [Color lightyellow];
 		CELL_BORDER(background.layer);
 		self.backgroundView = background;
 

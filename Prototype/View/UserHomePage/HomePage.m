@@ -484,7 +484,6 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 		[super initGUI];
 		
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-		self.tableView.backgroundColor = [Color lightyellow];
 		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 
 		if (nil == self.targetHeader)
@@ -643,12 +642,9 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
 					       reuseIdentifier:CellIdentifier] autorelease];
 		UIView* background = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-		background.backgroundColor = [Color lightyellow];
 		CELL_BORDER(background.layer);
 		cell.backgroundView = background;
 		cell.textLabel.textColor = [Color tasty];
-		cell.textLabel.backgroundColor = [Color lightyellow];
-		cell.detailTextLabel.backgroundColor = [Color lightyellow];
 		cell.detailTextLabel.textColor = [UIColor blackColor];
 		cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 	}

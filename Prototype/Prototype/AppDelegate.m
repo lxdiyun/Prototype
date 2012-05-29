@@ -225,10 +225,14 @@ static UIViewController *gs_currentViewController;
 {
 	if ((HOME_PAGE <= page) && (page <= MSWJ_PAGE_QUANTITY))
 	{
+		if (page == HOME_PAGE)
+		{
+			[MSWJ_PAGE_INSTANCE[HOME_PAGE].navigationController popToRootViewControllerAnimated:NO];
+		}
+
 		if ([gs_currentViewController isKindOfClass:[UITabBarController class]])
 		{
 			[(UITabBarController *)gs_currentViewController setSelectedIndex:page];
-
 		}
 	}
 }

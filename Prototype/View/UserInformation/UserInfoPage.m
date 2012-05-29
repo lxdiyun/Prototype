@@ -151,7 +151,6 @@ DEFINE_SINGLETON(UserInfoPage);
 	{
 		[self setTitle:@"个人设置"];
 		self.photoSelector = [[[PhotoSelector alloc] init] autorelease];
-		self.view.backgroundColor = [Color lightyellow];
 		
 		if (nil == self.editButton)
 		{
@@ -589,14 +588,14 @@ DEFINE_SINGLETON(UserInfoPage);
 		
 		NSDictionary *orginUserInfo = [ProfileMananger getObjectWithNumberID:GET_USER_ID()];
 		
-		if (![_userDetailTextView[USER_NAME].text 
-		      isEqualToString:[orginUserInfo valueForKey:@"nick"]])
+		if (!CHECK_EQUAL(_userDetailTextView[USER_NAME].text, 
+				 [orginUserInfo valueForKey:@"nick"]))
 		{
 			[params setValue:_userDetailTextView[USER_NAME].text forKey:@"nick"];
 		}
 		
-		if (![_userDetailTextView[USER_PLACE].text 
-		      isEqualToString:[orginUserInfo valueForKey:@"city"]])
+		if (!CHECK_EQUAL(_userDetailTextView[USER_PLACE].text,
+		     [orginUserInfo valueForKey:@"city"]))
 		{
 			[params setValue:_userDetailTextView[USER_PLACE].text forKey:@"city"];
 		}
@@ -607,7 +606,7 @@ DEFINE_SINGLETON(UserInfoPage);
 		}
 		
 		
-		if (![self.introduceView.text isEqualToString:[orginUserInfo valueForKey:@"intro"]])
+		if (!CHECK_EQUAL(self.introduceView.text, [orginUserInfo valueForKey:@"intro"]))
 		{
 			[params setValue:self.introduceView.text forKey:@"intro"];
 		}

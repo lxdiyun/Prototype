@@ -17,6 +17,7 @@
 #import "TagSelector.h"
 #import "EventPage.h"
 #import "CreateFoodHeaderVC.h"
+#import "AppDelegate.h"
 
 const static CGFloat  FONT_SIZE = 15.0;
 const static CGFloat STAR_SIZE = 22;
@@ -498,11 +499,11 @@ static TagSelector *gs_tag_selector = nil;
 		NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
 
 		[params setValue:gs_food_detail_text_view[FOOD_NAME].text forKey:@"name"];
-		[params setValue:gs_food_detail_text_view[FOOD_CITY] forKey:@"city"];
+		[params setValue:gs_food_detail_text_view[FOOD_CITY].text forKey:@"city"];
 		[params setValue:gs_food_detail_text_view[FOOD_PLACE].text forKey:@"place_name"];
 		[params setValue:gs_food_desc_text_view.text forKey:@"desc"];
 		[params setValue:self.header.image.picID forKey:@"pic"];
-		[params setValue:[gs_food_detail_text_view[FOOD_TAG].text componentsSeparatedByString:@" "] forKey:@"category"];
+//		[params setValue:[gs_food_detail_text_view[FOOD_TAG].text componentsSeparatedByString:@" "] forKey:@"category"];
 		[params setValue:[NSNumber numberWithFloat:[self.header.score.text floatValue]]  forKey:@"taste_score"];
 		[params setValue:[NSNumber numberWithBool:self.header.special.selected]  forKey:@"like_special"];
 		[params setValue:[NSNumber numberWithBool:self.header.valued.selected]  forKey:@"like_valued"];
@@ -553,6 +554,7 @@ static TagSelector *gs_tag_selector = nil;
 		[self updateShareButton];
 
 		[EventPage requestUpdate];
+		[AppDelegate showPage:HOME_PAGE];
 	}
 
 }

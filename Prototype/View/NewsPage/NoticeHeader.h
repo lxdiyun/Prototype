@@ -11,5 +11,6 @@
 @interface NoticeHeader : FoldHeader
 
 @property (retain, nonatomic) IBOutlet UILabel *unread;
+@property (retain, nonatomic) IBOutlet UILabel *empty;
 
 @end

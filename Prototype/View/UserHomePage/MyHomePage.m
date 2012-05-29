@@ -11,15 +11,20 @@
 #import "MyInfoCell.h"
 #import "LoginManager.h"
 #import "BackgroundSelectPage.h"
+#import "PhotoSelector.h"
+#import "ImageManager.h"
+#import "ProfileMananger.h"
 
-@interface MyHomePage () <SelectBackgroundDelegate>
+@interface MyHomePage () <MyInfoDelegate, PhototSelectorDelegate>
 {
 	MyInfoCell *_info;
 	BackgroundSelectPage *_backgroundSelectPage;
+	PhotoSelector *_avatarSelector;
 }
 
 @property (strong, nonatomic) MyInfoCell *info;
 @property (strong, nonatomic) BackgroundSelectPage *backgroundSelectPage;
+@property (strong, nonatomic) PhotoSelector *avatarSelector;
 
 @end
 
@@ -27,6 +32,7 @@
 
 @synthesize info = _info;
 @synthesize backgroundSelectPage = _backgroundSelectPage;
+@synthesize avatarSelector = _avatarSelector;
 
 #pragma mark - lifce circle
 
@@ -34,6 +40,7 @@
 {
 	self.info = nil;
 	self.backgroundSelectPage = nil;
+	self.avatarSelector = nil;
 
 	[super dealloc];
 }
@@ -57,6 +64,12 @@
 		if (nil == self.backgroundSelectPage)
 		{
 			self.backgroundSelectPage = [[[BackgroundSelectPage alloc] init] autorelease];
+		}
+		
+		if (nil == self.avatarSelector)
+		{
+			self.avatarSelector = [[[PhotoSelector alloc] init] autorelease];
+			self.avatarSelector.delegate = self;
 		}
 		
 		self.title = @"我的主页";
@@ -97,11 +110,59 @@
 	
 }
 
+- (void) setAvatar:(NSNumber *)picID
+{
+	NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:picID, @"avatar", nil];
+	
+	[ProfileMananger updateProfile:params withHandler:@selector(updateCurrentUser) andTarget:self];
+	
+	[params release];
+}
+
 #pragma mark - SelectBackgroundDelegate
 
 - (void) selectBackground
 {
 	[self.navigationController pushViewController:self.backgroundSelectPage animated:YES];
+}
+
+- (void) selectAvatar
+{
+	[self.avatarSelector.actionSheet showFromTabBar:self.navigationController.tabBarController.tabBar];
+}
+
+#pragma mark - PhototSelectorDelegate
+
+- (void) didSelectPhotoWithSelector:(PhotoSelector *)selector
+{
+	[ImageManager createImage:selector.selectedImage 
+		      withHandler:@selector(avatarUploadCompleted:)
+			andTarget:self];
+	
+	selector.selectedImage = nil;
+	
+}
+
+- (void) dismissSelector:(PhotoSelector *)selector
+{
+	[self dismissModalViewControllerAnimated:YES];
+}
+
+- (void) showModalView:(UIViewController *)modalView;
+{
+	[self presentModalViewController:modalView animated:YES];
+}
+
+#pragma mark - action
+
+- (void) avatarUploadCompleted:(id)result
+{
+	NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
+	
+	if (nil != picID)
+	{
+		[self setAvatar:picID];
+	}
 }
 
 @end

@@ -58,7 +58,7 @@ static CGFloat gs_pic_size = 0;
 	
 	CGFloat X = 0;
 	CGFloat height = NAME_HEIGHT;
-	CGFloat Y = 0;
+	CGFloat Y = gs_pic_size - height;
 	CGFloat width = gs_pic_size;
 	
 	self.name = [[[UILabel alloc] initWithFrame:CGRectMake(X, Y, width, height)] 
@@ -69,6 +69,7 @@ static CGFloat gs_pic_size = 0;
 	self.name.textColor = [UIColor whiteColor];
 	self.name.textAlignment = UITextAlignmentLeft;
 	self.name.numberOfLines = 0;
+	self.name.hidden = YES;
 	
 	[self.contentView addSubview:self.name];
 }

@@ -25,7 +25,6 @@
 @end
 
 static NSString *gs_fake_refresh_ID;
-static NSString *gs_fake_set_ID;
 
 @implementation BackgroundManager
 
@@ -45,7 +44,6 @@ DEFINE_SINGLETON(BackgroundManager);
 	if (nil != self)
 	{
 		self.isRefreshing = NO;
-		gs_fake_set_ID = [@"gs_fake_set_ID" retain];
 		gs_fake_refresh_ID = [@"gs_fake_refresh_ID" retain];
 	}
 	
@@ -58,8 +56,6 @@ DEFINE_SINGLETON(BackgroundManager);
 	
 	[gs_fake_refresh_ID release];
 	gs_fake_refresh_ID = nil;
-	[gs_fake_set_ID release];
-	gs_fake_set_ID = nil;
 	
 	[super dealloc];
 }
@@ -85,24 +81,6 @@ DEFINE_SINGLETON(BackgroundManager);
 	self.lastRefeshDate = [NSDate date];
 	
 	[self checkAndPerformResponderWithID:gs_fake_refresh_ID];
-}
-
-- (void) setBackgroundHandler:result
-{
-	if (![result isKindOfClass: [NSDictionary class]])
-	{
-		LOG(@"Error handle non dict object");
-		return;
-	}
-	
-	NSDictionary *user = [result valueForKey:@"result"];
-	
-	if (nil != user)
-	{
-		[ProfileMananger setObject:user withNumberID:[user valueForKey:@"id"]];
-	}
-	
-	[self checkAndPerformResponderWithID:gs_fake_set_ID];
 }
 
 #pragma mark - class interface
@@ -158,24 +136,13 @@ DEFINE_SINGLETON(BackgroundManager);
 
 + (void) setBackground:(NSNumber *)imageID with:(SEL)handler and:(id)target
 {
-	[self bindStringID:gs_fake_set_ID withHandler:handler andTarget:target];
-	
-	
 	NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:
 				imageID, @"bg_pic", 
 				nil];
-	NSDictionary *message =  [[NSDictionary alloc] initWithObjectsAndKeys:
-				  @"user.update", @"method",
-				  params, @"params",
-				  nil];
-	
-	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(message, 
-					       [self getInstnace], 
-					       @selector(setBackgroundHandler:), 
-					       NORMAL_PRIORITY);
+
+	[ProfileMananger updateProfile:params withHandler:handler andTarget:target];
 	
 	
-	[message release];
 	[params release];
 }
 

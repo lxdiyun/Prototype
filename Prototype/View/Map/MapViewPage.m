@@ -318,13 +318,11 @@ typedef enum MAP_MENU_ENUM
 
 - (void) didReceiveMemoryWarning
 {
-	if (self.navigationController.topViewController 
-	    == self.navigationController.visibleViewController)
-	{
-		// Releases the view if it doesn't have a superview 
-		// and the root view is presenting.
-		[super didReceiveMemoryWarning];
-	}
+	// Releases the view if it doesn't have a superview 
+	// and the root view is presenting.
+	[super didReceiveMemoryWarning];
+	
+	HANDLE_MEMORY_WARNING(self);
 }
 
 #pragma mark - view life circle

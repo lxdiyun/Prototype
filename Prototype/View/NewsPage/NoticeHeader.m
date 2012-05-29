@@ -12,6 +12,7 @@
 
 #pragma mark - custom xib object
 @synthesize unread;
+@synthesize empty;
 
 DEFINE_CUSTOM_XIB(NoticeHeader);
 
@@ -20,6 +21,7 @@ DEFINE_CUSTOM_XIB(NoticeHeader);
 - (void)dealloc 
 {
 	[unread release];
+    [empty release];
 	[super dealloc];
 }
 @end

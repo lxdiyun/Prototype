@@ -104,6 +104,17 @@ DEFINE_SINGLETON(NewsPage);
 	{
 		case MESSAGE_SECTION:
 		{
+			if (objectCount > 0)
+			{
+				self.messageHeader.foldButton.hidden = NO;
+				self.messageHeader.empty.hidden = YES;
+			}
+			else 
+			{
+				self.messageHeader.foldButton.hidden = YES;
+				self.messageHeader.empty.hidden = NO;
+			}
+			
 			if (self.messageHeader.isFolding)
 			{
 				return 0;
@@ -113,6 +124,17 @@ DEFINE_SINGLETON(NewsPage);
 			
 		case NOTICE_SECTION:
 		{
+			if (objectCount > 0)
+			{
+				self.noticeHeader.foldButton.hidden = NO;
+				self.noticeHeader.empty.hidden = YES;
+			}
+			else 
+			{
+				self.noticeHeader.foldButton.hidden = YES;
+				self.noticeHeader.empty.hidden = NO;
+			}
+
 			if (self.noticeHeader.isFolding)
 			{
 				return 0;

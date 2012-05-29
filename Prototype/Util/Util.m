@@ -406,55 +406,69 @@ NSString * GET_STRING_FOR_SCORE(double score)
 
 NSString * GET_DESC_FOR_SCORE(double score)
 {
-	if (score == 10)
+	if(score == 10)
 	{
 		return @"完美之食";
 	}
-	else if (score >= 9)
+	else if(score >= 9)
 	{
 		return @"传奇美食";
 	}
-	else if (score >= 8)
+	else if(score >= 8.5)
 	{
-		return @"超乎寻常";
+		return @"远超寻常";
 	}
-	else if (score >= 7)
+	else if(score >= 8)
+	{
+		return @"非比寻常";
+	}
+	else if(score >= 7.5)
 	{
 		return @"尽足本份";
 	}
-	else if (score >= 6)
+	else if(score >= 7)
+	{
+		return @"略尽本份";
+	}
+	else if(score >= 6.5)
+	{
+		return @"略有不足";
+	}
+	else if(score >= 6)
 	{
 		return @"颇有不足";
 	}
-	else if (score >= 5)
+	else if(score >= 5.5)
 	{
-		return @"可填肚";
+		return @"也可填肚";
 	}
-	else if (score >= 4)
+	else if(score >= 5)
+	{
+		return @"勉强填肚";
+	}
+	else if(score >= 4)
 	{
 		return @"尽量不吃";
 	}
-	else if (score >= 3)
+	else if(score >= 3)
 	{
 		return @"饿都不吃";
 	}
-	else if (score >= 2)
+	else if(score >= 2)
 	{
 		return @"吃坏肚子";
 	}
-	else if (score >= 0)
+	else if(score > 0)
 	{
 		return @"会吃死人";
-	}
-	else
-	{
-		return @"　";
+	}else{
+		return @"    ";
 	}
 }
 
 UIColor * GET_COLOR_FOR_SCORE(double score)
 {
-	if (score >= 8)
+	if (score >= 6)
 	{
 		return [Color blue];
 	}
@@ -469,9 +483,10 @@ void HANDLE_MEMORY_WARNING(UIViewController *vc)
 	if (nil == vc.view.superview)
 	{
 		NSMutableArray *allViewControllers =  [vc.navigationController.viewControllers mutableCopy];
-		if (![[allViewControllers objectAtIndex:0] isEqual:vc])
+		if ((![[allViewControllers objectAtIndex:0] isEqual:vc])
+		    && ![[allViewControllers lastObject] isEqual:vc])
 		{
-			[allViewControllers removeObjectIdenticalTo: vc];
+			[allViewControllers removeObjectIdenticalTo:vc];
 			vc.navigationController.viewControllers = allViewControllers;
 		}
 		

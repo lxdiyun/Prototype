@@ -74,12 +74,9 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
 					       reuseIdentifier:CellIdentifier] autorelease];
 		UIView* background = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-		background.backgroundColor = [Color lightyellow];
 		CELL_BORDER(background.layer);
 		cell.backgroundView = background;
 		cell.textLabel.textColor = [Color tasty];
-		cell.textLabel.backgroundColor = [Color lightyellow];
-		cell.detailTextLabel.backgroundColor = [Color lightyellow];
 		cell.detailTextLabel.textColor = [UIColor blackColor];
 		cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 	}
@@ -155,6 +152,15 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 	NSDictionary *foodMap = [PublicFoodMapListManager getObjectWithStringID:mapkey];
 	
 	return foodMap;
+}
+
+#pragma mark - GUI
+
+- (void) initGUI
+{
+	[super initGUI];
+	
+	self.navigationItem.leftBarButtonItem = nil;
 }
 
 @end

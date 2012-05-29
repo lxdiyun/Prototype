@@ -35,6 +35,30 @@
 
 #pragma mark - life circle
 
+- (id) init
+{
+	self = [super init];
+	
+	if (nil != self)
+	{
+		@autoreleasepool 
+		{
+			if (nil == self.createFood)
+			{
+				self.createFood = [[[CreateFoodPage alloc] init] autorelease];
+			}
+			
+			if (nil ==  self.navco)
+			{
+				self.navco = [[[UINavigationController alloc] initWithRootViewController:self.createFood] autorelease];
+				CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
+			}
+		}
+	}
+	
+	return self;
+}
+
 - (void) dealloc
 {
 	self.photoSelector = nil;
@@ -49,7 +73,7 @@
 
 - (void) dismissSelector:(PhotoSelector *)selector
 {
-	[self.delegate dismissModalViewControllerAnimated:YES];
+	[self.delegate dismissModalViewControllerAnimated:NO];
 }
 
 - (void) showModalView:(UIViewController *)modalView
@@ -75,17 +99,6 @@
 {
 	@autoreleasepool 
 	{
-		if (nil == self.createFood)
-		{
-			self.createFood = [[[CreateFoodPage alloc] init] autorelease];
-		}
-		
-		if (nil ==  self.navco)
-		{
-			self.navco = [[[UINavigationController alloc] initWithRootViewController:self.createFood] autorelease];
-			CONFIG_NAGIVATION_BAR(self.navco.navigationBar);
-		}
-
 		[self.delegate presentModalViewController:self.navco animated:YES];
 		
 		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:2.0];

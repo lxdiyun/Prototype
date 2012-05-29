@@ -57,7 +57,7 @@
 			UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
 			
 			alert.title = @"确认注销";
-			alert.message = @"主销后将清空本地缓存";
+			alert.message = @"";
 			
 			[alert addButtonWithTitle:@"Cancel"];
 			[alert addButtonWithTitle:@"OK"];

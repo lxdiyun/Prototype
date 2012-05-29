@@ -250,6 +250,8 @@
 		48EA6D6C14998A84008AE765 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EA6D6B14998A84008AE765 /* AppDelegate.m */; };
 		48EA6D6F14998A85008AE765 /* Prototype.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 48EA6D6D14998A85008AE765 /* Prototype.xcdatamodeld */; };
 		48EB985F14A0649600466A4E /* NetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EB985E14A0649600466A4E /* NetworkService.m */; };
+		48ECA05215747AEF00D0484C /* InputMapPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48ECA05015747AEF00D0484C /* InputMapPage.m */; };
+		48ECA05315747AEF00D0484C /* InputMapPage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48ECA05115747AEF00D0484C /* InputMapPage.xib */; };
 		48F3A3BA1550D9F700706B5E /* TitleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F3A3B81550D9F700706B5E /* TitleVC.m */; };
 		48F3A3BB1550D9F700706B5E /* TitleVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48F3A3B91550D9F700706B5E /* TitleVC.xib */; };
 		48F3D7B9154941FC00FE30C8 /* OAuthv1BaseLoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F3D7B8154941FA00FE30C8 /* OAuthv1BaseLoginVC.m */; };
@@ -766,6 +768,9 @@
 		48EA6D6E14998A85008AE765 /* Prototype.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Prototype.xcdatamodel; sourceTree = "<group>"; };
 		48EB985D14A0649600466A4E /* NetworkService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkService.h; sourceTree = "<group>"; };
 		48EB985E14A0649600466A4E /* NetworkService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkService.m; sourceTree = "<group>"; };
+		48ECA04F15747AEF00D0484C /* InputMapPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputMapPage.h; path = View/InputMap/InputMapPage.h; sourceTree = "<group>"; };
+		48ECA05015747AEF00D0484C /* InputMapPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InputMapPage.m; path = View/InputMap/InputMapPage.m; sourceTree = "<group>"; };
+		48ECA05115747AEF00D0484C /* InputMapPage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InputMapPage.xib; path = View/InputMap/InputMapPage.xib; sourceTree = "<group>"; };
 		48F3A3B71550D9F700706B5E /* TitleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TitleVC.h; path = View/Food/TitleVC.h; sourceTree = "<group>"; };
 		48F3A3B81550D9F700706B5E /* TitleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TitleVC.m; path = View/Food/TitleVC.m; sourceTree = "<group>"; };
 		48F3A3B91550D9F700706B5E /* TitleVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TitleVC.xib; path = View/Food/TitleVC.xib; sourceTree = "<group>"; };
@@ -1574,6 +1579,9 @@
 				48917C2D14A8686E00C72AE9 /* Food */,
 				4820461514A44E83001120C1 /* Event */,
 				48EA6D7614998AD4008AE765 /* UserInformation */,
+				48ECA04F15747AEF00D0484C /* InputMapPage.h */,
+				48ECA05015747AEF00D0484C /* InputMapPage.m */,
+				48ECA05115747AEF00D0484C /* InputMapPage.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1893,6 +1901,7 @@
 				484704A1156E284C00EB5BEF /* GetDirection@2x.png in Resources */,
 				4865B79A156F1A58006F81FF /* MapFoodPage.xib in Resources */,
 				4865B79F156F4C4E006F81FF /* MapFoodHeader.xib in Resources */,
+				48ECA05315747AEF00D0484C /* InputMapPage.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2022,6 +2031,7 @@
 				4847049D156DD0E000EB5BEF /* BackgroundManager.m in Sources */,
 				4865B79D156F1CDD006F81FF /* MapFoodPage.m in Sources */,
 				4865B7A2156F4C8F006F81FF /* MapFoodHeader.m in Sources */,
+				48ECA05215747AEF00D0484C /* InputMapPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
