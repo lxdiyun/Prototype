@@ -10,15 +10,21 @@
 #import "Util.h"
 
 const static CGFloat FONT_SIZE = 15.0;
+const static CGFloat LABEL_FONT_SIZE = 11.0;
 
 @interface TextInputer () <UITextViewDelegate>
 {
 	UITextView *_text;
 	id<TextInputerDeletgate> _delegate;
 	NSString *_sendButtonTitle;
+	UILabel *_textCount;
 	BOOL _drawCancel;
 	BOOL _appearing;
+	BOOL _acceptEmpty;
 }
+
+@property (strong, nonatomic) UILabel *textCount;
+
 - (void) updateDoneButton;
 
 @end
@@ -30,6 +36,8 @@ const static CGFloat FONT_SIZE = 15.0;
 @synthesize sendButtonTitle = _sendButtonTitle;
 @synthesize drawCancel = _drawCancel;
 @synthesize appearing = _appearing;
+@synthesize acceptEmpty = _acceptEmpty;
+@synthesize textCount = _textCount;
 
 #pragma mark - lifecycle
 
@@ -42,6 +50,7 @@ const static CGFloat FONT_SIZE = 15.0;
 		self.sendButtonTitle = @"发送";
 		self.drawCancel = YES;
 		self.appearing = NO;
+		self.acceptEmpty = NO;
 	}
 	return self;
 }
@@ -54,6 +63,7 @@ const static CGFloat FONT_SIZE = 15.0;
 - (void) dealloc
 {
 	self.text = nil;
+	self.textCount = nil;
 	
 	[super dealloc];
 }
@@ -83,35 +93,62 @@ const static CGFloat FONT_SIZE = 15.0;
 	
 }
 
-#pragma mark - View draw
+#pragma mark - GUI
 
 - (void) back
 {
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void) redraw
+- (void) initGUI
 {
 	@autoreleasepool 
 	{
+		// textview
 		if (nil != self.text)
 		{
 			[self.text removeFromSuperview];
 		}
 		
+		if (nil == self.text)
+		{
+			UIViewAutoresizing resize = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			CGRect frame = self.view.frame;
+			frame.origin = CGPointZero;
+			self.text = [[[UITextView alloc] initWithFrame:frame] autorelease];
+			self.text.font = [UIFont systemFontOfSize:FONT_SIZE];
+			self.text.scrollEnabled = YES;
+			self.text.scrollsToTop = YES;
+			self.text.delegate = self;
+			self.text.autoresizingMask = resize;
+		}
+		[self.view addSubview: self.text];
 		
-		self.text = [[[UITextView alloc] init] autorelease];
-		self.text.font = [UIFont systemFontOfSize:FONT_SIZE];
-		self.text.scrollEnabled = YES;
-		self.text.scrollsToTop = YES;
-		self.text.delegate = self;
+		// text count
+		
+		if (nil != self.textCount)
+		{
+			[self.textCount removeFromSuperview];
+		}
 
-		self.view = self.text;
+		if (nil == self.textCount)
+		{
+			UIViewAutoresizing resize = UIViewAutoresizingFlexibleLeftMargin 
+			| UIViewAutoresizingFlexibleTopMargin 
+			| UIViewAutoresizingFlexibleWidth;
+			self.textCount = [[[UILabel alloc] init] autorelease];
+			self.textCount.font = [UIFont systemFontOfSize:LABEL_FONT_SIZE];
+			self.textCount.autoresizingMask = resize;
+			self.textCount.text = @"140";
+			self.textCount.textColor = [UIColor blackColor];
+			self.textCount.textAlignment = UITextAlignmentRight;
+			[self.textCount sizeToFit];
+		}
+	
+		[self repositionTextCount];
 		
-		self.view.autoresizesSubviews = YES;
-		
+		// navigation bar
 		self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(self.sendButtonTitle, self, @selector(textDone:));
-		
 		self.navigationItem.rightBarButtonItem.enabled = NO;
 		
 		if (self.drawCancel)
@@ -123,6 +160,40 @@ const static CGFloat FONT_SIZE = 15.0;
 			self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 		}
 	}
+}
+
+- (void) updateDoneButton
+{
+	if ((0 >= self.text.text.length) && !self.acceptEmpty)
+	{
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
+	else
+	{
+		self.navigationItem.rightBarButtonItem.enabled = YES;
+	}
+}
+
+- (void) repositionTextCount
+{
+	CGSize size = self.textCount.frame.size;
+	CGRect frame = self.textCount.frame;
+	
+	frame.origin.x = self.text.frame.size.width - size.width - LABEL_FONT_SIZE;
+	frame.origin.y = self.text.frame.size.height - size.height - LABEL_FONT_SIZE;
+	
+	[self.textCount removeFromSuperview];
+	self.textCount.frame = frame;
+	[self.view addSubview:self.textCount];
+}
+
+- (void) updateTextCount
+{
+	NSString *textCount = [[NSString alloc] initWithFormat:@"%d", MAX_TEXT_LENGTH - self.text.text.length];
+	self.textCount.text = textCount;
+	[self.textCount sizeToFit];
+
+	[textCount release];
 }
 
 #pragma mark - View lifecycle
@@ -176,7 +247,7 @@ const static CGFloat FONT_SIZE = 15.0;
 
 - (void) viewDidLoad
 {
-	[self redraw];
+	[self initGUI];
 }
 
 - (void) viewDidUnload
@@ -198,22 +269,18 @@ const static CGFloat FONT_SIZE = 15.0;
 	if (self.text == textView)
 	{
 		[self updateDoneButton];
+		[self updateTextCount];
 	}
 }
 
-#pragma mark - interface and action
-
-- (void) updateDoneButton
+- (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-	if (0 < self.text.text.length)
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
+	NSUInteger newLength = [textView.text length] + [text length] - range.length;
+	
+	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;
 }
+
+#pragma mark - keyboard
 
 static CGFloat gs_txtPostContentHeight = 0;
 
@@ -251,8 +318,9 @@ static CGFloat gs_txtPostContentHeight = 0;
 	CGRect frame = self.text.frame;
 
 	frame.size.height = gs_txtPostContentHeight - keyboardHeight;
-	
+	self.text.autoresizesSubviews = YES;
 	self.text.frame = frame;
+	[self repositionTextCount];
 }
 
 -(void) keyboardDidHide: (NSNotification *)notif 
@@ -269,6 +337,7 @@ static CGFloat gs_txtPostContentHeight = 0;
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:animationDuration];
 	self.text.frame = frame;
+	[self repositionTextCount];
 	[UIView commitAnimations];
 }
 

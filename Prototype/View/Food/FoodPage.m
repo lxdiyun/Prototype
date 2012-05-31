@@ -34,7 +34,7 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 	FOOD_TAG = 0xFFFF,
 } FOOD_PAGE_SECTION;
 
-@interface FoodPage () <TextInputerDeletgate, ShowVCDelegate>
+@interface FoodPage () <TextInputerDeletgate, FoodInfoDelegate>
 {
 	NSDictionary *_food;
 	TextInputer *_inputer;
@@ -406,6 +406,11 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 - (void) showVC:(UIViewController *)VC
 {
 	[self.navigationController pushViewController:VC animated:YES];
+}
+
+- (void) foodDeleted:(id)sender
+{
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - GUI

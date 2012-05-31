@@ -12,10 +12,16 @@
 #import "AvatarV.h"
 #import "Util.h"
 
+@protocol FoodInfoDelegate <ShowVCDelegate>
+
+- (void) foodDeleted:(id)sender;
+
+@end
+
 @interface FoodInfo : UIViewController
 
 @property (retain, nonatomic) NSDictionary *food;
-@property (assign, nonatomic) id<ShowVCDelegate> delegate;
+@property (assign, nonatomic) id<FoodInfoDelegate> delegate;
 
 @property (retain, nonatomic) IBOutlet UIView *buttons;
 @property (retain, nonatomic) IBOutlet UILabel *username;
@@ -34,5 +40,6 @@
 @property (retain, nonatomic) IBOutlet UILabel *score;
 - (IBAction) showInMap:(id)sender;
 - (IBAction) showUser:(id)sender;
+- (IBAction) delete:(id)sender;
 
 @end

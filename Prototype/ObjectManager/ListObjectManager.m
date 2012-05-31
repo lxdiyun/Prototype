@@ -461,7 +461,7 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 			
 			[self.lastUpdatedDateDict setValue:date forKey:ID];
 			
-			[self getMethodHandler:dict withListID:ID forward:YES];
+			[self getNewestMethodHandler:dict withListID:ID forward:YES];
 		}
 			break;
 		case REQUEST_NEWER:
@@ -529,6 +529,13 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 
 #pragma mark - get method handler
 
+- (void) getNewestMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward
+{
+	[[self class] reset];
+
+	[self getMethodHandler:result withListID:listID forward:forward];
+}
+
 - (void) getMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward
 {
 	
@@ -545,15 +552,18 @@ const static uint16_t OBJECT_SAVE_TO_CACHE = 20;
 	
 	for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
 	{
-		[listDict setValue:object forKey:[[object valueForKey:@"id"] stringValue]];
-
-		if (forward)
+		if (CHECK_DICTIONAY(object))
 		{
-			[resultArray addObject:object];
-		}
-		else
-		{
-			[resultArray insertObject:object atIndex:0];
+			[listDict setValue:object forKey:[[object valueForKey:@"id"] stringValue]];
+			
+			if (forward)
+			{
+				[resultArray addObject:object];
+			}
+			else
+			{
+				[resultArray insertObject:object atIndex:0];
+			}
 		}
 	}
 	

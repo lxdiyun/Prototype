@@ -248,6 +248,19 @@ BOOL CHECK_STRING(NSString *object)
 	}
 }
 
+BOOL CHECK_DICTIONAY(NSDictionary *object)
+{
+	if ((nil != object) && [object isKindOfClass:[NSDictionary class]])
+	{
+		return YES;
+	}
+	else
+	{
+		CLOG(@"Error object is not an DICTIONARY: %@", object);
+		return NO;
+	}	
+}
+
 BOOL CHECK_EQUAL(id obj1, id obj2)
 {
 	if ((nil != obj1) && (nil != obj2))

@@ -203,13 +203,14 @@ DEFINE_SINGLETON(EventPage);
 - (void) viewWillAppear:(BOOL)animated
 {		
 	[super viewWillAppear:animated];
-
 	
 	//  update the last update date
 	[self.refreshHeaderView refreshLastUpdatedDate];
 	
 	// triger message
 	[self requestNewerEvent];
+	
+	[self refreshTableView:nil];
 	
 	self.pushed = NO;
 }
@@ -362,7 +363,7 @@ DEFINE_SINGLETON(EventPage);
 	}
 }
 
-#pragma mark - message
+#pragma mark - object manage
 
 - (void) requestNewerEventHandler:(id)result
 {	
@@ -391,7 +392,7 @@ DEFINE_SINGLETON(EventPage);
 			      andTarget:self];
 }
 
-#pragma mark - util
+#pragma mark - GUI
 
 - (void) refreshTableViewWithAnimationAndResult:(id)result
 {
@@ -418,6 +419,18 @@ DEFINE_SINGLETON(EventPage);
 	
 	self.leftColumn.bounces = YES;
 	self.rightColumn.bounces = YES;
+}
+
+- (void) forceRefresh
+{
+	[self.refreshHeaderView forceStartRefresh:self.leftColumn];
+}
+
+- (void) showTopRow
+{
+	static CGRect s_topRect = {0,0,1,1};
+	[self.leftColumn scrollRectToVisible:s_topRect animated:NO];
+	[self.rightColumn scrollRectToVisible:s_topRect animated:NO];
 }
 
 #pragma mark - UIScrollViewDelegate Methods
@@ -487,10 +500,11 @@ static UIScrollView *trigerView = nil;
 	[[self getInstnace] requestNewerEvent];
 }
 
-+ (void) reloadData
++ (void) refresh
 {
 	[[[self getInstnace] navigationController] popToRootViewControllerAnimated:NO];
-	[[self getInstnace] refreshTableView:nil];	
+	[[self getInstnace] showTopRow];
+	[[self getInstnace] forceRefresh];	
 }
 
 @end

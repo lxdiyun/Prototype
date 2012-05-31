@@ -34,13 +34,17 @@
 		for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
 		{
 			NSNumber *userID = [object valueForKey:@"user"];
-			NSNumber *sortIndex = [object valueForKey:@"id"];
-			
-			[listDict setValue:sortIndex forKey:[userID stringValue]];
-			
-			if (nil == [ProfileMananger getObjectWithNumberID:userID])
+
+			if (CHECK_NUMBER(userID))
 			{
-				[newUserIDArray addObject:userID];
+				NSNumber *sortIndex = [object valueForKey:@"id"];
+			
+				[listDict setValue:sortIndex forKey:[userID stringValue]];
+				
+				if (nil == [ProfileMananger getObjectWithNumberID:userID])
+				{
+					[newUserIDArray addObject:userID];
+				}
 			}
 		}
 		

@@ -89,9 +89,11 @@
 
 #pragma mark - UITextViewDelegate
 
-- (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
+- (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-	return YES;
+	NSUInteger newLength = [textView.text length] + [text length] - range.length;
+	
+	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;
 }
 
 #pragma mark - TextInputerDeletgate

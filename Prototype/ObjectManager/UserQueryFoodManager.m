@@ -8,6 +8,7 @@
 
 #import "UserQueryFoodManager.h"
 #import "FoodManager.h"
+#import "Util.h"
 
 @implementation UserQueryFoodManager
 
@@ -31,13 +32,13 @@
 		for (NSDictionary *object in [messageDict objectForKey:@"result"]) 
 		{
 			NSDictionary *food = [object valueForKey:@"food"];
-			NSNumber *foodID = [food valueForKey:@"id"];
-			NSNumber *sortIndex = [object valueForKey:@"id"];
-			
-			[listDict setValue:sortIndex forKey:[foodID stringValue]];
-			
-			if (nil != food)
+
+			if (CHECK_DICTIONAY(food))
 			{
+				NSNumber *foodID = [food valueForKey:@"id"];
+				NSNumber *sortIndex = [object valueForKey:@"id"];
+
+				[listDict setValue:sortIndex forKey:[foodID stringValue]];
 				[FoodManager setObject:food withNumberID:foodID];
 			}
 		}

@@ -11,6 +11,8 @@
 #import "ProfileMananger.h"
 #import "ImageManager.h"
 #import "PlaceManager.h"
+#import "EventManager.h"
+#import "UserFoodHistoryManager.h"
 #import "Util.h"
 
 @implementation FoodManager
@@ -136,6 +138,20 @@ DEFINE_SINGLETON(FoodManager);
 - (NSString *) createMethod
 {
 	return @"food.create";
+}
+
+#pragma mark - overwrite delete method
+- (NSString *) deleteMethod
+{
+	return @"food.delete";
+}
+
++ (void) deleteObject:(NSNumber *)objectID withhandler:(SEL)handler andTarget:(id)target
+{
+	[EventManager deleteEventByFood:objectID];
+	[UserFoodHistoryManager deleteHistoryByFood:objectID forUser:GET_USER_ID()];
+	
+	[super deleteObject:objectID withhandler:handler andTarget:target];
 }
 
 @end

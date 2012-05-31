@@ -16,7 +16,7 @@
 @property (strong) NSString *sendButtonTitle;
 @property (assign) BOOL drawCancel;
 @property (assign, nonatomic) BOOL appearing;
-- (void) redraw;
+@property (assign, nonatomic) BOOL acceptEmpty;
 @end
 
 @protocol TextInputerDeletgate

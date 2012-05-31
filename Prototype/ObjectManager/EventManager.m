@@ -13,7 +13,18 @@
 
 static NSString *gs_fakeListID = nil;
 
+@interface EventManager ()
+{
+	NSMutableDictionary *_foodEventIndex;
+}
+
+@property (strong, nonatomic) NSMutableDictionary *foodEventIndex;
+
+@end
+
 @implementation EventManager
+
+@synthesize foodEventIndex = _foodEventIndex;
 
 #pragma mark - singleton
 
@@ -34,6 +45,11 @@ DEFINE_SINGLETON(EventManager);
 				gs_fakeListID = [[NSString alloc] initWithFormat:@"%d", 0x1];
 			}
 			
+			if (nil == self.foodEventIndex)
+			{
+				self.foodEventIndex = [[[NSMutableDictionary alloc] init] autorelease];
+			}
+			
 			self.getMethodString = @"event.get";
 		}
 	}
@@ -45,6 +61,8 @@ DEFINE_SINGLETON(EventManager);
 {
 	[gs_fakeListID release];
 	gs_fakeListID = nil;
+	self.foodEventIndex = nil;
+	
 	[super dealloc];
 }
 
@@ -123,6 +141,7 @@ DEFINE_SINGLETON(EventManager);
 		NSDictionary *object = [result valueForKey:@"obj"];
 
 		NSNumber *picID = [object valueForKey:@"pic"];
+
 		if (CHECK_NUMBER(picID))
 		{
 			if (nil == [ImageManager getObjectWithNumberID:picID])
@@ -154,8 +173,11 @@ DEFINE_SINGLETON(EventManager);
 		// save food object
 		if ([objecType isEqualToString:@"food"])
 		{
-			[FoodManager setObject:object
-				  withNumberID:[object valueForKey:@"id"]];
+			NSNumber *foodID = [object valueForKey:@"id"];
+			NSNumber *eventID = [result valueForKey:@"id"];
+			
+			[FoodManager setObject:object withNumberID:foodID];
+			[self.foodEventIndex setValue:eventID forKey:[foodID stringValue]];
 		}
 	}
 	
@@ -187,6 +209,15 @@ DEFINE_SINGLETON(EventManager);
 	}
 	
 	[[self getInstnace] updateKeyArrayForList:gs_fakeListID withResult:nil forward:NO];
+}
+
++ (void) deleteEventByFood:(NSNumber *)foodID
+{
+	NSNumber *eventID = [[[self getInstnace] foodEventIndex] valueForKey:[foodID stringValue]];
+	if (nil != eventID)
+	{
+		[self setObject:nil withStringID:[eventID stringValue] inList:gs_fakeListID];
+	}
 }
 
 @end

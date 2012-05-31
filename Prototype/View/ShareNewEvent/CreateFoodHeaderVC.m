@@ -22,6 +22,7 @@
 @synthesize image;
 @synthesize indicator;
 @synthesize text;
+@synthesize weibo;
 
 #pragma mark - life circle
 
@@ -55,6 +56,7 @@
 	
 	[self setIndicator:nil];
 	[self setText:nil];
+	[self setWeibo:nil];
 	[super viewDidUnload];
 }
 
@@ -68,6 +70,7 @@
 	
 	[indicator release];
 	[text release];
+	[weibo release];
 	[super dealloc];
 }
 

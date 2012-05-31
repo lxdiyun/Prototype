@@ -17,4 +17,5 @@
 + (NSDate *) lastUpdatedDate;
 + (NSDictionary *) getObjectWithStringID:(NSString *)objectID;
 + (void) removeEventsForUser:(NSNumber *)userID;
++ (void) deleteEventByFood:(NSNumber *)foodID;
 @end

@@ -33,4 +33,14 @@ DEFINE_SINGLETON(UserFoodHistoryManager);
 	return self;
 }
 
+#pragma mark - class interface
+
++ (void) deleteHistoryByFood:(NSNumber *)foodID forUser:(NSNumber *)userID
+{
+	if (CHECK_NUMBER(foodID) && CHECK_NUMBER(userID))
+	{
+		[self setObject:nil withStringID:[foodID stringValue] inList:[userID stringValue]];
+	}
+}
+
 @end

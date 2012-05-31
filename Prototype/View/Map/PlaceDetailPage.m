@@ -207,7 +207,7 @@
 		[down setDirection:(UISwipeGestureRecognizerDirectionDown)];
 		
 		[self.view addGestureRecognizer:down];
-		
+
 		UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)] autorelease];
 		
 		[self.view addGestureRecognizer:tap];

@@ -10,4 +10,6 @@
 
 @interface UserFoodHistoryManager : UserQueryFoodManager
 
++ (void) deleteHistoryByFood:(NSNumber *)foodID forUser:(NSNumber *)userID;
+
 @end

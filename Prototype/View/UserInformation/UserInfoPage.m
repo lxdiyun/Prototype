@@ -394,7 +394,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	if (indexPath.section == USER_AVATOR)
 	{
 		self.photoSelector.delegate = self;
-		[self.photoSelector.actionSheet showInView:self.view];
+		[self.photoSelector.actionSheet showFromTabBar:self.navigationController.tabBarController.tabBar];
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	}
 }
@@ -486,11 +486,6 @@ DEFINE_SINGLETON(UserInfoPage);
 		paramsReady = NO;
 	}
 	
-	if (0 >= self.introduceView.text.length)
-	{
-		paramsReady = NO;
-	}
-	
 	return paramsReady;
 }
 
@@ -575,7 +570,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	[self sendUserInfoRequest];
 }
 
-- (void) handlerForUpate:(id) result
+- (void) handlerForUpdate:(id)result
 {
 	[self getUserProfile];
 }
@@ -615,7 +610,7 @@ DEFINE_SINGLETON(UserInfoPage);
 		{
 			[params setValue:GET_USER_ID() forKey:@"id"];
 			
-			[ProfileMananger updateProfile:params withHandler:@selector(handlerForUpate:) andTarget:self];
+			[ProfileMananger updateProfile:params withHandler:@selector(handlerForUpdate:) andTarget:self];
 		}
 		
 		[params release];
@@ -686,6 +681,7 @@ DEFINE_SINGLETON(UserInfoPage);
 		textInputer.sendButtonTitle = @"完成";
 		textInputer.drawCancel = NO;
 		textInputer.title = @"个人介绍";
+		textInputer.acceptEmpty = YES;
 		
 		self.textInputer = textInputer;
 		
@@ -750,6 +746,13 @@ DEFINE_SINGLETON(UserInfoPage);
 	[textView resignFirstResponder];
 	
 	return NO;
+}
+
+- (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+	NSUInteger newLength = [textView.text length] + [text length] - range.length;
+	
+	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;
 }
 
 #pragma mark - class interface

@@ -15,7 +15,8 @@
 {
 	NSMutableDictionary *_objectDict;
 	NSMutableDictionary *_responderDictForGet;
-	NSMutableDictionary *_responderDictForCreate;
+	NSMutableDictionary *_responderDictForCreateAndUpdate;
+	NSMutableDictionary *_responderDictForDelete;
 	NSMutableDictionary *_updatingDict;
 	NSArray *_IDArray;
 	NSDictionary *_createParams;
@@ -27,7 +28,8 @@
 
 @synthesize objectDict = _objectDict;
 @synthesize responderDictForGet = _responderDictForGet;
-@synthesize responderDictForCreate = _responderDictForCreate;
+@synthesize responderDictForCreateAndUpdate = _responderDictForCreateAndUpdate;
+@synthesize responderDictForDelete = _responderDictForDelete;
 @synthesize updatingDict = _updatingDict;
 @synthesize createParams = _createParams;
 @synthesize updateParams = _updateParams;
@@ -45,7 +47,8 @@
 		{
 			self.objectDict = [[[NSMutableDictionary alloc] init] autorelease];
 			self.responderDictForGet = [[[NSMutableDictionary alloc] init] autorelease];
-			self.responderDictForCreate = [[[NSMutableDictionary alloc] init] autorelease];
+			self.responderDictForCreateAndUpdate = [[[NSMutableDictionary alloc] init] autorelease];
+			self.responderDictForDelete = [[[NSMutableDictionary alloc] init] autorelease];
 			self.updatingDict = [[[NSMutableDictionary alloc] init] autorelease];
 		}
 	}
@@ -57,7 +60,7 @@
 {
 	self.objectDict = nil;
 	self.responderDictForGet = nil;
-	self.responderDictForCreate = nil;
+	self.responderDictForCreateAndUpdate = nil;
 	self.updatingDict = nil;
 	self.createParams = nil;
 	self.updateParams = nil;
@@ -507,7 +510,7 @@
 	[request release];
 }
 
-#pragma mark - create method - handler
+#pragma mark - create and update method handler
 
 - (void) checkAndPerformResponderForCreateWithMessageID:(NSString *)ID andResult:(id)result
 {
@@ -515,10 +518,10 @@
 	{
 		MessageResponder *responder;
 		
-		@synchronized (_responderDictForCreate)
+		@synchronized (_responderDictForCreateAndUpdate)
 		{
-			responder = [[self.responderDictForCreate valueForKey:ID] retain];
-			[self.responderDictForCreate setValue:nil forKey:ID];
+			responder = [[self.responderDictForCreateAndUpdate valueForKey:ID] retain];
+			[self.responderDictForCreateAndUpdate setValue:nil forKey:ID];
 			[responder autorelease];
 		}
 		
@@ -529,7 +532,7 @@
 	}
 }
 
-- (void) handlerForCreate:(id)result
+- (void) handlerForCreateAndUpdate:(id)result
 {
 	if (![result isKindOfClass: [NSDictionary class]])
 	{
@@ -542,21 +545,22 @@
 	NSString *objectID = [[objectDict valueForKey:@"id"] stringValue];
 	
 	[self.objectDict setValue:objectDict forKey:objectID];
+	[self checkAndPerformResponderWithID:objectID];
 	[self checkAndPerformResponderForCreateWithMessageID:messageID andResult:result];
 }
 
-#pragma mark - create method - send
+#pragma mark - create and update method bind
 
-- (void) bindCreateMessageID:(NSString *)ID withResponder:(MessageResponder*)responder
+- (void) bindMessageID:(NSString *)ID withResponder:(MessageResponder*)responder
 {
 	
-	@synchronized (_responderDictForCreate)
+	@synchronized (_responderDictForCreateAndUpdate)
 	{
-		[self.responderDictForCreate setValue:responder forKey:ID];
+		[self.responderDictForCreateAndUpdate setValue:responder forKey:ID];
 	}
 }
 
-+ (void) bindCreateMessageID:(NSString *)ID WithHandler:(SEL)handler andTarget:(id)target
++ (void) bindMessageID:(NSString *)ID WithHandler:(SEL)handler andTarget:(id)target
 {
 	if (!CHECK_STRING(ID))
 	{
@@ -568,7 +572,7 @@
 		MessageResponder *responder = [[MessageResponder alloc] init];
 		responder.target = target;
 		responder.handler = handler;
-		[[self getInstnace] bindCreateMessageID:ID withResponder:responder];
+		[[self getInstnace] bindMessageID:ID withResponder:responder];
 		
 		[responder release];
 	}
@@ -594,14 +598,14 @@
 	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];
 	
 	// bind the handler first
-	[self bindCreateMessageID:messageID WithHandler:handler andTarget:target];
+	[self bindMessageID:messageID WithHandler:handler andTarget:target];
 	
 	LOG(@"create = %@", request);
 	
 	// then send the request 
 	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
 						      [self getInstnace], 
-						      @selector(handlerForCreate:), 
+						      @selector(handlerForCreateAndUpdate:), 
 						      NORMAL_PRIORITY,
 						      ID);
 
@@ -619,7 +623,7 @@
 	{
 		MessageResponder *responder;
 		
-		@synchronized (_responderDictForCreate)
+		@synchronized (_responderDictForCreateAndUpdate)
 		{
 			responder = [[self.responderDictForGet valueForKey:ID] retain];
 			[self.responderDictForGet setValue:nil forKey:ID];
@@ -634,7 +638,7 @@
 }
 
 
-- (void) handlerForUpate:(id)result
+- (void) handlerForUpdate:(id)result
 {
 	if (![result isKindOfClass: [NSDictionary class]])
 	{
@@ -647,36 +651,8 @@
 	NSString *objectID = [[objectDict valueForKey:@"id"] stringValue];
 	
 	[self.objectDict setValue:objectDict forKey:objectID];
+	[self checkAndPerformResponderWithID:objectID];
 	[self checkAndPerformResponderForUpdateWithMessageID:messageID andResult:result];
-}
-
-#pragma mark - update method - send
-
-- (void) bindUpdateMessageID:(NSString *)ID withResponder:(MessageResponder*)responder
-{
-	
-	@synchronized (_responderDictForCreate)
-	{
-		[self.responderDictForGet setValue:responder forKey:ID];
-	}
-}
-
-+ (void) bindUpdateMessageID:(NSString *)ID WithHandler:(SEL)handler andTarget:(id)target
-{
-	if (!CHECK_STRING(ID))
-	{
-		return;
-	}
-	
-	if ((target != nil) && (handler != nil))
-	{
-		MessageResponder *responder = [[MessageResponder alloc] init];
-		responder.target = target;
-		responder.handler = handler;
-		[[self getInstnace] bindUpdateMessageID:ID withResponder:responder];
-		
-		[responder release];
-	}
 }
 
 #pragma mark - update method interfaces
@@ -699,12 +675,12 @@
 	NSString *messageID = [[NSString alloc] initWithFormat:@"%u", ID];
 	
 	// bind the handler first
-	[self bindCreateMessageID:messageID WithHandler:handler andTarget:target];
+	[self bindMessageID:messageID WithHandler:handler andTarget:target];
 	
 	// then send the request 
 	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
 						      [self getInstnace], 
-						      @selector(handlerForCreate:), 
+						      @selector(handlerForCreateAndUpdate:), 
 						      NORMAL_PRIORITY,
 						      ID);
 	
@@ -714,4 +690,95 @@
 	return ID;
 }
 
+- (void) checkAndPerformResponderForDeleteWithMessageID:(NSString *)ID andResult:(id)result
+{
+	@autoreleasepool 
+	{
+		MessageResponder *responder;
+		
+		@synchronized (_responderDictForDelete)
+		{
+			responder = [[self.responderDictForDelete valueForKey:ID] retain];
+			[self.responderDictForDelete setValue:nil forKey:ID];
+			[responder autorelease];
+		}
+		
+		if (nil != responder)
+		{
+			[responder performWithObject:result];
+		}
+	}
+}
+
+
+- (void) handlerForDelete:(id)result
+{
+	if (![result isKindOfClass: [NSDictionary class]])
+	{
+		LOG(@"Error handle non dict object");
+		return;
+	}
+}
+
+#pragma mark - delete method send
+
+- (void) bindDeleteMessageID:(NSString *)ID withResponder:(MessageResponder*)responder
+{
+	
+	@synchronized (_responderDictForDelete)
+	{
+		[self.responderDictForDelete setValue:responder forKey:ID];
+	}
+}
+
++ (void) bindDeleteMessageID:(NSString *)ID WithHandler:(SEL)handler andTarget:(id)target
+{
+	if (!CHECK_STRING(ID))
+	{
+		return;
+	}
+	
+	if ((target != nil) && (handler != nil))
+	{
+		MessageResponder *responder = [[MessageResponder alloc] init];
+		responder.target = target;
+		responder.handler = handler;
+		[[self getInstnace] bindDeleteMessageID:ID withResponder:responder];
+		
+		[responder release];
+	}
+}
+
+#pragma mark - delete method interfaces
+
+- (NSString *) deleteMethod
+{
+	LOG(@"Error %@: need to implement in the sub class",  [self class]);
+	return nil;
+}
+
++ (void) deleteObject:(NSNumber *)objectID withhandler:(SEL)handler andTarget:(id)target
+{
+	NSMutableDictionary *request = [[NSMutableDictionary alloc] init];
+	
+	[request setValue:[[self getInstnace] deleteMethod] forKey:@"method"];
+	
+	[request setValue:objectID forKey:@"params"];
+	
+	// then send the request 
+	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY(request, 
+					       [self getInstnace], 
+					       @selector(handlerForDelete:), 
+					       NORMAL_PRIORITY);
+	
+	[[[self getInstnace] objectDict] setValue:nil forKey:[objectID stringValue]];
+	
+	if ([target respondsToSelector:handler])
+	{
+		[target performSelector:handler withObject:nil];
+	}
+	
+	[request release];
+	
+}
 @end

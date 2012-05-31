@@ -11,18 +11,24 @@
 #import "Util.h"
 #import "ProfileMananger.h"
 #import "MapViewPage.h"
+#import "FoodManager.h"
 
 const static NSInteger MAX_TAG_QANTITY = 3;
+const static CGFloat NORMAL_BUTTON_BAR_WIDTH = 80.0;
+const static CGFloat BUTTON_BAR_PADDING = 20.0;
+const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 
-@interface FoodInfo () 
+@interface FoodInfo () <UIAlertViewDelegate>
 {
 	NSDictionary *_food;
 	NSInteger _tagMaxIndex;
-	id<ShowVCDelegate> _delegate;
+	id<FoodInfoDelegate> _delegate;
 	MapViewPage *_map;
+	UIAlertView *_deleteAlert;
 }
 
 @property (strong, nonatomic) MapViewPage *map;
+@property (strong, nonatomic) UIAlertView *deleteAlert;
 
 @end
 
@@ -31,6 +37,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 @synthesize food = _food;
 @synthesize delegate = _delegate;
 @synthesize map = _map;
+@synthesize deleteAlert = _deleteAlert;
 
 @synthesize buttons;
 @synthesize username;
@@ -175,33 +182,21 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[self updateLocationButton];
 	self.target.selected = YES;
 	self.ate.enabled = NO;
-}
-
-#pragma mark - update info
-
-- (void) setFood:(NSDictionary *)food
-{
-	if (CHECK_EQUAL(_food ,food))
+	
+	CGRect frame = self.buttons.frame;
+	
+	if (CHECK_EQUAL([self.food valueForKey:@"user"], GET_USER_ID()))
 	{
-		return;
-	}
-	
-	[_food release];
-	
-	_food = [food retain];
-	
-
-	@autoreleasepool
-	{
-		self.date.text = [self.food valueForKey:@"created_on"];
-		self.image.picID = [self.food valueForKey:@"pic"];
 		
-		[self requestUserProfile];
-		[self updateScore];
-		[self updateTags];
-		[self updateButtons];
+		frame.size.width = USER_OWNED_BUTTON_BAR_WIDTH;
 	}
-
+	else 
+	{
+		frame.size.width = NORMAL_BUTTON_BAR_WIDTH;
+	}
+	
+	frame.origin.x = self.view.frame.size.width - frame.size.width + BUTTON_BAR_PADDING;
+	self.buttons.frame = frame;
 }
 
 #pragma mark - life circle
@@ -212,6 +207,16 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	if (nil != self) 
 	{
 		_tagMaxIndex = 0;
+		UIAlertView *deleteAlert = [[UIAlertView alloc] initWithTitle:@"删除?" 
+								      message:@"" 
+								     delegate:self 
+							    cancelButtonTitle:@"取消" 
+							    otherButtonTitles:nil];
+		[deleteAlert addButtonWithTitle:@"确认"];
+		
+		self.deleteAlert = deleteAlert;
+		
+		[deleteAlert release];
 	}
 	return self;
 }
@@ -239,6 +244,8 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 
 	[super dealloc];
 }
+
+#pragma mark - view life circle
 
 - (void) viewDidLoad
 {
@@ -270,7 +277,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	[super viewDidUnload];
 }
 
-#pragma mark - message
+#pragma mark - object manage
 
 - (void) requestUserProfile
 {
@@ -294,9 +301,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	}
 }
 
-#pragma mark - managet object
-
-- (void) setDelegate:(id<ShowVCDelegate>)delegate
+- (void) setDelegate:(id<FoodInfoDelegate>)delegate
 {
 	if ([_delegate isEqual:delegate])
 	{
@@ -308,7 +313,47 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 	self.avatar.delegate = delegate;
 }
 
-#pragma mark - button action
+- (void) setFood:(NSDictionary *)food
+{
+	if (CHECK_EQUAL(_food ,food))
+	{
+		return;
+	}
+	
+	[_food release];
+	
+	_food = [food retain];
+	
+	
+	@autoreleasepool
+	{
+		self.date.text = [self.food valueForKey:@"created_on"];
+		self.image.picID = [self.food valueForKey:@"pic"];
+		
+		[self requestUserProfile];
+		[self updateScore];
+		[self updateTags];
+		[self updateButtons];
+	}
+	
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if ((alertView == self.deleteAlert) && (1 == buttonIndex))
+	{
+		[FoodManager deleteObject:[self.food valueForKey:@"id"] withhandler:@selector(foodDeleted) andTarget:self];
+	}
+}
+
+#pragma mark - action
+
+- (void) foodDeleted
+{
+	[self.delegate foodDeleted:self];
+}
 
 - (IBAction) showInMap:(id)sender 
 {
@@ -340,6 +385,15 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 - (IBAction) showUser:(id)sender 
 {
 	[self.avatar tap:sender];
+}
+
+- (IBAction) delete:(id)sender 
+{
+	@autoreleasepool 
+	{
+		self.deleteAlert.title = [NSString stringWithFormat:@"删除 %@？", [self.food valueForKey:@"name"]];
+		[self.deleteAlert show];
+	}
 }
 
 @end

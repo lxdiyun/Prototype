@@ -10,5 +10,5 @@
 
 @interface EventPage : UIViewController 
 + (void) requestUpdate;
-+ (void) reloadData;
++ (void) refresh;
 @end

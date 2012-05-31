@@ -200,15 +200,15 @@ static TagSelector *gs_tag_selector = nil;
 
 	switch (section)
 	{
-	case FOOD_DETAIL:
-		return NEW_FOOD_DETAIL_MAX;
-		break;
-	case FOOD_DESC:
-		return 1;
-		break;
-	default:
-		return 0;
-		break;
+		case FOOD_DETAIL:
+			return NEW_FOOD_DETAIL_MAX;
+			break;
+		case FOOD_DESC:
+			return 1;
+			break;
+		default:
+			return 0;
+			break;
 	}
 }
 
@@ -348,7 +348,7 @@ static TagSelector *gs_tag_selector = nil;
 	switch (section) 
 	{
 		case FOOD_HEADER:
-			return 416;
+			return self.header.view.frame.size.height;
 
 			break;
 		case FOOD_DESC:
@@ -508,6 +508,7 @@ static TagSelector *gs_tag_selector = nil;
 		[params setValue:[NSNumber numberWithBool:self.header.special.selected]  forKey:@"like_special"];
 		[params setValue:[NSNumber numberWithBool:self.header.valued.selected]  forKey:@"like_valued"];
 		[params setValue:[NSNumber numberWithBool:self.header.health.selected]  forKey:@"like_healthy"];
+		[params setValue:[NSNumber numberWithBool:self.header.weibo.on]  forKey:@"post_weibo"];
 
 		[FoodManager createFood:params withHandler:@selector(foodCreated:) andTarget:self];
 		
@@ -621,6 +622,13 @@ static TagSelector *gs_tag_selector = nil;
 	return YES;
 }
 
+- (BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+	NSUInteger newLength = [textField.text length] + [string length] - range.length;
+	
+	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;
+}
+
 #pragma mark - UITextViewDelegate
 
 - (BOOL) textViewShouldBeginEditing:(UITextView *)textView
@@ -631,6 +639,13 @@ static TagSelector *gs_tag_selector = nil;
 	}
 
 	return NO;
+}
+
+- (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+	NSUInteger newLength = [textView.text length] + [text length] - range.length;
+	
+	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;
 }
 
 #pragma mark - TextInputerDeletgate

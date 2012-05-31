@@ -217,7 +217,7 @@ static UIViewController *gs_currentViewController;
 	}
 	
 	[EventPage requestUpdate];
-	[EventPage reloadData];
+	[EventPage refresh];
 	[UserInfoPage reloadData];
 }
 
@@ -227,7 +227,7 @@ static UIViewController *gs_currentViewController;
 	{
 		if (page == HOME_PAGE)
 		{
-			[MSWJ_PAGE_INSTANCE[HOME_PAGE].navigationController popToRootViewControllerAnimated:NO];
+			[EventPage refresh];
 		}
 
 		if ([gs_currentViewController isKindOfClass:[UITabBarController class]])

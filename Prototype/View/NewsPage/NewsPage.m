@@ -274,12 +274,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark - object manage
 
 - (void) cleanNews
-{
-	[NotificationManager reset];
-	
+{	
 	self.displayedNoticeCount = 0;
-	
-	[self reload];
 	
 	[self updateBage];
 
@@ -358,8 +354,6 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 	self.displayedNoticeCount = self.unreadNoticeCount;
 	self.unreadNoticeCount = 0;
 	[self updateNoticeHeader];
-	
-	[self reload];
 }
 
 - (void) requestOlder

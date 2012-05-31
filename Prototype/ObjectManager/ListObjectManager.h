@@ -78,6 +78,7 @@ typedef enum MESSAGE_TYPE_ENUM
 		       andCount:(uint32_t)count 
 		    withHandler:(SEL)handler 
 		      andTarget:(id)target;
+- (void) getNewestMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward;
 - (void) getMethodHandler:(id)result withListID:(NSString *)listID forward:(BOOL)forward;
 
 - (void) configGetMethodParams:(NSMutableDictionary *)params 

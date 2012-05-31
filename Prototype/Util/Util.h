@@ -43,6 +43,7 @@
 const static CGFloat TAB_BAR_HEIGHT = 49;
 const static CGFloat STATUS_BAR_HEIGHT = 20;
 const static CGFloat DEFAULT_CELL_HEIGHT = 44.0;
+const static NSInteger MAX_TEXT_LENGTH = 140;
 
 // util
 
@@ -88,6 +89,7 @@ void HANDLE_MEMORY_WARNING(UIViewController *vc);
 // check and error handling;
 BOOL CHECK_NUMBER(NSNumber *object);
 BOOL CHECK_STRING(NSString *object);
+BOOL CHECK_DICTIONAY(NSDictionary *object);
 BOOL CHECK_EQUAL(id obj1, id obj2);
 
 // alert

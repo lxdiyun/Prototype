@@ -82,7 +82,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 }
 
 
-- (void)didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
 	self.selectedImage = nil;
 	self.imagePickerController = nil;

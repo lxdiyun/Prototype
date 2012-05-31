@@ -25,5 +25,6 @@
 @property (retain, nonatomic) IBOutlet ImageV *image;
 @property (retain, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (retain, nonatomic) IBOutlet UILabel *text;
+@property (retain, nonatomic) IBOutlet UISwitch *weibo;
 
 @end
