@@ -189,6 +189,12 @@ static UIViewController *gs_currentViewController;
 		
 		return NO;
 	} 
+	else if (viewController == tabBarController.moreNavigationController)
+	{
+		[tabBarController.moreNavigationController popToRootViewControllerAnimated:NO];
+		
+		return YES;
+	}
 	else if ([tabBarController.viewControllers objectAtIndex:LOGOUT_PAGE] == viewController)
 	{
 		LogoutPage *logoutPage = (LogoutPage *)MSWJ_PAGE_INSTANCE[LOGOUT_PAGE];

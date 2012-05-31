@@ -65,7 +65,7 @@ static CGFloat gs_pic_size = 0;
 		     autorelease];
 	
 	self.name.font = [UIFont systemFontOfSize:FONT_SIZE];
-	self.name.backgroundColor = [Color blackAlpha];
+	self.name.backgroundColor = [Color blackAlpha50];
 	self.name.textColor = [UIColor whiteColor];
 	self.name.textAlignment = UITextAlignmentLeft;
 	self.name.numberOfLines = 0;
@@ -136,7 +136,7 @@ static CGFloat gs_pic_size = 0;
 		if (nil != userProfile)
 		{
 			self.avator.picID = [userProfile valueForKey:@"avatar"];
-			[self.avator.layer setBorderColor:[[Color blackAlpha] CGColor]];
+			[self.avator.layer setBorderColor:[[Color blackAlpha50] CGColor]];
 			[self.avator.layer setBorderWidth: AVATOR_BORDER * PROPORTION()];
 			
 		}

@@ -142,13 +142,25 @@
 	return color;
 }
 
-+ (UIColor *) blackAlpha
++ (UIColor *) blackAlpha50
 {
 	static UIColor *color = nil;
 	
 	if (nil == color)
 	{
 		color = [[UIColor alloc] initWithRed:0x0/255.0 green:0x0/255.0 blue:0x0/255.0 alpha:0.5];
+	}
+	
+	return color;
+}
+
++ (UIColor *) blackAlpha75
+{
+	static UIColor *color = nil;
+	
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0x0/255.0 green:0x0/255.0 blue:0x0/255.0 alpha:0.75];
 	}
 	
 	return color;

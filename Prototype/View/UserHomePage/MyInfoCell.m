@@ -34,6 +34,8 @@ DEFINE_CUSTOM_XIB(MyInfoCell);
 
 - (void) initGUI
 {
+	[super initGUI];
+
 	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self 
 									      action:@selector(selectAvatar)];
 	

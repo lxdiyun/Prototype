@@ -14,21 +14,41 @@
 @interface BackgroundSelectPage ()
 {
 	NSNumber *_selectedImageID;
+	UIImageView *_checkMark;
 }
 
 @property (strong, nonatomic) NSNumber *selectedImageID;
+@property (strong, nonatomic) UIImageView *checkMark;
 
 @end
 
 @implementation BackgroundSelectPage
 
+@synthesize selectedImageID = _selectedImageID;
+@synthesize checkMark = _checkMark;
+
 #pragma mark - life cirlce
 
-@synthesize selectedImageID = _selectedImageID;
+- (id) init
+{
+	self = [super init];
+	
+	if (nil != self)
+	{
+		@autoreleasepool 
+		{
+			self.checkMark = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selected.png"]] autorelease];
+		}
+	}
+	
+	return self;
+}
+
 
 - (void) dealloc
 {
 	self.selectedImageID = nil;
+	self.checkMark = nil;
 	
 	[super dealloc];
 }
@@ -59,11 +79,11 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath
 	
 	if (CHECK_EQUAL(self.selectedImageID, imageID))
 	{
-		cell.accessoryType = UITableViewCellAccessoryCheckmark;
+		cell.accessoryView = self.checkMark;
 	}
 	else 
 	{
-		cell.accessoryType = UITableViewCellAccessoryNone;
+		cell.accessoryView = nil;
 	}
 	
 	

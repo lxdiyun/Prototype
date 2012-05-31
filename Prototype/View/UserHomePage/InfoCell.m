@@ -117,7 +117,7 @@ DEFINE_CUSTOM_XIB(InfoCell)
 	self.fansPage = [[[UserFansPage alloc] init] autorelease];
 	
 	[self.shadow drawWithTop:[UIColor clearColor] 
-			  bottom:[Color blackAlpha85]];
+			  bottom:[Color blackAlpha75]];
 }
 
 - (void) updateGUI
