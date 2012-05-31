@@ -14,6 +14,7 @@
 #import "FoodPage.h"
 #import "EventCell.h"
 #import "EventManager.h"
+#import "Alert.h"
 
 const static uint32_t EVENT_REFRESH_WINDOW = 21;
 const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
@@ -23,6 +24,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 	UIScrollView *_scrollColumn;
 	UITableView *_leftColumn;
 	UITableView *_rightColumn;
+	Alert *_alert;
 	FoodPage *_foodPage;
 	PullToRefreshV *_refreshHeaderView;
 	BOOL _pushed;
@@ -34,6 +36,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 @property (strong, nonatomic) UITableView *rightColumn;
 @property (strong, nonatomic) FoodPage *foodPage;
 @property (strong, nonatomic) PullToRefreshV *refreshHeaderView;
+@property (strong, nonatomic) Alert *alert;
 @property (assign, nonatomic) BOOL pushed;
 @property (assign, nonatomic) NSUInteger eventCount;
 
@@ -52,6 +55,7 @@ const static uint32_t ROW_TO_MORE_EVENT_FROM_BOTTOM = 8;
 @synthesize rightColumn = _rightColumn;
 @synthesize foodPage = _foodPage;
 @synthesize refreshHeaderView = _refreshHeaderView;
+@synthesize alert = _alert;
 @synthesize pushed = _pushed;
 @synthesize eventCount = _eventCount;
 
@@ -176,6 +180,13 @@ DEFINE_SINGLETON(EventPage);
 		self.refreshHeaderView = view;
 		[view release];
 	}
+	
+	// init alert
+	
+	if (nil == self.alert)
+	{
+		self.alert = [Alert createFromXIB];
+	}
 }
 
 - (void) viewDidLoad
@@ -197,6 +208,7 @@ DEFINE_SINGLETON(EventPage);
 	self.leftColumn = nil;
 	self.rightColumn = nil;
 	self.foodPage = nil;
+	self.alert = nil;
 	self.refreshHeaderView = nil;
 }
 
@@ -300,7 +312,7 @@ DEFINE_SINGLETON(EventPage);
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-	return gs_frame_width/2;
+	return gs_frame_width / 2;
 }
 
 #pragma mark - Table view delegate
@@ -369,6 +381,7 @@ DEFINE_SINGLETON(EventPage);
 {	
 	[self refreshTableViewWithAnimationAndResult:result];
 	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.leftColumn];
+	[self.alert dismiss];
 }
 
 - (void) requestNewestEvent
@@ -376,6 +389,9 @@ DEFINE_SINGLETON(EventPage);
 	[EventManager requestNewestCount:EVENT_REFRESH_WINDOW 
 			    withHandler:@selector(requestNewerEventHandler:) 
 			      andTarget:self];
+	self.alert.messageText = @"刷新中。。。";
+	
+	[self.alert showIn:self.view];
 }
 
 - (void) requestNewerEvent

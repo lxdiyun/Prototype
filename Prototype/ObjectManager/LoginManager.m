@@ -296,8 +296,7 @@ DEFINE_SINGLETON(LoginManager);
 {
 	if ([[AppDelegate currentViewController] modalViewController] != gs_login_page_nvc)
 	{
-		[gs_login_page_nvc popToRootViewControllerAnimated:NO];
-		[[AppDelegate currentViewController] presentModalViewController:gs_login_page_nvc animated:YES];
+		[gs_login_page startLogin];
 	}
 }
 
@@ -326,6 +325,7 @@ DEFINE_SINGLETON(LoginManager);
 	[[SDImageCache sharedImageCache] clearDisk];
 	
 	[gs_login_page cleanInfo];
+
 	[self handleNotLogin];
 	
 	[AppDelegate resetAllPage];

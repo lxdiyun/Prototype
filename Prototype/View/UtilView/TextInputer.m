@@ -10,7 +10,7 @@
 #import "Util.h"
 
 const static CGFloat FONT_SIZE = 15.0;
-const static CGFloat LABEL_FONT_SIZE = 11.0;
+const static CGFloat LABEL_FONT_SIZE = 12.0;
 
 @interface TextInputer () <UITextViewDelegate>
 {
@@ -140,7 +140,7 @@ const static CGFloat LABEL_FONT_SIZE = 11.0;
 			self.textCount.font = [UIFont systemFontOfSize:LABEL_FONT_SIZE];
 			self.textCount.autoresizingMask = resize;
 			self.textCount.text = @"140";
-			self.textCount.textColor = [UIColor blackColor];
+			self.textCount.textColor = [UIColor grayColor];
 			self.textCount.textAlignment = UITextAlignmentRight;
 			[self.textCount sizeToFit];
 		}

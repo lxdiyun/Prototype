@@ -419,7 +419,7 @@ NSString * GET_STRING_FOR_SCORE(double score)
 
 NSString * GET_DESC_FOR_SCORE(double score)
 {
-	if(score == 10)
+	if(score >= 10)
 	{
 		return @"完美之食";
 	}
@@ -474,8 +474,8 @@ NSString * GET_DESC_FOR_SCORE(double score)
 	else if(score > 0)
 	{
 		return @"会吃死人";
-	}else{
-		return @"    ";
+	} else {
+		return @"未评分";
 	}
 }
 

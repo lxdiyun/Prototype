@@ -61,7 +61,8 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath
 	{
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
-	else {
+	else 
+	{
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
 	

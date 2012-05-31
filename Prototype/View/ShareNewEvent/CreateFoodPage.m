@@ -21,7 +21,7 @@
 
 const static CGFloat  FONT_SIZE = 15.0;
 const static CGFloat STAR_SIZE = 22;
-static CGPoint TEXT_OFFSET = {0, 416};
+static CGPoint TEXT_OFFSET = {0, 0};
 
 typedef enum NEW_FOOD_SECTION_ENUM
 {
@@ -76,6 +76,7 @@ static TagSelector *gs_tag_selector = nil;
 			self.view.backgroundColor = [Color lightyellow];
 			self.header = [[[CreateFoodHeaderVC alloc] init] autorelease];
 			self.title = @"分享美食";
+			TEXT_OFFSET.y = self.header.view.frame.size.height;
 		}
 	}
 	return self;
@@ -139,6 +140,13 @@ static TagSelector *gs_tag_selector = nil;
 	self.navigationItem.leftBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"取消", self, @selector(cancelCreate:));
 	self.navigationItem.rightBarButtonItem.enabled = NO;
 	
+	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] 
+                                       initWithTarget:self
+                                       action:@selector(dismissKeyboard)];
+	
+	[self.view addGestureRecognizer:tap];
+	
+	[tap release];
 }
 
 - (void) viewDidUnload
@@ -577,23 +585,26 @@ static TagSelector *gs_tag_selector = nil;
 	[self.navigationController pushViewController:gs_food_desc_inputer animated:YES];
 }
 
+- (void) dismissKeyboard
+{
+	for (NSInteger i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
+	{
+		if ([gs_food_detail_text_view[i] isFirstResponder])
+		{
+			[gs_food_detail_text_view[i] resignFirstResponder];
+			
+			break;
+		}
+	}
+}
+
 #pragma mark - UITextFieldDelegate
 
 - (BOOL) textFieldShouldReturn:(UITextField *)textField
 {	
 	[self updateShareButton];
 
-	int i;
-
-	for ( i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
-	{
-		if ([gs_food_detail_text_view[i] isFirstResponder])
-		{
-			[textField resignFirstResponder];
-
-			break;
-		}
-	}
+	[textField resignFirstResponder];
 
 	return YES;
 }

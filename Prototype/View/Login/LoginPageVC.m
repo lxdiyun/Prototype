@@ -14,17 +14,20 @@
 #import "Util.h"
 #import "LoginManager.h"
 #import "AppDelegate.h"
+#import "Alert.h"
 
 @interface LoginPageVC () <OAuthv1LoginDelegate>
 {
 	NativeLoginVC *_nativeLoginVC;
 	SinaweiboOAuthv1LoginVC *_sinaLoginVC;
 	DoubanOAuthv1LoginVC *_doubanLoginVC;
+	Alert *_alert;
 }
 
-@property (strong) NativeLoginVC *nativeLoginVC;
-@property (strong) SinaweiboOAuthv1LoginVC *sinaLoginVC;
-@property (strong) DoubanOAuthv1LoginVC *doubanLoginVC;
+@property (strong, nonatomic) NativeLoginVC *nativeLoginVC;
+@property (strong, nonatomic) SinaweiboOAuthv1LoginVC *sinaLoginVC;
+@property (strong, nonatomic) DoubanOAuthv1LoginVC *doubanLoginVC;
+@property (strong, nonatomic) Alert *alert;
 
 @end
 
@@ -33,6 +36,7 @@
 @synthesize nativeLoginVC = _nativeLoginVC;
 @synthesize sinaLoginVC = _sinaLoginVC;
 @synthesize doubanLoginVC = _doubanLoginVC;
+@synthesize alert = _alert;
 
 #pragma mark - life circle
 
@@ -41,10 +45,23 @@
 	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
 	if (self) 
 	{
-		// Custom initialization
+		self.alert = [Alert createFromXIB];
 	}
+
 	return self;
 }
+
+- (void) dealloc
+{
+	self.nativeLoginVC = nil;
+	self.sinaLoginVC = nil;
+	self.doubanLoginVC = nil;
+	self.alert = nil;
+	
+	[super dealloc];
+}
+
+#pragma mark - view life circle
 
 - (void) viewDidLoad
 {
@@ -58,30 +75,13 @@
 	[super viewWillAppear:animated];
 }
 
-- (void) viewDidUnload
-{
-	self.nativeLoginVC = nil;
-	self.sinaLoginVC = nil;
-	self.doubanLoginVC = nil;
-	
-	[super viewDidUnload];
-}
-
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void) dealloc 
-{
-	self.nativeLoginVC = nil;
-	self.sinaLoginVC = nil;
-	self.doubanLoginVC = nil;
-
-	[super dealloc];
-}
-
 #pragma mark - OAuthv1LoginDelegate
+
 - (void) oauthv1LoginDidFinishLogging:(OAuthv1BaseLoginVC *)loginViewController
 {
 	[self.navigationController popToRootViewControllerAnimated:YES];
@@ -96,9 +96,20 @@
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	[LoginManager changeLoginUser];
+	
+	self.alert.messageText = @"登陆中。。。";
+	[self.alert showIn:self.view];
 }
 
 #pragma mark - action
+
+- (void) startLogin
+{
+	[self.navigationController popViewControllerAnimated:NO];
+	[self.alert dismiss];
+	
+	[[AppDelegate currentViewController] presentModalViewController:self.navigationController animated:YES];
+}
 
 - (void) cleanInfo
 {

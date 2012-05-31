@@ -1020,11 +1020,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Login/LoginPageVC.m"
-         timestampString = "357206311.871735"
+         timestampString = "360146023.153978"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "142"
-         endingLineNumber = "142"
+         startingLineNumber = "153"
+         endingLineNumber = "153"
          landmarkName = "-sinaLogin:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1599,11 +1599,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Event/EventPage.m"
-         timestampString = "360123879.659591"
+         timestampString = "360144506.309394"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "403"
-         endingLineNumber = "403"
+         startingLineNumber = "419"
+         endingLineNumber = "419"
          landmarkName = "-refreshTableViewWithAnimationAndResult:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1612,11 +1612,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Event/EventPage.m"
-         timestampString = "359095238.348715"
+         timestampString = "360144237.793173"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "82"
-         endingLineNumber = "82"
+         startingLineNumber = "86"
+         endingLineNumber = "86"
          landmarkName = "-setupView"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1625,11 +1625,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Event/EventPage.m"
-         timestampString = "359095238.348715"
+         timestampString = "360144237.793173"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "83"
-         endingLineNumber = "83"
+         startingLineNumber = "87"
+         endingLineNumber = "87"
          landmarkName = "-setupView"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2221,11 +2221,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UserHomePage/BackgroundSelectPage.m"
-         timestampString = "359532965.830962"
+         timestampString = "360144237.793173"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "70"
-         endingLineNumber = "70"
+         startingLineNumber = "71"
+         endingLineNumber = "71"
          landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2416,11 +2416,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Event/EventPage.m"
-         timestampString = "360123879.659591"
+         timestampString = "360144506.309394"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "406"
-         endingLineNumber = "406"
+         startingLineNumber = "422"
+         endingLineNumber = "422"
          landmarkName = "-refreshTableViewWithAnimationAndResult:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2429,11 +2429,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360056287.621855"
+         timestampString = "360147674.23345"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "513"
-         endingLineNumber = "513"
+         startingLineNumber = "521"
+         endingLineNumber = "521"
          landmarkName = "-createFood:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2481,11 +2481,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Event/EventPage.m"
-         timestampString = "360123879.659591"
+         timestampString = "360144506.309394"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "295"
-         endingLineNumber = "295"
+         startingLineNumber = "307"
+         endingLineNumber = "307"
          landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2546,11 +2546,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360139442.369959"
+         timestampString = "360147674.23345"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "465"
-         endingLineNumber = "465"
+         startingLineNumber = "473"
+         endingLineNumber = "473"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2559,11 +2559,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360139447.568132"
+         timestampString = "360147674.23345"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "440"
-         endingLineNumber = "440"
+         startingLineNumber = "448"
+         endingLineNumber = "448"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2572,11 +2572,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360139451.145209"
+         timestampString = "360147674.23345"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "462"
-         endingLineNumber = "462"
+         startingLineNumber = "470"
+         endingLineNumber = "470"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2585,11 +2585,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360139452.562332"
+         timestampString = "360147674.23345"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "451"
-         endingLineNumber = "451"
+         startingLineNumber = "459"
+         endingLineNumber = "459"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2598,12 +2598,38 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360139493.624141"
+         timestampString = "360147674.23345"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "482"
-         endingLineNumber = "482"
+         startingLineNumber = "490"
+         endingLineNumber = "490"
          landmarkName = "-imageUploadCompleted:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/LoginManager.m"
+         timestampString = "360145681.54279"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "300"
+         endingLineNumber = "300"
+         landmarkName = "+handleNotLogin"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ObjectManager/LoginManager.m"
+         timestampString = "360145682.605716"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "301"
+         endingLineNumber = "301"
+         landmarkName = "+handleNotLogin"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

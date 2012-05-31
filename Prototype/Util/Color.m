@@ -166,6 +166,18 @@
 	return color;
 }
 
++ (UIColor *) whiteAlpha50
+{
+	static UIColor *color = nil;
+	
+	if (nil == color)
+	{
+		color = [[UIColor alloc] initWithRed:0xFF/255.0 green:0xFF/255.0 blue:0xFF/255.0 alpha:0.5];
+	}
+	
+	return color;
+}
+
 + (UIColor *) lightyellow 
 {
 	static UIColor *color = nil;

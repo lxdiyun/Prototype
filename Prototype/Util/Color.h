@@ -19,6 +19,7 @@
 + (UIColor *) brown;
 + (UIColor *) blackAlpha;
 + (UIColor *) blackAlpha85;
++ (UIColor *) whiteAlpha50;
 + (UIColor *) tasty;
 + (UIColor *) specail;
 + (UIColor *) valued;

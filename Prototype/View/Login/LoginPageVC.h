@@ -12,6 +12,7 @@
 
 - (void) cleanInfo;
 - (void) newUserLogin;
+- (void) startLogin;
 
 - (IBAction) nativeLogin:(id)sender;
 - (IBAction) sinaLogin:(id)sender;

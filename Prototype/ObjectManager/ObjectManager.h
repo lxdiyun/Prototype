@@ -55,7 +55,7 @@
 
 // create and update method
 // internal handler
-- (void) handlerForCreateAndUdpate:(id)result;
+- (void) handlerForCreateAndUpdate:(id)result;
 // request create object
 + (NSInteger) createObjectWithHandler:(SEL)handler andTarget:(id)target;
 // request update object

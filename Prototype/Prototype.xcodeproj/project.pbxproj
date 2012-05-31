@@ -29,6 +29,8 @@
 		482059EC1564FB58005A75F8 /* InfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 482059EB1564FB58005A75F8 /* InfoCell.m */; };
 		482059F21564FEBE005A75F8 /* MyInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 482059F11564FEBE005A75F8 /* MyInfoCell.m */; };
 		48205A07156501E8005A75F8 /* MyInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48205A06156501E8005A75F8 /* MyInfoCell.xib */; };
+		4826B049157751D100295BDC /* Alert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4826B048157751D100295BDC /* Alert.xib */; };
+		4826B04C157752E700295BDC /* Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 4826B04B157752E700295BDC /* Alert.m */; };
 		4832407C14A9A4150084584F /* AvatarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832407A14A9A4150084584F /* AvatarCell.m */; };
 		4832408914A9B9BC0084584F /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4832408814A9B9BC0084584F /* EventCell.m */; };
 		48333C45151309AE003475BE /* MapViewPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48333C44151309AE003475BE /* MapViewPage.m */; };
@@ -444,6 +446,9 @@
 		482059F01564FEBE005A75F8 /* MyInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyInfoCell.h; sourceTree = "<group>"; };
 		482059F11564FEBE005A75F8 /* MyInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyInfoCell.m; sourceTree = "<group>"; };
 		48205A06156501E8005A75F8 /* MyInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyInfoCell.xib; sourceTree = "<group>"; };
+		4826B048157751D100295BDC /* Alert.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Alert.xib; sourceTree = "<group>"; };
+		4826B04A157752E700295BDC /* Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Alert.h; sourceTree = "<group>"; };
+		4826B04B157752E700295BDC /* Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Alert.m; sourceTree = "<group>"; };
 		4832407914A9A4150084584F /* AvatarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AvatarCell.h; path = View/UserInformation/AvatarCell.h; sourceTree = "<group>"; };
 		4832407A14A9A4150084584F /* AvatarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AvatarCell.m; path = View/UserInformation/AvatarCell.m; sourceTree = "<group>"; };
 		4832408714A9B9BC0084584F /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventCell.h; path = View/Event/EventCell.h; sourceTree = "<group>"; };
@@ -1208,6 +1213,9 @@
 				4888C5361562533C0073304B /* ListCell.h */,
 				4888C5371562533C0073304B /* ListCell.m */,
 				4888C539156253680073304B /* ListCell.xib */,
+				4826B048157751D100295BDC /* Alert.xib */,
+				4826B04A157752E700295BDC /* Alert.h */,
+				4826B04B157752E700295BDC /* Alert.m */,
 			);
 			name = UtilView;
 			path = View/UtilView;
@@ -1902,6 +1910,7 @@
 				4865B79A156F1A58006F81FF /* MapFoodPage.xib in Resources */,
 				4865B79F156F4C4E006F81FF /* MapFoodHeader.xib in Resources */,
 				48ECA05315747AEF00D0484C /* InputMapPage.xib in Resources */,
+				4826B049157751D100295BDC /* Alert.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2032,6 +2041,7 @@
 				4865B79D156F1CDD006F81FF /* MapFoodPage.m in Sources */,
 				4865B7A2156F4C8F006F81FF /* MapFoodHeader.m in Sources */,
 				48ECA05215747AEF00D0484C /* InputMapPage.m in Sources */,
+				4826B04C157752E700295BDC /* Alert.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
