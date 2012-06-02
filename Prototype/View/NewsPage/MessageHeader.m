@@ -14,7 +14,7 @@
 @synthesize unread;
 @synthesize empty;
 
-DEFINE_CUSTOM_XIB(MessageHeader);
+DEFINE_CUSTOM_XIB(MessageHeader, 0);
 
 #pragma mark - life circle
 

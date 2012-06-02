@@ -20,20 +20,11 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(BackgroundListCell);
+DEFINE_CUSTOM_XIB(BackgroundListCell, 0);
 
 - (void) resetupXIB:(BackgroundListCell *)xibinstance
 {
 	[xibinstance initGUI];
-}
-
-+ (id) createFromXIB
-{
-	BackgroundListCell *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
 }
 
 #pragma mark - life circle

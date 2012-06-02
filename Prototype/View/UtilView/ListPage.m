@@ -35,6 +35,7 @@
 	{
 		self.lastRowCount = 0;
 		self.refreshStyle = PULL_TO_REFRESH_STYLE_BLACK;
+		self.hidesBottomBarWhenPushed = NO;
 	}
 	
 	return self;

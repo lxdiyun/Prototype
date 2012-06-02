@@ -26,20 +26,11 @@ CGFloat CONTENT_PADDING  = 5.0;
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(Alert);
+DEFINE_CUSTOM_XIB(Alert, 0);
 
 - (void) resetupXIB:(id)xibInstance
 {
 	[xibInstance initGUI];
-}
-
-+ (id) createFromXIB
-{
-	Alert *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
 }
 
 #pragma mark - life circle

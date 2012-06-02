@@ -78,7 +78,7 @@ return gs_shared_instance; \
 }
 
 // custom xib objects
-#define DEFINE_CUSTOM_XIB(CLASS_NAME) \
+#define DEFINE_CUSTOM_XIB(CLASS_NAME, DEFAULT_SUBVIEWS_COUNT) \
 + (CLASS_NAME *) loadInstanceFromNib \
 {  \
 	CLASS_NAME *result = nil;  \
@@ -101,7 +101,7 @@ return gs_shared_instance; \
 } \
 - (id) awakeAfterUsingCoder:(NSCoder*)aDecoder \
 { \
-	BOOL theThingThatGotLoadedWasJustAPlaceholder = ([[self subviews] count] == 0); \
+	BOOL theThingThatGotLoadedWasJustAPlaceholder = ([[self subviews] count] <= DEFAULT_SUBVIEWS_COUNT); \
 	 \
 	if (theThingThatGotLoadedWasJustAPlaceholder) \
 	{ \
@@ -116,6 +116,18 @@ return gs_shared_instance; \
 	} \
 	 \
 	return self; \
+} \
++ (id) createFromXIB \
+{ \
+	CLASS_NAME *xibInstance = [[self loadInstanceFromNib] retain]; \
+	 \
+	if ([xibInstance respondsToSelector:@selector(initGUI)]) \
+	{ \
+		[xibInstance performSelector:@selector(initGUI)]; \
+	} \
+	 \
+	return [xibInstance autorelease]; \
 }
+
 
 #endif

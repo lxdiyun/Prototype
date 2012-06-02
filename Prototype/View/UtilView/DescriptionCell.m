@@ -15,10 +15,10 @@
 #import "ProfileMananger.h"
 #import "TriangleView.h"
 
-const static CGFloat FONT_SIZE = 15.0;
+const static CGFloat FONT_SIZE = 12.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right boder
-const static CGFloat PADING3 =  10.0; // padding from top virtical boder
+const static CGFloat PADING3 =  20.0; // padding from top virtical boder
 const static CGFloat PADING4 = 22.0; // padding between element virtical and bottom border
 
 @interface DescriptionCell () 
@@ -45,7 +45,7 @@ const static CGFloat PADING4 = 22.0; // padding between element virtical and bot
 
 + (CGFloat) getHeightFor:(NSString *)description forWidth:(CGFloat)width
 {
-	CGFloat descHeight = 15.0;
+	CGFloat descHeight = 0;
 	
 	if ((nil != description) &&  (0 < description.length))
 	{
@@ -66,7 +66,10 @@ const static CGFloat PADING4 = 22.0; // padding between element virtical and bot
 
 	CGFloat cellHeight = [self getHeightFor:description forWidth:width];
 	
-	cellHeight += PADING4 + PADING3;
+	if (0 < cellHeight)
+	{
+		cellHeight += PADING4 + PADING3;
+	}
 	
 	return cellHeight;
 }
@@ -79,8 +82,8 @@ const static CGFloat PADING4 = 22.0; // padding between element virtical and bot
 
 	if (self) 
 	{
-		self.contentView.backgroundColor = [UIColor whiteColor];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		self.contentView.backgroundColor = [UIColor whiteColor];
 	}
 	return self;
 }

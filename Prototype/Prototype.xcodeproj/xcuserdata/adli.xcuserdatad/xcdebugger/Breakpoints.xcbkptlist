@@ -1292,51 +1292,12 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "View/Food/FoodInfo.m"
-         timestampString = "360123879.659591"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "377"
-         endingLineNumber = "377"
-         landmarkName = "-showInMap:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Food/FoodInfo.m"
-         timestampString = "360123879.659591"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "176"
-         endingLineNumber = "176"
-         landmarkName = "-updateLocationButton"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Food/FoodInfo.m"
-         timestampString = "360123879.659591"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "172"
-         endingLineNumber = "172"
-         landmarkName = "-updateLocationButton"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodHeaderVC.m"
-         timestampString = "360056287.621855"
+         timestampString = "360213389.952348"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "89"
-         endingLineNumber = "89"
+         startingLineNumber = "90"
+         endingLineNumber = "90"
          landmarkName = "-scoreChanged:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1371,11 +1332,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UtilView/AvatarV.m"
-         timestampString = "359018571.856065"
+         timestampString = "360222935.083454"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "126"
-         endingLineNumber = "126"
+         startingLineNumber = "131"
+         endingLineNumber = "131"
          landmarkName = "-updateGUI"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1397,11 +1358,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodInfo.m"
-         timestampString = "360123879.659591"
+         timestampString = "360233051.530018"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "312"
-         endingLineNumber = "312"
+         startingLineNumber = "266"
+         endingLineNumber = "266"
          landmarkName = "-setDelegate:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1410,12 +1371,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodPage.m"
-         timestampString = "359456205.081983"
+         timestampString = "360320885.318503"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "67"
-         endingLineNumber = "67"
-         landmarkName = "-didReceiveMemoryWarning"
+         startingLineNumber = "96"
+         endingLineNumber = "96"
+         landmarkName = "-viewDidLoad"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -1521,11 +1482,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UserHomePage/InfoCell.m"
-         timestampString = "359630301.715266"
+         timestampString = "360222935.083454"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "148"
-         endingLineNumber = "148"
+         startingLineNumber = "139"
+         endingLineNumber = "139"
          landmarkName = "-showFollow:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1599,11 +1560,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Event/EventPage.m"
-         timestampString = "360144506.309394"
+         timestampString = "360319210.71143"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "419"
-         endingLineNumber = "419"
+         startingLineNumber = "418"
+         endingLineNumber = "418"
          landmarkName = "-refreshTableViewWithAnimationAndResult:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -1702,19 +1663,6 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "View/UtilView/ListCell.m"
-         timestampString = "359259063.936052"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "31"
-         endingLineNumber = "31"
-         landmarkName = "+createFromXIB"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "View/NewsPage/NewsPage.m"
          timestampString = "360127200.162042"
          startingColumnNumber = "9223372036854775807"
@@ -1779,64 +1727,56 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodPage.m"
-         timestampString = "360123879.659591"
+         timestampString = "360325986.835371"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "518"
-         endingLineNumber = "518"
-         landmarkName = "-requestFood"
-         landmarkType = "5">
+         startingLineNumber = "543"
+         endingLineNumber = "543">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodPage.m"
-         timestampString = "360123879.659591"
+         timestampString = "360325986.835371"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "568"
-         endingLineNumber = "568"
-         landmarkName = "-viewWillAppearRequest"
-         landmarkType = "5">
+         startingLineNumber = "588"
+         endingLineNumber = "588">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodPage.m"
-         timestampString = "360123879.659591"
+         timestampString = "360325986.835371"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "514"
-         endingLineNumber = "514"
-         landmarkName = "-requestFood"
-         landmarkType = "5">
+         startingLineNumber = "539"
+         endingLineNumber = "539">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodPage.m"
-         timestampString = "360123879.659591"
+         timestampString = "360325986.835371"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "516"
-         endingLineNumber = "516"
-         landmarkName = "-requestFood"
-         landmarkType = "5">
+         startingLineNumber = "541"
+         endingLineNumber = "541">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Food/FoodPage.m"
-         timestampString = "359456205.081983"
+         timestampString = "360320885.318503"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "105"
-         endingLineNumber = "105"
-         landmarkName = "-tableView:numberOfRowsInSection:"
+         startingLineNumber = "156"
+         endingLineNumber = "156"
+         landmarkName = "-showVC:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -2052,11 +1992,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UserHomePage/HomePage.m"
-         timestampString = "359965309.941042"
+         timestampString = "360321236.293964"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "713"
-         endingLineNumber = "713"
+         startingLineNumber = "714"
+         endingLineNumber = "714"
          landmarkName = "-showVC:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2117,11 +2057,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UtilView/ListPage.m"
-         timestampString = "359373893.48962"
+         timestampString = "360320770.985323"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "75"
-         endingLineNumber = "75"
+         startingLineNumber = "76"
+         endingLineNumber = "76"
          landmarkName = "-viewWillAppear:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2130,11 +2070,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UtilView/ListPage.m"
-         timestampString = "359373894.857972"
+         timestampString = "360320770.985323"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "77"
-         endingLineNumber = "77"
+         startingLineNumber = "78"
+         endingLineNumber = "78"
          landmarkName = "-viewWillAppear:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2143,11 +2083,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UtilView/ListPage.m"
-         timestampString = "359373899.522287"
+         timestampString = "360320770.985323"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "79"
-         endingLineNumber = "79"
+         startingLineNumber = "80"
+         endingLineNumber = "80"
          landmarkName = "-viewWillAppear:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2169,11 +2109,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UtilView/ListPage.m"
-         timestampString = "359430452.440574"
+         timestampString = "360320770.985323"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "76"
-         endingLineNumber = "76"
+         startingLineNumber = "77"
+         endingLineNumber = "77"
          landmarkName = "-viewWillAppear:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2182,11 +2122,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/NewsPage/MessageCell.m"
-         timestampString = "359447204.588409"
+         timestampString = "360222935.083454"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "75"
-         endingLineNumber = "75"
+         startingLineNumber = "66"
+         endingLineNumber = "66"
          landmarkName = "-redrawUser:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2208,11 +2148,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UserHomePage/InfoCell.m"
-         timestampString = "359630301.715266"
+         timestampString = "360222935.083454"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "133"
-         endingLineNumber = "133"
+         startingLineNumber = "124"
+         endingLineNumber = "124"
          landmarkName = "-updateGUI"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2234,11 +2174,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/UtilView/ListPage.m"
-         timestampString = "359538015.041213"
+         timestampString = "360320770.985323"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "192"
-         endingLineNumber = "192"
+         startingLineNumber = "193"
+         endingLineNumber = "193"
          landmarkName = "-reload"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2260,89 +2200,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359616518.569513"
+         timestampString = "360320531.934605"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "90"
-         endingLineNumber = "90"
-         landmarkName = "+createFromXIB"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359616518.569513"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "40"
-         endingLineNumber = "40"
-         landmarkName = "+loadInstanceFromNib"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359616518.569513"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "42"
-         endingLineNumber = "42"
-         landmarkName = "+loadInstanceFromNib"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359616518.569513"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "59"
-         endingLineNumber = "59"
-         landmarkName = "-awakeAfterUsingCoder:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359616518.569513"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "70"
-         endingLineNumber = "70"
-         landmarkName = "-awakeAfterUsingCoder:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359616518.569513"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "73"
-         endingLineNumber = "73"
-         landmarkName = "-awakeAfterUsingCoder:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359628296.481349"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "130"
-         endingLineNumber = "130"
+         startingLineNumber = "84"
+         endingLineNumber = "84"
          landmarkName = "-updateFood"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2351,11 +2213,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359628296.481349"
+         timestampString = "360320531.934605"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "131"
-         endingLineNumber = "131"
+         startingLineNumber = "85"
+         endingLineNumber = "85"
          landmarkName = "-updateFood"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2377,11 +2239,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Map/MapFoodPage.m"
-         timestampString = "359628296.481349"
+         timestampString = "360320531.934605"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "159"
-         endingLineNumber = "159"
+         startingLineNumber = "113"
+         endingLineNumber = "113"
          landmarkName = "-updateDesc"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2416,11 +2278,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Event/EventPage.m"
-         timestampString = "360144506.309394"
+         timestampString = "360319210.71143"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "422"
-         endingLineNumber = "422"
+         startingLineNumber = "421"
+         endingLineNumber = "421"
          landmarkName = "-refreshTableViewWithAnimationAndResult:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2429,11 +2291,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360147674.23345"
+         timestampString = "360233762.876788"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "521"
-         endingLineNumber = "521"
+         startingLineNumber = "513"
+         endingLineNumber = "513"
          landmarkName = "-createFood:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2468,11 +2330,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/ShareNewEvent.m"
-         timestampString = "359971819.655457"
+         timestampString = "360234509.27682"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "102"
-         endingLineNumber = "102"
+         startingLineNumber = "103"
+         endingLineNumber = "103"
          landmarkName = "-didSelectPhotoWithSelector:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2546,11 +2408,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360147674.23345"
+         timestampString = "360233762.876788"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "473"
-         endingLineNumber = "473"
+         startingLineNumber = "465"
+         endingLineNumber = "465"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2559,11 +2421,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360147674.23345"
+         timestampString = "360233762.876788"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "448"
-         endingLineNumber = "448"
+         startingLineNumber = "440"
+         endingLineNumber = "440"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2572,11 +2434,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360147674.23345"
+         timestampString = "360233762.876788"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "470"
-         endingLineNumber = "470"
+         startingLineNumber = "462"
+         endingLineNumber = "462"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2585,11 +2447,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360147674.23345"
+         timestampString = "360233762.876788"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "459"
-         endingLineNumber = "459"
+         startingLineNumber = "451"
+         endingLineNumber = "451"
          landmarkName = "-checkParamsReady"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2598,11 +2460,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/ShareNewEvent/CreateFoodPage.m"
-         timestampString = "360147674.23345"
+         timestampString = "360233762.876788"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "490"
-         endingLineNumber = "490"
+         startingLineNumber = "482"
+         endingLineNumber = "482"
          landmarkName = "-imageUploadCompleted:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2630,6 +2492,162 @@
          startingLineNumber = "301"
          endingLineNumber = "301"
          landmarkName = "+handleNotLogin"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/FoodToolBar.m"
+         timestampString = "360320565.057025"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "172"
+         endingLineNumber = "172"
+         landmarkName = "-addComent:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/ShareNewEvent/ShareNewEvent.m"
+         timestampString = "360234739.254044"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "105"
+         endingLineNumber = "105"
+         landmarkName = "-didSelectPhotoWithSelector:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/ShareNewEvent/ShareNewEvent.m"
+         timestampString = "360234863.417824"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "94"
+         endingLineNumber = "94"
+         landmarkName = "-uploadImage:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/ShareNewEvent/ShareNewEvent.m"
+         timestampString = "360234865.970169"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "88"
+         endingLineNumber = "88"
+         landmarkName = "-uploadImage:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/FoodToolBar.m"
+         timestampString = "360320531.934605"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "51"
+         endingLineNumber = "51"
+         landmarkName = "-resetupXIB:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/FoodToolBar.m"
+         timestampString = "360320565.057025"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "76"
+         endingLineNumber = "76"
+         landmarkName = "-initGUI"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/DetailFoodVC.m"
+         timestampString = "360326260.182789"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "284"
+         endingLineNumber = "284"
+         landmarkName = "-tableView:cellForRowAtIndexPath:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/Seperator.m"
+         timestampString = "360325530.536571"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "19"
+         endingLineNumber = "19"
+         landmarkName = "-resetupXIB:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/Seperator.m"
+         timestampString = "360325801.734934"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "24"
+         endingLineNumber = "24"
+         landmarkName = "-initGUI"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/DetailFoodVC.m"
+         timestampString = "360326260.182789"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "398"
+         endingLineNumber = "398"
+         landmarkName = "-initGUI"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/DetailFoodVC.m"
+         timestampString = "360325597.65425"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "415"
+         endingLineNumber = "415"
+         landmarkName = "-initGUI"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Food/DetailFoodVC.m"
+         timestampString = "360325600.286059"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "414"
+         endingLineNumber = "414"
+         landmarkName = "-initGUI"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -12,6 +12,6 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(UserFoodHistoryHeader);
+DEFINE_CUSTOM_XIB(UserFoodHistoryHeader, 0);
 
 @end

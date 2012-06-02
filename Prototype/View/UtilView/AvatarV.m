@@ -39,7 +39,7 @@
 
 #pragma mark - xib cutsom object
 
-DEFINE_CUSTOM_XIB(AvatarV);
+DEFINE_CUSTOM_XIB(AvatarV, 0);
 
 - (void) resetupXIB:(AvatarV *)xibInstance
 {
@@ -121,6 +121,11 @@ DEFINE_CUSTOM_XIB(AvatarV);
 }
 
 #pragma mark - GUI
+
+- (void) initGUI
+{
+	
+}
 
 - (void) updateGUI
 {

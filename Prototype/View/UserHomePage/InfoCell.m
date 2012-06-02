@@ -42,7 +42,7 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(InfoCell)
+DEFINE_CUSTOM_XIB(InfoCell, 0)
 
 - (void) resetupXIB:(InfoCell *)xibInstance
 {
@@ -51,15 +51,6 @@ DEFINE_CUSTOM_XIB(InfoCell)
 	xibInstance.delegate = self.delegate;
 	
 	[xibInstance initGUI];
-}
-
-+ (id) createFromXIB
-{
-	InfoCell *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
 }
 
 #pragma mark - life circle

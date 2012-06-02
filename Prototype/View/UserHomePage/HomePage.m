@@ -686,6 +686,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	NSDictionary *food = [self getObjectFor:index];
 	
 	self.foodPage.foodID = [food valueForKey:@"id"];
+	self.foodPage.hidesBottomBarWhenPushed = YES;
 	
 	[self.navigationController pushViewController:self.foodPage animated:YES];
 }

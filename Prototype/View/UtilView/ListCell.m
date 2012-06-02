@@ -17,20 +17,11 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(ListCell);
+DEFINE_CUSTOM_XIB(ListCell, 0);
 
 - (void) resetupXIB:(ListCell *)xibinstance
 {
 	[xibinstance initGUI];
-}
-
-+ (id) createFromXIB
-{
-	ListCell *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
 }
 
 #pragma mark - life circle

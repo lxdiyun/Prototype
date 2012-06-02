@@ -15,8 +15,8 @@ const static CGFloat AVATOR_SIZE = 30;
 const static CGFloat FONT_SIZE = 12.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
 const static CGFloat PADING2 = 10.0; // padding between element horizontal and from right border
-const static CGFloat PADING3 = 5.0; // padding from top virtical border and padding between element virtical
-const static CGFloat PADING4 = 10.0; //  bottom border
+const static CGFloat PADING3 = 10.0; // padding from top virtical border 
+const static CGFloat PADING4 = 5.0; //  bottom border and padding between element virtical
 
 @interface CommentCell ()
 {
@@ -81,7 +81,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	if (nil != self) 
 	{
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
-		self.contentView.backgroundColor = [Color orange];
+		self.contentView.backgroundColor = [UIColor whiteColor];
 		[self redrawAvatar];
 	}
 	return self;
@@ -147,7 +147,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	self.userAndDate.font = font;
 	self.userAndDate.adjustsFontSizeToFitWidth = YES;
 	self.userAndDate.backgroundColor = [UIColor clearColor];
-	self.userAndDate.textColor = [Color milk];
+	self.userAndDate.textColor = [UIColor blackColor];
 	
 	NSString *nick = @"";
 	NSString *createTime  = @"";
@@ -176,7 +176,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	
 	UIFont *font = [UIFont systemFontOfSize:FONT_SIZE];
 	CGFloat X = PADING1 + AVATOR_SIZE + PADING2;
-	CGFloat Y = PADING3 + FONT_SIZE + PADING3;
+	CGFloat Y = PADING3 + FONT_SIZE + PADING4;
 	CGFloat width = self.contentView.frame.size.width - (X + PADING2);
 	CGFloat height = [[self class] getCommentHeightFor:self.commentDict 
 					   forCommentWidth:width];	
@@ -191,7 +191,7 @@ const static CGFloat PADING4 = 10.0; //  bottom border
 	self.comment.numberOfLines = 0;
 	self.comment.font = font;
 	self.comment.backgroundColor = [UIColor clearColor];
-	self.comment.textColor = [UIColor whiteColor];
+	self.comment.textColor = [UIColor blackColor];
 	self.comment.lineBreakMode = UILineBreakModeWordWrap;
 	
 	if (nil != self.commentDict)

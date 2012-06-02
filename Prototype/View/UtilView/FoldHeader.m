@@ -22,20 +22,11 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(FoldHeader);
+DEFINE_CUSTOM_XIB(FoldHeader, 0);
 
 - (void) resetupXIB:(FoldHeader *)xibInstance
 {
 	[xibInstance initGUI];
-}
-
-+ (id) createFromXIB
-{
-	FoldHeader *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
 }
 
 #pragma mark - life circle

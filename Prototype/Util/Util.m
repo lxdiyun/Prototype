@@ -307,6 +307,17 @@ void CONFIG_NAGIVATION_BAR(UINavigationBar *bar)
 	} 
 }
 
+void CONFIG_TOOL_BAR(UIToolbar *bar)
+{
+	if([bar respondsToSelector:@selector(setBackgroundImage:forToolbarPosition:barMetrics:)] ) 
+	{
+		//iOS 5 new UINavigationBar custom background
+		[bar setBackgroundImage:[UIImage imageNamed:@"DarkGrey.png"]  
+		     forToolbarPosition:UIToolbarPositionBottom 
+			     barMetrics:UIBarMetricsDefault];
+	} 
+}
+
 
 static UIButton * create_image_button(UIImage *image,id target, SEL action)
 {

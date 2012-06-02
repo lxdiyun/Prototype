@@ -25,22 +25,12 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(NoticeCell);
+DEFINE_CUSTOM_XIB(NoticeCell, 0);
 
 - (void) resetupXIB:(NoticeCell *)xibinstance
 {
 	[xibinstance initGUI];
 }
-
-+ (id) createFromXIB
-{
-	NoticeCell *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
-}
-
 
 
 #pragma mark - life circle

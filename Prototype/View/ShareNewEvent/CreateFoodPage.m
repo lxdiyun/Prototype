@@ -139,14 +139,6 @@ static TagSelector *gs_tag_selector = nil;
 
 	self.navigationItem.leftBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"取消", self, @selector(cancelCreate:));
 	self.navigationItem.rightBarButtonItem.enabled = NO;
-	
-	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] 
-                                       initWithTarget:self
-                                       action:@selector(dismissKeyboard)];
-	
-	[self.view addGestureRecognizer:tap];
-	
-	[tap release];
 }
 
 - (void) viewDidUnload

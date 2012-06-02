@@ -28,8 +28,8 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	NSInteger _actionMaxIndex;
 	UIPopoverController *_popoverController;
 }
-@property (strong) UIImagePickerController *imagePickerController;
-@property (strong) UIPopoverController *popoverController;
+@property (strong, nonatomic) UIImagePickerController *imagePickerController;
+@property (strong, nonatomic) UIPopoverController *popoverController;
 @end
 
 @implementation PhotoSelector
@@ -143,7 +143,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 		}
 		else 
 		{
-			[self.delegate showModalView:self.imagePickerController];
+			[self.delegate showModalVC:self.imagePickerController withAnimation:YES];
 		}
 	}
 }
@@ -164,20 +164,14 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
  didFinishPickingMediaWithInfo:(NSDictionary *)info
 {	
 	self.selectedImage = [info valueForKey:UIImagePickerControllerOriginalImage];
-	
-	[self.delegate dismissSelector:self];
 
-	// release the picker or will receive mermory warning
-	self.imagePickerController = nil;	
-	
-	
 	// need to wait to let the view to dismiss, otherwise the ui will block
 	[self.delegate didSelectPhotoWithSelector:self];
 }
 
 - (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker 
 {
-	[self.delegate dismissSelector:self];
+	[self.delegate dismissModalVC:self.navigationController withAnimation:YES];
 	
 	// release the picker or will receive mermory warning
 	self.imagePickerController = nil;

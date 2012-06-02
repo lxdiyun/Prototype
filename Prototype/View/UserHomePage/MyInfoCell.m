@@ -21,7 +21,7 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(MyInfoCell);
+DEFINE_CUSTOM_XIB(MyInfoCell, 0);
 
 - (void) resetupXIB:xibInstance
 {
@@ -41,6 +41,7 @@ DEFINE_CUSTOM_XIB(MyInfoCell);
 	
 	[self.avatar addGestureRecognizer:tap];
 	self.avatar.userInteractionEnabled = YES;
+	self.avatar.indicatorStyle = UIActivityIndicatorViewStyleWhite;
 	
 	[tap release];
 }

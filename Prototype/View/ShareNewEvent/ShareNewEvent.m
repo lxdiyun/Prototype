@@ -71,14 +71,14 @@
 
 #pragma mark - PhototSelectorDelegate
 
-- (void) dismissSelector:(PhotoSelector *)selector
+- (void) showModalVC:(UIViewController *)vc withAnimation:(BOOL)animation
 {
-	[self.delegate dismissModalViewControllerAnimated:NO];
+	[self.delegate presentModalViewController:vc animated:animation];
 }
 
-- (void) showModalView:(UIViewController *)modalView
+- (void) dismissModalVC:(UIViewController *)vc withAnimation:(BOOL)animation
 {
-	[self.delegate presentModalViewController:modalView animated:YES];
+	[self.delegate dismissModalViewControllerAnimated:animation];
 }
 
 - (void) uploadImage:(PhotoSelector *)selector
@@ -99,7 +99,8 @@
 {
 	@autoreleasepool 
 	{
-		[self.delegate presentModalViewController:self.navco animated:YES];
+		[self.delegate dismissModalViewControllerAnimated:NO];
+		[self.delegate presentModalViewController:self.navco animated:NO];
 		
 		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:2.0];
 	}
@@ -120,7 +121,5 @@
 		[self.photoSelector.actionSheet showInView:self.delegate.view];
 	}
 }
-
-
 
 @end

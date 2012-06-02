@@ -33,60 +33,14 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 
 #pragma mark - custrom xib object
 
-+ (MapFoodPage *) loadInstanceFromNib
-{ 
-	MapFoodPage *result = nil; 
-	
-	NSArray* elements = [[NSBundle mainBundle] loadNibNamed:NSStringFromClass([MapFoodPage class]) 
-							  owner:nil 
-							options:nil]; 
-	
-	for (id anObject in elements) 
-	{ 
-		if ([anObject isKindOfClass:[MapFoodPage class]]) 
-		{ 
-			result = anObject;
-			
-			break;
-		} 
-	} 
-	
-	return result; 
-}
-- (id) awakeAfterUsingCoder:(NSCoder*)aDecoder
-{
-	// two is for two scoller
-	BOOL theThingThatGotLoadedWasJustAPlaceholder = ([[self subviews] count] <= 2);
-	
-	if (theThingThatGotLoadedWasJustAPlaceholder)
-	{
-		MapFoodPage *xibInstance = [[MapFoodPage loadInstanceFromNib] retain];
-		
-		if ([self respondsToSelector:@selector(resetupXIB:)])
-		{
-			[self performSelector:@selector(resetupXIB:) withObject:xibInstance];
-		}
-		
-		return xibInstance;
-	}
-	
-	return self;
-}
+// two is for two scoller
+DEFINE_CUSTOM_XIB(MapFoodPage, 2);
 
 - (void) resetupXIB:(MapFoodPage *)xibInstance
 {
 	[xibInstance initGUI];
 	
 	xibInstance.frame = self.frame;
-}
-
-+ (id) createFromXIB
-{
-	MapFoodPage *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
 }
 
 #pragma mark - life circle

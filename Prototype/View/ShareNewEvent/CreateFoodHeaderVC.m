@@ -15,6 +15,7 @@
 @end
 
 @implementation CreateFoodHeaderVC
+
 @synthesize score;
 @synthesize special;
 @synthesize valued;

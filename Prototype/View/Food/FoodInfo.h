@@ -14,8 +14,6 @@
 
 @protocol FoodInfoDelegate <ShowVCDelegate>
 
-- (void) foodDeleted:(id)sender;
-
 @end
 
 @interface FoodInfo : UIViewController
@@ -38,8 +36,7 @@
 @property (retain, nonatomic) IBOutlet UILabel *tag3Text;
 @property (retain, nonatomic) IBOutlet UILabel *tag3;
 @property (retain, nonatomic) IBOutlet UILabel *score;
-- (IBAction) showInMap:(id)sender;
+
 - (IBAction) showUser:(id)sender;
-- (IBAction) delete:(id)sender;
 
 @end

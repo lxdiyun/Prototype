@@ -11,6 +11,8 @@
 
 @interface ImageV : UIImageView
 
+- (void) startIndicator;
+
 @property (strong, nonatomic) NSNumber *picID;
 @property (assign, nonatomic) UIActivityIndicatorViewStyle indicatorStyle;
 

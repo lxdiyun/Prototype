@@ -640,18 +640,21 @@ DEFINE_SINGLETON(UserInfoPage);
 	[self updateSaveButton];
 }
 
-- (void) dismissSelector:(PhotoSelector *)selector
+
+- (void) showModalVC:(UIViewController *)vc withAnimation:(BOOL)animation
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self presentModalViewController:vc animated:animation];
 }
 
-- (void) showModalView:(UIViewController *)modalView
+- (void) dismissModalVC:(UIViewController *)vc withAnimation:(BOOL)animation
 {
-	[self presentModalViewController:modalView animated:YES];
+	[self dismissModalViewControllerAnimated:animation];
 }
 
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector
 {
+	[self dismissModalViewControllerAnimated:YES];
+
 	self.avatorCell.avatorImageV.picID = nil;
 	[self.avatorCell showProgressBar];
 

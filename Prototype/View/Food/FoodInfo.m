@@ -10,25 +10,20 @@
 
 #import "Util.h"
 #import "ProfileMananger.h"
-#import "MapViewPage.h"
 #import "FoodManager.h"
+
 
 const static NSInteger MAX_TAG_QANTITY = 3;
 const static CGFloat NORMAL_BUTTON_BAR_WIDTH = 80.0;
 const static CGFloat BUTTON_BAR_PADDING = 20.0;
 const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 
-@interface FoodInfo () <UIAlertViewDelegate>
+@interface FoodInfo () 
 {
 	NSDictionary *_food;
 	NSInteger _tagMaxIndex;
 	id<FoodInfoDelegate> _delegate;
-	MapViewPage *_map;
-	UIAlertView *_deleteAlert;
 }
-
-@property (strong, nonatomic) MapViewPage *map;
-@property (strong, nonatomic) UIAlertView *deleteAlert;
 
 @end
 
@@ -36,8 +31,7 @@ const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 
 @synthesize food = _food;
 @synthesize delegate = _delegate;
-@synthesize map = _map;
-@synthesize deleteAlert = _deleteAlert;
+
 
 @synthesize buttons;
 @synthesize username;
@@ -165,38 +159,10 @@ const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 
 #pragma mark - GUI buttons
 
-- (void) updateLocationButton
-{
-	if (nil != [self.food valueForKey:@"place"])
-	{
-		self.location.enabled = YES;
-	}
-	else 
-	{
-		self.location.enabled = NO;
-	}
-}
-
 - (void) updateButtons
 {
-	[self updateLocationButton];
 	self.target.selected = YES;
 	self.ate.enabled = NO;
-	
-	CGRect frame = self.buttons.frame;
-	
-	if (CHECK_EQUAL([self.food valueForKey:@"user"], GET_USER_ID()))
-	{
-		
-		frame.size.width = USER_OWNED_BUTTON_BAR_WIDTH;
-	}
-	else 
-	{
-		frame.size.width = NORMAL_BUTTON_BAR_WIDTH;
-	}
-	
-	frame.origin.x = self.view.frame.size.width - frame.size.width + BUTTON_BAR_PADDING;
-	self.buttons.frame = frame;
 }
 
 #pragma mark - life circle
@@ -207,16 +173,6 @@ const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 	if (nil != self) 
 	{
 		_tagMaxIndex = 0;
-		UIAlertView *deleteAlert = [[UIAlertView alloc] initWithTitle:@"删除?" 
-								      message:@"" 
-								     delegate:self 
-							    cancelButtonTitle:@"取消" 
-							    otherButtonTitles:nil];
-		[deleteAlert addButtonWithTitle:@"确认"];
-		
-		self.deleteAlert = deleteAlert;
-		
-		[deleteAlert release];
 	}
 	return self;
 }
@@ -224,7 +180,6 @@ const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 - (void) dealloc
 {
 	self.food = nil;
-	self.map = nil;
 	
 	[buttons release];
 	[date release];
@@ -256,7 +211,6 @@ const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 - (void) viewDidUnload 
 {
 	self.food = nil;
-	self.map = nil;
 	
 	[self setButtons:nil];
 	[self setDate:nil];
@@ -338,62 +292,12 @@ const static CGFloat USER_OWNED_BUTTON_BAR_WIDTH = 141.0;
 	
 }
 
-#pragma mark - UIAlertViewDelegate
-
-- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	if ((alertView == self.deleteAlert) && (1 == buttonIndex))
-	{
-		[FoodManager deleteObject:[self.food valueForKey:@"id"] withhandler:@selector(foodDeleted) andTarget:self];
-	}
-}
-
 #pragma mark - action
-
-- (void) foodDeleted
-{
-	[self.delegate foodDeleted:self];
-}
-
-- (IBAction) showInMap:(id)sender 
-{
-	if (nil == self.map)
-	{
-		MapViewPage *map = [[MapViewPage alloc] init];
-		self.map = map;
-		
-		[map release];
-	}
-	
-	NSMutableDictionary *tempMap = [[NSMutableDictionary alloc] init];
-	NSArray *placeIDArray = [[NSArray alloc] initWithObjects:[self.food valueForKey:@"place"], nil];
-	
-	[tempMap setValue:[self.food valueForKey:@"name"] forKey:@"title"];
-	[tempMap setValue:placeIDArray forKey:@"places"];
-	
-	self.map.mapObject = tempMap;
-
-	if (0 < placeIDArray.count)
-	{
-		[self.delegate showVC:self.map];
-	}
-	
-	[placeIDArray release];
-	[tempMap release];
-}
 
 - (IBAction) showUser:(id)sender 
 {
 	[self.avatar tap:sender];
 }
 
-- (IBAction) delete:(id)sender 
-{
-	@autoreleasepool 
-	{
-		self.deleteAlert.title = [NSString stringWithFormat:@"删除 %@？", [self.food valueForKey:@"name"]];
-		[self.deleteAlert show];
-	}
-}
 
 @end

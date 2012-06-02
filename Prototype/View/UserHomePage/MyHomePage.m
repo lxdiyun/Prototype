@@ -133,24 +133,31 @@
 
 #pragma mark - PhototSelectorDelegate
 
+
+#pragma mark - ShowModalVCDelegate
+
+- (void) showModalVC:(UIViewController *)vc withAnimation:(BOOL)animation
+{
+	[self presentModalViewController:vc animated:animation];
+}
+
+- (void) dismissModalVC:(UIViewController *)vc withAnimation:(BOOL)animation
+{
+	[self dismissModalViewControllerAnimated:animation];
+}
+
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector
 {
+	[self dismissModalViewControllerAnimated:YES];
+
 	[ImageManager createImage:selector.selectedImage 
 		      withHandler:@selector(avatarUploadCompleted:)
 			andTarget:self];
 	
 	selector.selectedImage = nil;
 	
-}
-
-- (void) dismissSelector:(PhotoSelector *)selector
-{
-	[self dismissModalViewControllerAnimated:YES];
-}
-
-- (void) showModalView:(UIViewController *)modalView;
-{
-	[self presentModalViewController:modalView animated:YES];
+	self.info.avatar.picID = nil;
+	[self.info.avatar startIndicator];
 }
 
 #pragma mark - action

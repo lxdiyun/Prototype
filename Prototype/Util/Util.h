@@ -22,6 +22,13 @@
 
 @end
 
+@protocol ShowModalVCDelegate <NSObject>
+
+- (void) showModalVC:(UIViewController *)vc withAnimation:(BOOL)animation;
+- (void) dismissModalVC:(UIViewController *)vc withAnimation:(BOOL)animation;
+
+@end
+
 @protocol SwipeDelegate <NSObject>
 
 - (void) swipeLeft:(id)sender;
@@ -32,9 +39,10 @@
 @protocol CustomXIBObject <NSObject>
 
 + (id) loadInstanceFromNib;
++ (id) createFromXIB;
 - (void) resetupXIB:(id)xibInstance;
 - (id) awakeAfterUsingCoder:(NSCoder*)aDecoder;
-@optional + (id) createFromXIB;
+- (void) initGUI;
 @optional + (id) createFromXibWithFrame:(CGRect)frame;
 
 @end
@@ -112,8 +120,22 @@ void CELL_BORDER(CALayer *layer);
 	CGContextFillRect(context, rect);
 }
 @end
-// for ios > 5.0
+// for ios >= 5.0
 void CONFIG_NAGIVATION_BAR(UINavigationBar *bar);
+
+// custom tool bar
+// for ios < 5.0
+@implementation UIToolbar (UIToolbarCategory)
+- (void) drawRect:(CGRect)rect 
+{
+	UIColor *color = [Color darkgrey];
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextSetFillColor(context, CGColorGetComponents( [color CGColor]));
+	CGContextFillRect(context, rect);
+}
+@end
+//for ios >= 5.0
+void CONFIG_TOOL_BAR(UIToolbar *bar);
 
 // custom button style
 UIButton * SETUP_BACK_BUTTON(id target, SEL action);

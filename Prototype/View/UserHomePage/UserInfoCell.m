@@ -23,7 +23,7 @@
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(UserInfoCell);
+DEFINE_CUSTOM_XIB(UserInfoCell, 0);
 
 #pragma mark - GUI
 

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import "Util.h"
+
 
 @protocol PhototSelectorDelegate;
 
@@ -17,8 +19,6 @@
 @property (assign) NSObject<PhototSelectorDelegate> *delegate;
 @end
 
-@protocol PhototSelectorDelegate 
+@protocol PhototSelectorDelegate <ShowModalVCDelegate>
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector;
-- (void) dismissSelector:(PhotoSelector *)selector;
-- (void) showModalView:(UIViewController *)modalView;
 @end

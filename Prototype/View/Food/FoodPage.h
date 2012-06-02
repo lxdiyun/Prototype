@@ -2,16 +2,18 @@
 //  FoodPage.h
 //  Prototype
 //
-//  Created by Adrian Lee on 12/26/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Created by Adrian Lee on 6/1/12.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "ListPage.h"
+#import <UIKit/UIKit.h>
 
-@interface FoodPage : ListPage
+#import "FoodToolBar.h"
 
-- (void) requestNewerComment;
+@interface FoodPage : UIViewController
 
-@property (strong, nonatomic) NSNumber *foodID;
+@property (assign, nonatomic) NSNumber *foodID;
+
+@property (retain, nonatomic) IBOutlet FoodToolBar *toolbar;
 
 @end

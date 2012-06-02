@@ -39,7 +39,7 @@ const static NSInteger MAX_TAG_QANTITY = 3;
 
 #pragma mark - custom xib object
 
-DEFINE_CUSTOM_XIB(MapFoodHeader);
+DEFINE_CUSTOM_XIB(MapFoodHeader, 0);
 
 - (void) resetupXIB:(MapFoodHeader *)xibInstance
 {
@@ -48,16 +48,6 @@ DEFINE_CUSTOM_XIB(MapFoodHeader);
 	xibInstance.frame = self.frame;
 	xibInstance.userInteractionEnabled = self.userInteractionEnabled;
 }
-
-+ (id) createFromXIB
-{
-	MapFoodHeader *xibInstance = [[self loadInstanceFromNib] retain];
-	
-	[xibInstance initGUI];
-	
-	return [xibInstance autorelease];
-}
-
 
 #pragma mark - life circle
 
