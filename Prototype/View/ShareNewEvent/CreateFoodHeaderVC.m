@@ -21,7 +21,6 @@
 @synthesize valued;
 @synthesize health;
 @synthesize image;
-@synthesize indicator;
 @synthesize text;
 @synthesize weibo;
 
@@ -43,8 +42,6 @@
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-	
-	[self.indicator startAnimating];
 }
 
 - (void) viewDidUnload
@@ -54,8 +51,6 @@
 	[self setValued:nil];
 	[self setHealth:nil];
 	[self setImage:nil];
-	
-	[self setIndicator:nil];
 	[self setText:nil];
 	[self setWeibo:nil];
 	[super viewDidUnload];
@@ -68,8 +63,6 @@
 	[valued release];
 	[health release];
 	[image release];
-	
-	[indicator release];
 	[text release];
 	[weibo release];
 	[super dealloc];
@@ -126,9 +119,6 @@
 	self.special.selected = NO;
 	self.valued.selected = NO;
 	self.health.selected = NO;
-	
-	[self.indicator startAnimating];
-	self.indicator.hidden = NO;
 }
 
 - (void) setImageID:(NSNumber *)picID
@@ -136,9 +126,6 @@
 	if (CHECK_NUMBER(picID))
 	{
 		self.image.picID = picID;
-
-		[self.indicator stopAnimating];
-		self.indicator.hidden = YES;
 	}
 }
 

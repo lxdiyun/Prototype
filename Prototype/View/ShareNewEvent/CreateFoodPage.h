@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CreateFoodTask.h"
+
 
 @interface CreateFoodPage : UITableViewController 
-- (void) imageUploadCompleted:(id)result;
-- (void) resetImageWithUploadFileID:(NSInteger)fileID;
+
+- (void) resetImage:(UIImage *)image;
+
+@property (strong, nonatomic) CreateFoodTask *task;
 @end

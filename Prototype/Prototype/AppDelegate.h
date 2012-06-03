@@ -8,7 +8,7 @@
 
 typedef enum MSWJ_PAGE_ENUM
 {
-	HOME_PAGE = 0x0,
+	EVENT_PAGE = 0x0,
 	NOTICE_PAGE = 0x1,
 	SHARE_PAGE = 0x2,
 	NEWS_PAGE = 0x3,

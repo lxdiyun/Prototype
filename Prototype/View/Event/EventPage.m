@@ -367,7 +367,7 @@ DEFINE_SINGLETON(EventPage);
 {
 	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if ((([EventManager keyArray].count - ROW_TO_MORE_EVENT_FROM_BOTTOM) <= eventIndex) 
+	if (((self.eventCount - ROW_TO_MORE_EVENT_FROM_BOTTOM) <= eventIndex) 
 	    && (0 <= eventIndex))
 	{
 		[self requestOlderEvent];
@@ -418,6 +418,7 @@ DEFINE_SINGLETON(EventPage);
 		[self.leftColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 		[self.rightColumn reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 	}
+
 	self.leftColumn.bounces = YES;
 	self.rightColumn.bounces = YES;
 }
@@ -425,6 +426,8 @@ DEFINE_SINGLETON(EventPage);
 - (void) refreshTableView:(id)result
 {
 	NSUInteger newEventCount = [EventManager keyArray].count;
+	
+	LOG(@"%d %d", newEventCount, self.eventCount);
 	
 	if (self.eventCount != newEventCount)
 	{

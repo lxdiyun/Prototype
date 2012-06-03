@@ -53,18 +53,21 @@ static TagSelector *gs_tag_selector = nil;
 {
 	CreateFoodHeaderVC *_header;
 	NSNumber *_uploadingID;
+	CreateFoodTask *_task;
+	
 }
 - (void) updateCity;
 - (BOOL) checkParamsReady;
 
-@property (retain, nonatomic) CreateFoodHeaderVC *header;
-@property (retain, nonatomic) NSNumber *uploadingID;
+@property (strong, nonatomic) CreateFoodHeaderVC *header;
+@property (strong, nonatomic) NSNumber *uploadingID;
 @end
 
 @implementation CreateFoodPage
 
 @synthesize header = _header;
 @synthesize uploadingID = _uploadingID;
+@synthesize task = _task;
 
 - (id) initWithStyle:(UITableViewStyle)style
 {
@@ -363,8 +366,9 @@ static TagSelector *gs_tag_selector = nil;
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	switch (indexPath.section) {
-	case FOOD_DESC:
+	switch (indexPath.section) 
+	{
+		case FOOD_DESC:
 		{
 			// configure the description cell
 			NSString *descString = gs_food_desc_text_view.text;
@@ -373,19 +377,19 @@ static TagSelector *gs_tag_selector = nil;
 			frame.size.height = gs_food_desc_text_view.superview.frame.size.height;
 			gs_food_desc_text_view.frame = frame;
 			gs_food_desc_text_view.text = descString;
-
+			
 			frame = gs_food_desc_text_view.frame;
 			frame.size.height = MAX(gs_food_desc_text_view.contentSize.height, 88);
 			gs_food_desc_text_view.frame = frame;
 			gs_food_desc_text_view.text = descString;
-
+			
 			return frame.size.height;
 		}
-		break;
-
-	default:
-		return DEFAULT_CELL_HEIGHT;
-		break;
+			break;
+			
+		default:
+			return DEFAULT_CELL_HEIGHT;
+			break;
 	}
 }
 
@@ -427,11 +431,11 @@ static TagSelector *gs_tag_selector = nil;
 	}
 }
 
-- (void) resetImageWithUploadFileID:(NSInteger)fileID;
+- (void) resetImage:(UIImage *)image;
 {
 	@autoreleasepool 
 	{
-		self.uploadingID = [NSNumber numberWithInteger:fileID];
+		self.header.image.image = image;
 	}
 }
 
@@ -456,11 +460,6 @@ static TagSelector *gs_tag_selector = nil;
 			gs_food_detail_star_label[i].textColor = [UIColor clearColor];
 		}
 	}
-	
-	if (nil == self.header.image.picID)
-	{
-		paramsReady = NO;
-	}
 
 	return paramsReady;
 }
@@ -477,21 +476,6 @@ static TagSelector *gs_tag_selector = nil;
 	}
 }
 
-- (void) imageUploadCompleted:(id)result
-{
-	NSNumber *uploadID = [result valueForKey:@"id"];
-	
-	if (CHECK_EQUAL(self.uploadingID ,uploadID))
-	{
-		NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
-		
-		[self.header setImageID:picID];
-		
-		self.uploadingID = nil;
-		[self updateShareButton];
-	}
-}
-
 - (void) createFood:(id)sender
 {
 	if ([self checkParamsReady])
@@ -502,7 +486,6 @@ static TagSelector *gs_tag_selector = nil;
 		[params setValue:gs_food_detail_text_view[FOOD_CITY].text forKey:@"city"];
 		[params setValue:gs_food_detail_text_view[FOOD_PLACE].text forKey:@"place_name"];
 		[params setValue:gs_food_desc_text_view.text forKey:@"desc"];
-		[params setValue:self.header.image.picID forKey:@"pic"];
 //		[params setValue:[gs_food_detail_text_view[FOOD_TAG].text componentsSeparatedByString:@" "] forKey:@"category"];
 		[params setValue:[NSNumber numberWithFloat:[self.header.score.text floatValue]]  forKey:@"taste_score"];
 		[params setValue:[NSNumber numberWithBool:self.header.special.selected]  forKey:@"like_special"];
@@ -510,9 +493,10 @@ static TagSelector *gs_tag_selector = nil;
 		[params setValue:[NSNumber numberWithBool:self.header.health.selected]  forKey:@"like_healthy"];
 		[params setValue:[NSNumber numberWithBool:self.header.weibo.on]  forKey:@"post_weibo"];
 
-		[FoodManager createFood:params withHandler:@selector(foodCreated:) andTarget:self];
+		[self.task etcCreated:params];
+		self.task = nil;
 		
-		self.navigationItem.rightBarButtonItem.enabled = NO;
+		[self foodCreated];
 
 		[params release];
 	}
@@ -524,6 +508,10 @@ static TagSelector *gs_tag_selector = nil;
 {
 	[self.header cleanHeader];
 	
+	[self.task cancel];
+
+	self.task = nil;
+	
 	self.uploadingID = nil;
 	
 	[self.navigationController popToRootViewControllerAnimated:NO];
@@ -531,7 +519,7 @@ static TagSelector *gs_tag_selector = nil;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-- (void) foodCreated:(id)result
+- (void) foodCreated
 {
 	@autoreleasepool 
 	{
@@ -551,11 +539,9 @@ static TagSelector *gs_tag_selector = nil;
 		gs_food_desc_text_view.text = @"";
 		
 		[self.navigationController popToRootViewControllerAnimated:NO];
+		[self resetImage:nil];
 		
 		[self updateShareButton];
-
-		[EventPage requestUpdate];
-		[AppDelegate showPage:HOME_PAGE];
 	}
 
 }

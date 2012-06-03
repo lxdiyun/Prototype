@@ -11,8 +11,8 @@
 #import "PhotoSelector.h"
 #import "ImageManager.h"
 #import "CreateFoodPage.h"
-
 #import "Util.h"
+#import "CreateFoodTask.h"
 
 @interface ShareNewEvent () <PhototSelectorDelegate>
 {
@@ -81,28 +81,20 @@
 	[self.delegate dismissModalViewControllerAnimated:animation];
 }
 
-- (void) uploadImage:(PhotoSelector *)selector
-{
-	@autoreleasepool 
-	{
-		NSInteger fileID = [ImageManager createImage:selector.selectedImage 
-						 withHandler:@selector(imageUploadCompleted:)
-						   andTarget:self.createFood];
-		
-		[self.createFood resetImageWithUploadFileID:fileID];
-		
-		selector.selectedImage = nil;
-	}
-}
-
 - (void) didSelectPhotoWithSelector:(PhotoSelector *)selector
 {
 	@autoreleasepool 
 	{
-		[self.delegate dismissModalViewControllerAnimated:NO];
-		[self.delegate presentModalViewController:self.navco animated:NO];
+		CreateFoodTask *task = [[[CreateFoodTask alloc] init] autorelease];
 		
-		[self performSelector:@selector(uploadImage:) withObject:selector afterDelay:2.0];
+		[task start];
+		[task picSelected:selector.selectedImage];
+		
+		[self.delegate dismissModalViewControllerAnimated:NO];
+		
+		self.createFood.task = task;
+		[self.createFood resetImage:selector.selectedImage];
+		[self.delegate presentModalViewController:self.navco animated:NO];
 	}
 }
 

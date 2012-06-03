@@ -44,7 +44,7 @@ static UIViewController *gs_currentViewController;
 
 - (void) setupPageClass
 {
-	MSWJ_PAGE_CLASS[HOME_PAGE] = [EventPage class];
+	MSWJ_PAGE_CLASS[EVENT_PAGE] = [EventPage class];
 	MSWJ_PAGE_CLASS[NOTICE_PAGE] = [PublicFoodMapListPage class];
 	MSWJ_PAGE_CLASS[SHARE_PAGE] = [ShareNewEvent class];
 	MSWJ_PAGE_CLASS[NEWS_PAGE] = [NewsPage class];
@@ -229,9 +229,9 @@ static UIViewController *gs_currentViewController;
 
 + (void) showPage:(MSWJ_PAGE)page
 {
-	if ((HOME_PAGE <= page) && (page <= MSWJ_PAGE_QUANTITY))
+	if ((EVENT_PAGE <= page) && (page <= MSWJ_PAGE_QUANTITY))
 	{
-		if (page == HOME_PAGE)
+		if (page == EVENT_PAGE)
 		{
 			[EventPage refresh];
 		}

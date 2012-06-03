@@ -24,6 +24,9 @@
 		481D4AF314DBD19800979A20 /* ConversationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF214DBD19800979A20 /* ConversationManager.m */; };
 		481D4AF714DBD39600979A20 /* ConversationDetailPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF614DBD39600979A20 /* ConversationDetailPage.m */; };
 		481D4AFA14DBDBE500979A20 /* DetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D4AF914DBDBE500979A20 /* DetailCell.m */; };
+		481D6F0A157B547D00C750C4 /* TaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D6F09157B547D00C750C4 /* TaskManager.m */; };
+		481D6F0D157B565F00C750C4 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D6F0C157B565F00C750C4 /* Task.m */; };
+		481D6F10157B631700C750C4 /* CreateFoodTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 481D6F0F157B631700C750C4 /* CreateFoodTask.m */; };
 		4820460714A41D7C001120C1 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820460614A41D7C001120C1 /* Util.m */; };
 		4820461C14A45E69001120C1 /* EventPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4820461914A45E69001120C1 /* EventPage.m */; };
 		482059EC1564FB58005A75F8 /* InfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 482059EB1564FB58005A75F8 /* InfoCell.m */; };
@@ -447,6 +450,12 @@
 		481D4AF614DBD39600979A20 /* ConversationDetailPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationDetailPage.m; sourceTree = "<group>"; };
 		481D4AF814DBDBE500979A20 /* DetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailCell.h; sourceTree = "<group>"; };
 		481D4AF914DBDBE500979A20 /* DetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DetailCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		481D6F08157B547D00C750C4 /* TaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TaskManager.h; path = Task/TaskManager.h; sourceTree = "<group>"; };
+		481D6F09157B547D00C750C4 /* TaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TaskManager.m; path = Task/TaskManager.m; sourceTree = "<group>"; };
+		481D6F0B157B565F00C750C4 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Task.h; path = Task/Task.h; sourceTree = "<group>"; };
+		481D6F0C157B565F00C750C4 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Task.m; path = Task/Task.m; sourceTree = "<group>"; };
+		481D6F0E157B631700C750C4 /* CreateFoodTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CreateFoodTask.h; path = Task/CreateFoodTask.h; sourceTree = "<group>"; };
+		481D6F0F157B631700C750C4 /* CreateFoodTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CreateFoodTask.m; path = Task/CreateFoodTask.m; sourceTree = "<group>"; };
 		4820460514A41D7C001120C1 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Util.h; path = Util/Util.h; sourceTree = "<group>"; };
 		4820460614A41D7C001120C1 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = Util/Util.m; sourceTree = "<group>"; };
 		4820461814A45E69001120C1 /* EventPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventPage.h; path = View/Event/EventPage.h; sourceTree = "<group>"; };
@@ -893,6 +902,19 @@
 			);
 			name = HomePage;
 			path = View/UserHomePage;
+			sourceTree = "<group>";
+		};
+		481D6F07157B545A00C750C4 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				481D6F08157B547D00C750C4 /* TaskManager.h */,
+				481D6F09157B547D00C750C4 /* TaskManager.m */,
+				481D6F0B157B565F00C750C4 /* Task.h */,
+				481D6F0C157B565F00C750C4 /* Task.m */,
+				481D6F0E157B631700C750C4 /* CreateFoodTask.h */,
+				481D6F0F157B631700C750C4 /* CreateFoodTask.m */,
+			);
+			name = Task;
 			sourceTree = "<group>";
 		};
 		4820460314A41C0D001120C1 /* Util */ = {
@@ -1544,6 +1566,7 @@
 		48EA6D4A14998A84008AE765 = {
 			isa = PBXGroup;
 			children = (
+				481D6F07157B545A00C750C4 /* Task */,
 				48B76A6E14B875F200FD8646 /* ObjectManager */,
 				48CE912B14AD9DBE00B1E9D3 /* Resource */,
 				48CE90E514AD9D0B00B1E9D3 /* ThirdParty */,
@@ -2088,6 +2111,9 @@
 				489204DB157871EB00B146E8 /* FoodToolBar.m in Sources */,
 				4846313B1578F7D400BDDF5E /* FoodPage.m in Sources */,
 				48CCB38E157A1371007528A7 /* Seperator.m in Sources */,
+				481D6F0A157B547D00C750C4 /* TaskManager.m in Sources */,
+				481D6F0D157B565F00C750C4 /* Task.m in Sources */,
+				481D6F10157B631700C750C4 /* CreateFoodTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
