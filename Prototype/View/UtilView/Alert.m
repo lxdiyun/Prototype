@@ -57,14 +57,22 @@ DEFINE_CUSTOM_XIB(Alert, 0);
 	CGRect frame = self.message.frame;
 	CGRect messageFrame = self.message.frame;
 	
-	frame.size.width += CONTENT_PADDING * 2;
-	frame.size.height += CONTENT_PADDING * 2;
-	self.frame = frame;
-	
 	messageFrame.origin.x = CONTENT_PADDING;
 	messageFrame.origin.y = CONTENT_PADDING;
 	
 	self.message.frame = messageFrame;
+	
+	frame.size.width += CONTENT_PADDING * 2;
+	frame.size.height += CONTENT_PADDING * 2;
+	
+	
+	if (nil != self.superview)
+	{
+		frame.origin.x = self.superview.frame.size.width / 2 - frame.size.width / 2;
+		frame.origin.y = self.superview.frame.size.height - PADING_BOTTOM - frame.size.height;
+	}
+	
+	self.frame = frame;
 }
 
 - (void) setMessageText:(NSString *)messageText

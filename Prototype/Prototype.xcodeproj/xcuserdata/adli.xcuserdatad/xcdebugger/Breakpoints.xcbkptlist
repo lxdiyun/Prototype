@@ -1020,11 +1020,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/Login/LoginPageVC.m"
-         timestampString = "360146023.153978"
+         timestampString = "360389084.105992"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "153"
-         endingLineNumber = "153"
+         startingLineNumber = "160"
+         endingLineNumber = "160"
          landmarkName = "-sinaLogin:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2473,26 +2473,26 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ObjectManager/LoginManager.m"
-         timestampString = "360145681.54279"
+         timestampString = "360389084.105992"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "300"
-         endingLineNumber = "300"
-         landmarkName = "+handleNotLogin"
-         landmarkType = "5">
+         startingLineNumber = "304"
+         endingLineNumber = "304"
+         landmarkName = "@implementation LoginManager"
+         landmarkType = "3">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ObjectManager/LoginManager.m"
-         timestampString = "360145682.605716"
+         timestampString = "360389084.105992"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "301"
-         endingLineNumber = "301"
-         landmarkName = "+handleNotLogin"
-         landmarkType = "5">
+         startingLineNumber = "305"
+         endingLineNumber = "305"
+         landmarkName = "@implementation LoginManager"
+         landmarkType = "3">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -2648,6 +2648,32 @@
          startingLineNumber = "414"
          endingLineNumber = "414"
          landmarkName = "-initGUI"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/Login/LogoutPage.m"
+         timestampString = "360388507.396493"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "69"
+         endingLineNumber = "69"
+         landmarkName = "-confirmLogout"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Prototype/AppDelegate.m"
+         timestampString = "360387895.312295"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "182"
+         endingLineNumber = "182"
+         landmarkName = "-tabBarController:shouldSelectViewController:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

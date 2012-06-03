@@ -172,7 +172,7 @@ DEFINE_SINGLETON(LoginManager);
 		
 		if (!requestSuccess)
 		{
-			LOG(@"Error: login params not valid");
+			[gs_login_page setMessage:@"登录失败，请重新登录"];
 
 			[self cleanUpdatingStringID:gs_fakeLoginStringID];
 			
@@ -279,8 +279,8 @@ DEFINE_SINGLETON(LoginManager);
 }
 
 + (void) handleNotLoginMessage:(id)messsge
-{
-	[NetworkService stop];
+{	
+	[gs_login_page setMessage:@"登录失败，请重新登录"];
 	
 	[self handleNotLogin];
 }
@@ -294,6 +294,8 @@ DEFINE_SINGLETON(LoginManager);
 
 + (void) handleNotLogin
 {
+	[NetworkService stop];
+
 	if ([[AppDelegate currentViewController] modalViewController] != gs_login_page_nvc)
 	{
 		[gs_login_page startLogin];
@@ -304,7 +306,6 @@ DEFINE_SINGLETON(LoginManager);
 
 + (void) logoutCurrentUser
 {
-	[NetworkService stop];
 	[ObjectSaver resetUserInfo];
 	
 	// clean cookie

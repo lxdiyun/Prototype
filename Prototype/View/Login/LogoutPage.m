@@ -78,12 +78,15 @@
 
 - (void) alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
+	if (self.navigationController.topViewController == self)
+	{
+		[self.navigationController popViewControllerAnimated:NO];
+	}
+
 	if (1 == buttonIndex)
 	{
 		[self logout];
 	}
-	
-	[self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

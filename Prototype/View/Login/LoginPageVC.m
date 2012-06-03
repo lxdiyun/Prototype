@@ -103,6 +103,13 @@
 
 #pragma mark - action
 
+- (void) setMessage:(NSString *)message
+{
+	self.alert.messageText = message;
+	
+	[self.alert showIn:self.view];
+}
+
 - (void) startLogin
 {
 	[self.navigationController popViewControllerAnimated:NO];
