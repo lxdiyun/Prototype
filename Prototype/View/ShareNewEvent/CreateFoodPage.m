@@ -560,7 +560,7 @@ static TagSelector *gs_tag_selector = nil;
 	gs_food_desc_inputer.text.text = gs_food_desc_text_view.text;
 
 
-	[self.navigationController pushViewController:gs_food_desc_inputer animated:YES];
+	PUSH_VC(self.navigationController, gs_food_desc_inputer, YES);
 }
 
 - (void) dismissKeyboard
@@ -643,16 +643,16 @@ static TagSelector *gs_tag_selector = nil;
 {
 	gs_food_desc_text_view.text = inputer.text.text;
 	inputer.text.text = nil;
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 	[self.tableView reloadData];
 	[gs_food_desc_text_view resignFirstResponder];
-	
+
 	[self updateShareButton];
 }
 
 - (void) cancelWithTextInputer:(TextInputer *)inputer
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 	inputer.text.text = nil;
 	[gs_food_desc_text_view resignFirstResponder];
 }
@@ -666,7 +666,7 @@ static TagSelector *gs_tag_selector = nil;
 		[gs_food_detail_text_view[FOOD_TAG] becomeFirstResponder];
 	}
 
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) didSelectTags:(TagSelector *)sender

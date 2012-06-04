@@ -13,6 +13,7 @@
 
 #import "SDNetworkActivityIndicator.h"
 #import "Message.h"
+#import "FoodPage.h"
 
 // util
 
@@ -316,6 +317,52 @@ void CONFIG_TOOL_BAR(UIToolbar *bar)
 		     forToolbarPosition:UIToolbarPositionBottom 
 			     barMetrics:UIBarMetricsDefault];
 	} 
+}
+
+static void hide_orshow_toolbar_when_pop(UINavigationController *navco)
+{
+	NSArray *VCs = [navco viewControllers];
+	
+	if (2 <= VCs.count)
+	{
+		UIViewController *popVC = [VCs objectAtIndex:VCs.count - 2];
+		
+		if ([popVC isKindOfClass:[FoodPage class]])
+		{
+			popVC.hidesBottomBarWhenPushed = YES;
+			return;
+		}
+		else 
+		{
+			popVC.hidesBottomBarWhenPushed = NO;
+		}
+	}
+}
+
+static void hide_or_show_toolbar_when_push(UIViewController *vc)
+{
+	if ([vc isKindOfClass:[FoodPage class]])
+	{
+		vc.hidesBottomBarWhenPushed = YES;
+	}
+	else 
+	{
+		vc.hidesBottomBarWhenPushed = NO;
+	}
+}
+
+void PUSH_VC(UINavigationController *navco, UIViewController *vc, BOOL animated)
+{
+	hide_or_show_toolbar_when_push(vc);
+	
+	[navco pushViewController:vc animated:animated];
+}
+
+void POP_VC(UINavigationController *navco, BOOL animated)
+{
+	hide_orshow_toolbar_when_pop(navco);
+
+	[navco popViewControllerAnimated:animated];
 }
 
 

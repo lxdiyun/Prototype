@@ -45,6 +45,7 @@
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="516049502"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<int key="IBUIContentMode">1</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
@@ -465,7 +466,6 @@
 								<string key="NSFrame">{{281, 4}, {18, 18}}</string>
 								<reference key="NSSuperview" ref="516049502"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">2</int>
@@ -894,25 +894,17 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">FoodInfo</string>
 					<string key="superclassName">UIViewController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="delete:">id</string>
-						<string key="showInMap:">id</string>
-						<string key="showUser:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="delete:">
-							<string key="name">delete:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showInMap:">
-							<string key="name">showInMap:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showUser:">
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">showUser:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">showUser:</string>
+						<object class="IBActionInfo" key="NS.object.0">
 							<string key="name">showUser:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</dictionary>
+					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="ate">UIButton</string>
 						<string key="avatar">AvatarV</string>

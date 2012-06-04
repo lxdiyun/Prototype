@@ -678,7 +678,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 		self.mapPage.saveWhenLeaved = NO;
 	}
 	
-	[self.navigationController pushViewController:self.mapPage animated:YES];
+	PUSH_VC(self.navigationController, self.mapPage, YES);
 }
 
 - (void) showFood:(NSIndexPath *)index
@@ -686,9 +686,8 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 	NSDictionary *food = [self getObjectFor:index];
 	
 	self.foodPage.foodID = [food valueForKey:@"id"];
-	self.foodPage.hidesBottomBarWhenPushed = YES;
-	
-	[self.navigationController pushViewController:self.foodPage animated:YES];
+
+	PUSH_VC(self.navigationController, self.foodPage, YES);
 }
 
 #pragma mark - FoldDelegate
@@ -713,7 +712,7 @@ typedef enum USER_HOME_PAGE_SECTION_ENUM
 
 - (void) showVC:(UIViewController *)vc
 {
-	[self.navigationController pushViewController:vc animated:YES];
+	PUSH_VC(self.navigationController, vc, YES);
 }
 
 #pragma mark - button action

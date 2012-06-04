@@ -506,7 +506,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 	
 	self.conversationPage.targetUserID = [targetUserID stringValue];
 	
-	[self.navigationController pushViewController:self.conversationPage animated:YES];
+	PUSH_VC(self.navigationController, self.conversationPage, YES);
 }
 
 - (void) showNotice:(NSIndexPath *)index
@@ -519,13 +519,13 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 		self.userPage.userID = [notice valueForKey:@"obj"];
 		[self.userPage resetGUI];
 		
-		[self.navigationController pushViewController:self.userPage animated:YES];
+		PUSH_VC(self.navigationController, self.userPage, YES);
 	}
 	else if (CHECK_EQUAL(noticeType, @"comment"))
 	{
 		self.foodPage.foodID = [notice valueForKey:@"obj"];
 		
-		[self.navigationController pushViewController:self.foodPage animated:YES];
+		PUSH_VC(self.navigationController, self.foodPage, YES);
 	}
 }
 

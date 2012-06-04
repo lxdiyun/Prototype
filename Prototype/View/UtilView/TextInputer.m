@@ -97,7 +97,7 @@ const static CGFloat LABEL_FONT_SIZE = 12.0;
 
 - (void) back
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) initGUI

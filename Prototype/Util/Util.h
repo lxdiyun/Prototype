@@ -145,4 +145,8 @@ UIBarButtonItem * SETUP_BAR_BUTTON(UIImage *image,id target, SEL action);
 UIButton * SETUP_TEXT_BUTTON(NSString *title, id target, SEL action);
 UIBarButtonItem * SETUP_BAR_TEXT_BUTTON(NSString *title, id target, SEL action);
 
+// UINavigationController
+void PUSH_VC(UINavigationController *navco, UIViewController *vc, BOOL animated);
+void POP_VC(UINavigationController *navco, BOOL animated);
+
 #endif

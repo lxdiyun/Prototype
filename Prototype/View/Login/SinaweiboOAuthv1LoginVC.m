@@ -33,12 +33,17 @@ NSString * const kSinaweiboApiCallbackURL = @"http://www.meishiwanjia.com";
 
 #pragma mark - View lifecycle
 
+- (void) back
+{
+	POP_VC(self.navigationController, YES);
+}
+
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
 
 	self.title = @"美食玩家";
-	self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self.navigationController, @selector(popViewControllerAnimated:));
+	self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 	self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
 }
 

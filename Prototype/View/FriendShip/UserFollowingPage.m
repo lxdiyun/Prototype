@@ -93,10 +93,9 @@
 	if (nil != userID)
 	{
 		self.userPage.userID = [NSNumber numberWithInteger:[userID integerValue]];
-		
 		[self.userPage resetGUI];
 		
-		[self.navigationController pushViewController:self.userPage animated:YES];
+		PUSH_VC(self.navigationController, self.userPage, YES);
 	}
 }
 

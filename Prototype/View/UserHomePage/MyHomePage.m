@@ -123,7 +123,7 @@
 
 - (void) selectBackground
 {
-	[self.navigationController pushViewController:self.backgroundSelectPage animated:YES];
+	PUSH_VC(self.navigationController, self.backgroundSelectPage, YES);
 }
 
 - (void) selectAvatar

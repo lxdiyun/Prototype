@@ -240,7 +240,8 @@ typedef enum MAP_MENU_ENUM
 - (void) back
 {
 	[self forcceRemoveDetailPage];
-	[self.navigationController popViewControllerAnimated:YES];
+
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) setupButtons

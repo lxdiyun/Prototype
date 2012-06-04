@@ -112,7 +112,7 @@
 
 - (void) startLogin
 {
-	[self.navigationController popViewControllerAnimated:NO];
+	POP_VC(self.navigationController, NO);
 	[self.alert dismiss];
 	
 	[[AppDelegate currentViewController] presentModalViewController:self.navigationController animated:YES];
@@ -153,7 +153,7 @@
 		[nativeLoginVC release];
 	}
 	
-	[self.navigationController pushViewController:self.nativeLoginVC animated:YES];
+	PUSH_VC(self.navigationController, self.nativeLoginVC, YES);
 }
 
 - (IBAction) sinaLogin:(id)sender 
@@ -167,7 +167,7 @@
 		[sineLoginVC release];
 	}
 
-	[self.navigationController pushViewController:self.sinaLoginVC animated:YES];
+	PUSH_VC(self.navigationController, self.sinaLoginVC, YES);
 	[self.sinaLoginVC startLogin];
 }
 
@@ -182,7 +182,7 @@
 		[doubanLoginVC release];
 	}
 	
-	[self.navigationController pushViewController:self.doubanLoginVC animated:YES];
+	PUSH_VC(self.navigationController, self.doubanLoginVC, YES);
 	[self.doubanLoginVC startLogin];
 }
 

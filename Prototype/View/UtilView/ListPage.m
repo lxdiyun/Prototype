@@ -9,6 +9,7 @@
 #import "ListPage.h"
 
 #import "Util.h"
+#import "FoodPage.h"
 
 @interface ListPage () <EGORefreshTableHeaderDelegate>
 {
@@ -178,7 +179,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void) back
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) reload

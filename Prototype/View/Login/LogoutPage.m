@@ -7,7 +7,9 @@
 //
 
 #import "LogoutPage.h"
+
 #import "LoginManager.h"
+#import "Util.h"
 
 @interface LogoutPage () <UIAlertViewDelegate>
 {
@@ -80,7 +82,7 @@
 {
 	if (self.navigationController.topViewController == self)
 	{
-		[self.navigationController popViewControllerAnimated:NO];
+		POP_VC(self.navigationController, NO);
 	}
 
 	if (1 == buttonIndex)

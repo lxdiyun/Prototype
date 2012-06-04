@@ -289,7 +289,7 @@ DEFINE_SINGLETON(EventPage);
 	if (nil == cell) 
 	{
 		cell = [[[EventCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.frame = CGRectMake(0.0, 0.0, gs_frame_width/2, gs_frame_width/2);
+		cell.frame = CGRectMake(0.0, 0.0, gs_frame_width / 2, gs_frame_width / 2);
 		[cell redraw];
 	}
 
@@ -356,8 +356,8 @@ DEFINE_SINGLETON(EventPage);
 		NSString *eventID = [[EventManager keyArray] objectAtIndex:eventIndex];
 		NSDictionary *event = [EventManager getObjectWithStringID:eventID];
 		self.foodPage.foodID = [[event valueForKey:@"obj"] valueForKey:@"id"];
-		self.foodPage.hidesBottomBarWhenPushed = YES;
-		[self.navigationController pushViewController:self.foodPage animated:YES];
+		
+		PUSH_VC(self.navigationController, self.foodPage, YES);
 	}
 }
 

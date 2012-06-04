@@ -129,7 +129,7 @@
 
 - (void) foodDeleted:(id)sender
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) comentCreated:(id)result
@@ -154,8 +154,8 @@
 - (void) showVC:(UIViewController *)VC
 {
 	self.hidesBottomBarWhenPushed = NO;
-	[self.navigationController pushViewController:VC animated:YES];
-//	self.hidesBottomBarWhenPushed = YES;
+
+	PUSH_VC(self.navigationController, VC, YES);
 }
 
 #pragma mark - GUI
@@ -177,9 +177,7 @@
 
 - (void) backToPrevView
 {
-//	self.hidesBottomBarWhenPushed = NO;
-	[self.navigationController popViewControllerAnimated:YES];
-//	self.hidesBottomBarWhenPushed = YES;
+	POP_VC(self.navigationController, YES);
 }
 
 @end

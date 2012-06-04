@@ -107,8 +107,8 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 		NSDictionary *foodMap = [self getObjectFor:indexPath];
 
 		self.detailMap.mapObject = foodMap;
-
-		[self.navigationController pushViewController:self.detailMap animated:YES];
+		
+		PUSH_VC(self.navigationController, self.detailMap, YES);
 	}
 }
 

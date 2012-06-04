@@ -78,7 +78,7 @@ DEFINE_SINGLETON(ConversationDetailPage);
 
 - (void) back
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) viewDidLoad

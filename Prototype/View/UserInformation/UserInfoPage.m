@@ -142,7 +142,7 @@ DEFINE_SINGLETON(UserInfoPage);
 
 - (void) back
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) initViewDisplay
@@ -693,12 +693,12 @@ DEFINE_SINGLETON(UserInfoPage);
 	
 	self.textInputer.text.text = self.introduceView.text;
 	
-	[self.navigationController pushViewController:self.textInputer animated:YES];
+	PUSH_VC(self.navigationController, self.textInputer, YES);
 }
 
 - (void) hideInputer
 {
-	[self.navigationController popViewControllerAnimated:YES];
+	POP_VC(self.navigationController, YES);
 }
 
 - (void) textDoneWithTextInputer:(TextInputer *)inputer

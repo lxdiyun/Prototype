@@ -26,12 +26,17 @@
 
 #pragma mark - life circle
 
+- (void) back
+{
+	POP_VC(self.navigationController, YES);
+}
+
 - (void) setupButtons
 {
 	@autoreleasepool 
 	{
 		self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"登陆", self, @selector(login:));
-		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self.navigationController, @selector(popViewControllerAnimated:));
+		self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 	}
 
 }
