@@ -275,7 +275,7 @@ DEFINE_SINGLETON(EventPage);
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	// Return the number of rows in the section.
-	self.eventCount = [EventManager keyArray].count;
+	self.eventCount = [EventManager keyCount];
 
 	return self.eventCount / 2 + self.eventCount % 2;
 }
@@ -296,7 +296,7 @@ DEFINE_SINGLETON(EventPage);
 	// Configure the cell...
 	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if (eventIndex < [[EventManager keyArray] count] && 0 <= eventIndex) 
+	if (eventIndex < [EventManager keyCount] && 0 <= eventIndex) 
 	{
 		NSString *eventID = [[EventManager keyArray] objectAtIndex:eventIndex];
 		NSDictionary *event = [EventManager getObjectWithStringID:eventID];
@@ -319,11 +319,18 @@ DEFINE_SINGLETON(EventPage);
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {		
-	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
+	NSInteger eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if (eventIndex < [[EventManager keyArray] count] && 0 <= eventIndex)
+	if (eventIndex < [EventManager keyCount] && 0 <= eventIndex)
 	{
+		NSString *eventID = [[EventManager keyArray] objectAtIndex:eventIndex];
+
 		if (self.pushed)
+		{
+			return nil;
+		}
+		
+		if ([eventID hasPrefix:EVENT_TASK_ID_PREFIX])
 		{
 			return nil;
 		}
@@ -348,16 +355,20 @@ DEFINE_SINGLETON(EventPage);
 		[foodPage release];
 	}
 	
-	int32_t eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
+	NSInteger eventIndex = [self getEventIndexTableView:tableView indexPath:indexPath];
 	
-	if (eventIndex < [[EventManager keyArray] count] && 0 <= eventIndex) 
+	if (eventIndex < [EventManager keyCount] && 0 <= eventIndex) 
 	{
 	
 		NSString *eventID = [[EventManager keyArray] objectAtIndex:eventIndex];
-		NSDictionary *event = [EventManager getObjectWithStringID:eventID];
-		self.foodPage.foodID = [[event valueForKey:@"obj"] valueForKey:@"id"];
 		
-		PUSH_VC(self.navigationController, self.foodPage, YES);
+		if (![eventID hasPrefix:EVENT_TASK_ID_PREFIX])
+		{
+			NSDictionary *event = [EventManager getObjectWithStringID:eventID];
+			self.foodPage.foodID = [[event valueForKey:@"obj"] valueForKey:@"id"];
+			
+			PUSH_VC(self.navigationController, self.foodPage, YES);
+		}
 	}
 }
 
@@ -411,7 +422,7 @@ DEFINE_SINGLETON(EventPage);
 
 - (void) refreshTableViewWithAnimationAndResult:(id)result
 {
-	NSUInteger newEventCount = [EventManager keyArray].count;
+	NSUInteger newEventCount = [EventManager keyCount];
 	
 	if (self.eventCount != newEventCount)
 	{
@@ -425,9 +436,7 @@ DEFINE_SINGLETON(EventPage);
 
 - (void) refreshTableView:(id)result
 {
-	NSUInteger newEventCount = [EventManager keyArray].count;
-	
-	LOG(@"%d %d", newEventCount, self.eventCount);
+	NSUInteger newEventCount = [EventManager keyCount];
 	
 	if (self.eventCount != newEventCount)
 	{
@@ -452,6 +461,7 @@ DEFINE_SINGLETON(EventPage);
 }
 
 #pragma mark - UIScrollViewDelegate Methods
+
 static UIScrollView *trigerView = nil;
 
 - (void) scrollViewWillBeginDragging:(UIScrollView *)view

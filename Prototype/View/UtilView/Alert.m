@@ -69,7 +69,6 @@ DEFINE_CUSTOM_XIB(Alert, 0);
 	if (nil != self.superview)
 	{
 		frame.origin.x = self.superview.frame.size.width / 2 - frame.size.width / 2;
-		frame.origin.y = self.superview.frame.size.height - PADING_BOTTOM - frame.size.height;
 	}
 	
 	self.frame = frame;
@@ -101,6 +100,24 @@ DEFINE_CUSTOM_XIB(Alert, 0);
 
 	self.frame = frame;
 
+	[view addSubview:self];
+	[view bringSubviewToFront:self];
+}
+
+- (void) showInCenter:(UIView *)view
+{
+	if (nil != self.superview)
+	{
+		[self removeFromSuperview];
+	}
+	
+	CGRect frame = self.frame;
+	
+	frame.origin.x = view.frame.size.width / 2 - frame.size.width / 2;
+	frame.origin.y = view.frame.size.height / 2 - frame.size.height / 2;
+	
+	self.frame = frame;
+	
 	[view addSubview:self];
 	[view bringSubviewToFront:self];
 }

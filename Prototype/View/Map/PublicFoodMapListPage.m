@@ -78,7 +78,6 @@ DEFINE_SINGLETON(PublicFoodMapListPage);
 		cell.backgroundView = background;
 		cell.textLabel.textColor = [Color tasty];
 		cell.detailTextLabel.textColor = [UIColor blackColor];
-		cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 	}
 	
 	NSDictionary *map = [self getObjectFor:indexPath];

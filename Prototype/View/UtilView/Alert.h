@@ -13,6 +13,7 @@
 @interface Alert : UIView <CustomXIBObject>
 
 - (void) showIn:(UIView *)view;
+- (void) showInCenter:(UIView *)view;
 - (void) dismiss;
 
 @property (strong, nonatomic) NSString *messageText;

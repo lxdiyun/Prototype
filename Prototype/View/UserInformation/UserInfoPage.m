@@ -151,6 +151,7 @@ DEFINE_SINGLETON(UserInfoPage);
 	{
 		[self setTitle:@"个人设置"];
 		self.photoSelector = [[[PhotoSelector alloc] init] autorelease];
+		self.view.backgroundColor = [Color lightyellow];
 		
 		if (nil == self.editButton)
 		{

@@ -11,6 +11,6 @@
 @interface CreateFoodTask : Task
 
 - (NSInteger) picSelected:(UIImage *)pic;
-- (void) etcCreated:(NSDictionary *)etcParams;
+- (void) etcReady:(NSDictionary *)etcParams;
 
 @end

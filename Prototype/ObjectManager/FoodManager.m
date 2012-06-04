@@ -148,7 +148,7 @@ DEFINE_SINGLETON(FoodManager);
 
 + (void) deleteObject:(NSNumber *)objectID withhandler:(SEL)handler andTarget:(id)target
 {
-	[EventManager deleteEventByFood:objectID];
+	[EventManager removeEventByFood:objectID];
 	[UserFoodHistoryManager deleteHistoryByFood:objectID forUser:GET_USER_ID()];
 	
 	[super deleteObject:objectID withhandler:handler andTarget:target];

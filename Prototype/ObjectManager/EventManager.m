@@ -16,15 +16,18 @@ static NSString *gs_fakeListID = nil;
 @interface EventManager ()
 {
 	NSMutableDictionary *_foodEventIndex;
+	NSMutableDictionary *_taskEvents;
 }
 
 @property (strong, nonatomic) NSMutableDictionary *foodEventIndex;
+@property (strong, nonatomic) NSMutableDictionary *taskEvents;
 
 @end
 
 @implementation EventManager
 
 @synthesize foodEventIndex = _foodEventIndex;
+@synthesize taskEvents = _taskEvents;
 
 #pragma mark - singleton
 
@@ -48,6 +51,11 @@ DEFINE_SINGLETON(EventManager);
 			if (nil == self.foodEventIndex)
 			{
 				self.foodEventIndex = [[[NSMutableDictionary alloc] init] autorelease];
+			}
+			
+			if (nil == self.taskEvents)
+			{
+				self.taskEvents = [[[NSMutableDictionary alloc] init] autorelease];
 			}
 			
 			self.getMethodString = @"event.get";
@@ -94,9 +102,24 @@ DEFINE_SINGLETON(EventManager);
 
 #pragma mark - interface
 
++ (NSInteger) keyCount
+{
+	NSArray *eventKeys = [self keyArrayForList:gs_fakeListID];
+	NSArray *taskEventKeys = [[[self getInstnace] taskEvents] allKeys];
+	
+	return eventKeys.count + taskEventKeys.count;
+}
+
 + (NSArray *) keyArray
 {
-	return [self keyArrayForList:gs_fakeListID]; 
+	NSArray *eventKeys = [self keyArrayForList:gs_fakeListID];
+	NSArray *taskEventKeys = [[[self getInstnace] taskEvents] allKeys];
+	// task event must be show in front of normal event
+	NSMutableArray *allKeys = [NSMutableArray arrayWithArray:taskEventKeys];
+	
+	[allKeys addObjectsFromArray:eventKeys];
+
+	return allKeys; 
 }
 
 + (BOOL) isNewestUpdating
@@ -122,6 +145,11 @@ DEFINE_SINGLETON(EventManager);
 
 + (NSDictionary *) getObjectWithStringID:(NSString *)objectID
 {
+	if ([objectID hasPrefix:EVENT_TASK_ID_PREFIX]) 
+	{
+		return [[[self getInstnace] taskEvents] valueForKey:objectID];
+	}
+
 	return [self getObject:objectID inList:gs_fakeListID];
 }
 
@@ -192,7 +220,7 @@ DEFINE_SINGLETON(EventManager);
 	[messageDict release];
 }
 
-#pragma mark - class method
+#pragma mark - delete events
 
 + (void) removeEventsForUser:(NSNumber *)userID
 {
@@ -211,13 +239,36 @@ DEFINE_SINGLETON(EventManager);
 	[[self getInstnace] updateKeyArrayForList:gs_fakeListID withResult:nil forward:NO];
 }
 
-+ (void) deleteEventByFood:(NSNumber *)foodID
++ (void) removeEventByFood:(NSNumber *)foodID
 {
 	NSNumber *eventID = [[[self getInstnace] foodEventIndex] valueForKey:[foodID stringValue]];
+
 	if (nil != eventID)
 	{
 		[self setObject:nil withStringID:[eventID stringValue] inList:gs_fakeListID];
 	}
+}
+
+#pragma mark - task event
+
++ (void) addTaskEvent:(NSMutableDictionary *)event with:(Task *)task
+{
+	NSString *taskEventID = [[NSString alloc] initWithFormat:@"%@%@", EVENT_TASK_ID_PREFIX, task.taskID];
+	
+	[event setValue:taskEventID forKey:@"id"];
+	
+	[[[self getInstnace] taskEvents] setValue:event forKey:taskEventID];
+	
+	[taskEventID release];
+}
+
++ (void) removeTaskEvent:(Task *)task
+{
+	NSString *taskEventID = [[NSString alloc] initWithFormat:@"%@%@", EVENT_TASK_ID_PREFIX, task.taskID];
+	
+	[[[self getInstnace] taskEvents] setValue:nil forKey:taskEventID];
+	
+	[taskEventID release];
 }
 
 @end

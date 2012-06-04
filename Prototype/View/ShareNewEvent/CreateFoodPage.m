@@ -493,7 +493,7 @@ static TagSelector *gs_tag_selector = nil;
 		[params setValue:[NSNumber numberWithBool:self.header.health.selected]  forKey:@"like_healthy"];
 		[params setValue:[NSNumber numberWithBool:self.header.weibo.on]  forKey:@"post_weibo"];
 
-		[self.task etcCreated:params];
+		[self.task etcReady:params];
 		self.task = nil;
 		
 		[self foodCreated];

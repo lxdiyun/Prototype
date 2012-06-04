@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "ImageManager.h"
 #import "UIImage+Scale.h"
+#import "EventManager.h"
 
 const static CGFloat MAX_FOOD_PIC_RESOLUTION = 960.0;
 
@@ -28,10 +29,12 @@ typedef enum PARAMS_STATUS_ENUM
 {
 	PARAMS_STATUS _paramStatus;
 	NSMutableDictionary *_params;
+	UIImage *_seletedImage;
 }
 
 @property (strong, nonatomic) NSMutableDictionary *params;
 @property (assign, nonatomic) PARAMS_STATUS paramStatus;
+@property (strong, nonatomic) UIImage *seletedImage;
 
 @end
 
@@ -39,6 +42,7 @@ typedef enum PARAMS_STATUS_ENUM
 
 @synthesize params = _params;
 @synthesize paramStatus = _paramStatus;
+@synthesize seletedImage = _seletedImage;
 
 #pragma mark - life circle
 
@@ -60,6 +64,7 @@ typedef enum PARAMS_STATUS_ENUM
 		[self.params removeAllObjects];
 		
 		self.paramStatus = PARAM_EMPTY;
+		self.seletedImage = nil;
 	}
 	
 	return self;
@@ -68,6 +73,7 @@ typedef enum PARAMS_STATUS_ENUM
 - (void) dealloc
 {
 	self.params = nil;
+	self.seletedImage = nil;
 	[super dealloc];
 }
 
@@ -81,6 +87,7 @@ typedef enum PARAMS_STATUS_ENUM
 - (void) execute
 {
 	[FoodManager createFood:self.params withHandler:@selector(foodCreated:) andTarget:self];
+	[EventManager removeTaskEvent:self];
 }
 
 #pragma mark - handler and interface
@@ -107,6 +114,7 @@ typedef enum PARAMS_STATUS_ENUM
 	if (nil != pic)
 	{
 		UIImage *resizedImage = [pic reduceToResolution:MAX_FOOD_PIC_RESOLUTION];
+		self.seletedImage = resizedImage;
 		
 		return [ImageManager createImage:resizedImage withHandler:@selector(picCreated:) andTarget:self];
 	}
@@ -116,7 +124,7 @@ typedef enum PARAMS_STATUS_ENUM
 	}
 }
 
-- (void) picCreated:(id)result
+- (void) picReady:(id)result
 {
 	NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
 	
@@ -134,11 +142,22 @@ typedef enum PARAMS_STATUS_ENUM
 	}
 }
 
-- (void) etcCreated:(NSDictionary *)etcParams
+- (void) etcReady:(NSDictionary *)etcParams
 {
 	[self.params addEntriesFromDictionary:etcParams];
 	
 	self.paramStatus |= PARAM_ETC_READY;
+	
+	if (!(self.paramStatus & PARAM_PIC_READY) && (nil != self.seletedImage))
+	{
+		NSMutableDictionary *taskEvent = [self.params mutableCopy];
+
+		[taskEvent setValue:self.seletedImage forKey:@"pic"];
+		[EventManager addTaskEvent:taskEvent with:self];
+		[EventPage refresh];
+		
+		[taskEvent release];
+	}
 	
 	[self checkCondition];
 }

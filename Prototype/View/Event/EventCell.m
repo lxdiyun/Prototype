@@ -13,6 +13,7 @@
 #import "ImageV.h"
 #import "Util.h"
 #import "ProfileMananger.h"
+#import "EventManager.h"
 
 const static CGFloat AVATOR_SIZE = 44.0;
 const static CGFloat AVATOR_BORDER = 3.0;
@@ -123,6 +124,43 @@ static CGFloat gs_pic_size = 0;
 	}
 }
 
+- (void) updateNormalEvent
+{
+	NSDictionary *objDict = [self.eventDict valueForKey:@"obj"];
+	self.alpha = 1.0;
+	
+	if (nil != objDict) 
+	{
+		self.picImageV.picID = [objDict valueForKey:@"pic"];
+		self.name.text = [NSString stringWithFormat:@" %@", [objDict valueForKey:@"name"]]; 
+		self.picImageV.hidden = NO;
+		self.name.hidden = NO;
+	}
+	else 
+	{
+		self.picImageV.hidden = YES;
+		self.name.hidden = YES;
+	}
+}
+
+- (void) updateTaskEvent
+{
+	self.alpha = 0.8;
+
+	if (nil != self.eventDict)
+	{
+		self.picImageV.image = [self.eventDict valueForKey:@"pic"];
+		self.name.text = [NSString stringWithFormat:@" %@", [self.eventDict valueForKey:@"name"]];
+		self.picImageV.hidden = NO;
+		self.name.hidden = NO;
+	}
+	else 
+	{
+		self.picImageV.hidden = YES;
+		self.name.hidden = YES;
+	}
+}
+
 #pragma mark - object manage
 
 - (void) requestUserProfile
@@ -169,19 +207,18 @@ static CGFloat gs_pic_size = 0;
 
 	_eventDict = [eventDict retain];
 	
-	NSDictionary *objDict =  [self.eventDict valueForKey:@"obj"];
-
-	if (nil != objDict) 
+	NSString *eventID = [self.eventDict valueForKey:@"id"];
+	
+	if (CHECK_STRING(eventID))
 	{
-		self.picImageV.picID = [objDict valueForKey:@"pic"];
-		self.name.text = [NSString stringWithFormat:@" %@", [objDict valueForKey:@"name"]]; 
-		self.picImageV.hidden = NO;
-		self.name.hidden = NO;
+		if ([eventID hasPrefix:EVENT_TASK_ID_PREFIX])
+		{
+			[self updateTaskEvent];
+		}
 	}
 	else 
 	{
-		self.picImageV.hidden = YES;
-		self.name.hidden = YES;
+		[self updateNormalEvent];
 	}
 	
 }

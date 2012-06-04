@@ -14,6 +14,7 @@
 #import "SDNetworkActivityIndicator.h"
 #import "Message.h"
 #import "FoodPage.h"
+#import "MapViewPage.h"
 
 // util
 
@@ -230,7 +231,7 @@ BOOL CHECK_NUMBER(NSNumber *object)
 	}
 	else
 	{
-		CLOG(@"Error object is not an NUMBER: %@", object);
+		CLOG(@"Warning object is not an NUMBER: %@", object);
 		return NO;
 	}
 }
@@ -244,7 +245,7 @@ BOOL CHECK_STRING(NSString *object)
 	}
 	else
 	{
-		CLOG(@"Error object is not an STRING: %@", object);
+		CLOG(@"Warning object is not an STRING: %@", object);
 		return NO;
 	}
 }
@@ -327,7 +328,7 @@ static void hide_orshow_toolbar_when_pop(UINavigationController *navco)
 	{
 		UIViewController *popVC = [VCs objectAtIndex:VCs.count - 2];
 		
-		if ([popVC isKindOfClass:[FoodPage class]])
+		if ([popVC isKindOfClass:[FoodPage class]] || [popVC isKindOfClass:[MapViewPage class]])
 		{
 			popVC.hidesBottomBarWhenPushed = YES;
 			return;
@@ -341,7 +342,7 @@ static void hide_orshow_toolbar_when_pop(UINavigationController *navco)
 
 static void hide_or_show_toolbar_when_push(UIViewController *vc)
 {
-	if ([vc isKindOfClass:[FoodPage class]])
+	if ([vc isKindOfClass:[FoodPage class]] || [vc isKindOfClass:[MapViewPage class]])
 	{
 		vc.hidesBottomBarWhenPushed = YES;
 	}
