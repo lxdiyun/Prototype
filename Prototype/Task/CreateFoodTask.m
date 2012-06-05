@@ -100,8 +100,7 @@ typedef enum PARAMS_STATUS_ENUM
 	
 	if (nil != foodID)
 	{
-		[EventPage requestUpdate];
-		[AppDelegate showPage:EVENT_PAGE];
+		[EventPage cleanAndRefresh];
 		
 		[self confirm];
 	}
@@ -135,7 +134,7 @@ typedef enum PARAMS_STATUS_ENUM
 	{
 		[self.params setValue:picID forKey:@"pic"];
 		
-//		[ImageManager saveImageCache:self.seletedImage with:pic];
+		[ImageManager saveImageCache:self.seletedImage with:pic];
 		
 		self.paramStatus |= PARAM_PIC_READY;
 
@@ -153,18 +152,22 @@ typedef enum PARAMS_STATUS_ENUM
 	
 	self.paramStatus |= PARAM_ETC_READY;
 	
+	[AppDelegate showPage:EVENT_PAGE];
+	
 	if (!((self.paramStatus) & PARAM_PIC_READY) && (nil != self.seletedImage))
 	{
 		NSMutableDictionary *taskEvent = [self.params mutableCopy];
 
 		[taskEvent setValue:self.seletedImage forKey:@"pic"];
 		[EventManager addTaskEvent:taskEvent with:self];
-		[EventPage refresh];
+		[EventPage requestUpdate];
 		
 		[taskEvent release];
 	}
 	
 	[self checkCondition];
+	
+	
 }
 
 

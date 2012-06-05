@@ -10,5 +10,5 @@
 
 @interface EventPage : UIViewController 
 + (void) requestUpdate;
-+ (void) refresh;
++ (void) cleanAndRefresh;
 @end

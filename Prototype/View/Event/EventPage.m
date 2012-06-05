@@ -534,7 +534,7 @@ static UIScrollView *trigerView = nil;
 	[[self getInstnace] requestNewerEvent];
 }
 
-+ (void) refresh
++ (void) cleanAndRefresh
 {
 	[[[self getInstnace] navigationController] popToRootViewControllerAnimated:NO];
 	[[self getInstnace] showTopRow];

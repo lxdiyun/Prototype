@@ -223,7 +223,7 @@ static UIViewController *gs_currentViewController;
 	}
 	
 	[EventPage requestUpdate];
-	[EventPage refresh];
+	[EventPage cleanAndRefresh];
 	[UserInfoPage reloadData];
 }
 
@@ -231,11 +231,6 @@ static UIViewController *gs_currentViewController;
 {
 	if ((EVENT_PAGE <= page) && (page <= MSWJ_PAGE_QUANTITY))
 	{
-		if (page == EVENT_PAGE)
-		{
-			[EventPage refresh];
-		}
-
 		if ([gs_currentViewController isKindOfClass:[UITabBarController class]])
 		{
 			[(UITabBarController *)gs_currentViewController setSelectedIndex:page];

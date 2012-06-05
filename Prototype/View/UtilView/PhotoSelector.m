@@ -50,6 +50,14 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	{
 		@autoreleasepool 
 		{
+			if (nil == self.imagePickerController)
+			{
+				@autoreleasepool 
+				{
+					self.imagePickerController = [[[UIImagePickerController alloc] init] autorelease];
+					self.imagePickerController.allowsEditing = YES;
+				}
+			}
 					
 			self.actionSheet = [[[UIActionSheet alloc] initWithTitle:nil 
 									delegate:self 
@@ -125,14 +133,6 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 {
 	if ([UIImagePickerController isSourceTypeAvailable:sourceType])
 	{
-		if (nil == self.imagePickerController)
-		{
-			@autoreleasepool 
-			{
-				self.imagePickerController = [[[UIImagePickerController alloc] init] autorelease];
-			}
-		}
-
 		self.imagePickerController.sourceType = sourceType;
 		self.imagePickerController.delegate = self;
 		
@@ -163,7 +163,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 - (void) imagePickerController:(UIImagePickerController *)picker 
  didFinishPickingMediaWithInfo:(NSDictionary *)info
 {	
-	self.selectedImage = [info valueForKey:UIImagePickerControllerOriginalImage];
+	self.selectedImage = [info valueForKey:UIImagePickerControllerEditedImage];
 
 	// need to wait to let the view to dismiss, otherwise the ui will block
 	[self.delegate didSelectPhotoWithSelector:self];
