@@ -66,8 +66,8 @@
 
 - (void) dealloc
 {
-	self.pic = nil;
 	self.picID = nil;
+	self.pic = nil;
 	
 	[super dealloc];
 }
@@ -93,20 +93,24 @@
 		
 		if (nil != baseUrl)
 		{
-			NSString *ID = [self.pic valueForKey:@"id"];
+			NSNumber *ID = [self.pic valueForKey:@"id"];
 			NSString *salt = [self.pic valueForKey:@"salt"];
 			NSString *type = [self.pic valueForKey:@"type"];
-			NSInteger real_size_height = lrintf(self.frame.size.height * SCALE());
-			NSInteger real_size_width = lrintf(self.frame.size.width * SCALE());
-			NSInteger cached_size_height = [[ImageManager getImageSizeWithNumberID:self.picID] intValue];
-			NSInteger cached_size_width = cached_size_height * real_size_width / real_size_height;
+			CGSize neededSize = self.frame.size; 
+			CGSize cacheSize = [ImageManager getCachedImageSizeWithNumberID:self.picID];
+			
+			neededSize.width *= SCALE();
+			neededSize.height *= SCALE();
+	
 			imageUrlString = [[NSMutableString alloc] init];
 			
-			if (cached_size_height > real_size_height)
+			if ((cacheSize.height >= neededSize.height) && (cacheSize.width >= neededSize.width))
 			{
 				 
 				// cached size bigger than real size
-				NSString *size = [[NSString alloc] initWithFormat:@"%d!%d", cached_size_width , cached_size_height];
+				NSString *size = [[NSString alloc] initWithFormat:@"%d!%d", 
+						  lrintf(cacheSize.width), 
+						  lrintf(cacheSize.height)];
 				[imageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
 				[size release];
 			}
@@ -114,19 +118,23 @@
 			{
 				// cached size smaller than realsize or not cached
 				NSString *size = nil;
-				if (cached_size_height > 0)
+				if (cacheSize.height > 0)
 				{
 					preImageUrlString = [[NSMutableString alloc] init];
-					size = [[NSString alloc] initWithFormat:@"%d!%d", cached_size_width , cached_size_height];
+					size = [[NSString alloc] initWithFormat:@"%d!%d", 
+						lrintf(cacheSize.width), 
+						lrintf(cacheSize.height)];
 					[preImageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
 					[size release];
 				}
 				
-				size = [[NSString alloc] initWithFormat:@"%d!%d", real_size_width, real_size_height]; 
+				size = [[NSString alloc] initWithFormat:@"%d!%d", 
+					lrintf(neededSize.width), 
+					lrintf(neededSize.height)]; 
 				[imageUrlString appendFormat:@"%@%@/%@_%@.%@", baseUrl, size, ID, salt, type];
 				[size release];
 				
-				[ImageManager setImageSize:[NSNumber numberWithUnsignedInt:real_size_height] withNumberID:self.picID];
+				[ImageManager setCachedImageSize:neededSize withNumberID:ID];
 				
 				[self startIndicator];
 			} 

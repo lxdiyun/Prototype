@@ -14,9 +14,8 @@
 #import "Util.h"
 #import "ProfileMananger.h"
 #import "EventManager.h"
+#import "Alert.h"
 
-const static CGFloat AVATOR_SIZE = 44.0;
-const static CGFloat AVATOR_BORDER = 3.0;
 const static CGFloat NAME_HEIGHT = 30.0;
 const static CGFloat FONT_SIZE = 15.0;
 const static CGFloat PADING1 = 10.0; // padding from left cell border
@@ -29,21 +28,21 @@ const static CGFloat PADING4 = 10.0; // padding between element virtical and bot
 
 	NSDictionary *_eventDict;
 	ImageV *_picImageV;
-	ImageV *_avator;
 	UILabel *_name;
+	Alert *_alert;
 }
 
 @property (strong, nonatomic) ImageV *picImageV;
-@property (strong, nonatomic) ImageV *avator;
 @property (strong, nonatomic) UILabel *name;
+@property (strong, nonatomic) Alert *alert;
 @end
 
 @implementation EventCell
 
 @synthesize eventDict = _eventDict;
 @synthesize picImageV = _picImageV;
-@synthesize avator = _avator;
 @synthesize name = _name;
+@synthesize alert = _alert;
 
 static CGFloat gs_pic_size = 0;
 
@@ -89,29 +88,9 @@ static CGFloat gs_pic_size = 0;
 								   gs_pic_size, 
 								   gs_pic_size)] 
 		autorelease];
+	self.picImageV.contentMode = UIViewContentModeScaleAspectFit;
 
 	[self.contentView addSubview:self.picImageV];
-}
-
-- (void) redrawAvator
-{
-	if (nil != self.avator)
-	{
-		[self.avator removeFromSuperview];
-	}
-	
-	CGFloat X = PADING1 * PROPORTION();
-	CGFloat Y = gs_pic_size - (PADING4 + AVATOR_SIZE) * PROPORTION();
-	CGFloat width = AVATOR_SIZE * PROPORTION();
-	CGFloat height = AVATOR_SIZE * PROPORTION();
-	
-	self.avator = [[[ImageV alloc] initWithFrame:CGRectMake(X, 
-								Y, 
-								width, 
-								height)] 
-			  autorelease];
-	
-	[self.contentView addSubview:self.avator];
 }
 
 - (void) redraw
@@ -127,14 +106,15 @@ static CGFloat gs_pic_size = 0;
 - (void) updateNormalEvent
 {
 	NSDictionary *objDict = [self.eventDict valueForKey:@"obj"];
-	self.alpha = 1.0;
-	
+	[self.alert dismiss];
+
 	if (nil != objDict) 
 	{
 		self.picImageV.picID = [objDict valueForKey:@"pic"];
 		self.name.text = [NSString stringWithFormat:@" %@", [objDict valueForKey:@"name"]]; 
 		self.picImageV.hidden = NO;
 		self.name.hidden = NO;
+
 	}
 	else 
 	{
@@ -145,14 +125,13 @@ static CGFloat gs_pic_size = 0;
 
 - (void) updateTaskEvent
 {
-	self.alpha = 0.8;
-
 	if (nil != self.eventDict)
 	{
 		self.picImageV.image = [self.eventDict valueForKey:@"pic"];
 		self.name.text = [NSString stringWithFormat:@" %@", [self.eventDict valueForKey:@"name"]];
 		self.picImageV.hidden = NO;
 		self.name.hidden = NO;
+		[self.alert showInCenter:self.picImageV];
 	}
 	else 
 	{
@@ -162,39 +141,6 @@ static CGFloat gs_pic_size = 0;
 }
 
 #pragma mark - object manage
-
-- (void) requestUserProfile
-{
-	NSNumber * userID = [[self.eventDict valueForKey:@"obj"] valueForKey:@"user"];
-	
-	if (nil != userID)
-	{
-		NSDictionary * userProfile = [ProfileMananger getObjectWithNumberID:userID];
-		
-		if (nil != userProfile)
-		{
-			self.avator.picID = [userProfile valueForKey:@"avatar"];
-			[self.avator.layer setBorderColor:[[Color blackAlpha50] CGColor]];
-			[self.avator.layer setBorderWidth: AVATOR_BORDER * PROPORTION()];
-			
-		}
-		else
-		{
-			[ProfileMananger requestObjectWithNumberID:userID 
-							andHandler:@selector(requestUserProfile) 
-							 andTarget:self];
-		}
-	}
-	else
-	{
-		if (nil != self.avator)
-		{
-			self.avator.picID = nil;
-			[self.avator.layer setBorderColor:[[UIColor clearColor] CGColor]];
-			[self.avator.layer setBorderWidth: 0.0];
-		}
-	}
-}
 
 - (void) setEventDict:(NSDictionary *)eventDict
 {
@@ -232,6 +178,13 @@ static CGFloat gs_pic_size = 0;
 	if (nil != self)
 	{
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		
+		if (nil == self.alert)
+		{
+			self.alert = [Alert createFromXIB];
+
+			self.alert.messageText = @"上传中";	
+		}
 	}
 	
 	return self;
@@ -241,9 +194,7 @@ static CGFloat gs_pic_size = 0;
 {
 	self.eventDict = nil;
 	self.picImageV = nil;
-	self.avator = nil;
-	
-	[self.avator.layer setBorderWidth: 0.0];
+	self.alert = nil;
 
 	[super dealloc];
 }

@@ -44,7 +44,6 @@ NSString * const kSinaweiboApiCallbackURL = @"http://www.meishiwanjia.com";
 
 	self.title = @"美食玩家";
 	self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
-	self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -100,7 +99,6 @@ NSString * const kSinaweiboApiCallbackURL = @"http://www.meishiwanjia.com";
 					  kSinaweiboApiCallbackURL];
 			NSMutableURLRequest * r = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 			[self.webView loadRequest:r];
-			self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
 			[self.activityIndicator startAnimating];
 		}
 		else 

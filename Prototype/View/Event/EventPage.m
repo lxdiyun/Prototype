@@ -387,17 +387,23 @@ DEFINE_SINGLETON(EventPage);
 
 #pragma mark - object manage
 
-- (void) requestNewerEventHandler:(id)result
+- (void) requestNewestEventHandler:(id)result
 {	
+	self.eventCount = 0;
 	[self refreshTableViewWithAnimationAndResult:result];
 	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.leftColumn];
 	[self.alert dismiss];
 }
 
+- (void) requestNewerEventHandler:(id)result
+{	
+	[self refreshTableViewWithAnimationAndResult:result];
+}
+
 - (void) requestNewestEvent
 {
 	[EventManager requestNewestCount:EVENT_REFRESH_WINDOW 
-			    withHandler:@selector(requestNewerEventHandler:) 
+			    withHandler:@selector(requestNewestEventHandler:) 
 			      andTarget:self];
 	self.alert.messageText = @"刷新中。。。";
 	

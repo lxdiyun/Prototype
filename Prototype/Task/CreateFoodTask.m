@@ -14,6 +14,7 @@
 #import "ImageManager.h"
 #import "UIImage+Scale.h"
 #import "EventManager.h"
+#import "Util.h"
 
 const static CGFloat MAX_FOOD_PIC_RESOLUTION = 960.0;
 
@@ -88,6 +89,7 @@ typedef enum PARAMS_STATUS_ENUM
 {
 	[FoodManager createFood:self.params withHandler:@selector(foodCreated:) andTarget:self];
 	[EventManager removeTaskEvent:self];
+	self.seletedImage = nil;
 }
 
 #pragma mark - handler and interface
@@ -116,7 +118,7 @@ typedef enum PARAMS_STATUS_ENUM
 		UIImage *resizedImage = [pic reduceToResolution:MAX_FOOD_PIC_RESOLUTION];
 		self.seletedImage = resizedImage;
 		
-		return [ImageManager createImage:resizedImage withHandler:@selector(picCreated:) andTarget:self];
+		return [ImageManager createImage:resizedImage withHandler:@selector(picReady:) andTarget:self];
 	}
 	else
 	{
@@ -126,11 +128,14 @@ typedef enum PARAMS_STATUS_ENUM
 
 - (void) picReady:(id)result
 {
-	NSNumber *picID = [[result valueForKey:@"result"] valueForKey:@"id"];
+	NSDictionary *pic = [result valueForKey:@"result"];
+	NSNumber *picID = [pic valueForKey:@"id"];
 	
 	if (nil != picID)
 	{
 		[self.params setValue:picID forKey:@"pic"];
+		
+//		[ImageManager saveImageCache:self.seletedImage with:pic];
 		
 		self.paramStatus |= PARAM_PIC_READY;
 
@@ -148,7 +153,7 @@ typedef enum PARAMS_STATUS_ENUM
 	
 	self.paramStatus |= PARAM_ETC_READY;
 	
-	if (!(self.paramStatus & PARAM_PIC_READY) && (nil != self.seletedImage))
+	if (!((self.paramStatus) & PARAM_PIC_READY) && (nil != self.seletedImage))
 	{
 		NSMutableDictionary *taskEvent = [self.params mutableCopy];
 

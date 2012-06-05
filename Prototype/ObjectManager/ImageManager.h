@@ -8,7 +8,8 @@
 #import "ObjectManager.h"
 
 @interface ImageManager : ObjectManager
-+ (NSNumber *) getImageSizeWithNumberID:(NSNumber *)ID;
-+ (void) setImageSize:(NSNumber *)size withNumberID:(NSNumber *)ID;
++ (CGSize) getCachedImageSizeWithNumberID:(NSNumber *)ID;
++ (void) setCachedImageSize:(CGSize)size withNumberID:(NSNumber *)ID;
 + (NSInteger) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target;
++ (void) saveImageCache:(UIImage *)image with:(NSDictionary *)imageObject;
 @end

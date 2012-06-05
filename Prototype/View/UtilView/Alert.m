@@ -13,14 +13,11 @@ CGFloat CONTENT_PADDING  = 5.0;
 
 @interface Alert ()
 {
-	NSString *_messageText;
 }
 
 @end
 
 @implementation Alert
-
-@synthesize messageText = _messageText;
 
 @synthesize message;
 
@@ -74,18 +71,6 @@ DEFINE_CUSTOM_XIB(Alert, 0);
 	self.frame = frame;
 }
 
-- (void) setMessageText:(NSString *)messageText
-{
-	if (CHECK_EQUAL(_messageText, messageText))
-	{
-		return;
-	}
-	
-	self.message.text = messageText;
-	
-	[self resize];
-}
-
 - (void) showIn:(UIView *)view
 {
 	if (nil != self.superview)
@@ -125,6 +110,25 @@ DEFINE_CUSTOM_XIB(Alert, 0);
 - (void) dismiss
 {
 	[self removeFromSuperview];
+}
+
+#pragma mark - object manager
+
+- (void) setMessageText:(NSString *)messageText
+{
+	if (CHECK_EQUAL(self.message.text, messageText))
+	{
+		return;
+	}
+	
+	self.message.text = messageText;
+	
+	[self resize];
+}
+
+- (NSString *) messageText
+{
+	return self.message.text;
 }
 
 @end

@@ -7,6 +7,7 @@
 
 #import "Message.h"
 #import "Util.h"
+#import "SDImageCache.h"
 
 @interface ImageManager ()
 {
@@ -47,25 +48,6 @@ DEFINE_SINGLETON(ImageManager);
 
 	[super dealloc];
 }
-
-#pragma mark - image size
-
-+ (NSNumber *) getImageSizeWithNumberID:(NSNumber *)ID
-{
-	@autoreleasepool 
-	{
-		return [[[self getInstnace] imageSizeDict] valueForKey:[ID stringValue]];
-	}
-}
-
-+ (void) setImageSize:(NSNumber *)size withNumberID:(NSNumber *)ID
-{
-	@autoreleasepool 
-	{
-		[[[self getInstnace] imageSizeDict] setValue:size  forKey:[ID stringValue]];
-	}
-}
-
 #pragma mark - create image
 
 + (NSInteger) createImage:(UIImage *)image withHandler:(SEL)handler andTarget:(id)target
@@ -86,6 +68,57 @@ DEFINE_SINGLETON(ImageManager);
 		UPLOAD_FILE(imageData, messageID);
 		
 		return messageID;
+	}
+}
+
+#pragma mark - cache
+
++ (CGSize) getCachedImageSizeWithNumberID:(NSNumber *)ID
+{
+	@autoreleasepool 
+	{
+		NSValue *sizeValue = [[[self getInstnace] imageSizeDict] valueForKey:[ID stringValue]];
+		return [sizeValue CGSizeValue];
+	}
+}
+
++ (void) setCachedImageSize:(CGSize)size withNumberID:(NSNumber *)ID
+{
+	@autoreleasepool 
+	{
+		NSValue *sizeValue = [NSValue valueWithCGSize:size];
+		[[[self getInstnace] imageSizeDict] setValue:sizeValue  forKey:[ID stringValue]];
+	}
+}
+
+
++ (void) saveImageCache:(UIImage *)image with:(NSDictionary *)imageObject
+{
+	NSString *baseUrl = [imageObject valueForKey:@"base_url"];
+	NSNumber *ID = [imageObject valueForKey:@"id"];
+	NSString *salt = [imageObject valueForKey:@"salt"];
+	NSString *type = [imageObject valueForKey:@"type"];
+	
+	
+	if (nil != baseUrl && nil != ID)
+	{
+		@autoreleasepool 
+		{
+			NSString *size = [[[NSString alloc] initWithFormat:@"%d!%d", 
+					  lrintf(image.size.width), 
+					  lrintf(image.size.height)] 
+					  autorelease];
+			NSString *imageUrlString = [[[NSString alloc] initWithFormat:@"%@%@/%@_%@.%@", 
+						    baseUrl, size, ID, salt, type] 
+						    autorelease];
+			
+			[[SDImageCache sharedImageCache] storeImage:image forKey:imageUrlString];
+			
+			[self setObject:imageObject withNumberID:ID];
+			
+			[self setCachedImageSize:image.size withNumberID:ID];
+		}
+	
 	}
 }
 
