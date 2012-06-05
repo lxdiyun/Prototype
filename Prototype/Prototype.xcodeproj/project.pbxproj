@@ -112,6 +112,8 @@
 		4898BA091526EE81004DA280 /* Logout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898BA051526EE81004DA280 /* Logout@2x.png */; };
 		4898BA0A1526EE81004DA280 /* MyHomePage.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898BA061526EE81004DA280 /* MyHomePage.png */; };
 		4898BA0B1526EE81004DA280 /* MyHomePage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4898BA071526EE81004DA280 /* MyHomePage@2x.png */; };
+		489BC727157DFB13006579F7 /* message.png in Resources */ = {isa = PBXBuildFile; fileRef = 489BC725157DFB13006579F7 /* message.png */; };
+		489BC728157DFB13006579F7 /* message@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 489BC726157DFB13006579F7 /* message@2x.png */; };
 		48A30DF51569E70C0069667C /* UserFansPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A30DF21569E70C0069667C /* UserFansPage.m */; };
 		48A30DF61569E70C0069667C /* UserFollowingPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A30DF41569E70C0069667C /* UserFollowingPage.m */; };
 		48A30DF91569E71C0069667C /* FoldHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A30DF81569E71C0069667C /* FoldHeader.m */; };
@@ -209,6 +211,8 @@
 		48CE913B14AD9DBE00B1E9D3 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 48CE913314AD9DBE00B1E9D3 /* whiteArrow@2x.png */; };
 		48CE914514ADA0A700B1E9D3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48CE914414ADA0A700B1E9D3 /* QuartzCore.framework */; };
 		48CE914714ADF06600B1E9D3 /* p_gray.gif in Resources */ = {isa = PBXBuildFile; fileRef = 48CE914614ADF06600B1E9D3 /* p_gray.gif */; };
+		48D50F03157DF2AD00EAC566 /* Choose_weibo.png in Resources */ = {isa = PBXBuildFile; fileRef = 48D50F01157DF2AD00EAC566 /* Choose_weibo.png */; };
+		48D50F04157DF2AD00EAC566 /* Choose_weibo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 48D50F02157DF2AD00EAC566 /* Choose_weibo@2x.png */; };
 		48D5C51414C018BA0089B6C8 /* MessageBinary.m in Sources */ = {isa = PBXBuildFile; fileRef = 48D5C51314C018BA0089B6C8 /* MessageBinary.m */; };
 		48D6E4A61565E748004A56C3 /* MyHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = 48D6E4A51565E748004A56C3 /* MyHomePage.m */; };
 		48D6E4A91565F8EE004A56C3 /* UserInfo.png in Resources */ = {isa = PBXBuildFile; fileRef = 48D6E4A71565F8EE004A56C3 /* UserInfo.png */; };
@@ -581,6 +585,8 @@
 		4898BA051526EE81004DA280 /* Logout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Logout@2x.png"; sourceTree = "<group>"; };
 		4898BA061526EE81004DA280 /* MyHomePage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MyHomePage.png; sourceTree = "<group>"; };
 		4898BA071526EE81004DA280 /* MyHomePage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MyHomePage@2x.png"; sourceTree = "<group>"; };
+		489BC725157DFB13006579F7 /* message.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = message.png; sourceTree = "<group>"; };
+		489BC726157DFB13006579F7 /* message@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message@2x.png"; sourceTree = "<group>"; };
 		48A30DF11569E70C0069667C /* UserFansPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserFansPage.h; sourceTree = "<group>"; };
 		48A30DF21569E70C0069667C /* UserFansPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserFansPage.m; sourceTree = "<group>"; };
 		48A30DF31569E70C0069667C /* UserFollowingPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserFollowingPage.h; sourceTree = "<group>"; };
@@ -728,6 +734,8 @@
 		48CE913314AD9DBE00B1E9D3 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
 		48CE914414ADA0A700B1E9D3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		48CE914614ADF06600B1E9D3 /* p_gray.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = p_gray.gif; sourceTree = "<group>"; };
+		48D50F01157DF2AD00EAC566 /* Choose_weibo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Choose_weibo.png; sourceTree = "<group>"; };
+		48D50F02157DF2AD00EAC566 /* Choose_weibo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Choose_weibo@2x.png"; sourceTree = "<group>"; };
 		48D5C51314C018BA0089B6C8 /* MessageBinary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageBinary.m; sourceTree = "<group>"; };
 		48D6E4A41565E748004A56C3 /* MyHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyHomePage.h; sourceTree = "<group>"; };
 		48D6E4A51565E748004A56C3 /* MyHomePage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyHomePage.m; sourceTree = "<group>"; };
@@ -1367,6 +1375,10 @@
 		48CE912B14AD9DBE00B1E9D3 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				489BC725157DFB13006579F7 /* message.png */,
+				489BC726157DFB13006579F7 /* message@2x.png */,
+				48D50F01157DF2AD00EAC566 /* Choose_weibo.png */,
+				48D50F02157DF2AD00EAC566 /* Choose_weibo@2x.png */,
 				4826B06F1577742A00295BDC /* delete.png */,
 				4826B0701577742A00295BDC /* delete@2x.png */,
 				4847049E156E284B00EB5BEF /* GetDirection.png */,
@@ -1977,6 +1989,10 @@
 				489204D815786D6600B146E8 /* FoodToolBar.xib in Resources */,
 				4846313C1578F7D400BDDF5E /* FoodPage.xib in Resources */,
 				48CCB38B157A12E6007528A7 /* Seperator.xib in Resources */,
+				48D50F03157DF2AD00EAC566 /* Choose_weibo.png in Resources */,
+				48D50F04157DF2AD00EAC566 /* Choose_weibo@2x.png in Resources */,
+				489BC727157DFB13006579F7 /* message.png in Resources */,
+				489BC728157DFB13006579F7 /* message@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

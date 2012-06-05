@@ -71,7 +71,8 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 		
 		if (nil != nserror)
 		{
-			LOG(@"Error: %@", nserror);
+			LOG(@"Error: %@ data = \n%@", error, dict);
+			[error release];
 		}
 	}
 	else 
@@ -149,6 +150,7 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 	[ConversationListManager reset];
 	[ConversationManager reset];
 	[ProfileMananger reset];
+	[ImageManager reset];
 
 	[self saveAll];
 }

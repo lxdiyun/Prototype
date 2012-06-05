@@ -53,8 +53,6 @@
 	{
 		[super initGUI];
 
-		[self updateCurrentUser];
-
 		if (nil == self.info)
 		{
 			self.info = [MyInfoCell createFromXIB];
@@ -92,6 +90,13 @@
 }
 
 #pragma mark - object manager
+
+- (void) viewWillAppearRequest
+{
+	[self updateCurrentUser];
+	
+	[super viewWillAppearRequest];
+}
 
 - (void) updateCurrentUser
 {

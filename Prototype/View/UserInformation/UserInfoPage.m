@@ -136,8 +136,6 @@ DEFINE_SINGLETON(UserInfoPage);
 	[self cleanData];
 	
 	[self initViewDisplay];
-	
-	[self sendUserInfoRequest];
 }
 
 - (void) back
@@ -222,6 +220,8 @@ DEFINE_SINGLETON(UserInfoPage);
 - (void) viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
+	
+	[self sendUserInfoRequest];
 }
 
 - (void) viewDidAppear:(BOOL)animated

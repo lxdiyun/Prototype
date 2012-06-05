@@ -24,6 +24,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *health;
 @property (retain, nonatomic) IBOutlet ImageV *image;
 @property (retain, nonatomic) IBOutlet UILabel *text;
-@property (retain, nonatomic) IBOutlet UISwitch *weibo;
+@property (retain, nonatomic) IBOutlet UIButton *weibo;
 
 @end

@@ -43,7 +43,7 @@ typedef enum NEW_FOOD_DETAIL_ENUM
 
 static NSString *FOOD_DETAIL_TITLE[NEW_FOOD_DETAIL_MAX] = {@"名字：", @"城市：", @"餐馆："};
 
-static UITextField *gs_food_detail_text_view[NEW_FOOD_DETAIL_MAX] = {nil};
+static UITextView *gs_food_detail_text_view[NEW_FOOD_DETAIL_MAX] = {nil};
 static UITextView *gs_food_desc_text_view = nil;
 static UILabel *gs_food_detail_star_label[NEW_FOOD_DETAIL_MAX] = {nil};
 static TextInputer *gs_food_desc_inputer =  nil;
@@ -242,18 +242,17 @@ static TagSelector *gs_tag_selector = nil;
 		if (nil == gs_food_detail_text_view[indexPath.row])
 		{
 			CGFloat X = 75.0;
-			CGFloat Y = 0.0;
+			CGFloat Y = 4.0;
 			CGFloat width = cell.contentView.frame.size.width - X - 28.0;
-			CGFloat height = DEFAULT_CELL_HEIGHT;
-			gs_food_detail_text_view[indexPath.row] = [[UITextField alloc] initWithFrame:CGRectMake(X, 
-														Y, 
-														width, 
-														height)];
-			gs_food_detail_text_view[indexPath.row].center = CGPointMake(gs_food_detail_text_view[indexPath.row].center.x, cell.center.y);
+			CGFloat height = FONT_SIZE * 2;
+			gs_food_detail_text_view[indexPath.row] = [[UITextView alloc] initWithFrame:CGRectMake(X, 
+													       Y, 
+													       width, 
+													       height)];
 			gs_food_detail_text_view[indexPath.row].font = [UIFont systemFontOfSize:FONT_SIZE];
 			gs_food_detail_text_view[indexPath.row].delegate = self;
-			gs_food_detail_text_view[indexPath.row].contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 			gs_food_detail_text_view[indexPath.row].returnKeyType = UIReturnKeyDone;
+			gs_food_detail_text_view[indexPath.row].backgroundColor = [UIColor clearColor];
 			
 			if (FOOD_TAG != indexPath.row)
 			{
@@ -491,7 +490,7 @@ static TagSelector *gs_tag_selector = nil;
 		[params setValue:[NSNumber numberWithBool:self.header.special.selected]  forKey:@"like_special"];
 		[params setValue:[NSNumber numberWithBool:self.header.valued.selected]  forKey:@"like_valued"];
 		[params setValue:[NSNumber numberWithBool:self.header.health.selected]  forKey:@"like_healthy"];
-		[params setValue:[NSNumber numberWithBool:self.header.weibo.on]  forKey:@"post_weibo"];
+		[params setValue:[NSNumber numberWithBool:self.header.weibo.selected]  forKey:@"post_weibo"];
 
 		[self.task etcReady:params];
 		self.task = nil;
@@ -593,7 +592,6 @@ static TagSelector *gs_tag_selector = nil;
 
 - (void) textFieldDidEndEditing:(UITextField *)textField
 {
-	[self updateShareButton];
 }
 
 - (void) showALlTextField
@@ -603,10 +601,10 @@ static TagSelector *gs_tag_selector = nil;
 
 - (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
 {
-	if (gs_food_detail_text_view[FOOD_PLACE] != textField)
-	{
-		[self performSelector:@selector(showALlTextField) withObject:nil afterDelay:0.5];
-	}
+//	if (gs_food_detail_text_view[FOOD_PLACE] != textField)
+//	{
+//		[self performSelector:@selector(showALlTextField) withObject:nil afterDelay:0.5];
+//	}
 
 	return YES;
 }
@@ -625,13 +623,32 @@ static TagSelector *gs_tag_selector = nil;
 	if (gs_food_desc_text_view == textView)
 	{
 		[self showTextInputer];
+		
+		return NO;
+	}
+	
+	if (gs_food_detail_text_view[FOOD_PLACE] != textView)
+	{
+		[self performSelector:@selector(showALlTextField) withObject:nil afterDelay:0.5];
 	}
 
-	return NO;
+	return YES;
+}
+
+- (void) textViewDidChange:(UITextView *)textView
+{
+	[self updateShareButton];
 }
 
 - (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
+	if ([text isEqualToString:@"\n"]) 
+	{
+		[textView resignFirstResponder];
+		return NO;
+	}
+
+
 	NSUInteger newLength = [textView.text length] + [text length] - range.length;
 	
 	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;

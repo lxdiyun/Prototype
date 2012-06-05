@@ -87,7 +87,7 @@ DEFINE_SINGLETON(ConversationDetailPage);
 	
 	@autoreleasepool 
 	{
-		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"comIcon.png"], 
+		self.navigationItem.rightBarButtonItem = SETUP_BAR_BUTTON([UIImage imageNamed:@"message.png"], 
 									  self, 
 									  @selector(inputMessage:));
 		

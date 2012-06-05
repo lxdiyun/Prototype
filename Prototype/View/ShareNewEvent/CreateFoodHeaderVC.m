@@ -42,6 +42,8 @@
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
+	
+	self.weibo.selected = YES;
 }
 
 - (void) viewDidUnload

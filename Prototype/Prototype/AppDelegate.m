@@ -31,6 +31,7 @@ static UIViewController *gs_currentViewController;
 @interface AppDelegate () <UITabBarControllerDelegate>
 {
 	UITabBarController *_tabco;
+	id<UITableViewDelegate> *_moreOriginDelegate;
 }
 @property (strong) UITabBarController *tabco;
 @end

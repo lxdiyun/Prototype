@@ -97,11 +97,8 @@
 
 + (void) reset
 {
-	NSMutableDictionary *newEmptyDict = [[NSMutableDictionary alloc] init];
 	
-	[[self getInstnace] setObjectDict:newEmptyDict];
-	
-	[newEmptyDict release];
+	[[[self getInstnace] objectDict] removeAllObjects];
 }
 
 #pragma mark - updating flag

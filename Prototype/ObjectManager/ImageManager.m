@@ -77,8 +77,8 @@ DEFINE_SINGLETON(ImageManager);
 {
 	@autoreleasepool 
 	{
-		NSValue *sizeValue = [[[self getInstnace] imageSizeDict] valueForKey:[ID stringValue]];
-		return [sizeValue CGSizeValue];
+		NSString *sizeString = [[[self getInstnace] imageSizeDict] valueForKey:[ID stringValue]];
+		return CGSizeFromString(sizeString);
 	}
 }
 
@@ -86,8 +86,8 @@ DEFINE_SINGLETON(ImageManager);
 {
 	@autoreleasepool 
 	{
-		NSValue *sizeValue = [NSValue valueWithCGSize:size];
-		[[[self getInstnace] imageSizeDict] setValue:sizeValue  forKey:[ID stringValue]];
+		NSString *sizeString = NSStringFromCGSize(size);
+		[[[self getInstnace] imageSizeDict] setValue:sizeString  forKey:[ID stringValue]];
 	}
 }
 
@@ -157,7 +157,13 @@ DEFINE_SINGLETON(ImageManager);
 		
 		[key release];
 	}
+}
 
++ (void) reset
+{
+	[super reset];
+	
+	[[[self getInstnace] imageSizeDict] removeAllObjects];
 }
 
 #pragma mark - overwrite get method

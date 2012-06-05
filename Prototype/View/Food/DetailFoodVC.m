@@ -399,6 +399,9 @@ typedef enum FOOD_PAGE_SECTION_ENUM
 		}
 
 		self.delegate.navigationItem.titleView = self.titleView.view;
+		CGRect frame = self.titleView.view.frame;
+		frame.origin.x = self.delegate.view.frame.size.width / 2 - frame.size.width / 2;
+		self.titleView.view.frame = frame;
 		
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 		self.view.backgroundColor = [Color lightyellow];
