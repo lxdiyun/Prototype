@@ -12,8 +12,8 @@
 
 - (void) cleanInfo;
 - (void) newUserLogin;
-- (void) startLogin;
-- (void) setMessage:(NSString *)message;
+- (void) startLoginWithNoAlert;
+- (void) startLoginWithAlert:(NSString *)message;
 
 - (IBAction) nativeLogin:(id)sender;
 - (IBAction) sinaLogin:(id)sender;

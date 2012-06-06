@@ -103,19 +103,18 @@
 
 #pragma mark - action
 
-- (void) setMessage:(NSString *)message
+- (void) startLoginWithAlert:(NSString *)message
 {
 	self.alert.messageText = message;
-	
 	[self.alert showIn:self.view];
+	
+	POP_VC(self.navigationController, NO);
 }
 
-- (void) startLogin
+- (void) startLoginWithNoAlert
 {
 	POP_VC(self.navigationController, NO);
 	[self.alert dismiss];
-	
-	[[AppDelegate currentViewController] presentModalViewController:self.navigationController animated:YES];
 }
 
 - (void) cleanInfo

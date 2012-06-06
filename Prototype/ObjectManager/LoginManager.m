@@ -172,11 +172,9 @@ DEFINE_SINGLETON(LoginManager);
 		
 		if (!requestSuccess)
 		{
-			[gs_login_page setMessage:@"登录失败，请重新登录"];
-
 			[self cleanUpdatingStringID:gs_fakeLoginStringID];
 			
-			[self handleNotLogin];
+			[self handleNotLoginWithNoAlert];
 		}
 		
 	}
@@ -194,15 +192,11 @@ DEFINE_SINGLETON(LoginManager);
 	[NetworkService stop];
 	
 	NSString *errorMessage = [result valueForKey:@"error"];
+	
 	if (nil != errorMessage)
 	{
 		SHOW_ALERT_TEXT(@"登录失败", errorMessage);
-		[gs_login_page_nvc popToRootViewControllerAnimated:NO];
-	}
-	
-	if ([[AppDelegate currentViewController] modalViewController] != gs_login_page_nvc)
-	{
-		[[AppDelegate currentViewController] presentModalViewController:gs_login_page_nvc animated:NO];
+		[[self class] handleNotLoginWithAlert:errorMessage];
 	}
 }
 
@@ -280,9 +274,7 @@ DEFINE_SINGLETON(LoginManager);
 
 + (void) handleNotLoginMessage:(id)messsge
 {	
-	[gs_login_page setMessage:@"登录失败，请重新登录"];
-	
-	[self handleNotLogin];
+	[self handleNotLoginWithAlert:@"登录失败，请重新登录"];
 }
 
 + (void) changeLoginUser
@@ -292,13 +284,25 @@ DEFINE_SINGLETON(LoginManager);
 	[self request];
 }
 
-+ (void) handleNotLogin
++ (void) handleNotLoginWithAlert:(NSString *)message
+{
+	[gs_login_page startLoginWithAlert:message];
+	
+	if ([[AppDelegate currentViewController] modalViewController] != gs_login_page_nvc)
+	{
+		[[AppDelegate currentViewController] presentModalViewController:gs_login_page_nvc animated:NO];
+	}
+}
+
++ (void) handleNotLoginWithNoAlert
 {
 	[NetworkService stop];
+	
+	[gs_login_page startLoginWithNoAlert];
 
 	if ([[AppDelegate currentViewController] modalViewController] != gs_login_page_nvc)
 	{
-		[gs_login_page startLogin];
+		[[AppDelegate currentViewController] presentModalViewController:gs_login_page_nvc animated:NO];
 	}
 }
 
@@ -327,7 +331,7 @@ DEFINE_SINGLETON(LoginManager);
 	
 	[gs_login_page cleanInfo];
 
-	[self handleNotLogin];
+	[self handleNotLoginWithNoAlert];
 	
 	[AppDelegate resetAllPage];
 }
