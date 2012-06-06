@@ -8,17 +8,17 @@
 
 #import "ObjectSaver.h"
 
-#import "EventManager.h"
-#import "ImageManager.h"
-#import "ProfileMananger.h"
-#import "FoodCommentMananger.h"
-#import "FoodManager.h"
 #import "ConversationListManager.h"
 #import "ConversationManager.h"
-#import "PlaceManager.h"
+#import "EventManager.h"
+#import "FoodCommentMananger.h"
+#import "FoodManager.h"
 #import "FoodMapListManager.h"
-#import "PublicFoodMapListManager.h"
+#import "ImageManager.h"
 #import "LoginManager.h"
+#import "PlaceManager.h"
+#import "ProfileMananger.h"
+#import "PublicFoodMapListManager.h"
 #import "UserFoodHistoryManager.h"
 #import "Util.h"
 
@@ -143,14 +143,15 @@ static Class MSWJ_OBJECT_CLASS[MSWJ_OBJECT_QUANTITY];
 	
 }
 
-+ (void) resetUserInfo
++ (void) resetCache
 {
-	[EventManager reset];
-	[FoodMapListManager reset];
+	for (int i = 0; i < MSWJ_OBJECT_QUANTITY; ++i)
+	{
+		[MSWJ_OBJECT_CLASS[i] reset];
+	}
+	
 	[ConversationListManager reset];
 	[ConversationManager reset];
-	[ProfileMananger reset];
-	[ImageManager reset];
 
 	[self saveAll];
 }

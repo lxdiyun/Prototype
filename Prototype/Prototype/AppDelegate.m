@@ -28,18 +28,20 @@ static Class MSWJ_PAGE_CLASS[MSWJ_PAGE_QUANTITY];
 static UIViewController *MSWJ_PAGE_INSTANCE[MSWJ_PAGE_QUANTITY] = {nil};
 static UIViewController *gs_currentViewController;
 
-@interface AppDelegate () <UITabBarControllerDelegate>
+@interface AppDelegate () <UITabBarControllerDelegate, UITableViewDelegate>
 {
 	UITabBarController *_tabco;
-	id<UITableViewDelegate> *_moreOriginDelegate;
+	id<UITableViewDelegate> _moreOriginDelegate;
 }
-@property (strong) UITabBarController *tabco;
+@property (strong, nonatomic) UITabBarController *tabco;
+@property (assign, nonatomic) id<UITableViewDelegate> moreOriginDelegate;
 @end
 
 @implementation AppDelegate
 
 @synthesize window = _window;
 @synthesize tabco = _tabco;
+@synthesize moreOriginDelegate = _moreOriginDelegate;
 
 #pragma mark - life circle
 
@@ -109,17 +111,8 @@ static UIViewController *gs_currentViewController;
 	}
 	
 	[tabBarController setViewControllers:tabBarViewControllers animated:NO];
-	tabBarController.delegate = self;
-	
-	// configure more view
-	CONFIG_NAGIVATION_BAR(tabBarController.moreNavigationController.navigationBar);
 	tabBarController.customizableViewControllers = nil;
-	UITableView *moreView = (UITableView *)tabBarController.moreNavigationController.topViewController.view;
-	if ([moreView isKindOfClass:[UITableView class]])
-	{
-		moreView.backgroundColor = [Color lightyellow];
-		[moreView setSeparatorColor:[Color darkyellow]];
-	}
+	tabBarController.delegate = self;
 	
 	self.tabco = tabBarController;
 	
@@ -180,7 +173,7 @@ static UIViewController *gs_currentViewController;
 - (BOOL) tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
 
 {
-	if ([tabBarController.viewControllers objectAtIndex:SHARE_PAGE] == viewController)
+	if (viewController == [tabBarController.viewControllers objectAtIndex:SHARE_PAGE])
 	{
 		ShareNewEvent *sharer = (ShareNewEvent *)MSWJ_PAGE_INSTANCE[SHARE_PAGE];
 		
@@ -190,13 +183,32 @@ static UIViewController *gs_currentViewController;
 		
 		return NO;
 	} 
-	else if (viewController == tabBarController.moreNavigationController)
-	{
+	else if ((viewController == tabBarController.moreNavigationController) 
+		 && (nil == tabBarController.moreNavigationController.delegate)) 
+	{ 
+		
 		[tabBarController.moreNavigationController popToRootViewControllerAnimated:NO];
+
+		// configure more view
+		UITableView *view = (UITableView *)tabBarController.moreNavigationController.topViewController.view;
+		
+		CONFIG_NAGIVATION_BAR(tabBarController.moreNavigationController.navigationBar);
+		
+		if ([view isKindOfClass:[UITableView class]])
+		{
+			view.backgroundColor = [Color lightyellow];
+			[view setSeparatorColor:[Color darkyellow]];
+			
+			if (view.delegate != self)
+			{
+				self.moreOriginDelegate = view.delegate;
+				view.delegate = self;
+			}
+		}
 		
 		return YES;
 	}
-	else if ([tabBarController.viewControllers objectAtIndex:LOGOUT_PAGE] == viewController)
+	else if (viewController == [tabBarController.viewControllers objectAtIndex:LOGOUT_PAGE])
 	{
 		LogoutPage *logoutPage = (LogoutPage *)MSWJ_PAGE_INSTANCE[LOGOUT_PAGE];
 		[logoutPage confirmLogout];
@@ -237,6 +249,26 @@ static UIViewController *gs_currentViewController;
 			[(UITabBarController *)gs_currentViewController setSelectedIndex:page];
 		}
 	}
+}
+
+#pragma mark - UITableViewDelegate - for more tab
+
+- (NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if  (LOGOUT_PAGE == (indexPath.row + MORE_PAGE_INDEX))
+	{
+		LogoutPage *logoutPage = (LogoutPage *)MSWJ_PAGE_INSTANCE[LOGOUT_PAGE];
+		[logoutPage confirmLogout];
+		
+		return nil;
+	}
+
+	return indexPath;
+}
+
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[self.moreOriginDelegate tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
 @end

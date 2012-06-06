@@ -6,6 +6,8 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
+const static NSInteger MORE_PAGE_INDEX = 0x4;
+
 typedef enum MSWJ_PAGE_ENUM
 {
 	EVENT_PAGE = 0x0,

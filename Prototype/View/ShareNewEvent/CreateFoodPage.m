@@ -21,7 +21,7 @@
 
 const static CGFloat  FONT_SIZE = 15.0;
 const static CGFloat STAR_SIZE = 22;
-static CGPoint TEXT_OFFSET = {0, 0};
+static CGPoint DETAIL_OFFSET = {0, 0};
 
 typedef enum NEW_FOOD_SECTION_ENUM
 {
@@ -49,7 +49,7 @@ static UILabel *gs_food_detail_star_label[NEW_FOOD_DETAIL_MAX] = {nil};
 static TextInputer *gs_food_desc_inputer =  nil;
 static TagSelector *gs_tag_selector = nil;
 
-@interface CreateFoodPage () <UITextFieldDelegate, UITextViewDelegate, TextInputerDeletgate, TagSelectorDelegate>
+@interface CreateFoodPage () <UITextViewDelegate, TextInputerDeletgate, TagSelectorDelegate>
 {
 	CreateFoodHeaderVC *_header;
 	NSNumber *_uploadingID;
@@ -79,7 +79,7 @@ static TagSelector *gs_tag_selector = nil;
 			self.view.backgroundColor = [Color lightyellow];
 			self.header = [[[CreateFoodHeaderVC alloc] init] autorelease];
 			self.title = @"分享美食";
-			TEXT_OFFSET.y = self.header.view.frame.size.height;
+			DETAIL_OFFSET.y = self.header.view.frame.size.height;
 		}
 	}
 	return self;
@@ -392,7 +392,70 @@ static TagSelector *gs_tag_selector = nil;
 	}
 }
 
-#pragma mark - interface and action
+#pragma mark - GUI
+
+- (void) rollToDetail
+{
+	[self.tableView setContentOffset:DETAIL_OFFSET animated:YES];
+}
+
+- (void) resetImage:(UIImage *)image;
+{
+	@autoreleasepool 
+	{
+		self.header.image.image = image;
+	}
+}
+
+- (BOOL) checkParamsReady
+{
+	BOOL paramsReady = YES;
+	
+	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
+	{
+		if (FOOD_TAG == i)
+		{
+			continue;
+		}
+		
+		if (0 >= gs_food_detail_text_view[i].text.length)
+		{
+			paramsReady = NO;
+			gs_food_detail_star_label[i].textColor = [UIColor redColor];
+		}
+		else
+		{
+			gs_food_detail_star_label[i].textColor = [UIColor clearColor];
+		}
+	}
+	
+	return paramsReady;
+}
+
+- (void) updateShareButton
+{
+	if ([self checkParamsReady])
+	{
+		self.navigationItem.rightBarButtonItem.enabled = YES;
+	}
+	else
+	{
+		self.navigationItem.rightBarButtonItem.enabled = NO;
+	}
+}
+
+- (void) updateCity
+{
+	if (nil != gs_food_detail_text_view[FOOD_CITY])
+	{
+		if (0 >= gs_food_detail_text_view[FOOD_CITY].text.length)
+		{
+			[self requestUserCity];
+		}
+	}
+}
+
+#pragma mark - object manager
 
 - (void) requestUserCity
 {
@@ -417,62 +480,6 @@ static TagSelector *gs_tag_selector = nil;
 		[LoginManager requestWithHandler:@selector(requestUserCity) andTarget:self];
 	}
 
-}
-
-- (void) updateCity
-{
-	if (nil != gs_food_detail_text_view[FOOD_CITY])
-	{
-		if (0 >= gs_food_detail_text_view[FOOD_CITY].text.length)
-		{
-			[self requestUserCity];
-		}
-	}
-}
-
-- (void) resetImage:(UIImage *)image;
-{
-	@autoreleasepool 
-	{
-		self.header.image.image = image;
-	}
-}
-
-- (BOOL) checkParamsReady
-{
-	BOOL paramsReady = YES;
-
-	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
-	{
-		if (FOOD_TAG == i)
-		{
-			continue;
-		}
-
-		if (0 >= gs_food_detail_text_view[i].text.length)
-		{
-			paramsReady = NO;
-			gs_food_detail_star_label[i].textColor = [UIColor redColor];
-		}
-		else
-		{
-			gs_food_detail_star_label[i].textColor = [UIColor clearColor];
-		}
-	}
-
-	return paramsReady;
-}
-
-- (void) updateShareButton
-{
-	if ([self checkParamsReady])
-	{
-		self.navigationItem.rightBarButtonItem.enabled = YES;
-	}
-	else
-	{
-		self.navigationItem.rightBarButtonItem.enabled = NO;
-	}
 }
 
 - (void) createFood:(id)sender
@@ -575,47 +582,6 @@ static TagSelector *gs_tag_selector = nil;
 	}
 }
 
-#pragma mark - UITextFieldDelegate
-
-- (BOOL) textFieldShouldReturn:(UITextField *)textField
-{	
-	[self updateShareButton];
-
-	[textField resignFirstResponder];
-
-	return YES;
-}
-
-- (void) textFieldDidBeginEditing:(UITextField *)textField
-{
-}
-
-- (void) textFieldDidEndEditing:(UITextField *)textField
-{
-}
-
-- (void) showALlTextField
-{
-	[self.tableView setContentOffset:TEXT_OFFSET animated:YES];
-}
-
-- (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
-{
-//	if (gs_food_detail_text_view[FOOD_PLACE] != textField)
-//	{
-//		[self performSelector:@selector(showALlTextField) withObject:nil afterDelay:0.5];
-//	}
-
-	return YES;
-}
-
-- (BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-	NSUInteger newLength = [textField.text length] + [string length] - range.length;
-	
-	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;
-}
-
 #pragma mark - UITextViewDelegate
 
 - (BOOL) textViewShouldBeginEditing:(UITextView *)textView
@@ -629,7 +595,7 @@ static TagSelector *gs_tag_selector = nil;
 	
 	if (gs_food_detail_text_view[FOOD_PLACE] != textView)
 	{
-		[self performSelector:@selector(showALlTextField) withObject:nil afterDelay:0.5];
+		[self performSelector:@selector(rollToDetail) withObject:nil afterDelay:0.5];
 	}
 
 	return YES;
@@ -647,7 +613,6 @@ static TagSelector *gs_tag_selector = nil;
 		[textView resignFirstResponder];
 		return NO;
 	}
-
 
 	NSUInteger newLength = [textView.text length] + [text length] - range.length;
 	

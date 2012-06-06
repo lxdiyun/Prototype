@@ -11,5 +11,5 @@
 @interface ObjectSaver : NSObject
 + (void) saveAll;
 + (void) restoreAll;
-+ (void) resetUserInfo;
++ (void) resetCache;
 @end

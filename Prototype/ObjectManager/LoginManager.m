@@ -7,15 +7,15 @@
 
 #import <ytoolkit/yoauthv1.h>
 
-#import "Util.h"
-#import "Message.h"
-#import "NetworkService.h"
 #import "AppDelegate.h"
-#import "ObjectSaver.h"
-#import "UserInfoPage.h"
 #import "EventPage.h"
 #import "LoginPageVC.h"
+#import "Message.h"
+#import "NetworkService.h"
+#import "ObjectSaver.h"
 #import "SDImageCache.h"
+#import "UserInfoPage.h"
+#import "Util.h"
 
 NSString * const LOGIN_TYPE_KEY = @"meishiwanjia_login_type";
 
@@ -197,12 +197,12 @@ DEFINE_SINGLETON(LoginManager);
 	if (nil != errorMessage)
 	{
 		SHOW_ALERT_TEXT(@"登录失败", errorMessage);
-		[gs_login_page_nvc popToRootViewControllerAnimated:YES];
+		[gs_login_page_nvc popToRootViewControllerAnimated:NO];
 	}
 	
 	if ([[AppDelegate currentViewController] modalViewController] != gs_login_page_nvc)
 	{
-		[[AppDelegate currentViewController] presentModalViewController:gs_login_page_nvc animated:YES];
+		[[AppDelegate currentViewController] presentModalViewController:gs_login_page_nvc animated:NO];
 	}
 }
 
@@ -224,7 +224,7 @@ DEFINE_SINGLETON(LoginManager);
 		
 		if ([[AppDelegate currentViewController] modalViewController] == gs_login_page_nvc)
 		{
-			[[AppDelegate currentViewController] dismissModalViewControllerAnimated:YES];
+			[[AppDelegate currentViewController] dismissModalViewControllerAnimated:NO];
 		}
 		
 		[self checkAndPerformResponderWithID:gs_fakeLoginStringID];
@@ -264,7 +264,7 @@ DEFINE_SINGLETON(LoginManager);
 		// remove login view
 		if ([[AppDelegate currentViewController] modalViewController] == gs_login_page_nvc)
 		{
-			[[AppDelegate currentViewController] dismissModalViewControllerAnimated:YES];
+			[[AppDelegate currentViewController] dismissModalViewControllerAnimated:NO];
 		}
 		
 		// excute login request pending action
@@ -306,7 +306,7 @@ DEFINE_SINGLETON(LoginManager);
 
 + (void) logoutCurrentUser
 {
-	[ObjectSaver resetUserInfo];
+	[ObjectSaver resetCache];
 	
 	// clean cookie
 	NSHTTPCookie *cookie;
