@@ -67,6 +67,13 @@ DEFINE_SINGLETON(PlaceManager);
 	return @"place.create";
 }
 
++ (void) createPlace:(NSDictionary *)placeObject withHandler:(SEL)handler andTarget:(id)target
+{
+	[[self getInstnace] setCreateParams:placeObject];
+	
+	[self createObjectWithHandler:handler andTarget:target];
+}
+
 #pragma mark - overwrite update method
 
 - (NSString *) updateMethod

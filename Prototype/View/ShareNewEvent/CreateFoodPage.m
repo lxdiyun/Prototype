@@ -18,6 +18,7 @@
 #import "EventPage.h"
 #import "CreateFoodHeaderVC.h"
 #import "AppDelegate.h"
+#import "InputMapPage.h"
 
 const static CGFloat  FONT_SIZE = 15.0;
 const static CGFloat STAR_SIZE = 22;
@@ -49,11 +50,12 @@ static UILabel *gs_food_detail_star_label[NEW_FOOD_DETAIL_MAX] = {nil};
 static TextInputer *gs_food_desc_inputer =  nil;
 static TagSelector *gs_tag_selector = nil;
 
-@interface CreateFoodPage () <UITextViewDelegate, TextInputerDeletgate, TagSelectorDelegate>
+@interface CreateFoodPage () <UITextViewDelegate, TextInputerDeletgate, InputMapDelegate, TagSelectorDelegate>
 {
 	CreateFoodHeaderVC *_header;
 	NSNumber *_uploadingID;
 	CreateFoodTask *_task;
+	InputMapPage *_inputMap;
 	
 }
 - (void) updateCity;
@@ -61,6 +63,7 @@ static TagSelector *gs_tag_selector = nil;
 
 @property (strong, nonatomic) CreateFoodHeaderVC *header;
 @property (strong, nonatomic) NSNumber *uploadingID;
+@property (strong, nonatomic) InputMapPage *inputMap;
 @end
 
 @implementation CreateFoodPage
@@ -68,6 +71,7 @@ static TagSelector *gs_tag_selector = nil;
 @synthesize header = _header;
 @synthesize uploadingID = _uploadingID;
 @synthesize task = _task;
+@synthesize inputMap = _inputMap;
 
 - (id) initWithStyle:(UITableViewStyle)style
 {
@@ -80,6 +84,9 @@ static TagSelector *gs_tag_selector = nil;
 			self.header = [[[CreateFoodHeaderVC alloc] init] autorelease];
 			self.title = @"分享美食";
 			DETAIL_OFFSET.y = self.header.view.frame.size.height;
+			
+			self.inputMap = [[[InputMapPage alloc] init] autorelease];
+			self.inputMap.delegate = self;
 		}
 	}
 	return self;
@@ -89,6 +96,8 @@ static TagSelector *gs_tag_selector = nil;
 {
 	self.header = nil;
 	self.uploadingID = nil;
+	self.task = nil;
+	self.inputMap = nil;
 	
 	for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 	{
@@ -138,7 +147,7 @@ static TagSelector *gs_tag_selector = nil;
 	gs_food_desc_text_view = nil;
 	gs_tag_selector = nil;
 
-	self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"分享", self, @selector(createFood:));
+	self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"分享", self, @selector(createFoodEtc:));
 
 	self.navigationItem.leftBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"取消", self, @selector(cancelCreate:));
 	self.navigationItem.rightBarButtonItem.enabled = NO;
@@ -253,6 +262,7 @@ static TagSelector *gs_tag_selector = nil;
 			gs_food_detail_text_view[indexPath.row].delegate = self;
 			gs_food_detail_text_view[indexPath.row].returnKeyType = UIReturnKeyDone;
 			gs_food_detail_text_view[indexPath.row].backgroundColor = [UIColor clearColor];
+			gs_food_detail_text_view[indexPath.row].scrollEnabled = NO;
 			
 			if (FOOD_TAG != indexPath.row)
 			{
@@ -482,15 +492,17 @@ static TagSelector *gs_tag_selector = nil;
 
 }
 
-- (void) createFood:(id)sender
+- (void) createFoodEtc:(id)sender
 {
 	if ([self checkParamsReady])
 	{
 		NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+		
+		NSString *city = gs_food_detail_text_view[FOOD_CITY].text;
+		
 
 		[params setValue:gs_food_detail_text_view[FOOD_NAME].text forKey:@"name"];
-		[params setValue:gs_food_detail_text_view[FOOD_CITY].text forKey:@"city"];
-		[params setValue:gs_food_detail_text_view[FOOD_PLACE].text forKey:@"place_name"];
+		[params setValue:city forKey:@"city"];
 		[params setValue:gs_food_desc_text_view.text forKey:@"desc"];
 //		[params setValue:[gs_food_detail_text_view[FOOD_TAG].text componentsSeparatedByString:@" "] forKey:@"category"];
 		[params setValue:[NSNumber numberWithFloat:[self.header.score.text floatValue]]  forKey:@"taste_score"];
@@ -500,14 +512,14 @@ static TagSelector *gs_tag_selector = nil;
 		[params setValue:[NSNumber numberWithBool:self.header.weibo.selected]  forKey:@"post_weibo"];
 
 		[self.task etcReady:params];
-		self.task = nil;
 		
-		[self foodCreated];
-
+		self.inputMap.placeName = gs_food_detail_text_view[FOOD_PLACE].text;
+		self.inputMap.city = city;
+		
+		[self.navigationController pushViewController:self.inputMap animated:YES];
+		
 		[params release];
 	}
-	
-	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (void) cancelCreate:(id)sender
@@ -529,13 +541,15 @@ static TagSelector *gs_tag_selector = nil;
 {
 	@autoreleasepool 
 	{
-		[self.header cleanHeader];
+		[self dismissModalViewControllerAnimated:YES];
 
+		[self.header cleanHeader];
+		
 		for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 		{
 			if (FOOD_PLACE == i)
 			{
-				// Do not clean city text
+				// Do not clean city and place text
 				continue;
 			}
 
@@ -546,6 +560,7 @@ static TagSelector *gs_tag_selector = nil;
 		
 		[self.navigationController popToRootViewControllerAnimated:NO];
 		[self resetImage:nil];
+		self.task = nil;
 		
 		[self updateShareButton];
 	}
@@ -662,6 +677,23 @@ static TagSelector *gs_tag_selector = nil;
 - (void) cancelSelectTags:(TagSelector *)sender
 {
 	[self focusFoodText];
+}
+
+#pragma mark - InputMapDelegate
+
+- (void) placeSelected:(CLLocationCoordinate2D)coordinate
+{
+	NSMutableDictionary *place = [[NSMutableDictionary alloc] init];
+	
+	[place setValue:gs_food_detail_text_view[FOOD_PLACE].text forKey:@"name"];
+	[place setValue:[NSNumber numberWithFloat:coordinate.latitude] forKey:@"lat"];
+	[place setValue:[NSNumber numberWithFloat:coordinate.longitude] forKey:@"lng"];
+	
+	[self.task placeSelected:place];
+	
+	[place release];
+	
+	[self foodCreated];
 }
 
 @end

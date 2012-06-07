@@ -12,6 +12,7 @@
 
 @interface MapAnnotation : NSObject <MKAnnotation>
 
-@property (strong,nonatomic) NSDictionary *placeObject;
+@property (strong, nonatomic) NSDictionary *placeObject;
+@property (assign, nonatomic) CLLocationCoordinate2D coordinate;
 
 @end

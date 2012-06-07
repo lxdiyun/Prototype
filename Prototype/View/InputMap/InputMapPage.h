@@ -11,10 +11,20 @@
 
 #import "MapAnnotation.h"
 
+@protocol InputMapDelegate <NSObject>
+
+- (void) placeSelected:(CLLocationCoordinate2D)coordinate;
+
+@end
+
 @interface InputMapPage : UIViewController
 
 @property (strong, nonatomic) MapAnnotation *annotation;
+@property (strong, nonatomic) NSString *placeName;
+@property (strong, nonatomic) NSString *city;
+@property (assign, nonatomic) id<InputMapDelegate> delegate;
 
 @property (retain, nonatomic) IBOutlet MKMapView *map;
+
 
 @end

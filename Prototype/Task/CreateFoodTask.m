@@ -15,6 +15,7 @@
 #import "UIImage+Scale.h"
 #import "EventManager.h"
 #import "Util.h"
+#import "PlaceManager.h"
 
 const static CGFloat MAX_FOOD_PIC_RESOLUTION = 960.0;
 
@@ -22,8 +23,9 @@ typedef enum PARAMS_STATUS_ENUM
 {
 	PARAM_EMPTY = 0x0,
 	PARAM_PIC_READY = 0x1 << 0,
-	PARAM_ETC_READY = 0x1 << 1,
-	PARAM_ALL_READY = (0x1 << 2) - 1
+	PARAM_PLACE_READY = 0x1 << 1,
+	PARAM_ETC_READY = 0x1 << 2,
+	PARAM_ALL_READY = (0x1 << 3) - 1
 } PARAMS_STATUS;
 
 @interface CreateFoodTask ()
@@ -82,13 +84,23 @@ typedef enum PARAMS_STATUS_ENUM
 
 - (BOOL) isAllConditionReady
 {
+	if ((PARAM_PIC_READY != self.paramStatus) && (nil != self.seletedImage))
+	{
+		NSMutableDictionary *taskEvent = [self.params mutableCopy];
+		
+		[taskEvent setValue:self.seletedImage forKey:@"pic"];
+		[EventManager addTaskEvent:taskEvent with:self];
+		[EventPage requestUpdate];
+		
+		[taskEvent release];
+	}
+
 	return self.paramStatus == PARAM_ALL_READY;
 }
 
 - (void) execute
 {
 	[FoodManager createFood:self.params withHandler:@selector(foodCreated:) andTarget:self];
-	[EventManager removeTaskEvent:self];
 	self.seletedImage = nil;
 }
 
@@ -101,8 +113,27 @@ typedef enum PARAMS_STATUS_ENUM
 	if (nil != foodID)
 	{
 		[EventPage cleanAndRefresh];
+		[EventManager removeTaskEvent:self];
 		
 		[self confirm];
+	}
+	else 
+	{
+		[self cancel];
+	}
+}
+
+- (void) placeReady:(id)result
+{
+	NSNumber *placeID = [[result valueForKey:@"result"] valueForKey:@"id"];
+	
+	if (nil != placeID)
+	{
+		[self.params setValue:placeID forKey:@"place"];
+		
+		self.paramStatus |= PARAM_PLACE_READY;
+		
+		[self checkCondition];
 	}
 	else 
 	{
@@ -154,20 +185,14 @@ typedef enum PARAMS_STATUS_ENUM
 	
 	[AppDelegate showPage:EVENT_PAGE];
 	
-	if (!((self.paramStatus) & PARAM_PIC_READY) && (nil != self.seletedImage))
-	{
-		NSMutableDictionary *taskEvent = [self.params mutableCopy];
-
-		[taskEvent setValue:self.seletedImage forKey:@"pic"];
-		[EventManager addTaskEvent:taskEvent with:self];
-		[EventPage requestUpdate];
-		
-		[taskEvent release];
-	}
-	
 	[self checkCondition];
-	
-	
+}
+	    
+- (void) placeSelected:(NSDictionary *)placeObject
+{
+	[PlaceManager createPlace:placeObject 
+		      withHandler:@selector(placeReady:) 
+			andTarget:self];
 }
 
 

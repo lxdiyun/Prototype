@@ -155,7 +155,7 @@ static CGFloat gs_pic_size = 0;
 	
 	NSString *eventID = [self.eventDict valueForKey:@"id"];
 	
-	if (CHECK_STRING(eventID))
+	if ([eventID isKindOfClass:[NSString class]])
 	{
 		if ([eventID hasPrefix:EVENT_TASK_ID_PREFIX])
 		{

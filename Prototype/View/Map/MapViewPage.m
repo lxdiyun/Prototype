@@ -247,13 +247,8 @@ typedef enum MAP_MENU_ENUM
 - (void) setupButtons
 {
 	// left bar buttons
-	UIView *leftButtonView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 81, 30)] autorelease];
-	leftButtonView.clipsToBounds = YES;
-	UIBarButtonItem *leftButtons = [[[UIBarButtonItem alloc] initWithCustomView:leftButtonView] autorelease];
 	// back
-	UIButton *backButton = SETUP_BACK_BUTTON(self, @selector(back));
-	backButton.frame = CGRectMake(0, 0, 40, 30);
-	[leftButtonView addSubview:backButton];
+	UIBarButtonItem *backButton = SETUP_BACK_BAR_BUTTON(self, @selector(back));
 	
 	// right bar buttons
 	UIView *rightButtonsView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 81, 30)] autorelease];
@@ -280,7 +275,7 @@ typedef enum MAP_MENU_ENUM
 	// set all buttons
 	self.navigationItem.hidesBackButton = YES;
 	self.navigationItem.rightBarButtonItem = rightButtons;
-	self.navigationItem.leftBarButtonItem = leftButtons;
+	self.navigationItem.leftBarButtonItem = backButton;
 }
 
 #pragma mark - life circle
@@ -408,7 +403,6 @@ typedef enum MAP_MENU_ENUM
 			break;
 	}
 }
-
 
 - (void) mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views 
 { 
@@ -737,6 +731,7 @@ typedef enum MAP_MENU_ENUM
 	region = [self.mapView regionThatFits:region];
 	[self.mapView setRegion:region animated:YES];
 }
+
 - (void) updateUserLocation:(MKUserLocation *)userLocation
 {
 	CLLocationAccuracy accuracy = userLocation.location.horizontalAccuracy;
@@ -796,6 +791,7 @@ typedef enum MAP_MENU_ENUM
 }
 
 #pragma mark - UIActionSheetDelegate
+
 - (void) actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 	switch (buttonIndex) 

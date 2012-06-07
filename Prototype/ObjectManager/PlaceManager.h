@@ -10,4 +10,6 @@
 
 @interface PlaceManager : ObjectManager
 
++ (void) createPlace:(NSDictionary *)placeObject withHandler:(SEL)handler andTarget:(id)target;
+
 @end

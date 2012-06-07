@@ -14,8 +14,8 @@
 #import "MapAnnotation.h"
 
 // half the image's size in pixel
-const static CGFloat IMAGE_OFFSET_X = -13;
-const static CGFloat IMAGE_OFFSET_Y = -16;
+const static CGFloat IMAGE_OFFSET_X = 1;
+const static CGFloat IMAGE_OFFSET_Y = -13;
 const static CGPoint IMAGE_OFFSET = {IMAGE_OFFSET_X, IMAGE_OFFSET_Y};
 const static CGPoint SCORE_CENTER = {13,13};
 const static CGFloat SCORE_FONT_SIZE = 12;
@@ -120,7 +120,6 @@ const static CGFloat SCORE_FONT_SIZE = 12;
 
 - (void) tapHandler:(UITapGestureRecognizer *)recognizer
 {
-	
 	if (YES == self.selected)
 	{
 		[self.delegate retap:self];
