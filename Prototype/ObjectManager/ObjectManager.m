@@ -597,8 +597,6 @@
 	// bind the handler first
 	[self bindMessageID:messageID WithHandler:handler andTarget:target];
 	
-	LOG(@"create = %@", request);
-	
 	// then send the request 
 	SEND_MSG_AND_BIND_HANDLER_WITH_PRIOIRY_AND_ID(request, 
 						      [self getInstnace], 
