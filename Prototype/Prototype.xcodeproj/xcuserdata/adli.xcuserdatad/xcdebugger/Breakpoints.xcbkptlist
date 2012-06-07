@@ -2784,11 +2784,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/InputMap/InputMapPage.m"
-         timestampString = "360748158.669482"
+         timestampString = "360756640.965291"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "269"
-         endingLineNumber = "269"
+         startingLineNumber = "279"
+         endingLineNumber = "279"
          landmarkName = "-mapView:didUpdateUserLocation:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2797,11 +2797,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/InputMap/InputMapPage.m"
-         timestampString = "360748158.669482"
+         timestampString = "360756640.965291"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "296"
-         endingLineNumber = "296"
+         startingLineNumber = "306"
+         endingLineNumber = "306"
          landmarkName = "-mapView:annotationView:didChangeDragState:fromOldState:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2810,11 +2810,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "View/InputMap/InputMapPage.m"
-         timestampString = "360748158.669482"
+         timestampString = "360756640.965291"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "307"
-         endingLineNumber = "307"
+         startingLineNumber = "317"
+         endingLineNumber = "317"
          landmarkName = "-mapView:viewForAnnotation:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -2829,6 +2829,45 @@
          startingLineNumber = "156"
          endingLineNumber = "156"
          landmarkName = "-updateAnnotation"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/InputMap/InputMapPage.m"
+         timestampString = "360756046.146724"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "184"
+         endingLineNumber = "184"
+         landmarkName = "-resetAnnotation"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/InputMap/InputMapPage.m"
+         timestampString = "360756049.671606"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "181"
+         endingLineNumber = "181"
+         landmarkName = "-resetAnnotation"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "View/InputMap/InputMapPage.m"
+         timestampString = "360756050.632233"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "179"
+         endingLineNumber = "179"
+         landmarkName = "-resetAnnotation"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

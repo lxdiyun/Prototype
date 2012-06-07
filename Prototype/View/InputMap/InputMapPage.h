@@ -19,6 +19,8 @@
 
 @interface InputMapPage : UIViewController
 
+- (void) reset;
+
 @property (strong, nonatomic) MapAnnotation *annotation;
 @property (strong, nonatomic) NSString *placeName;
 @property (strong, nonatomic) NSString *city;

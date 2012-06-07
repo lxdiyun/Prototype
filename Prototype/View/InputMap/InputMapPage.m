@@ -161,22 +161,32 @@
 		
 		self.annotation = annotation;
 		
-		if ((nil != self.city) && (nil != self.placeName))
-		{
-			NSString *address = [[NSString alloc] initWithFormat:@"%@+%@", 
-					     self.city, 
-					     self.placeName];
-			
-			self.annotation.coordinate = [self getLocationFromAddressString:address];
-			
-			[address release];
-		}
-		
 		[self.map addAnnotation:self.annotation];
-		[self showAllPlaces];
+		[self resetAnnotation];
 		
 		[annotation release];
 	}
+}
+
+- (void) resetAnnotation
+{
+	if ((nil != self.city) && (nil != self.placeName))
+	{
+		NSString *address = [[NSString alloc] initWithFormat:@"%@+%@", 
+				     self.city, 
+				     self.placeName];
+		
+		self.annotation.coordinate = [self getLocationFromAddressString:address];
+		
+		[address release];
+	}
+	
+	[self showAllPlaces];
+}
+
+- (void) reset
+{
+	[self resetAnnotation];
 }
 
 - (void) showAllPlaces

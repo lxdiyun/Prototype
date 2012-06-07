@@ -499,6 +499,7 @@ static TagSelector *gs_tag_selector = nil;
 		NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
 		
 		NSString *city = gs_food_detail_text_view[FOOD_CITY].text;
+		NSString *place = gs_food_detail_text_view[FOOD_PLACE].text;
 		
 
 		[params setValue:gs_food_detail_text_view[FOOD_NAME].text forKey:@"name"];
@@ -513,8 +514,14 @@ static TagSelector *gs_tag_selector = nil;
 
 		[self.task etcReady:params];
 		
-		self.inputMap.placeName = gs_food_detail_text_view[FOOD_PLACE].text;
-		self.inputMap.city = city;
+		if (!CHECK_EQUAL(self.inputMap.placeName, place)
+		    || !CHECK_EQUAL(self.inputMap.city, city))
+		{
+			self.inputMap.placeName = place;
+			self.inputMap.city = city;
+			
+			[self.inputMap reset];
+		}
 		
 		[self.navigationController pushViewController:self.inputMap animated:YES];
 		
@@ -547,7 +554,7 @@ static TagSelector *gs_tag_selector = nil;
 		
 		for (int i = 0; i < NEW_FOOD_DETAIL_MAX; ++i)
 		{
-			if (FOOD_PLACE == i)
+			if ((FOOD_PLACE == i) || (FOOD_CITY == i))
 			{
 				// Do not clean city and place text
 				continue;
@@ -631,7 +638,19 @@ static TagSelector *gs_tag_selector = nil;
 
 	NSUInteger newLength = [textView.text length] + [text length] - range.length;
 	
-	return (newLength > MAX_TEXT_LENGTH) ? NO : YES;
+	if (newLength < MAX_TEXT_LENGTH)
+	{
+		if (textView == gs_food_detail_text_view[FOOD_PLACE])
+		{
+			[self.inputMap reset];
+		}
+		
+		return YES;
+	}
+	else 
+	{
+		return NO;
+	}
 }
 
 #pragma mark - TextInputerDeletgate
