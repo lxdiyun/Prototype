@@ -13,6 +13,7 @@
 
 @interface CreateFoodPage : UITableViewController 
 
++ (void) setPlace:(NSNumber *)placeID;
 - (void) resetImage:(UIImage *)image;
 
 @property (strong, nonatomic) CreateFoodTask *task;

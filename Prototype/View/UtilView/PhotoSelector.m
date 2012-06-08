@@ -56,6 +56,7 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 				{
 					self.imagePickerController = [[[UIImagePickerController alloc] init] autorelease];
 					self.imagePickerController.allowsEditing = YES;
+					self.imagePickerController.delegate = self;
 				}
 			}
 					
@@ -93,7 +94,6 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 - (void) didReceiveMemoryWarning
 {
 	self.selectedImage = nil;
-	self.imagePickerController = nil;
 	[super didReceiveMemoryWarning];
 }
 
@@ -114,7 +114,6 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 - (void) viewDidUnload
 {
 	self.actionSheet = nil;
-	self.imagePickerController = nil;
 	self.selectedImage = nil;
 	self.delegate = nil;
 	
@@ -134,7 +133,6 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 	if ([UIImagePickerController isSourceTypeAvailable:sourceType])
 	{
 		self.imagePickerController.sourceType = sourceType;
-		self.imagePickerController.delegate = self;
 		
 		if ((UIUserInterfaceIdiomPad == DEVICE_TYPE())
 		    && (UIImagePickerControllerSourceTypePhotoLibrary == sourceType))
@@ -172,9 +170,6 @@ typedef enum PHOTO_SELECT_ACTION_ENUM
 - (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker 
 {
 	[self.delegate dismissModalVC:self.navigationController withAnimation:YES];
-	
-	// release the picker or will receive mermory warning
-	self.imagePickerController = nil;
 }
 
 @end

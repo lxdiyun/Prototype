@@ -16,6 +16,7 @@
 #import "EventManager.h"
 #import "Util.h"
 #import "PlaceManager.h"
+#import "CreateFoodPage.h"
 
 const static CGFloat MAX_FOOD_PIC_RESOLUTION = 960.0;
 
@@ -130,6 +131,7 @@ typedef enum PARAMS_STATUS_ENUM
 	if (nil != placeID)
 	{
 		[self.params setValue:placeID forKey:@"place"];
+        [CreateFoodPage setPlace:placeID];
 		
 		self.paramStatus |= PARAM_PLACE_READY;
 		
@@ -186,6 +188,18 @@ typedef enum PARAMS_STATUS_ENUM
 	[AppDelegate showPage:EVENT_PAGE];
 	
 	[self checkCondition];
+}
+
+- (void) etcAndPlaceReady:(NSDictionary *)etcAndPlaceParams
+{
+    [self.params addEntriesFromDictionary:etcAndPlaceParams];
+    
+    self.paramStatus |= PARAM_ETC_READY;
+    self.paramStatus |= PARAM_PLACE_READY;
+    
+    [AppDelegate showPage:EVENT_PAGE];
+    
+    [self checkCondition];
 }
 	    
 - (void) placeSelected:(NSDictionary *)placeObject

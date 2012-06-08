@@ -12,6 +12,7 @@
 
 - (NSInteger) picSelected:(UIImage *)pic;
 - (void) etcReady:(NSDictionary *)etcParams;
+- (void) etcAndPlaceReady:(NSDictionary *)etcAndPlaceParams; 
 - (void) placeSelected:(NSDictionary *)placeParams;
 
 @end

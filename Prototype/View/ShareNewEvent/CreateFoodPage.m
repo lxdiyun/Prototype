@@ -53,25 +53,31 @@ static TagSelector *gs_tag_selector = nil;
 @interface CreateFoodPage () <UITextViewDelegate, TextInputerDeletgate, InputMapDelegate, TagSelectorDelegate>
 {
 	CreateFoodHeaderVC *_header;
-	NSNumber *_uploadingID;
 	CreateFoodTask *_task;
 	InputMapPage *_inputMap;
-	
+	NSNumber *_lastPlaceID;
 }
 - (void) updateCity;
 - (BOOL) checkParamsReady;
 
 @property (strong, nonatomic) CreateFoodHeaderVC *header;
-@property (strong, nonatomic) NSNumber *uploadingID;
+@property (strong, nonatomic) NSNumber *lastPlaceID;
 @property (strong, nonatomic) InputMapPage *inputMap;
 @end
 
 @implementation CreateFoodPage
 
 @synthesize header = _header;
-@synthesize uploadingID = _uploadingID;
+@synthesize lastPlaceID = _lastPlaceID;
 @synthesize task = _task;
 @synthesize inputMap = _inputMap;
+
+
+#pragma mark - singleton
+
+DEFINE_SINGLETON(CreateFoodPage);
+
+#pragma mark - life circle
 
 - (id) initWithStyle:(UITableViewStyle)style
 {
@@ -95,7 +101,7 @@ static TagSelector *gs_tag_selector = nil;
 - (void) cleanData
 {
 	self.header = nil;
-	self.uploadingID = nil;
+	self.lastPlaceID = nil;
 	self.task = nil;
 	self.inputMap = nil;
 	
@@ -511,19 +517,29 @@ static TagSelector *gs_tag_selector = nil;
 		[params setValue:[NSNumber numberWithBool:self.header.valued.selected]  forKey:@"like_valued"];
 		[params setValue:[NSNumber numberWithBool:self.header.health.selected]  forKey:@"like_healthy"];
 		[params setValue:[NSNumber numberWithBool:self.header.weibo.selected]  forKey:@"post_weibo"];
-
-		[self.task etcReady:params];
 		
-		if (!CHECK_EQUAL(self.inputMap.placeName, place)
-		    || !CHECK_EQUAL(self.inputMap.city, city))
+		if (CHECK_EQUAL(self.inputMap.placeName, place)
+		    && CHECK_EQUAL(self.inputMap.city, city)
+		    && (nil != self.lastPlaceID))
 		{
+			[params setValue:self.lastPlaceID forKey:@"place"];
+			
+			[self.task etcAndPlaceReady:params];
+			
+			[self foodCreated];
+		}
+		else
+		{
+			[self.task etcReady:params];
+	
 			self.inputMap.placeName = place;
 			self.inputMap.city = city;
 			
 			[self.inputMap reset];
+			
+			[self.navigationController pushViewController:self.inputMap animated:YES];
 		}
 		
-		[self.navigationController pushViewController:self.inputMap animated:YES];
 		
 		[params release];
 	}
@@ -534,10 +550,8 @@ static TagSelector *gs_tag_selector = nil;
 	[self.header cleanHeader];
 	
 	[self.task cancel];
-
 	self.task = nil;
-	
-	self.uploadingID = nil;
+
 	
 	[self.navigationController popToRootViewControllerAnimated:NO];
 
@@ -713,6 +727,13 @@ static TagSelector *gs_tag_selector = nil;
 	[place release];
 	
 	[self foodCreated];
+}
+
+#pragma mark - class interface
+
++ (void) setPlace:(NSNumber *)placeID
+{
+    [[self getInstnace] setLastPlaceID:placeID];
 }
 
 @end

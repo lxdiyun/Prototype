@@ -37,20 +37,6 @@
 
 #pragma mark - life circle
 
-- (id) initWithNibName:(NSString *)nibNameOrNil 
-		bundle:(NSBundle *)nibBundleOrNil
-{
-	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-
-	if (self) 
-	{
-		self.city = @"汕头";
-		self.placeName = @"牛肉";
-	}
-
-	return self;
-}
-
 - (void) dealloc 
 {
 	self.annotation = nil;
@@ -119,6 +105,8 @@
 
 - (void) back
 {
+	self.city = nil;
+	self.placeName = nil;
 	POP_VC(self.navigationController, YES);
 }
 
@@ -303,7 +291,6 @@ didUpdateUserLocation:(MKUserLocation *)userLocation
 didChangeDragState:(MKAnnotationViewDragState)newState 
     fromOldState:(MKAnnotationViewDragState)oldState
 {
-	LOG(@"%f, %f", self.annotation.coordinate.latitude, self.annotation.coordinate.longitude);
 }
 
 - (MKAnnotationView *) mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
