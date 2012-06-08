@@ -64,8 +64,6 @@
 	[super viewDidLoad];
 	
 	[self initGUI];
-
-	self.map.showsUserLocation = YES;
 }
 
 - (void) viewDidUnload
@@ -94,6 +92,8 @@
 	self.navigationItem.hidesBackButton = YES;
 	self.navigationItem.rightBarButtonItem = SETUP_BAR_TEXT_BUTTON(@"完成", self, @selector(placeSeleted));
 	self.navigationItem.leftBarButtonItem = SETUP_BACK_BAR_BUTTON(self, @selector(back));
+	
+	[self initAnnotation];
 }
 
 - (void) updateGUI
@@ -127,7 +127,7 @@
 	
 	if (accuracy > 0 ) 
 	{
-		[self updateAnnotation];
+//		[self updateAnnotation];
 		
 		MKMapPoint userPoint = MKMapPointForCoordinate(userLocation.location.coordinate);
 		MKMapRect currentRect = [self.map visibleMapRect];
@@ -141,7 +141,7 @@
 	}
 }
 
-- (void) updateAnnotation
+- (void) initAnnotation
 {
 	if (nil == self.annotation)
 	{
@@ -150,13 +150,13 @@
 		self.annotation = annotation;
 		
 		[self.map addAnnotation:self.annotation];
-		[self resetAnnotation];
+		[self updateAnnotation];
 		
 		[annotation release];
 	}
 }
 
-- (void) resetAnnotation
+- (void) updateAnnotation
 {
 	if ((nil != self.city) && (nil != self.placeName))
 	{
@@ -174,7 +174,7 @@
 
 - (void) reset
 {
-	[self resetAnnotation];
+	[self updateAnnotation];
 }
 
 - (void) showAllPlaces
@@ -218,7 +218,7 @@
 
 -(CLLocationCoordinate2D) getLocationFromAddressString:(NSString*) addressStr 
 {
-	NSMutableString *urlStr = [NSMutableString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=csv", 
+	NSMutableString *urlStr = [NSMutableString stringWithFormat:@"http://ditu.google.cn/maps/geo?q=%@&output=csv", 
 				   [addressStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	
 	CLLocationAccuracy accuracy = self.map.userLocation.location.horizontalAccuracy;
@@ -277,7 +277,7 @@ didUpdateUserLocation:(MKUserLocation *)userLocation
 		case kCLErrorDenied: // CL access has been denied (eg, user declined location use)
 		{
 			// update annonation without user location
-			[self updateAnnotation];
+			[self initAnnotation];
 		}
 			break;
 			
